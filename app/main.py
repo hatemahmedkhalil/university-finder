@@ -70,32 +70,35 @@ app.include_router(admin.router)
 
 @app.get("/health", tags=["Health"])
 def health():
-    return {"status": "ok"}
+    return {
+        "status": "ok",
+        "student_dist_exists": STUDENT_DIST.exists(),
+        "admin_dist_exists": ADMIN_DIST.exists(),
+        "base_dir": str(BASE_DIR),
+    }
 
 
 # --- Serve built React apps ---
 
-# Admin panel static assets (JS/CSS) at /admin/assets
-if (ADMIN_DIST / "assets").exists():
-    app.mount("/admin/assets", StaticFiles(directory=ADMIN_DIST / "assets"), name="admin-assets")
+if ADMIN_DIST.exists():
+    if (ADMIN_DIST / "assets").exists():
+        app.mount("/admin/assets", StaticFiles(directory=ADMIN_DIST / "assets"), name="admin-assets")
 
-# Admin SPA — all /admin/* routes return admin/dist/index.html
-@app.get("/admin/{path:path}", include_in_schema=False)
-def serve_admin(path: str):
-    return FileResponse(ADMIN_DIST / "index.html")
+    @app.get("/admin", include_in_schema=False)
+    def serve_admin_root():
+        return FileResponse(ADMIN_DIST / "index.html")
 
-@app.get("/admin", include_in_schema=False)
-def serve_admin_root():
-    return FileResponse(ADMIN_DIST / "index.html")
+    @app.get("/admin/{path:path}", include_in_schema=False)
+    def serve_admin(path: str):
+        return FileResponse(ADMIN_DIST / "index.html")
 
-# Student app static assets (JS/CSS)
-if (STUDENT_DIST / "assets").exists():
-    app.mount("/assets", StaticFiles(directory=STUDENT_DIST / "assets"), name="student-assets")
+if STUDENT_DIST.exists():
+    if (STUDENT_DIST / "assets").exists():
+        app.mount("/assets", StaticFiles(directory=STUDENT_DIST / "assets"), name="student-assets")
 
-# Student SPA — all other routes return student-app/dist/index.html
-@app.get("/{path:path}", include_in_schema=False)
-def serve_student(path: str):
-    file = STUDENT_DIST / path
-    if file.is_file():
-        return FileResponse(file)
-    return FileResponse(STUDENT_DIST / "index.html")
+    @app.get("/{path:path}", include_in_schema=False)
+    def serve_student(path: str):
+        file = STUDENT_DIST / path
+        if file.is_file():
+            return FileResponse(file)
+        return FileResponse(STUDENT_DIST / "index.html")
