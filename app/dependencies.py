@@ -23,13 +23,16 @@ def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme),
     db: Session = Depends(get_db),
 ) -> User:
-    user_id = decode_token(credentials.credentials, "access")
-    if user_id is None:
+    result = decode_token(credentials.credentials, "access")
+    if result is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired token")
 
+    user_id, token_version = result
     user = db.get(User, int(user_id))
     if user is None or not user.is_active:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found or inactive")
+    if user.token_version != token_version:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has been revoked")
     return user
 
 

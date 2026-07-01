@@ -12,15 +12,19 @@ def _send(to: str, subject: str, html: str) -> None:
     if not settings.SMTP_HOST or not settings.SMTP_USER:
         logger.info(f"[EMAIL MOCK] To: {to} | Subject: {subject} | Body: {html}")
         return
-    msg = MIMEMultipart("alternative")
-    msg["Subject"] = subject
-    msg["From"] = settings.SMTP_USER
-    msg["To"] = to
-    msg.attach(MIMEText(html, "html"))
-    with smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT) as s:
-        s.starttls()
-        s.login(settings.SMTP_USER, settings.SMTP_PASSWORD)
-        s.sendmail(settings.SMTP_USER, to, msg.as_string())
+    try:
+        msg = MIMEMultipart("alternative")
+        msg["Subject"] = subject
+        msg["From"] = settings.SMTP_USER
+        msg["To"] = to
+        msg.attach(MIMEText(html, "html"))
+        with smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT) as s:
+            s.starttls()
+            s.login(settings.SMTP_USER, settings.SMTP_PASSWORD)
+            s.sendmail(settings.SMTP_USER, to, msg.as_string())
+        logger.info(f"[EMAIL SENT] To: {to} | Subject: {subject}")
+    except Exception as e:
+        logger.error(f"[EMAIL ERROR] Failed to send to {to}: {e}")
 
 
 def send_verification_email(to: str, token: str) -> None:

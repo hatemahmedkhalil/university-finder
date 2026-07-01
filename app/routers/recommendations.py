@@ -14,7 +14,7 @@ router = APIRouter(prefix="/recommendations", tags=["Recommendations"])
 @router.post("", response_model=RecommendationResponse)
 def get_recommendations(
     payload: RecommendationRequest,
-    top_n: int = Query(default=10, ge=1, le=50, description="Max results to return"),
+    top_n: int = Query(default=3, ge=1, le=50, description="Max results to return"),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):

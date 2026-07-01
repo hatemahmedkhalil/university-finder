@@ -12,6 +12,35 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Resources that need admin-specific API paths
+const ADMIN_RESOURCE_MAP = {
+  applications: {
+    list:   () => `/applications/admin/all`,
+    getOne: (id) => `/applications/admin/${id}`,
+    create: () => `/applications/admin`,
+    update: (id) => `/applications/admin/${id}`,
+    delete: (id) => `/applications/admin/${id}`,
+  },
+  "instructor-messages": {
+    list:   () => `/instructor-messages`,
+    getOne: (id) => `/instructor-messages/${id}`,
+    delete: (id) => `/instructor-messages/${id}`,
+  },
+};
+
+const resolvePath = (resource, op, id) => {
+  const map = ADMIN_RESOURCE_MAP[resource];
+  if (map && map[op]) return map[op](id);
+  switch (op) {
+    case "list":   return `/${resource}`;
+    case "getOne": return `/${resource}/${id}`;
+    case "create": return `/${resource}`;
+    case "update": return `/${resource}/${id}`;
+    case "delete": return `/${resource}/${id}`;
+    default:       return `/${resource}`;
+  }
+};
+
 const dataProvider = {
   getList: async (resource, params) => {
     const { page, perPage } = params.pagination;
@@ -26,7 +55,8 @@ const dataProvider = {
       if (value !== undefined && value !== "") queryParams.set(key, value);
     });
 
-    const response = await api.get(`/${resource}?${queryParams.toString()}`);
+    const url = resolvePath(resource, "list") + `?${queryParams.toString()}`;
+    const response = await api.get(url);
 
     // Handle both paginated {items, total} and plain array responses
     if (response.data.items !== undefined) {
@@ -36,13 +66,13 @@ const dataProvider = {
   },
 
   getOne: async (resource, params) => {
-    const response = await api.get(`/${resource}/${params.id}`);
+    const response = await api.get(resolvePath(resource, "getOne", params.id));
     return { data: response.data };
   },
 
   getMany: async (resource, params) => {
     const results = await Promise.all(
-      params.ids.map((id) => api.get(`/${resource}/${id}`))
+      params.ids.map((id) => api.get(resolvePath(resource, "getOne", id)))
     );
     return { data: results.map((r) => r.data) };
   },
@@ -60,29 +90,29 @@ const dataProvider = {
   },
 
   create: async (resource, params) => {
-    const response = await api.post(`/${resource}`, params.data);
+    const response = await api.post(resolvePath(resource, "create"), params.data);
     return { data: response.data };
   },
 
   update: async (resource, params) => {
-    const response = await api.patch(`/${resource}/${params.id}`, params.data);
+    const response = await api.patch(resolvePath(resource, "update", params.id), params.data);
     return { data: response.data };
   },
 
   updateMany: async (resource, params) => {
     await Promise.all(
-      params.ids.map((id) => api.patch(`/${resource}/${id}`, params.data))
+      params.ids.map((id) => api.patch(resolvePath(resource, "update", id), params.data))
     );
     return { data: params.ids };
   },
 
   delete: async (resource, params) => {
-    await api.delete(`/${resource}/${params.id}`);
+    await api.delete(resolvePath(resource, "delete", params.id));
     return { data: { id: params.id } };
   },
 
   deleteMany: async (resource, params) => {
-    await Promise.all(params.ids.map((id) => api.delete(`/${resource}/${id}`)));
+    await Promise.all(params.ids.map((id) => api.delete(resolvePath(resource, "delete", id))));
     return { data: params.ids };
   },
 };

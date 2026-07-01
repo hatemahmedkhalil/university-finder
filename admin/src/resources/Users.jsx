@@ -11,8 +11,9 @@ import {
 } from "react-admin";
 
 const userFilters = [
-  <SearchInput source="search" alwaysOn placeholder="Search email" />,
+  <SearchInput key="search" source="search" alwaysOn placeholder="Search email" />,
   <SelectInput
+    key="role"
     source="role"
     choices={[
       { id: "student", name: "Student" },

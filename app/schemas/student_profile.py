@@ -9,8 +9,10 @@ class StudentProfileCreate(BaseModel):
     gpa: float = Field(ge=0.0, le=4.0)
     budget_eur: int = Field(ge=0)
     english_level: EnglishLevel
+    language: str = "english"
     preferred_countries: str = ""
     field_of_study: str | None = None
+    phone_number: str | None = None
 
 
 class StudentProfileUpdate(BaseModel):
@@ -19,8 +21,10 @@ class StudentProfileUpdate(BaseModel):
     gpa: float | None = Field(default=None, ge=0.0, le=4.0)
     budget_eur: int | None = Field(default=None, ge=0)
     english_level: EnglishLevel | None = None
+    language: str | None = None
     preferred_countries: str | None = None
     field_of_study: str | None = None
+    phone_number: str | None = None
 
 
 class StudentProfileOut(BaseModel):
@@ -31,7 +35,9 @@ class StudentProfileOut(BaseModel):
     gpa: float
     budget_eur: int
     english_level: EnglishLevel
+    language: str
     preferred_countries: str
     field_of_study: str | None
+    phone_number: str | None = None
 
     model_config = {"from_attributes": True}

@@ -1,11 +1,4 @@
-"""
-Recommendation engine — rule-based implementation behind an abstract interface.
-
-To swap in an AI backend (OpenAI, Claude, etc.):
-  1. Subclass BaseRecommender and implement `recommend`.
-  2. Change get_recommender() to return the new class.
-  Nothing else needs to touch the router or schemas.
-"""
+"""Recommendation engine — rule-based scoring."""
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
@@ -22,6 +15,9 @@ _ENGLISH_RANK: dict[str, int] = {
 # Maximum tuition-to-budget ratio before a university is hard-excluded
 _BUDGET_HARD_CUTOFF = 2.0
 
+# Fixed annual living cost estimate added on top of tuition/fees (food + health insurance)
+_FIXED_LIVING_EUR = 3_600
+
 # Score weights (must sum to 100)
 _W_COUNTRY = 30
 _W_BUDGET = 30
@@ -35,6 +31,7 @@ class StudentCriteria:
     gpa: float
     budget_eur: int
     english_level: str
+    language: str  # "english" | "german" | "polish"
     preferred_countries: list[str]  # lower-cased
 
 
@@ -106,7 +103,7 @@ class RuleBasedRecommender(BaseRecommender):
         reasons: list[str] = []
 
         country_score = self._score_country(c, uni, reasons)
-        budget_score = self._score_budget(c, tuition, reasons)
+        budget_score = self._score_budget(c, tuition, uni, reasons)
         english_score = self._score_english(c, uni, reasons)
         gpa_score = self._score_gpa(c, uni, reasons)
 
@@ -131,15 +128,40 @@ class RuleBasedRecommender(BaseRecommender):
 
         return 0.0
 
-    def _score_budget(self, c: StudentCriteria, tuition: int, reasons: list[str]) -> float:
+    def _score_budget(
+        self, c: StudentCriteria, tuition: int, uni: "University", reasons: list[str]
+    ) -> float:
+        # Estimated total annual cost = tuition + semester fees + dormitory + fixed living costs
+        semester_annual = (uni.semester_fee_eur or 0) * 2
+        dorm_annual = (uni.dormitory_cost_eur or 0) * 12
+        estimated_total = tuition + semester_annual + dorm_annual + _FIXED_LIVING_EUR
+
         if tuition == 0:
-            reasons.append("This university appears to be tuition-free.")
-            return float(_W_BUDGET)
+            if estimated_total <= c.budget_eur:
+                reasons.append(
+                    f"Free tuition — estimated annual cost (~€{estimated_total:,}) fits your budget (€{c.budget_eur:,})."
+                )
+                return float(_W_BUDGET)
+            # Tuition is free but total living costs exceed budget
+            over = estimated_total - c.budget_eur
+            ratio = estimated_total / c.budget_eur
+            score = round(_W_BUDGET * max(0.3, 1 - (ratio - 1) * 0.5), 2)
+            reasons.append(
+                f"Tuition is free, but estimated annual cost (~€{estimated_total:,}) "
+                f"exceeds your budget (€{c.budget_eur:,}) by ~€{over:,} — mainly semester fees & living expenses."
+            )
+            return score
 
         if tuition <= c.budget_eur:
             ratio = 1 - (tuition / c.budget_eur)  # more headroom → slightly higher score
             score = round(_W_BUDGET * (0.7 + 0.3 * ratio), 2)
             reasons.append(f"Tuition (€{tuition:,}) is within your budget (€{c.budget_eur:,}).")
+            if estimated_total > c.budget_eur:
+                over = estimated_total - c.budget_eur
+                reasons.append(
+                    f"Note: estimated total annual cost (~€{estimated_total:,}) including living expenses "
+                    f"exceeds your budget by ~€{over:,}."
+                )
             return score
 
         # Over budget but under the hard cutoff — partial credit, scaled
@@ -150,21 +172,41 @@ class RuleBasedRecommender(BaseRecommender):
 
     def _score_english(self, c: StudentCriteria, uni: University, reasons: list[str]) -> float:
         student_rank = _ENGLISH_RANK.get(c.english_level, 0)
-        qualifies_for_english = student_rank >= _ENGLISH_RANK[EnglishLevel.b2.value]
+        lang = (c.language or "english").lower()
 
+        if lang == "german":
+            qualifies = student_rank >= _ENGLISH_RANK[EnglishLevel.b1.value]
+            if uni.country and uni.country.lower() == "germany" and qualifies:
+                reasons.append(f"German-language programs available and your German level qualifies.")
+                return float(_W_ENGLISH)
+            if uni.english_programs_available and qualifies:
+                return _W_ENGLISH * 0.7
+            if uni.english_programs_available:
+                return _W_ENGLISH * 0.4
+            return _W_ENGLISH * 0.2
+
+        if lang == "polish":
+            qualifies = student_rank >= _ENGLISH_RANK[EnglishLevel.b1.value]
+            if uni.country and uni.country.lower() == "poland" and qualifies:
+                reasons.append(f"Polish-language programs available and your Polish level qualifies.")
+                return float(_W_ENGLISH)
+            if uni.english_programs_available and qualifies:
+                return _W_ENGLISH * 0.7
+            if uni.english_programs_available:
+                return _W_ENGLISH * 0.4
+            return _W_ENGLISH * 0.2
+
+        # Default: English
+        qualifies_for_english = student_rank >= _ENGLISH_RANK[EnglishLevel.b2.value]
         if uni.english_programs_available and qualifies_for_english:
             reasons.append("English-taught programs available and your level qualifies.")
             return float(_W_ENGLISH)
-
         if uni.english_programs_available and not qualifies_for_english:
-            reasons.append("English programs exist but your English level may not meet entry requirements.")
+            reasons.append("English programs exist but your level may not meet entry requirements.")
             return _W_ENGLISH * 0.4
-
         if not uni.english_programs_available and qualifies_for_english:
             reasons.append("No English-taught programs listed; local language may be required.")
             return _W_ENGLISH * 0.3
-
-        # Neither has English programs nor does the student qualify — neutral
         return _W_ENGLISH * 0.5
 
     def _score_gpa(self, c: StudentCriteria, uni: University, reasons: list[str]) -> float:
@@ -200,7 +242,7 @@ class RuleBasedRecommender(BaseRecommender):
 
 
 # ---------------------------------------------------------------------------
-# Factory — the only place that decides which engine is active
+# Factory
 # ---------------------------------------------------------------------------
 
 def get_recommender() -> BaseRecommender:
@@ -216,5 +258,6 @@ def build_criteria(profile: StudentProfile, overrides: dict) -> StudentCriteria:
         gpa=overrides.get("gpa") if overrides.get("gpa") is not None else profile.gpa,
         budget_eur=overrides.get("budget_eur") if overrides.get("budget_eur") is not None else profile.budget_eur,
         english_level=overrides.get("english_level") or profile.english_level,
+        language=overrides.get("language") or getattr(profile, "language", "english") or "english",
         preferred_countries=preferred,
     )

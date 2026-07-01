@@ -6,18 +6,22 @@ from app.dependencies import get_current_user, get_db, require_admin
 from app.models.university import University
 from app.models.user import User
 from app.schemas.common import PaginatedResponse
-from app.schemas.university import UniversityCreate, UniversityOut, UniversityUpdate
+from app.schemas.university import UniversityCreate, UniversityDetail, UniversityOut, UniversityUpdate
 
 router = APIRouter(prefix="/universities", tags=["Universities"])
 
+
+_GERMAN_COUNTRIES = {"germany", "austria", "switzerland", "liechtenstein"}
+_POLISH_COUNTRIES = {"poland"}
 
 @router.get("", response_model=PaginatedResponse[UniversityOut])
 def list_universities(
     country: str | None = Query(default=None),
     search: str | None = Query(default=None, description="Substring match on name or city"),
     english_only: bool = Query(default=False),
+    language: str | None = Query(default=None, description="Filter by teaching language: english | german | polish"),
     skip: int = Query(default=0, ge=0),
-    limit: int = Query(default=20, ge=1, le=100),
+    limit: int = Query(default=20, ge=1, le=500),
     db: Session = Depends(get_db),
 ):
     q = db.query(University)
@@ -25,14 +29,20 @@ def list_universities(
         q = q.filter(University.country.ilike(f"%{country}%"))
     if search:
         q = q.filter(or_(University.name.ilike(f"%{search}%"), University.city.ilike(f"%{search}%")))
-    if english_only:
+    # language filter (english_only is kept for backward compat)
+    lang = (language or "").lower().strip()
+    if english_only or lang == "english":
         q = q.filter(University.english_programs_available.is_(True))
+    elif lang == "german":
+        q = q.filter(or_(*[University.country.ilike(f"%{c}%") for c in _GERMAN_COUNTRIES]))
+    elif lang == "polish":
+        q = q.filter(or_(*[University.country.ilike(f"%{c}%") for c in _POLISH_COUNTRIES]))
     total = q.count()
     items = q.offset(skip).limit(limit).all()
     return PaginatedResponse(items=items, total=total, skip=skip, limit=limit)
 
 
-@router.get("/{university_id}", response_model=UniversityOut)
+@router.get("/{university_id}", response_model=UniversityDetail)
 def get_university(
     university_id: int,
     db: Session = Depends(get_db),

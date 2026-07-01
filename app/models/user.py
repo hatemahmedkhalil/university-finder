@@ -18,10 +18,15 @@ class User(Base):
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
     )
 
+    plan: Mapped[str] = mapped_column(String(20), nullable=False, default="free")
+
     is_verified: Mapped[bool] = mapped_column(Boolean, default=False)
+    has_completed_onboarding: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     verification_token: Mapped[str | None] = mapped_column(Text, nullable=True)
+    verification_token_expires: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     reset_token: Mapped[str | None] = mapped_column(Text, nullable=True)
     reset_token_expires: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    token_version: Mapped[int] = mapped_column(default=0, nullable=False)
 
     __table_args__ = (CheckConstraint("role IN ('student', 'admin')", name="ck_user_role"),)
 

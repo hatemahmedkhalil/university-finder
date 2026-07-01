@@ -23,7 +23,9 @@ api.interceptors.response.use(
           error.config.headers.Authorization = `Bearer ${res.data.access_token}`;
           return api.request(error.config);
         } catch {
+          const lang = localStorage.getItem("lang");
           localStorage.clear();
+          if (lang) localStorage.setItem("lang", lang);
           window.location.href = "/login";
         }
       }

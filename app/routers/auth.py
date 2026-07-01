@@ -2,33 +2,39 @@ import secrets
 from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
-from slowapi import Limiter
-from slowapi.util import get_remote_address
 from sqlalchemy.orm import Session
 
+from app.core.limiter import limiter
 from app.core.security import create_access_token, create_refresh_token, decode_token, hash_password, verify_password
-from app.dependencies import get_db
+from app.dependencies import get_db, get_current_user
 from app.models.user import User
-from app.schemas.user import ForgotPasswordRequest, RefreshRequest, Token, UserLogin, UserOut, UserRegister
+from app.schemas.user import ForgotPasswordRequest, RefreshRequest, ResetPasswordRequest, Token, UserLogin, UserOut, UserRegister
 from app.services.email import send_password_reset_email, send_verification_email
-
-limiter = Limiter(key_func=get_remote_address)
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 
-@router.post("/register", response_model=UserOut, status_code=status.HTTP_201_CREATED)
+@router.post("/register", response_model=Token, status_code=status.HTTP_201_CREATED)
 @limiter.limit("10/minute")
 def register(request: Request, payload: UserRegister, db: Session = Depends(get_db)):
     if db.query(User).filter(User.email == payload.email).first():
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Email already registered")
-    token = secrets.token_urlsafe(32)
-    user = User(email=payload.email, hashed_password=hash_password(payload.password), verification_token=token)
+    verification_token = secrets.token_urlsafe(32)
+    verification_expires = datetime.now(timezone.utc) + timedelta(hours=24)
+    user = User(
+        email=payload.email,
+        hashed_password=hash_password(payload.password),
+        verification_token=verification_token,
+        verification_token_expires=verification_expires,
+    )
     db.add(user)
     db.commit()
     db.refresh(user)
-    send_verification_email(user.email, token)
-    return user
+    send_verification_email(user.email, verification_token)
+    return Token(
+        access_token=create_access_token(str(user.id), version=user.token_version),
+        refresh_token=create_refresh_token(str(user.id), version=user.token_version),
+    )
 
 
 @router.get("/verify-email")
@@ -36,8 +42,11 @@ def verify_email(token: str, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.verification_token == token).first()
     if not user:
         raise HTTPException(status_code=400, detail="Invalid or expired verification token")
+    if user.verification_token_expires and datetime.now(timezone.utc) > user.verification_token_expires:
+        raise HTTPException(status_code=400, detail="Verification link has expired. Please request a new one.")
     user.is_verified = True
     user.verification_token = None
+    user.verification_token_expires = None
     db.commit()
     return {"message": "Email verified successfully"}
 
@@ -57,11 +66,9 @@ def forgot_password(request: Request, payload: ForgotPasswordRequest, db: Sessio
 
 
 @router.post("/reset-password")
-def reset_password(payload: dict, db: Session = Depends(get_db)):
-    token = payload.get("token", "")
-    new_password = payload.get("password", "")
-    if not token or not new_password:
-        raise HTTPException(status_code=400, detail="Token and password are required")
+def reset_password(payload: ResetPasswordRequest, db: Session = Depends(get_db)):
+    token = payload.token
+    new_password = payload.password
     user = db.query(User).filter(User.reset_token == token).first()
     if not user or not user.reset_token_expires:
         raise HTTPException(status_code=400, detail="Invalid or expired reset token")
@@ -70,6 +77,7 @@ def reset_password(payload: dict, db: Session = Depends(get_db)):
     user.hashed_password = hash_password(new_password)
     user.reset_token = None
     user.reset_token_expires = None
+    user.token_version += 1  # revoke all existing sessions after password reset
     db.commit()
     return {"message": "Password reset successfully"}
 
@@ -81,20 +89,73 @@ def login(request: Request, payload: UserLogin, db: Session = Depends(get_db)):
     if not user or not verify_password(payload.password, user.hashed_password):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
     return Token(
-        access_token=create_access_token(str(user.id)),
-        refresh_token=create_refresh_token(str(user.id)),
+        access_token=create_access_token(str(user.id), version=user.token_version),
+        refresh_token=create_refresh_token(str(user.id), version=user.token_version),
     )
+
+
+@router.get("/me", response_model=UserOut)
+def get_me(current_user: User = Depends(get_current_user)):
+    return current_user
+
+
+@router.post("/resend-verification")
+@limiter.limit("3/minute")
+def resend_verification(request: Request, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    if current_user.is_verified:
+        raise HTTPException(status_code=400, detail="Email already verified")
+    token = secrets.token_urlsafe(32)
+    current_user.verification_token = token
+    current_user.verification_token_expires = datetime.now(timezone.utc) + timedelta(hours=24)
+    db.commit()
+    send_verification_email(current_user.email, token)
+    return {"message": "Verification email sent"}
+
+
+@router.post("/onboarding/complete", response_model=UserOut)
+def complete_onboarding(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    current_user.has_completed_onboarding = True
+    db.commit()
+    db.refresh(current_user)
+    return current_user
+
+
+@router.post("/onboarding/reset", response_model=UserOut)
+def reset_onboarding(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    current_user.has_completed_onboarding = False
+    db.commit()
+    db.refresh(current_user)
+    return current_user
 
 
 @router.post("/refresh", response_model=Token)
 def refresh(payload: RefreshRequest, db: Session = Depends(get_db)):
-    user_id = decode_token(payload.refresh_token, "refresh")
-    if user_id is None:
+    result = decode_token(payload.refresh_token, "refresh")
+    if result is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired refresh token")
+    user_id, token_version = result
     user = db.get(User, int(user_id))
     if user is None or not user.is_active:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found or inactive")
+    if user.token_version != token_version:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has been revoked")
     return Token(
-        access_token=create_access_token(str(user.id)),
-        refresh_token=create_refresh_token(str(user.id)),
+        access_token=create_access_token(str(user.id), version=user.token_version),
+        refresh_token=create_refresh_token(str(user.id), version=user.token_version),
     )
+
+
+@router.post("/logout")
+def logout(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    current_user.token_version += 1
+    db.commit()
+    return {"message": "Logged out successfully"}
