@@ -32,7 +32,7 @@ const Avatar = ({ name, photoUrl, size = "md", grad = "from-sky-500 to-indigo-60
   const initials = name?.split(" ").map(w => w[0]).slice(0, 2).join("").toUpperCase() || "?";
   const cls = size === "sm" ? "w-10 h-10 text-sm" : size === "lg" ? "w-20 h-20 text-2xl" : "w-16 h-16 text-xl";
   if (photoUrl && !err) {
-    const src = photoUrl.startsWith("http") ? photoUrl : `http://localhost:8000${photoUrl}`;
+    const src = photoUrl.startsWith("http") ? photoUrl : photoUrl;
     return <img src={src} alt={name} onError={() => setErr(true)} className={`${cls} rounded-2xl object-cover shadow-lg ring-2 ring-white`} />;
   }
   return (

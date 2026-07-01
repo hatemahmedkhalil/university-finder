@@ -12,7 +12,7 @@ const Avatar = ({ name, photoUrl, grad }) => {
   const [err, setErr] = useState(false);
   const initials = name?.split(" ").map(w => w[0]).slice(0, 2).join("").toUpperCase() || "?";
   if (photoUrl && !err) {
-    const src = photoUrl.startsWith("http") ? photoUrl : `http://localhost:8000${photoUrl}`;
+    const src = photoUrl.startsWith("http") ? photoUrl : photoUrl;
     return (
       <img src={src} alt={name} onError={() => setErr(true)}
         className="w-24 h-24 rounded-2xl object-cover shadow-xl ring-4 ring-white" />

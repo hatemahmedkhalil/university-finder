@@ -35,7 +35,7 @@ const Avatar = ({ name, photoUrl, size = "lg", grad }) => {
   if (photoUrl && !err) {
     return (
       <img
-        src={photoUrl.startsWith("http") ? photoUrl : `http://localhost:8000${photoUrl}`}
+        src={photoUrl.startsWith("http") ? photoUrl : photoUrl}
         alt={name}
         onError={() => setErr(true)}
         className={`${cls} rounded-3xl object-cover shadow-2xl ring-4 ring-white/40`}
