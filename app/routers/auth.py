@@ -24,14 +24,14 @@ def register(request: Request, payload: UserRegister, db: Session = Depends(get_
     user = User(
         email=payload.email,
         hashed_password=hash_password(payload.password),
-        is_verified=True,
-        verification_token=None,
-        verification_token_expires=None,
+        is_verified=False,
+        verification_token=verification_token,
+        verification_token_expires=verification_expires,
     )
     db.add(user)
     db.commit()
     db.refresh(user)
-    # Email verification disabled during development — re-enable before launch
+    send_verification_email(user.email, verification_token)
     return Token(
         access_token=create_access_token(str(user.id), version=user.token_version),
         refresh_token=create_refresh_token(str(user.id), version=user.token_version),

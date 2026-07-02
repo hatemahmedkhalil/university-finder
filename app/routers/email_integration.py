@@ -173,25 +173,32 @@ async def receive_inbound_email(
         raise HTTPException(status_code=403, detail="Invalid webhook secret.")
 
     form = await request.form()
-    recipient = str(form.get("recipient", ""))       # should be notify@unifind.com
-    sender = str(form.get("sender", ""))
+    # Cloudmailin Multipart-Normalized format field names
+    sender = str(form.get("from", form.get("sender", "")))
     subject = str(form.get("subject", ""))
-    body_plain = str(form.get("body-plain", ""))[:1000]
+    body_plain = str(form.get("plain", form.get("body-plain", "")))[:1000]
 
-    # Find which student this email belongs to
-    # Mailgun puts original To/Delivered-To in headers
-    # We match by the student's linked email that forwarded it
-    # Simplest: match by "X-Forwarded-To" or "X-Original-To" header
-    message_headers = str(form.get("message-headers", ""))
-    original_to = ""
-    # Try to find original recipient from headers JSON
+    # Find which student this email belongs to via the original-to header.
+    # When Gmail auto-forwards, the original recipient address appears in
+    # X-Original-To / Delivered-To headers. Cloudmailin sends headers as a
+    # JSON object (unlike Mailgun's array format).
     import json as _json
+    headers_raw = str(form.get("headers", form.get("message-headers", "")))
+    original_to = ""
     try:
-        headers_list = _json.loads(message_headers)
-        for hdr in headers_list:
-            if hdr[0].lower() in ("x-original-to", "x-forwarded-to", "delivered-to"):
-                original_to = hdr[1]
-                break
+        headers_data = _json.loads(headers_raw)
+        if isinstance(headers_data, dict):
+            # Cloudmailin: {"X-Original-To": "student@gmail.com", ...}
+            for key in headers_data:
+                if key.lower() in ("x-original-to", "x-forwarded-to", "delivered-to"):
+                    original_to = headers_data[key]
+                    break
+        elif isinstance(headers_data, list):
+            # Mailgun legacy: [["X-Original-To", "student@gmail.com"], ...]
+            for hdr in headers_data:
+                if hdr[0].lower() in ("x-original-to", "x-forwarded-to", "delivered-to"):
+                    original_to = hdr[1]
+                    break
     except Exception:
         pass
 
@@ -220,6 +227,7 @@ async def receive_inbound_email(
         detected_status=detected_status,
     )
     db.add(email_record)
+    db.flush()  # Populate email_record.id before passing to calendar function
 
     # Create a notification for the student
     status_labels = {

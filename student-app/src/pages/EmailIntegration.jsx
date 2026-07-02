@@ -141,7 +141,7 @@ function SetupInstructions({ linkedEmail, onConfirm, onUnlink }) {
     { step: 2, title: 'Go to "Forwarding and POP/IMAP"', desc: "Click the tab named exactly that at the top of Settings" },
     { step: 3, title: "Add a forwarding address", desc: `Click "Add a forwarding address" → type: ${FORWARDING_ADDRESS} → click Next` },
     { step: 4, title: "Google sends a verification email", desc: "Check your inbox for a confirmation email from Google and click the verification link" },
-    { step: 5, title: "Activate forwarding", desc: 'Back in Settings → select "Forward a copy to notify@unifind.com" → Save Changes' },
+    { step: 5, title: "Activate forwarding", desc: `Back in Settings → select "Forward a copy to ${FORWARDING_ADDRESS}" → Save Changes` },
     { step: 6, title: "Come back here and confirm", desc: 'Click "I\'ve Set It Up" below so we know you\'re ready' },
   ];
 
