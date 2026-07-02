@@ -18,8 +18,7 @@ def _send(to: str, subject: str, html: str) -> None:
         msg["From"] = settings.SMTP_USER
         msg["To"] = to
         msg.attach(MIMEText(html, "html"))
-        with smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT) as s:
-            s.starttls()
+        with smtplib.SMTP_SSL(settings.SMTP_HOST, settings.SMTP_PORT) as s:
             s.login(settings.SMTP_USER, settings.SMTP_PASSWORD)
             s.sendmail(settings.SMTP_USER, to, msg.as_string())
         logger.info(f"[EMAIL SENT] To: {to} | Subject: {subject}")
