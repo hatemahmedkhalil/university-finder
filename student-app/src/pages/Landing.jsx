@@ -223,14 +223,8 @@ const Countries = () => (
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
         {[
-          { flag: "🇩🇪", name: "Germany",     detail: "Free tuition at public unis",  color: "from-yellow-400 to-red-500" },
-          { flag: "🇵🇱", name: "Poland",      detail: "Affordable & English programs", color: "from-red-500 to-rose-600" },
-          { flag: "🇦🇹", name: "Austria",     detail: "Low fees, high quality",        color: "from-red-600 to-gray-500" },
-          { flag: "🇳🇱", name: "Netherlands", detail: "World-class English programs",  color: "from-orange-400 to-blue-500" },
-          { flag: "🇫🇷", name: "France",      detail: "Free at public universities",   color: "from-blue-500 to-red-500" },
-          { flag: "🇸🇪", name: "Sweden",      detail: "Innovation-driven education",   color: "from-blue-500 to-yellow-400" },
-          { flag: "🇮🇹", name: "Italy",       detail: "Rich history, low costs",       color: "from-green-500 to-red-500" },
-          { flag: "🇪🇸", name: "Spain",       detail: "Mediterranean lifestyle",       color: "from-red-500 to-yellow-400" },
+          { flag: "🇩🇪", name: "Germany", detail: "Free tuition at public universities", color: "from-yellow-400 to-red-500" },
+          { flag: "🇵🇱", name: "Poland",  detail: "Affordable programs in English & Polish", color: "from-red-500 to-rose-600" },
         ].map(({ flag, name, detail, color }) => (
           <div key={name}
             className="group bg-gray-50 rounded-2xl border border-gray-100 p-6 text-center hover:shadow-lg hover:-translate-y-1 transition-all overflow-hidden relative cursor-default">
