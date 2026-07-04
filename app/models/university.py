@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Boolean, DateTime, Float, Integer, String, Text
+from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
@@ -51,3 +51,17 @@ class University(Base):
     guide_generated_at: Mapped[datetime | None] = mapped_column(DateTime)
 
     scholarships: Mapped[list["Scholarship"]] = relationship(back_populates="university", cascade="all, delete-orphan")  # noqa: F821
+    program_fees: Mapped[list["UniversityProgram"]] = relationship(back_populates="university", cascade="all, delete-orphan", order_by="UniversityProgram.degree_level, UniversityProgram.field_of_study")  # noqa: F821
+
+
+class UniversityProgram(Base):
+    __tablename__ = "university_programs"
+
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    university_id: Mapped[int] = mapped_column(ForeignKey("universities.id", ondelete="CASCADE"), nullable=False, index=True)
+    field_of_study: Mapped[str] = mapped_column(String(150), nullable=False)
+    degree_level: Mapped[str] = mapped_column(String(20), nullable=False)   # bachelor | master | phd | all
+    tuition_fee_eur: Mapped[int] = mapped_column(Integer, nullable=False)
+    notes: Mapped[str | None] = mapped_column(String(500))
+
+    university: Mapped["University"] = relationship(back_populates="program_fees")

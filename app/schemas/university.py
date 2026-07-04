@@ -3,6 +3,16 @@ from pydantic import BaseModel, field_validator
 from app.schemas.scholarship import ScholarshipOut
 
 
+class ProgramFeeOut(BaseModel):
+    id: int
+    field_of_study: str
+    degree_level: str
+    tuition_fee_eur: int
+    notes: str | None
+
+    model_config = {"from_attributes": True}
+
+
 def _validate_url(v: str | None) -> str | None:
     if v is not None and not (v.startswith("http://") or v.startswith("https://")):
         raise ValueError("Must be a valid URL starting with http:// or https://")
@@ -122,3 +132,4 @@ class UniversityOut(BaseModel):
 
 class UniversityDetail(UniversityOut):
     scholarships: list[ScholarshipOut] = []
+    program_fees: list[ProgramFeeOut] = []

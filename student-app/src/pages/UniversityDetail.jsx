@@ -644,6 +644,81 @@ const UniversityDetail = () => {
             </Section>
           )}
 
+          {/* ── Program-specific tuition fees ── */}
+          {uni.program_fees?.length > 0 && (
+            <Section icon="💰" title="Tuition Fees by Field of Study" accentColor={theme.accent} id="section-program-fees">
+              <p className="text-xs text-gray-400 mb-4">
+                All fees shown are per academic year for non-EU/EEA students. EU/EEA students pay €0 at German public universities.
+              </p>
+
+              {/* Group by degree level */}
+              {(() => {
+                const groups = {};
+                for (const pf of uni.program_fees) {
+                  const key = pf.degree_level === "all" ? "All Levels" :
+                              pf.degree_level === "bachelor" ? "Bachelor's" :
+                              pf.degree_level === "master" ? "Master's" :
+                              pf.degree_level === "phd" ? "PhD" : pf.degree_level;
+                  if (!groups[key]) groups[key] = [];
+                  groups[key].push(pf);
+                }
+                const order = ["All Levels", "Bachelor's", "Master's", "PhD"];
+                return order.filter(k => groups[k]).map(level => (
+                  <div key={level} className="mb-5 last:mb-0">
+                    {Object.keys(groups).length > 1 && (
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-[11px] font-bold uppercase tracking-wider"
+                          style={{ color: theme.accent }}>{level}</span>
+                        <div className="flex-1 h-px bg-gray-100" />
+                      </div>
+                    )}
+                    <div className="overflow-hidden rounded-xl border border-gray-100">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="bg-gray-50">
+                            <th className="text-left py-2 px-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Field of Study</th>
+                            <th className="text-right py-2 px-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Annual Fee</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {groups[level].map((pf, i) => (
+                            <tr key={pf.id}
+                              className={`border-t border-gray-50 ${i % 2 === 0 ? "bg-white" : "bg-gray-50/40"} hover:bg-indigo-50/30 transition`}
+                              title={pf.notes || ""}>
+                              <td className="py-2.5 px-3 font-medium text-gray-800">{pf.field_of_study}</td>
+                              <td className="py-2.5 px-3 text-right">
+                                {pf.tuition_fee_eur === 0 ? (
+                                  <span className="text-green-600 font-bold">Free ✓</span>
+                                ) : (
+                                  <span className="font-bold" style={{ color: theme.accent }}>
+                                    €{pf.tuition_fee_eur.toLocaleString()}/yr
+                                  </span>
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                ));
+              })()}
+
+              <div className="mt-3 flex items-start gap-2 bg-amber-50 border border-amber-100 rounded-xl p-3">
+                <span className="text-amber-500 mt-0.5 shrink-0">⚠️</span>
+                <p className="text-xs text-amber-800 leading-relaxed">
+                  Fees may vary by specific program and are updated annually. Always verify on the{" "}
+                  {uni.website ? (
+                    <a href={uni.website} target="_blank" rel="noreferrer"
+                      className="font-semibold underline" style={{ color: theme.accent }}>
+                      official university website
+                    </a>
+                  ) : "official university website"} before applying.
+                </p>
+              </div>
+            </Section>
+          )}
+
           <Section icon="✅" title={t("university.admissionReqSection")} accentColor={theme.accent} id="section-admission">
             <InfoRow label={t("university.minGpaLabel")}    value={uni.min_gpa ? `${uni.min_gpa} / 4.0` : null} />
             <InfoRow label={t("university.admissionReqRow")} value={uni.admission_requirements} />
