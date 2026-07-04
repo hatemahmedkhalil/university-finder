@@ -829,13 +829,13 @@ const Recommendations = () => {
           <div className="absolute bottom-0 right-16 w-72 h-72 bg-indigo-400/20 rounded-full blur-3xl" />
           <div className="absolute top-1/2 left-1/2 w-48 h-48 bg-fuchsia-400/15 rounded-full blur-3xl -translate-x-1/2" />
         </div>
-        <div className="relative max-w-4xl mx-auto px-6 py-14">
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-14">
           <div className="flex items-center justify-between flex-wrap gap-3">
             <div>
               <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-violet-200 text-xs font-bold px-4 py-1.5 rounded-full mb-4">
                 🤖 AI-Powered Matching
               </div>
-              <h1 className="text-4xl font-extrabold tracking-tight mb-2">
+              <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-2">
                 {t("recommendations.title")}
               </h1>
               <p className="text-indigo-200 text-base max-w-md">{t("recommendations.subtitle2")}</p>
@@ -848,7 +848,7 @@ const Recommendations = () => {
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-6 py-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {/* Tabs */}
         <div className="flex gap-1.5 mb-6 bg-white border border-gray-100 shadow-sm p-1.5 rounded-2xl w-fit flex-wrap">
           {TABS.map(tb => (

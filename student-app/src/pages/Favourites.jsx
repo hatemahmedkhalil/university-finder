@@ -123,18 +123,18 @@ const Favourites = () => {
       <div className="relative bg-gradient-to-br from-rose-600 via-pink-600 to-fuchsia-700 text-white overflow-hidden">
         <div className="absolute top-4 left-10 w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 right-8 w-48 h-48 bg-fuchsia-400/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="relative max-w-5xl mx-auto px-6 py-12">
+        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
           <span className="inline-block bg-white/15 backdrop-blur-sm text-rose-100 text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-3">
             ❤️ Saved
           </span>
-          <h1 className="text-4xl font-extrabold tracking-tight mb-1">{t("favourites.title")}</h1>
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-1">{t("favourites.title")}</h1>
           <p className="text-rose-200 text-lg">
             {loading ? t("common.loading") : `${universities.length} ${t("favourites.subtitle")}`}
           </p>
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-6 py-8">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
 
         {/* Toolbar */}
         {!loading && universities.length > 0 && (

@@ -645,11 +645,11 @@ const Profile = () => {
           <div className="absolute top-6 left-1/4 w-64 h-64 bg-violet-400/20 rounded-full blur-3xl" />
           <div className="absolute bottom-0 right-1/4 w-72 h-72 bg-indigo-400/20 rounded-full blur-3xl" />
         </div>
-        <div className="relative max-w-2xl mx-auto px-6 py-12">
+        <div className="relative max-w-2xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
           <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-violet-200 text-xs font-bold px-4 py-1.5 rounded-full mb-4">
             👤 {t("profile.profileBadge")}
           </div>
-          <h1 className="text-4xl font-extrabold tracking-tight mb-2">
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-2">
             {profile ? t("profile.title") : t("profile.titleNew")}
           </h1>
           <p className="text-indigo-200">{t("profile.tellUs")}</p>

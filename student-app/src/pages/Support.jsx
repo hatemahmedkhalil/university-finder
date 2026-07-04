@@ -278,11 +278,11 @@ const Support = () => {
           <div className="absolute top-6 left-1/4 w-64 h-64 bg-indigo-400/20 rounded-full blur-3xl" />
           <div className="absolute bottom-0 right-1/4 w-72 h-72 bg-blue-400/20 rounded-full blur-3xl" />
         </div>
-        <div className="relative max-w-3xl mx-auto px-6 py-14 text-center">
+        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-14 text-center">
           <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-blue-200 text-xs font-bold px-4 py-1.5 rounded-full mb-5">
             🎧 We're here to help
           </div>
-          <h1 className="text-4xl font-extrabold tracking-tight mb-2">
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-2">
             {t("support.title")}
           </h1>
           <p className="text-indigo-200 text-base max-w-md mx-auto">
