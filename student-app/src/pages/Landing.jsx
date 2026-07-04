@@ -2,30 +2,49 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 
 /* ── Navbar ── */
-const Navbar = () => (
-  <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-100">
-    <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-      <div className="flex items-center gap-2">
-        <span className="text-2xl">🎓</span>
-        <span className="text-xl font-extrabold text-gray-900">UniPath</span>
+const Navbar = () => {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  return (
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-b border-gray-100">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className="text-2xl">🎓</span>
+          <span className="text-xl font-extrabold text-gray-900">UniPath</span>
+        </div>
+        <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-500">
+          <a href="#problem" className="hover:text-gray-900 transition">The Problem</a>
+          <a href="#solution" className="hover:text-gray-900 transition">How It Works</a>
+          <a href="#features" className="hover:text-gray-900 transition">Features</a>
+          <a href="#faq" className="hover:text-gray-900 transition">FAQ</a>
+        </div>
+        <div className="hidden md:flex items-center gap-3">
+          <Link to="/login" className="text-sm font-semibold text-gray-600 hover:text-gray-900 transition px-4 py-2">Sign in</Link>
+          <Link to="/register" className="text-sm font-bold bg-indigo-600 text-white px-5 py-2.5 rounded-xl hover:bg-indigo-700 transition shadow-sm">Get Started Free</Link>
+        </div>
+        {/* Mobile: login + hamburger */}
+        <div className="flex md:hidden items-center gap-2">
+          <Link to="/login" className="text-sm font-semibold text-gray-600 px-3 py-1.5">Sign in</Link>
+          <button onClick={() => setMobileMenuOpen(o => !o)} className="w-9 h-9 flex items-center justify-center rounded-lg text-gray-600 hover:bg-gray-100">
+            {mobileMenuOpen
+              ? <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              : <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            }
+          </button>
+        </div>
       </div>
-      <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-500">
-        <a href="#problem" className="hover:text-gray-900 transition">The Problem</a>
-        <a href="#solution" className="hover:text-gray-900 transition">How It Works</a>
-        <a href="#features" className="hover:text-gray-900 transition">Features</a>
-        <a href="#faq" className="hover:text-gray-900 transition">FAQ</a>
-      </div>
-      <div className="flex items-center gap-3">
-        <Link to="/login" className="text-sm font-semibold text-gray-600 hover:text-gray-900 transition px-4 py-2">
-          Sign in
-        </Link>
-        <Link to="/register" className="text-sm font-bold bg-indigo-600 text-white px-5 py-2.5 rounded-xl hover:bg-indigo-700 transition shadow-sm">
-          Get Started Free
-        </Link>
-      </div>
-    </div>
-  </nav>
-);
+      {/* Mobile dropdown */}
+      {mobileMenuOpen && (
+        <div className="md:hidden bg-white border-t border-gray-100 px-4 py-4 flex flex-col gap-3">
+          <a href="#problem" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-gray-600 py-2">The Problem</a>
+          <a href="#solution" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-gray-600 py-2">How It Works</a>
+          <a href="#features" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-gray-600 py-2">Features</a>
+          <a href="#faq" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium text-gray-600 py-2">FAQ</a>
+          <Link to="/register" className="text-sm font-bold bg-indigo-600 text-white px-5 py-3 rounded-xl text-center">Get Started Free</Link>
+        </div>
+      )}
+    </nav>
+  );
+};
 
 /* ── Hero ── */
 const Hero = () => (
@@ -44,14 +63,14 @@ const Hero = () => (
         Now available — Free for students
       </div>
 
-      <h1 className="text-5xl md:text-7xl font-extrabold leading-[1.1] tracking-tight mb-6">
+      <h1 className="text-3xl sm:text-5xl md:text-7xl font-extrabold leading-[1.1] tracking-tight mb-6">
         Your dream university<br />
         <span className="bg-gradient-to-r from-indigo-400 via-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
           is closer than you think
         </span>
       </h1>
 
-      <p className="text-xl md:text-2xl text-slate-300 mb-4 max-w-3xl mx-auto leading-relaxed">
+      <p className="text-base sm:text-xl md:text-2xl text-slate-300 mb-4 max-w-3xl mx-auto leading-relaxed">
         UniPath helps Arabic-speaking students discover, compare, and apply to European universities —
         with AI guidance every step of the way.
       </p>

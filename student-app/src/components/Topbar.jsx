@@ -97,7 +97,7 @@ const NotificationBell = ({ isRTL }) => {
       </button>
 
       {open && (
-        <div className={`absolute ${isRTL ? "left-0" : "right-0"} top-full mt-2 w-80 bg-white rounded-2xl shadow-xl border border-gray-100 z-50 overflow-hidden`}>
+        <div className={`absolute ${isRTL ? "left-0" : "right-0"} top-full mt-2 w-[calc(100vw-2rem)] sm:w-80 max-w-sm bg-white rounded-2xl shadow-xl border border-gray-100 z-50 overflow-hidden`}>
           <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
             <span className="font-bold text-gray-800 text-sm">{t("nav.notifications")}</span>
             {count > 0 && (

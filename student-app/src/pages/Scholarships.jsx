@@ -64,7 +64,7 @@ const Scholarships = () => {
 
       {/* ── Hero ── */}
       <div className="bg-gradient-to-br from-violet-700 via-purple-700 to-fuchsia-800 text-white">
-        <div className="max-w-6xl mx-auto px-6 py-12">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
           <p className="text-violet-200 text-sm font-semibold uppercase tracking-widest mb-2">💰 Funding</p>
           <h1 className="text-4xl font-extrabold tracking-tight mb-2">{t("scholarships.title")}</h1>
           <p className="text-violet-200 text-lg">
@@ -87,7 +87,7 @@ const Scholarships = () => {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-6 py-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
 
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">

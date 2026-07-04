@@ -233,7 +233,7 @@ const Dashboard = () => {
         <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3" />
         <div className="absolute bottom-0 left-1/4 w-64 h-64 bg-white/5 rounded-full translate-y-1/2" />
 
-        <div className="relative max-w-5xl mx-auto px-6 py-10">
+        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
           <div className="flex items-start justify-between flex-wrap gap-4">
             <div>
               <p className="text-indigo-300 text-sm font-semibold mb-1">{greeting} 👋</p>
@@ -265,7 +265,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-6 py-8 space-y-8">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6 sm:space-y-8">
 
         {/* ── Email verification banner ── */}
         {user && !user.is_verified && <VerificationBanner email={user.email} />}

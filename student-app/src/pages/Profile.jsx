@@ -344,7 +344,7 @@ const LanguageManager = () => {
           <p className="text-xs font-bold text-indigo-700 uppercase tracking-wide">{t("profile.languages.addTitle")}</p>
           <div>
             <p className="text-xs text-gray-500 mb-1.5 font-medium">{t("profile.languages.languageLabel")}</p>
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {LANG_OPTIONS.map(({ value, label, flag }) => (
                 <button
                   key={value}

@@ -538,7 +538,7 @@ const UniversityDetail = () => {
             </div>
 
             {/* Action buttons */}
-            <div className="flex flex-row md:flex-col gap-2 shrink-0">
+            <div className="flex flex-col sm:flex-row md:flex-col gap-2 shrink-0 w-full md:w-auto">
               <button onClick={toggleSave} disabled={savingLoading}
                 className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition border ${
                   saved

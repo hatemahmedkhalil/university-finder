@@ -123,7 +123,7 @@ const Universities = () => {
 
       {/* ── Hero header ── */}
       <div className="bg-gradient-to-br from-indigo-700 via-violet-700 to-purple-800 text-white">
-        <div className="max-w-6xl mx-auto px-6 py-12">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
           <p className="text-indigo-200 text-sm font-semibold uppercase tracking-widest mb-2">🏛️ Explore</p>
           <h1 className="text-4xl font-extrabold tracking-tight mb-2">{t("universities.title")}</h1>
           <p className="text-indigo-200 text-lg">
@@ -157,7 +157,7 @@ const Universities = () => {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-6 py-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
 
         {/* Language filter pills */}
         <div className="mb-6">
