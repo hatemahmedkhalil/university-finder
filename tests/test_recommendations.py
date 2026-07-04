@@ -32,6 +32,7 @@ def make_criteria(**kwargs) -> StudentCriteria:
         gpa=3.5,
         budget_eur=5000,
         english_level="c1",
+        language="english",
         preferred_countries=["germany"],
     )
     defaults.update(kwargs)

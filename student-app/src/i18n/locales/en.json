@@ -35,7 +35,7 @@
     "filter": "Filter"
   },
   "nav": {
-    "brand": "UniFind",
+    "brand": "UniPath",
     "support": "Support",
     "emailIntegration": "Email Tracking",
     "calendar": "Calendar",
@@ -79,7 +79,7 @@
     "nothing": "Nothing here"
   },
   "aichat": {
-    "title": "UniFind AI",
+    "title": "UniPath AI",
     "subtitle": "Your university guidance assistant",
     "askPlaceholder": "Ask about universities, scholarships, visas… (Enter to send)",
     "limitPlaceholder": "Daily limit reached…",
@@ -149,7 +149,7 @@
       "loading": "Signing in...",
       "noAccount": "Don't have an account?",
       "register": "Create one",
-      "newTo": "New to UniFind?",
+      "newTo": "New to UniPath?",
       "forgotPassword": "Forgot your password?",
       "emailPlaceholder": "you@example.com",
       "passwordPlaceholder": "Your password",
@@ -158,7 +158,7 @@
     },
     "register": {
       "title": "Create Your Account",
-      "subtitle": "Join UniFind and start your journey to studying abroad",
+      "subtitle": "Join UniPath and start your journey to studying abroad",
       "taglineSub": "Everything you need to find, apply, and get funded — for free.",
       "email": "Email",
       "password": "Password",
@@ -217,7 +217,7 @@
       "ctaExplore": "Browse Universities"
     },
     "features": {
-      "tag": "Why UniFind?",
+      "tag": "Why UniPath?",
       "title": "Everything you need in one place",
       "subtitle": "No more jumping between websites. Find, compare, and apply — all here.",
       "matching": { "title": "Smart Matching", "desc": "Get universities matched to your GPA, budget, English level, and preferred countries." },
@@ -244,9 +244,9 @@
       "forever": "Forever"
     },
     "footer": {
-      "copyright": "© 2026 UniFind. All rights reserved."
+      "copyright": "© 2026 UniPath. All rights reserved."
     },
-    "whyBadge": "Why UniFind?",
+    "whyBadge": "Why UniPath?",
     "whyTitle": "Everything you need in one place",
     "whySubtitle": "No more jumping between websites. Find, compare, and apply — all here.",
     "destBadge": "Destinations",
@@ -255,10 +255,10 @@
     "processBadge": "Process",
     "processTitle": "Get matched in 3 steps",
     "readyCta": "Ready to find your university?",
-    "readyCtaSub": "Join thousands of students who found their perfect match with UniFind.",
+    "readyCtaSub": "Join thousands of students who found their perfect match with UniPath.",
     "cta": {
       "title": "Ready to Find Your University?",
-      "subtitle": "Join thousands of students who found their dream university with UniFind.",
+      "subtitle": "Join thousands of students who found their dream university with UniPath.",
       "button": "Get Started Free",
       "login": "Already have an account? Sign in"
     }
@@ -1003,7 +1003,7 @@
       "notify": "Sign up free — we'll notify you when paid plans launch."
     },
     "why": {
-      "title": "Why Students Choose UniFind",
+      "title": "Why Students Choose UniPath",
       "matching": { "title": "Smart Matching", "desc": "AI-powered university matching based on your profile, GPA, and budget." },
       "europe":   { "title": "Europe Focused", "desc": "Covering top universities across Germany, Poland, Austria, and more." },
       "chat":     { "title": "Expert Instructors", "desc": "Chat directly with certified language instructors for guidance." },
@@ -1022,7 +1022,7 @@
     },
     "cta": {
       "title": "Ready to Start Your Journey?",
-      "subtitle": "Join students already using UniFind to discover their dream university in Europe — completely free.",
+      "subtitle": "Join students already using UniPath to discover their dream university in Europe — completely free.",
       "start": "Get Started Free",
       "browse": "Browse Universities"
     }
@@ -1099,7 +1099,7 @@
     "subtitle": "Manage your account preferences",
     "language": {
       "title": "Language",
-      "subtitle": "Choose the language you'd like to use throughout UniFind",
+      "subtitle": "Choose the language you'd like to use throughout UniPath",
       "english": "English",
       "arabic": "العربية",
       "changed": "Language updated"
@@ -1118,14 +1118,14 @@
     "danger": {
       "title": "Session",
       "logout": "Log Out",
-      "logoutDesc": "Sign out of your UniFind account"
+      "logoutDesc": "Sign out of your UniPath account"
     }
   },
   "onboarding": {
     "steps": {
-      "welcome": { "title": "Welcome to UniFind", "desc": "UniFind helps you find the best universities, scholarships, language resources, and study opportunities based on your profile and goals." },
+      "welcome": { "title": "Welcome to UniPath", "desc": "UniPath helps you find the best universities, scholarships, language resources, and study opportunities based on your profile and goals." },
       "profile": { "title": "My Profile", "desc": "Fill in your information such as your academic grade, budget, preferred country, and language level so we can recommend the best universities for your situation." },
-      "dashboard": { "title": "Dashboard", "desc": "This is your main dashboard where you'll find everything related to your activity and progress inside UniFind." },
+      "dashboard": { "title": "Dashboard", "desc": "This is your main dashboard where you'll find everything related to your activity and progress inside UniPath." },
       "recommendations": { "title": "Recommendations", "desc": "This is where we recommend the best universities based on your profile, budget, academic performance, and preferences." },
       "universities": { "title": "Universities", "desc": "Browse all available universities in your preferred country if you'd like to explore more options beyond our recommendations." },
       "scholarships": { "title": "Scholarships", "desc": "If there are scholarships that match your profile, we will recommend them here to help reduce your study costs." },
@@ -1136,7 +1136,7 @@
       "instructors": { "title": "Instructors", "desc": "Browse available instructors and send them direct messages if you need additional support or private guidance on your application." },
       "favourites": { "title": "Favorites", "desc": "Save universities you're interested in and access them later from your Favorites list." },
       "pricing": { "title": "Pricing", "desc": "Compare available plans and discover the features included in each subscription." },
-      "ready": { "title": "You're All Set!", "desc": "You're now ready to explore UniFind and start your study abroad journey. Good luck! 🎉" }
+      "ready": { "title": "You're All Set!", "desc": "You're now ready to explore UniPath and start your study abroad journey. Good luck! 🎉" }
     },
     "step": "Step",
     "of": "of",
@@ -1241,7 +1241,7 @@
   },
   "langPicker": {
     "title": "Choose Your Language",
-    "subtitle": "Select the language you would like to use throughout UniFind.",
+    "subtitle": "Select the language you would like to use throughout UniPath.",
     "continue": "Continue"
   },
   "gettingStarted": {

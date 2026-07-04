@@ -53,7 +53,7 @@ const Login = () => {
         <div className="relative">
           <div className="flex items-center gap-3 mb-16">
             <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center text-xl">🎓</div>
-            <span className="text-xl font-bold">UniFind</span>
+            <span className="text-xl font-bold">UniPath</span>
           </div>
           <h2 className="text-4xl font-extrabold leading-tight mb-4">
             Find your dream<br />
@@ -86,7 +86,7 @@ const Login = () => {
           {/* Mobile logo */}
           <div className="lg:hidden flex items-center gap-2 mb-8">
             <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-lg">🎓</div>
-            <span className="text-lg font-bold text-gray-800">UniFind</span>
+            <span className="text-lg font-bold text-gray-800">UniPath</span>
           </div>
 
           <div className="mb-8">
@@ -146,7 +146,7 @@ const Login = () => {
               <div className="w-full border-t border-gray-200" />
             </div>
             <div className="relative flex justify-center">
-              <span className="bg-gray-50 px-4 text-xs text-gray-400 font-medium">New to UniFind?</span>
+              <span className="bg-gray-50 px-4 text-xs text-gray-400 font-medium">New to UniPath?</span>
             </div>
           </div>
 

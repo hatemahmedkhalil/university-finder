@@ -259,7 +259,7 @@ const Pricing = () => {
         </div>
       </div>
 
-      {/* ── Why UniFind ── */}
+      {/* ── Why UniPath ── */}
       <div className="max-w-5xl mx-auto px-4 py-16">
         <h2 className="text-2xl font-extrabold text-gray-900 text-center mb-10">{t("pricing.why.title")}</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">

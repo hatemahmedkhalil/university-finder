@@ -7,7 +7,7 @@ const Navbar = () => (
     <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
       <div className="flex items-center gap-2">
         <span className="text-2xl">🎓</span>
-        <span className="text-xl font-extrabold text-gray-900">UniFind</span>
+        <span className="text-xl font-extrabold text-gray-900">UniPath</span>
       </div>
       <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-500">
         <a href="#problem" className="hover:text-gray-900 transition">The Problem</a>
@@ -52,7 +52,7 @@ const Hero = () => (
       </h1>
 
       <p className="text-xl md:text-2xl text-slate-300 mb-4 max-w-3xl mx-auto leading-relaxed">
-        UniFind helps Arabic-speaking students discover, compare, and apply to European universities —
+        UniPath helps Arabic-speaking students discover, compare, and apply to European universities —
         with AI guidance every step of the way.
       </p>
       <p className="text-slate-400 text-base mb-12 max-w-xl mx-auto">
@@ -138,7 +138,7 @@ const Solution = () => (
       <div className="text-center mb-16">
         <span className="text-indigo-600 text-sm font-bold uppercase tracking-widest">The Solution</span>
         <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mt-3">
-          UniFind does the hard work for you
+          UniPath does the hard work for you
         </h2>
         <p className="text-gray-500 text-lg mt-5 max-w-2xl mx-auto">
           From finding the right university to tracking your application status — all in one place, in Arabic and English.
@@ -178,7 +178,7 @@ const Features = () => (
           One platform. Full journey.
         </h2>
         <p className="text-gray-500 text-lg mt-5 max-w-2xl mx-auto">
-          UniFind covers every step from discovery to enrollment — so you never have to leave to figure things out.
+          UniPath covers every step from discovery to enrollment — so you never have to leave to figure things out.
         </p>
       </div>
 
@@ -187,7 +187,7 @@ const Features = () => (
           { icon: "🎯", grad: "from-indigo-500 to-violet-600", title: "AI University Matching", desc: "Get a personalized compatibility score for every university based on your profile, GPA, budget, and language." },
           { icon: "💰", grad: "from-emerald-500 to-teal-600", title: "Scholarship Finder", desc: "Browse scholarships available to Arab students studying in Europe — filtered by country, amount, and eligibility." },
           { icon: "📊", grad: "from-amber-500 to-orange-500", title: "Application Pipeline", desc: "Track every application like a pro. Know exactly where you stand with each university at all times." },
-          { icon: "📬", grad: "from-rose-500 to-pink-600", title: "Email Tracking", desc: "Connect your email and UniFind automatically detects university replies — no more checking your inbox every hour." },
+          { icon: "📬", grad: "from-rose-500 to-pink-600", title: "Email Tracking", desc: "Connect your email and UniPath automatically detects university replies — no more checking your inbox every hour." },
           { icon: "📅", grad: "from-sky-500 to-cyan-600", title: "Smart Calendar", desc: "Deadlines, interviews, and acceptance dates automatically added to your calendar from university emails." },
           { icon: "👨‍🏫", grad: "from-violet-500 to-purple-600", title: "Language Instructors", desc: "Learn German, English, or Polish from expert instructors. Ask questions and get answers directly in the app." },
           { icon: "🤖", grad: "from-fuchsia-500 to-pink-600", title: "AI Chat Assistant", desc: "Ask anything about studying in Europe — visa, documents, deadlines, language requirements. Available 24/7." },
@@ -244,7 +244,7 @@ const WhoIsItFor = () => (
   <section className="bg-gradient-to-br from-indigo-900 via-violet-900 to-purple-950 text-white py-28">
     <div className="max-w-6xl mx-auto px-6">
       <div className="text-center mb-16">
-        <span className="text-indigo-300 text-sm font-bold uppercase tracking-widest">Who is UniFind for?</span>
+        <span className="text-indigo-300 text-sm font-bold uppercase tracking-widest">Who is UniPath for?</span>
         <h2 className="text-4xl md:text-5xl font-extrabold mt-3">
           Built for students like you
         </h2>
@@ -269,11 +269,11 @@ const WhoIsItFor = () => (
 
 /* ── FAQ ── */
 const faqs = [
-  { q: "Is UniFind really free?", a: "Yes. The core features — AI matching, university search, scholarship browser, and application tracking — are completely free. Premium plans add advanced features for students who want more." },
-  { q: "Do I need to speak English to use UniFind?", a: "No. UniFind is fully available in Arabic. Our instructors also teach German and Polish so you can apply to free-tuition universities without needing English." },
+  { q: "Is UniPath really free?", a: "Yes. The core features — AI matching, university search, scholarship browser, and application tracking — are completely free. Premium plans add advanced features for students who want more." },
+  { q: "Do I need to speak English to use UniPath?", a: "No. UniPath is fully available in Arabic. Our instructors also teach German and Polish so you can apply to free-tuition universities without needing English." },
   { q: "How does the AI matching work?", a: "You fill in your profile: GPA, budget, field of study, preferred countries, and language level. Our AI compares your profile against every university in our database and gives each one a compatibility score out of 100." },
   { q: "What countries do you cover?", a: "Currently Germany, Poland, Austria, Netherlands, France, Sweden, Italy, and Spain. We're adding more universities regularly." },
-  { q: "How does email tracking work?", a: "You set up Gmail or Outlook to forward university emails to a special UniFind address. We automatically read the forwarded emails, detect if it's an acceptance, rejection, or interview invitation, and update your pipeline — without you doing anything." },
+  { q: "How does email tracking work?", a: "You set up Gmail or Outlook to forward university emails to a special UniPath address. We automatically read the forwarded emails, detect if it's an acceptance, rejection, or interview invitation, and update your pipeline — without you doing anything." },
   { q: "Is my data safe?", a: "Yes. We only read forwarded emails — we never access your inbox. All consent is recorded and you can delete your data at any time. We comply with GDPR." },
 ];
 
@@ -342,7 +342,7 @@ const Footer = () => (
         <div className="col-span-2 md:col-span-1">
           <div className="flex items-center gap-2 mb-4">
             <span className="text-2xl">🎓</span>
-            <span className="text-white font-bold text-lg">UniFind</span>
+            <span className="text-white font-bold text-lg">UniPath</span>
           </div>
           <p className="text-sm leading-relaxed">
             Helping Arabic-speaking students find and apply to European universities — powered by AI.
@@ -375,7 +375,7 @@ const Footer = () => (
         </div>
       </div>
       <div className="border-t border-gray-800 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
-        <p>© 2026 UniFind. All rights reserved.</p>
+        <p>© 2026 UniPath. All rights reserved.</p>
         <p>Made for Arabic-speaking students 🌍</p>
       </div>
     </div>

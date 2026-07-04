@@ -39,7 +39,7 @@ function ConsentScreen({ onConsent }) {
         <div className="text-5xl mb-4">📬</div>
         <h1 className="text-2xl font-extrabold text-white mb-2">Link Your Email</h1>
         <p className="text-slate-400 text-sm leading-relaxed">
-          Connect your email so UniFind can automatically track university replies and update your pipeline status — no manual checking needed.
+          Connect your email so UniPath can automatically track university replies and update your pipeline status — no manual checking needed.
         </p>
       </div>
 
@@ -74,7 +74,7 @@ function ConsentScreen({ onConsent }) {
           <li className="flex gap-2"><span className="text-indigo-400 font-bold">1.</span> You enter your email and agree below</li>
           <li className="flex gap-2"><span className="text-indigo-400 font-bold">2.</span> We give you a forwarding address (<span className="text-indigo-300 font-mono">{FORWARDING_ADDRESS}</span>)</li>
           <li className="flex gap-2"><span className="text-indigo-400 font-bold">3.</span> You set up Gmail/Outlook to forward emails to it (we guide you step by step)</li>
-          <li className="flex gap-2"><span className="text-indigo-400 font-bold">4.</span> UniFind auto-detects university replies and updates your pipeline</li>
+          <li className="flex gap-2"><span className="text-indigo-400 font-bold">4.</span> UniPath auto-detects university replies and updates your pipeline</li>
         </ol>
       </div>
 
@@ -104,7 +104,7 @@ function ConsentScreen({ onConsent }) {
           className="mt-0.5 w-4 h-4 accent-indigo-500 shrink-0"
         />
         <span className="text-slate-400 text-xs leading-relaxed">
-          I understand that UniFind will receive forwarded emails from my inbox. I give explicit consent to process emails from universities for the purpose of tracking my application status. I can revoke this at any time.
+          I understand that UniPath will receive forwarded emails from my inbox. I give explicit consent to process emails from universities for the purpose of tracking my application status. I can revoke this at any time.
         </span>
       </label>
 
@@ -246,7 +246,7 @@ function ActiveView({ linked, emails, onUnlink, onRefresh }) {
       <div className="grid grid-cols-3 gap-3 mb-6">
         {[
           { icon: "✉️", label: "Email arrives", desc: "University sends you an email" },
-          { icon: "🔍", label: "We detect it", desc: "UniFind reads the forwarded copy" },
+          { icon: "🔍", label: "We detect it", desc: "UniPath reads the forwarded copy" },
           { icon: "🔔", label: "You're notified", desc: "Pipeline updates automatically" },
         ].map(item => (
           <div key={item.label} className="bg-slate-800/50 border border-slate-700/40 rounded-2xl p-3 text-center">

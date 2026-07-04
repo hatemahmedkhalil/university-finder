@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     SMTP_PASSWORD: str = ""
     RESEND_API_KEY: str = ""
     RESEND_FROM_EMAIL: str = "onboarding@resend.dev"
-    RESEND_FROM_NAME: str = "UniFind"
+    RESEND_FROM_NAME: str = "UniPath"
     OPENAI_API_KEY: str = ""
     GEMINI_API_KEY: str = ""
     GROQ_API_KEY: str = ""

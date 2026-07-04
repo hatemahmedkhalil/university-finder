@@ -12,6 +12,19 @@ import app.models.student_profile  # noqa: F401
 import app.models.university  # noqa: F401
 import app.models.scholarship  # noqa: F401
 import app.models.favourite  # noqa: F401
+import app.models.application  # noqa: F401
+import app.models.announcement  # noqa: F401
+import app.models.support_ticket  # noqa: F401
+import app.models.notification  # noqa: F401
+import app.models.ticket_message  # noqa: F401
+import app.models.instructor  # noqa: F401
+import app.models.instructor_message  # noqa: F401
+import app.models.instructor_post  # noqa: F401
+import app.models.learning  # noqa: F401
+import app.models.subscription_plan  # noqa: F401
+import app.models.ai_chat_message  # noqa: F401
+import app.models.user_language  # noqa: F401
+import app.models.ielts  # noqa: F401
 
 config = context.config
 

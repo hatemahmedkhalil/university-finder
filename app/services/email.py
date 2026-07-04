@@ -69,10 +69,10 @@ def send_verification_email(to: str, token: str) -> None:
     link = f"{settings.FRONTEND_URL}/verify-email?token={token}"
     _send(
         to=to,
-        subject="Verify your UniFind account",
+        subject="Verify your UniPath account",
         html=f"""
         <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px 24px">
-          <h2 style="color:#1e1b4b;margin-bottom:8px">Welcome to UniFind! 🎓</h2>
+          <h2 style="color:#1e1b4b;margin-bottom:8px">Welcome to UniPath! 🎓</h2>
           <p style="color:#4b5563;margin-bottom:24px">Click the button below to verify your email address and activate your account.</p>
           <a href="{link}" style="display:inline-block;background:#4f46e5;color:white;padding:14px 28px;border-radius:10px;text-decoration:none;font-weight:700;font-size:15px">
             Verify Email
@@ -88,7 +88,7 @@ def send_password_reset_email(to: str, token: str) -> None:
     link = f"{settings.FRONTEND_URL}/reset-password?token={token}"
     _send(
         to=to,
-        subject="Reset your UniFind password",
+        subject="Reset your UniPath password",
         html=f"""
         <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px 24px">
           <h2 style="color:#1e1b4b;margin-bottom:8px">Password Reset</h2>

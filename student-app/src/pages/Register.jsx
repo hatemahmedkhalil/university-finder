@@ -47,7 +47,7 @@ const Register = () => {
         <div className="relative">
           <div className="flex items-center gap-3 mb-12">
             <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center text-xl">🎓</div>
-            <span className="text-xl font-bold">UniFind</span>
+            <span className="text-xl font-bold">UniPath</span>
           </div>
           <h2 className="text-4xl font-extrabold leading-tight mb-4">
             Start your study<br />
@@ -66,7 +66,7 @@ const Register = () => {
         </div>
 
         <p className="relative text-violet-300 text-xs">
-          Join thousands of students who found their university with UniFind
+          Join thousands of students who found their university with UniPath
         </p>
       </div>
 
@@ -76,7 +76,7 @@ const Register = () => {
 
           <div className="lg:hidden flex items-center gap-2 mb-8">
             <div className="w-9 h-9 rounded-xl bg-violet-600 flex items-center justify-center text-lg">🎓</div>
-            <span className="text-lg font-bold text-gray-800">UniFind</span>
+            <span className="text-lg font-bold text-gray-800">UniPath</span>
           </div>
 
           <div className="mb-8">

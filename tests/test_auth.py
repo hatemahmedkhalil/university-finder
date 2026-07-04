@@ -2,9 +2,9 @@ def test_register_success(client):
     r = client.post("/auth/register", json={"email": "new@test.com", "password": "Pass1234!"})
     assert r.status_code == 201
     data = r.json()
-    assert data["email"] == "new@test.com"
-    assert data["role"] == "student"
-    assert "hashed_password" not in data
+    assert "access_token" in data
+    assert "refresh_token" in data
+    assert data["token_type"] == "bearer"
 
 
 def test_register_duplicate_email(client):
