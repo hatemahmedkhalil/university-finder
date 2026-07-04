@@ -89,6 +89,8 @@ def login(request: Request, payload: UserLogin, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == payload.email).first()
     if not user or not verify_password(payload.password, user.hashed_password):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
+    if not user.is_verified:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Please verify your email address before logging in. Check your inbox for the verification link.")
     return Token(
         access_token=create_access_token(str(user.id), version=user.token_version),
         refresh_token=create_refresh_token(str(user.id), version=user.token_version),

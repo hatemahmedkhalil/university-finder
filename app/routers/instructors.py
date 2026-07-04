@@ -1,4 +1,3 @@
-import shutil
 import uuid
 from pathlib import Path
 
@@ -11,9 +10,9 @@ from typing import Optional
 from app.dependencies import get_db, require_admin, get_current_user
 from app.models.instructor import Instructor
 from app.models.user import User
+from app.services import storage
 
-UPLOAD_DIR = Path(__file__).resolve().parent.parent.parent / "uploads" / "instructors"
-UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+PHOTO_BUCKET = "instructor-photos"
 
 ALLOWED_TYPES = {"image/jpeg", "image/png", "image/webp", "image/gif"}
 MAX_PHOTO_SIZE = 5 * 1024 * 1024  # 5 MB
@@ -127,22 +126,22 @@ def upload_photo(
     ext = Path(file.filename).suffix.lower() if file.filename else ".jpg"
     if ext not in {".jpg", ".jpeg", ".png", ".webp", ".gif"}:
         ext = ".jpg"
-    filename = f"{uuid.uuid4().hex}{ext}"
-    dest = UPLOAD_DIR / filename
+    filename = f"{instructor_id}/{uuid.uuid4().hex}{ext}"
 
-    # Delete old uploaded photo if it exists
-    if inst.photo_url and inst.photo_url.startswith("/uploads/"):
-        old = (Path(__file__).resolve().parent.parent.parent / inst.photo_url.lstrip("/")).resolve()
-        upload_root = Path(__file__).resolve().parent.parent.parent / "uploads"
-        if old.exists() and upload_root.resolve() in old.parents:
-            old.unlink()
+    # Delete old photo from storage
+    if inst.photo_url and inst.photo_url.startswith("supabase:"):
+        old_key = inst.photo_url.removeprefix("supabase:")
+        try:
+            storage.delete(PHOTO_BUCKET, old_key)
+        except Exception:
+            pass
 
-    with dest.open("wb") as f:
-        f.write(contents)
+    storage.upload(PHOTO_BUCKET, filename, contents, file.content_type or "image/jpeg")
+    photo_url = storage.public_url(PHOTO_BUCKET, filename)
 
-    inst.photo_url = f"/uploads/instructors/{filename}"
+    inst.photo_url = photo_url
     db.commit()
-    return {"photo_url": inst.photo_url}
+    return {"photo_url": photo_url}
 
 
 @router.delete("/{instructor_id}")

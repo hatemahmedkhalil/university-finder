@@ -34,8 +34,13 @@ const Login = () => {
       } else {
         navigate("/dashboard"); // fully set up → go straight to dashboard
       }
-    } catch {
-      toast.error(t("auth.login.error"));
+    } catch (err) {
+      const detail = err?.response?.data?.detail || "";
+      if (err?.response?.status === 403 && detail.includes("verify")) {
+        toast.error(t("auth.login.notVerified"), { duration: 6000, icon: "📧" });
+      } else {
+        toast.error(t("auth.login.error"));
+      }
     } finally {
       setLoading(false);
     }

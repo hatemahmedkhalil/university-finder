@@ -2,18 +2,17 @@ import uuid
 from pathlib import Path
 
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
-from fastapi.responses import FileResponse
+from fastapi.responses import Response
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 from datetime import datetime
-from typing import Optional
 
 from app.dependencies import get_db, get_current_user
 from app.models.student_document import StudentDocument, DOC_TYPES
 from app.models.user import User
+from app.services import storage
 
-LOCKER_DIR = Path(__file__).resolve().parent.parent.parent / "uploads" / "locker"
-LOCKER_DIR.mkdir(parents=True, exist_ok=True)
+BUCKET = "student-documents"
 
 MAX_FILE_SIZE = 20 * 1024 * 1024
 ALLOWED_TYPES = {
@@ -47,8 +46,9 @@ class DocumentRename(BaseModel):
 
 @router.get("", response_model=list[DocumentOut])
 def list_documents(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    docs = db.query(StudentDocument).filter(StudentDocument.user_id == current_user.id).order_by(StudentDocument.created_at.desc()).all()
-    return docs
+    return db.query(StudentDocument).filter(
+        StudentDocument.user_id == current_user.id
+    ).order_by(StudentDocument.created_at.desc()).all()
 
 
 @router.post("", response_model=DocumentOut, status_code=201)
@@ -69,11 +69,10 @@ def upload_document(
 
     content = file.file.read()
     if len(content) > MAX_FILE_SIZE:
-        raise HTTPException(status_code=413, detail="File exceeds 20MB limit")
+        raise HTTPException(status_code=413, detail="File exceeds 20 MB limit")
 
-    stored_name = uuid.uuid4().hex + ext
-    dest = LOCKER_DIR / stored_name
-    dest.write_bytes(content)
+    stored_name = f"{current_user.id}/{uuid.uuid4().hex}{ext}"
+    storage.upload(BUCKET, stored_name, content, file.content_type or "application/octet-stream")
 
     doc = StudentDocument(
         user_id=current_user.id,
@@ -92,18 +91,29 @@ def upload_document(
 
 @router.get("/{doc_id}/download")
 def download_document(doc_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    doc = db.query(StudentDocument).filter(StudentDocument.id == doc_id, StudentDocument.user_id == current_user.id).first()
+    doc = db.query(StudentDocument).filter(
+        StudentDocument.id == doc_id,
+        StudentDocument.user_id == current_user.id,
+    ).first()
     if not doc:
         raise HTTPException(status_code=404, detail="Document not found")
-    file_path = (LOCKER_DIR / doc.filename).resolve()
-    if not file_path.is_file() or LOCKER_DIR.resolve() not in file_path.parents:
-        raise HTTPException(status_code=404, detail="File missing on disk")
-    return FileResponse(path=str(file_path), filename=doc.original_name, media_type=doc.file_type)
+    try:
+        data = storage.download(BUCKET, doc.filename)
+    except Exception:
+        raise HTTPException(status_code=404, detail="File not found in storage")
+    return Response(
+        content=data,
+        media_type=doc.file_type,
+        headers={"Content-Disposition": f'attachment; filename="{doc.original_name}"'},
+    )
 
 
 @router.patch("/{doc_id}", response_model=DocumentOut)
 def rename_document(doc_id: int, body: DocumentRename, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    doc = db.query(StudentDocument).filter(StudentDocument.id == doc_id, StudentDocument.user_id == current_user.id).first()
+    doc = db.query(StudentDocument).filter(
+        StudentDocument.id == doc_id,
+        StudentDocument.user_id == current_user.id,
+    ).first()
     if not doc:
         raise HTTPException(status_code=404, detail="Document not found")
     doc.name = body.name
@@ -116,11 +126,15 @@ def rename_document(doc_id: int, body: DocumentRename, db: Session = Depends(get
 
 @router.delete("/{doc_id}", status_code=204)
 def delete_document(doc_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    doc = db.query(StudentDocument).filter(StudentDocument.id == doc_id, StudentDocument.user_id == current_user.id).first()
+    doc = db.query(StudentDocument).filter(
+        StudentDocument.id == doc_id,
+        StudentDocument.user_id == current_user.id,
+    ).first()
     if not doc:
         raise HTTPException(status_code=404, detail="Document not found")
-    file_path = (LOCKER_DIR / doc.filename).resolve()
-    if file_path.is_file() and LOCKER_DIR.resolve() in file_path.parents:
-        file_path.unlink(missing_ok=True)
+    try:
+        storage.delete(BUCKET, doc.filename)
+    except Exception:
+        pass
     db.delete(doc)
     db.commit()

@@ -154,7 +154,8 @@
       "emailPlaceholder": "you@example.com",
       "passwordPlaceholder": "Your password",
       "success": "Welcome back!",
-      "error": "Invalid email or password"
+      "error": "Invalid email or password",
+      "notVerified": "Please verify your email first. Check your inbox for the verification link."
     },
     "register": {
       "title": "Create Your Account",
