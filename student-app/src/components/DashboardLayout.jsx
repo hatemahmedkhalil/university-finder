@@ -5,6 +5,16 @@ import { useTranslation } from "react-i18next";
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
 
+const useIsDesktop = () => {
+  const [isDesktop, setIsDesktop] = useState(() => window.innerWidth >= 1024);
+  useEffect(() => {
+    const h = () => setIsDesktop(window.innerWidth >= 1024);
+    window.addEventListener("resize", h);
+    return () => window.removeEventListener("resize", h);
+  }, []);
+  return isDesktop;
+};
+
 /* Routes that should NOT show the sidebar (public/auth pages) */
 const NO_SIDEBAR_PATHS = ["/", "/login", "/register", "/forgot-password", "/reset-password", "/verify-email"];
 
@@ -16,6 +26,7 @@ const DashboardLayout = ({ children }) => {
 
   const isPublicPage = NO_SIDEBAR_PATHS.includes(location.pathname) || !user;
 
+  const isDesktop = useIsDesktop();
   const [collapsed, setCollapsed] = useState(() => {
     const saved = localStorage.getItem("sidebar_collapsed");
     return saved === "true";
@@ -36,7 +47,7 @@ const DashboardLayout = ({ children }) => {
     setMobileOpen(false);
   }, [location.pathname]);
 
-  const sidebarWidth = collapsed ? 68 : 240;
+  const sidebarWidth = isDesktop ? (collapsed ? 68 : 240) : 0;
 
   if (isPublicPage) {
     return (
