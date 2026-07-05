@@ -22,6 +22,7 @@ class Settings(BaseSettings):
     GEMINI_API_KEY: str = ""
     GROQ_API_KEY: str = ""
     DEBUG: bool = False
+    ADMIN_EMAILS: list[str] = []
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 

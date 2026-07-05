@@ -94,9 +94,6 @@ export const AuthProvider = ({ children }) => {
       user, login, register, logout, loading,
       showOnboarding, completeOnboarding, restartOnboarding,
       profileComplete, markProfileComplete,
-      // kept for ProfileWizard backward compat
-      showProfileWizard: false,
-      closeProfileWizard: () => {},
     }}>
       {children}
     </AuthContext.Provider>

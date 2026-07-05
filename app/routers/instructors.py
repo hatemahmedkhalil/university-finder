@@ -1,13 +1,14 @@
 import uuid
 from pathlib import Path
 
-from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, File
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, UploadFile, File
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional
 
 from app.dependencies import get_db, require_admin, get_current_user
+from app.core.limiter import limiter
 from app.models.instructor import Instructor
 from app.models.user import User
 from app.services import storage
@@ -93,7 +94,9 @@ def update_instructor(
     inst = db.query(Instructor).filter(Instructor.id == instructor_id).first()
     if not inst:
         raise HTTPException(status_code=404, detail="Instructor not found")
-    is_own = inst.user_id == current_user.id or current_user.role == "instructor" and db.query(Instructor).filter(Instructor.user_id == current_user.id, Instructor.id == instructor_id).first()
+    is_own = (inst.user_id == current_user.id) or bool(
+        db.query(Instructor).filter(Instructor.user_id == current_user.id, Instructor.id == instructor_id).first()
+    )
     if current_user.role != "admin" and not is_own:
         raise HTTPException(status_code=403, detail="Forbidden")
     for k, v in body.model_dump(exclude_unset=True).items():
@@ -105,7 +108,9 @@ def update_instructor(
 
 @router.post("/{instructor_id}/photo")
 @router.post("/{instructor_id}/upload-photo")
+@limiter.limit("10/minute")
 def upload_photo(
+    request: Request,
     instructor_id: int,
     file: UploadFile = File(...),
     db: Session = Depends(get_db),

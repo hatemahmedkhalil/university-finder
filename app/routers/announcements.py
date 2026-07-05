@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy import Table, Column, Integer, DateTime, ForeignKey, func, text
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
@@ -7,6 +7,7 @@ from typing import Optional
 
 from app.database import Base, engine
 from app.dependencies import get_db, get_current_user, require_admin
+from app.core.limiter import limiter
 from app.models.announcement import Announcement
 from app.models.user import User
 
@@ -96,7 +97,9 @@ def list_announcements(
 
 
 @router.get("/unread-count")
+@limiter.limit("30/minute")
 def unread_count(
+    request: Request,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):

@@ -1,9 +1,10 @@
 from datetime import datetime
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 
 from app.dependencies import get_db, get_current_user
+from app.core.limiter import limiter
 from app.models.notification import Notification
 from app.models.user import User
 
@@ -37,7 +38,9 @@ def list_notifications(
 
 
 @router.get("/unread-count")
+@limiter.limit("30/minute")
 def unread_count(
+    request: Request,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):

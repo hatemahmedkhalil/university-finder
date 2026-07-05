@@ -34,7 +34,7 @@ const ICONS = {
 /* nav items for students */
 const STUDENT_NAV = [
   { path: "/dashboard",         i18nKey: "nav.dashboard",         icon: "dashboard" },
-  { path: "/email-integration", i18nKey: "nav.emailIntegration", icon: "notifications" },
+  { path: "/email-integration", i18nKey: "nav.emailIntegration", icon: "notifications", emoji: "📬" },
   { path: "/calendar",          i18nKey: "nav.calendar",          icon: "favourites" },
   { path: "/profile",           i18nKey: "nav.myProfile",         icon: "profile" },
   { path: "/recommendations", i18nKey: "nav.recommendations", icon: "recommendations" },
@@ -81,7 +81,7 @@ const Sidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }) => {
   /* ── Shared nav list ── */
   const NavList = () => (
     <nav className="flex-1 overflow-y-auto overflow-x-hidden py-3 space-y-0.5 px-2">
-      {NAV.map(({ path, i18nKey, icon, badge }) => {
+      {NAV.map(({ path, i18nKey, icon, badge, emoji }) => {
         const active = isActive(path);
         const label  = t(i18nKey);
         return (
@@ -100,7 +100,7 @@ const Sidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }) => {
             `}
           >
             <span className={`shrink-0 transition-colors ${active ? "text-white" : "text-slate-500 group-hover:text-slate-200"}`}>
-              <Icon d={ICONS[icon]} size={18} />
+              {emoji ? <span className="text-base leading-none">{emoji}</span> : <Icon d={ICONS[icon]} size={18} />}
             </span>
 
             <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${collapsed ? "w-0 opacity-0" : "w-auto opacity-100"}`}>

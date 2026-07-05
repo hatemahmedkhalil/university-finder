@@ -4,6 +4,7 @@ from datetime import datetime, timedelta, timezone
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session
 
+from app.config import settings
 from app.core.limiter import limiter
 from app.core.security import create_access_token, create_refresh_token, decode_token, hash_password, verify_password
 from app.dependencies import get_db, get_current_user
@@ -14,20 +15,18 @@ from app.services.email import send_password_reset_email, send_verification_emai
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 
-ADMIN_EMAILS: set[str] = {"hatemahmed2006@gmail.com"}
-
-
 @router.post("/register", response_model=Token, status_code=status.HTTP_201_CREATED)
 @limiter.limit("10/minute")
 def register(request: Request, payload: UserRegister, db: Session = Depends(get_db)):
     if db.query(User).filter(User.email == payload.email).first():
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Email already registered")
-    is_admin = payload.email in ADMIN_EMAILS
+    is_admin = payload.email in settings.ADMIN_EMAILS
     verification_token = secrets.token_urlsafe(32)
     verification_expires = datetime.now(timezone.utc) + timedelta(hours=24)
     user = User(
         email=payload.email,
         hashed_password=hash_password(payload.password),
+        role="admin" if is_admin else "student",
         is_verified=is_admin,
         verification_token=None if is_admin else verification_token,
         verification_token_expires=None if is_admin else verification_expires,
@@ -44,7 +43,8 @@ def register(request: Request, payload: UserRegister, db: Session = Depends(get_
 
 
 @router.get("/verify-email")
-def verify_email(token: str, db: Session = Depends(get_db)):
+@limiter.limit("10/minute")
+def verify_email(request: Request, token: str, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.verification_token == token).first()
     if not user:
         raise HTTPException(status_code=400, detail="Invalid or expired verification token")
@@ -72,7 +72,8 @@ def forgot_password(request: Request, payload: ForgotPasswordRequest, db: Sessio
 
 
 @router.post("/reset-password")
-def reset_password(payload: ResetPasswordRequest, db: Session = Depends(get_db)):
+@limiter.limit("5/minute")
+def reset_password(request: Request, payload: ResetPasswordRequest, db: Session = Depends(get_db)):
     token = payload.token
     new_password = payload.password
     user = db.query(User).filter(User.reset_token == token).first()
@@ -94,7 +95,7 @@ def login(request: Request, payload: UserLogin, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == payload.email).first()
     if not user or not verify_password(payload.password, user.hashed_password):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
-    if not user.is_verified and user.email not in ADMIN_EMAILS:
+    if not user.is_verified and user.email not in settings.ADMIN_EMAILS:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Please verify your email address before logging in. Check your inbox for the verification link.")
     return Token(
         access_token=create_access_token(str(user.id), version=user.token_version),

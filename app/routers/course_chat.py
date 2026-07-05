@@ -36,9 +36,9 @@ def _build_out(msg: CourseChatMessage) -> dict:
     user = msg.user
     inst = next((i for i in (user.instructor_profiles if hasattr(user, "instructor_profiles") else []) if True), None)
     # determine display name and role
-    if user.role == "instructor":
-        instr = msg._sa_instance_state.session.query(Instructor).filter(Instructor.user_id == user.id).first()
-        name = instr.name.strip() if instr else user.email.split("@")[0]
+    instr = msg._sa_instance_state.session.query(Instructor).filter(Instructor.user_id == user.id).first()
+    if instr:
+        name = instr.name.strip() if instr.name else user.email.split("@")[0]
         role_label = "instructor"
     else:
         name = user.email.split("@")[0]
@@ -104,8 +104,9 @@ def delete_message(
     msg = db.get(CourseChatMessage, message_id)
     if not msg:
         raise HTTPException(status_code=404, detail="Message not found")
-    # only author or instructor can delete
-    if msg.user_id != current_user.id and current_user.role != "instructor":
+    # only author, admin, or a linked instructor can delete
+    is_instructor = db.query(Instructor).filter(Instructor.user_id == current_user.id).first()
+    if msg.user_id != current_user.id and current_user.role != "admin" and not is_instructor:
         raise HTTPException(status_code=403, detail="Forbidden")
     db.delete(msg)
     db.commit()
