@@ -574,7 +574,31 @@
     "publicType": "حكومية",
     "privateType": "خاصة",
     "matchScoreSection": "درجة تطابقك",
-    "addPipelineBottom": "🚀 إضافة إلى المسار — تحليل فوري بالذكاء الاصطناعي"
+    "addPipelineBottom": "🚀 إضافة إلى المسار — تحليل فوري بالذكاء الاصطناعي",
+    "worldRank": "التصنيف العالمي",
+    "acceptance": "نسبة القبول",
+    "scoreCountryMatch": "تطابق الدولة",
+    "scoreBudgetFit": "تناسب الميزانية",
+    "scoreEnglishFit": "تناسب الإنجليزية",
+    "scoreGpaFit": "تناسب المعدل",
+    "programFeesTitle": "الرسوم حسب مجال الدراسة",
+    "programFeesNote": "جميع الرسوم المعروضة سنوية لطلاب خارج الاتحاد الأوروبي. يدفع طلاب الاتحاد الأوروبي €0 في الجامعات الحكومية الألمانية.",
+    "degreeLevelAll": "جميع المستويات",
+    "degreeLevelBachelor": "بكالوريوس",
+    "degreeLevelMaster": "ماجستير",
+    "degreeLevelPhd": "دكتوراه",
+    "fieldOfStudyHeader": "مجال الدراسة",
+    "annualFeeHeader": "الرسوم السنوية",
+    "freeTuitionShort": "مجاني ✓",
+    "programFeesDisclaimer": "قد تختلف الرسوم حسب البرنامج وتُحدَّث سنوياً. تحقق دائماً من",
+    "officialWebsiteLink": "الموقع الرسمي للجامعة",
+    "programFeesDisclaimerEnd": "قبل التقديم.",
+    "requiredDocumentsSection": "المستندات المطلوبة",
+    "scholarshipsTitle": "المنح والدعم المالي",
+    "eligibilityLabel": "شروط الأهلية:",
+    "germanTuitionTitle": "ℹ️ ماذا يعني €0 رسوم دراسية؟",
+    "germanTuitionDesc": "ألغت ألمانيا الرسوم الدراسية — لا تدفع شيئاً للحصول على الدرجة العلمية. ومع ذلك، تدفع كل فصل Semesterbeitrag (مساهمة الفصل الدراسي)",
+    "germanTuitionAnnual": "مساهمة الفصل الدراسي السنوية:"
   },
   "applyHub": {
     "title": "مركز التقديم",
@@ -816,6 +840,10 @@
     "loading": "جاري تحميل الأسئلة…",
     "noQuestions": "لا توجد أسئلة متاحة لهذه اللغة بعد.",
     "howTitle": "كيف يعمل اختبار تحديد المستوى",
+    "languageTestBadge": "اختبار اللغة",
+    "adminNote": "هذا القسم جاهز للمحتوى القادم. ستُضاف الأسئلة من قِبَل المسؤول.",
+    "noQuestionsYet": "لا توجد أسئلة بعد",
+    "comingSoonNote": "🔒 سيظهر محتوى الاختبار هنا عند إضافته من قِبَل المسؤول. تحقق لاحقاً.",
     "levels": {
       "A1": "مبتدئ",
       "A2": "أساسي",
@@ -851,7 +879,11 @@
     "completed": "مكتمل",
     "loading": "جاري تحميل الدورات…",
     "noCourses": "لا توجد دورات متاحة بعد.",
-    "min": "دقيقة"
+    "min": "دقيقة",
+    "backToLearning": "← مركز التعلم",
+    "statusLabel": "الحالة:",
+    "adminNote": "هذا القسم مُعدّ للدروس القادمة. سيُضاف محتوى الدورة من قِبَل المسؤول.",
+    "comingSoonNote": "🔒 ستظهر الدورات هنا عند نشرها من قِبَل المسؤول. تحقق لاحقاً."
   },
   "course": {
     "levels": {

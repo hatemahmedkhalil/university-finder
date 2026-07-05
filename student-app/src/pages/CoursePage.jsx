@@ -4,13 +4,16 @@ import api from "../api/axios";
 import { useTranslation } from "react-i18next";
 
 const LANG_META = {
-  english: { label: "English", flagSrc: "https://flagcdn.com/w40/gb.png", color: "from-indigo-600 to-blue-700",  light: "bg-indigo-50", border: "border-indigo-200", text: "text-indigo-700" },
-  german:  { label: "German",  flagSrc: "https://flagcdn.com/w40/de.png", color: "from-amber-600 to-orange-700",  light: "bg-amber-50",  border: "border-amber-200",  text: "text-amber-700"  },
-  polish:  { label: "Polish",  flagSrc: "https://flagcdn.com/w40/pl.png", color: "from-rose-600 to-pink-700",     light: "bg-rose-50",   border: "border-rose-200",   text: "text-rose-700"  },
+  english: { flagSrc: "https://flagcdn.com/w40/gb.png", color: "from-indigo-600 to-blue-700",  light: "bg-indigo-50", border: "border-indigo-200", text: "text-indigo-700" },
+  german:  { flagSrc: "https://flagcdn.com/w40/de.png", color: "from-amber-600 to-orange-700",  light: "bg-amber-50",  border: "border-amber-200",  text: "text-amber-700"  },
+  polish:  { flagSrc: "https://flagcdn.com/w40/pl.png", color: "from-rose-600 to-pink-700",     light: "bg-rose-50",   border: "border-rose-200",   text: "text-rose-700"  },
 };
 
 const CoursePage = () => {
   const { t } = useTranslation();
+  const { language } = useParams();
+  const meta = LANG_META[language] ?? LANG_META.english;
+  const langLabel = t(`learning.${language}`) || language;
 
   const LEVELS = [
     { code: "A1", label: t("course.levels.A1.label"), desc: t("course.levels.A1.desc") },
@@ -20,8 +23,7 @@ const CoursePage = () => {
     { code: "C1", label: t("course.levels.C1.label"), desc: t("course.levels.C1.desc") },
     { code: "C2", label: t("course.levels.C2.label"), desc: t("course.levels.C2.desc") },
   ];
-  const { language } = useParams();
-  const meta = LANG_META[language] ?? LANG_META.english;
+
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -47,15 +49,15 @@ const CoursePage = () => {
         </div>
         <div className="relative max-w-5xl mx-auto px-6 py-12">
           <Link to="/learning" className="inline-flex items-center gap-1 text-white/70 hover:text-white text-sm mb-6 transition">
-            ← Learning Center
+            {t("courses.backToLearning")}
           </Link>
           <div className="flex items-center gap-4">
             <div className="w-16 h-16 bg-white/20 border border-white/30 rounded-2xl flex items-center justify-center overflow-hidden backdrop-blur">
-              <img src={meta.flagSrc} alt={meta.label} className="w-10 h-auto" />
+              <img src={meta.flagSrc} alt={langLabel} className="w-10 h-auto" />
             </div>
             <div>
-              <h1 className="text-3xl font-extrabold tracking-tight">{meta.label} Courses</h1>
-              <p className="text-white/80 mt-1">Structured learning from A1 to C2</p>
+              <h1 className="text-3xl font-extrabold tracking-tight">{langLabel} {t("learning.coursesSuffix")}</h1>
+              <p className="text-white/80 mt-1">{t("courses.tagline")}</p>
             </div>
           </div>
         </div>
@@ -68,12 +70,12 @@ const CoursePage = () => {
         <div className={`${meta.light} ${meta.border} border rounded-2xl p-6 flex items-start gap-4`}>
           <div className="text-3xl mt-0.5">🎓</div>
           <div>
-            <p className={`font-bold text-lg ${meta.text}`}>{meta.label} Courses</p>
+            <p className={`font-bold text-lg ${meta.text}`}>{langLabel} {t("learning.coursesSuffix")}</p>
             <p className="text-gray-600 mt-1">
-              <span className="font-semibold">Status:</span> No courses have been added yet.
+              <span className="font-semibold">{t("courses.statusLabel")}</span> {t("courses.noContent")}
             </p>
             <p className="text-gray-500 text-sm mt-1">
-              This section is prepared for future lessons. Course content will be added by an administrator.
+              {t("courses.adminNote")}
             </p>
           </div>
         </div>
@@ -103,7 +105,7 @@ const CoursePage = () => {
 
                   {lvlCourses.length === 0 ? (
                     <div className="mt-2 flex items-center gap-2 text-xs text-gray-400 bg-gray-50 rounded-xl px-3 py-2.5">
-                      <span>📭</span> Lessons will appear here once added
+                      <span>📭</span> {t("courses.lessonsAppear")}
                     </div>
                   ) : (
                     <ul className="mt-1 space-y-1.5">
@@ -142,7 +144,7 @@ const CoursePage = () => {
         </div>
 
         <div className="text-center py-4 text-gray-400 text-sm">
-          🔒 Courses will appear here once published by an admin. Check back soon.
+          {t("courses.comingSoonNote")}
         </div>
       </div>
     </div>

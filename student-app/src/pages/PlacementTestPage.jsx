@@ -5,9 +5,7 @@ import { useTranslation } from "react-i18next";
 
 const LANG_META = {
   english: {
-    label: "English",
     flagSrc: "https://flagcdn.com/w80/gb.png",
-    // Union Jack: navy, red, white
     heroBg: "bg-[#00247D]",
     heroStripe: "bg-[#CF142B]",
     accent: "#CF142B",
@@ -24,9 +22,7 @@ const LANG_META = {
     stripeColors: ["#00247D", "#CF142B", "#FFFFFF"],
   },
   german: {
-    label: "German",
     flagSrc: "https://flagcdn.com/w80/de.png",
-    // Germany: black, red, gold
     heroBg: "bg-[#1a1a1a]",
     heroStripe: "bg-[#DD0000]",
     accent: "#DD0000",
@@ -43,9 +39,7 @@ const LANG_META = {
     stripeColors: ["#1a1a1a", "#DD0000", "#FFCE00"],
   },
   polish: {
-    label: "Polish",
     flagSrc: "https://flagcdn.com/w80/pl.png",
-    // Poland: white top, red bottom
     heroBg: "bg-[#DC143C]",
     heroStripe: "bg-white",
     accent: "#DC143C",
@@ -65,6 +59,9 @@ const LANG_META = {
 
 const PlacementTestPage = () => {
   const { t } = useTranslation();
+  const { language } = useParams();
+  const meta = LANG_META[language] ?? LANG_META.english;
+  const langLabel = t(`learning.${language}`) || language;
 
   const LEVELS = [
     { code: "A1", label: t("placement.levels.A1") },
@@ -74,8 +71,7 @@ const PlacementTestPage = () => {
     { code: "C1", label: t("placement.levels.C1") },
     { code: "C2", label: t("placement.levels.C2") },
   ];
-  const { language } = useParams();
-  const meta = LANG_META[language] ?? LANG_META.english;
+
   const [tests, setTests] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -114,14 +110,14 @@ const PlacementTestPage = () => {
 
         <div className="relative max-w-4xl mx-auto px-4 pt-10 pb-14">
           <Link to="/learning" className="inline-flex items-center gap-1 text-white/60 hover:text-white text-sm mb-8 transition">
-            ← Learning Center
+            {t("courses.backToLearning")}
           </Link>
 
           <div className="flex items-center gap-6">
             {/* Flag */}
             <div className="relative">
               <div className="w-20 h-20 rounded-2xl overflow-hidden shadow-2xl border-2 border-white/20">
-                <img src={meta.flagSrc} alt={meta.label} className="w-full h-full object-cover" />
+                <img src={meta.flagSrc} alt={langLabel} className="w-full h-full object-cover" />
               </div>
               {/* Glow ring */}
               <div
@@ -135,16 +131,16 @@ const PlacementTestPage = () => {
                 className="inline-block text-xs font-bold px-3 py-1 rounded-full mb-2 tracking-wider uppercase"
                 style={{ backgroundColor: meta.stripeColors[1] ?? "#666", color: meta.stripeColors[2] ?? "#fff" }}
               >
-                Language Test
+                {t("placement.languageTestBadge")}
               </div>
               <h1 className="text-4xl font-extrabold text-white leading-tight">
-                {meta.label}
+                {langLabel}
                 <br />
                 <span style={{ color: meta.stripeColors[meta.stripeColors.length - 1] }}>
-                  Placement Test
+                  {t("placement.title")}
                 </span>
               </h1>
-              <p className="text-white/60 mt-2 text-sm">Discover your current language level · A1 → C2</p>
+              <p className="text-white/60 mt-2 text-sm">{t("placement.tagline")}</p>
             </div>
           </div>
 
@@ -167,12 +163,12 @@ const PlacementTestPage = () => {
         >
           <div className="text-3xl mt-0.5">📝</div>
           <div>
-            <p className="font-bold text-lg" style={{ color: meta.accent }}>{meta.label} Placement Test</p>
+            <p className="font-bold text-lg" style={{ color: meta.accent }}>{langLabel} {t("placement.title")}</p>
             <p className="text-gray-600 mt-1">
-              <span className="font-semibold">Status:</span> No content available yet.
+              <span className="font-semibold">{t("courses.statusLabel")}</span> {t("placement.noContent")}
             </p>
             <p className="text-gray-500 text-sm mt-1">
-              This section is ready for future content. Questions will be added by an administrator.
+              {t("placement.adminNote")}
             </p>
           </div>
         </div>
@@ -198,7 +194,7 @@ const PlacementTestPage = () => {
                   className="text-xs px-2.5 py-1 rounded-full font-medium"
                   style={{ backgroundColor: meta.tagBg, color: meta.tagText }}
                 >
-                  No questions yet
+                  {t("placement.noQuestionsYet")}
                 </span>
               </div>
             ))}
@@ -222,7 +218,7 @@ const PlacementTestPage = () => {
               ["📊", t("placement.features.adaptive"),  t("placement.features.adaptiveDesc")],
               ["🎯", t("placement.features.level"),     t("placement.features.levelDesc")],
               ["📚", t("placement.features.recommend"), t("placement.features.recommendDesc")],
-            ].map(([icon, title, desc], i) => (
+            ].map(([icon, title, desc]) => (
               <li key={title} className="flex items-start gap-3">
                 <div
                   className="w-8 h-8 rounded-xl flex items-center justify-center text-base flex-shrink-0"
@@ -240,7 +236,7 @@ const PlacementTestPage = () => {
         </div>
 
         <div className="text-center py-4 text-gray-400 text-sm">
-          🔒 Test content will appear here once added by an admin. Check back soon.
+          {t("placement.comingSoonNote")}
         </div>
       </div>
     </div>

@@ -218,31 +218,34 @@ const ScoreBar = ({ label, value, max, color }) => (
   </div>
 );
 
-const ScholarshipCard = ({ s }) => (
-  <div className="border border-gray-100 rounded-xl p-4 hover:border-green-200 hover:bg-green-50/30 transition">
-    <div className="flex items-start justify-between gap-2 flex-wrap">
-      <div>
-        <p className="font-semibold text-gray-800 text-sm">{s.name}</p>
-        <p className="text-xs text-gray-500">{s.provider}</p>
+const ScholarshipCard = ({ s }) => {
+  const { t } = useTranslation();
+  return (
+    <div className="border border-gray-100 rounded-xl p-4 hover:border-green-200 hover:bg-green-50/30 transition">
+      <div className="flex items-start justify-between gap-2 flex-wrap">
+        <div>
+          <p className="font-semibold text-gray-800 text-sm">{s.name}</p>
+          <p className="text-xs text-gray-500">{s.provider}</p>
+        </div>
+        <div className="flex flex-col items-end gap-1">
+          {s.amount_eur && <Badge color="green">€{s.amount_eur.toLocaleString()}/yr</Badge>}
+          <Badge color={s.scholarship_type === "full" ? "purple" : s.scholarship_type === "government" ? "blue" : "gray"}>
+            {s.scholarship_type.replace("_", " ")}
+          </Badge>
+        </div>
       </div>
-      <div className="flex flex-col items-end gap-1">
-        {s.amount_eur && <Badge color="green">€{s.amount_eur.toLocaleString()}/yr</Badge>}
-        <Badge color={s.scholarship_type === "full" ? "purple" : s.scholarship_type === "government" ? "blue" : "gray"}>
-          {s.scholarship_type.replace("_", " ")}
-        </Badge>
+      {s.description && <p className="text-xs text-gray-600 mt-2 leading-relaxed">{s.description}</p>}
+      {s.eligibility && <p className="text-xs text-gray-400 mt-1 italic">{t("university.eligibilityLabel")} {s.eligibility}</p>}
+      <div className="flex items-center gap-3 mt-3 flex-wrap">
+        {s.deadline && <span className="text-xs text-gray-500">📅 {s.deadline}</span>}
+        {s.link && (
+          <a href={s.link} target="_blank" rel="noreferrer" onClick={e => e.stopPropagation()}
+            className="text-xs text-blue-600 hover:underline font-semibold">{t("university.applyLink")} →</a>
+        )}
       </div>
     </div>
-    {s.description && <p className="text-xs text-gray-600 mt-2 leading-relaxed">{s.description}</p>}
-    {s.eligibility && <p className="text-xs text-gray-400 mt-1 italic">Eligibility: {s.eligibility}</p>}
-    <div className="flex items-center gap-3 mt-3 flex-wrap">
-      {s.deadline && <span className="text-xs text-gray-500">📅 {s.deadline}</span>}
-      {s.link && (
-        <a href={s.link} target="_blank" rel="noreferrer" onClick={e => e.stopPropagation()}
-          className="text-xs text-blue-600 hover:underline font-semibold">Apply →</a>
-      )}
-    </div>
-  </div>
-);
+  );
+};
 
 /* ── Track Application Modal ── */
 function TrackModal({ uni, onClose, onConfirm }) {
@@ -412,10 +415,10 @@ const UniversityDetail = () => {
     try {
       await api.post("/pipeline", { university_id: parseInt(id) });
       setInPipeline(true);
-      toast.success("Added to pipeline! AI is analyzing your fit…");
+      toast.success(t("pipeline.addedToast", { score: "…" }));
     } catch (err) {
       if (err?.response?.status === 409) { setInPipeline(true); navigate("/pipeline"); }
-      else toast.error("Could not add to pipeline");
+      else toast.error(t("pipeline.addFailed"));
     } finally {
       setPipelineLoading(false);
     }
@@ -519,7 +522,7 @@ const UniversityDetail = () => {
 
               {uni.ranking && (
                 <p className="mt-1 text-sm font-semibold" style={{ color: theme.accentGold }}>
-                  🏆 World Rank #{uni.ranking}
+                  🏆 {t("university.worldRank")} #{uni.ranking}
                 </p>
               )}
 
@@ -528,7 +531,7 @@ const UniversityDetail = () => {
                 {uni.english_programs_available && <Badge color="green">🌐 {t("university.englishPrograms")}</Badge>}
                 {uni.tuition_fee_eur === 0 && <Badge color="green">{t("university.freeTuition")}</Badge>}
                 {uni.acceptance_rate && (
-                  <Badge color="purple">Acceptance {(uni.acceptance_rate * 100).toFixed(0)}%</Badge>
+                  <Badge color="purple">{t("university.acceptance")} {(uni.acceptance_rate * 100).toFixed(0)}%</Badge>
                 )}
               </div>
 
@@ -610,10 +613,10 @@ const UniversityDetail = () => {
                 <div className="flex-1 space-y-3">
                   {bd && (
                     <>
-                      <ScoreBar label="Country Match" value={bd.country_match} max={30} color="bg-blue-500" />
-                      <ScoreBar label="Budget Fit"    value={bd.budget_fit}    max={30} color="bg-green-500" />
-                      <ScoreBar label="English Fit"   value={bd.english_fit}   max={20} color="bg-purple-500" />
-                      <ScoreBar label="GPA Fit"       value={bd.gpa_fit}       max={20} color="bg-orange-500" />
+                      <ScoreBar label={t("university.scoreCountryMatch")} value={bd.country_match} max={30} color="bg-blue-500" />
+                      <ScoreBar label={t("university.scoreBudgetFit")}    value={bd.budget_fit}    max={30} color="bg-green-500" />
+                      <ScoreBar label={t("university.scoreEnglishFit")}   value={bd.english_fit}   max={20} color="bg-purple-500" />
+                      <ScoreBar label={t("university.scoreGpaFit")}       value={bd.gpa_fit}       max={20} color="bg-orange-500" />
                     </>
                   )}
                 </div>
@@ -646,23 +649,23 @@ const UniversityDetail = () => {
 
           {/* ── Program-specific tuition fees ── */}
           {uni.program_fees?.length > 0 && (
-            <Section icon="💰" title="Tuition Fees by Field of Study" accentColor={theme.accent} id="section-program-fees">
+            <Section icon="💰" title={t("university.programFeesTitle")} accentColor={theme.accent} id="section-program-fees">
               <p className="text-xs text-gray-400 mb-4">
-                All fees shown are per academic year for non-EU/EEA students. EU/EEA students pay €0 at German public universities.
+                {t("university.programFeesNote")}
               </p>
 
               {/* Group by degree level */}
               {(() => {
                 const groups = {};
                 for (const pf of uni.program_fees) {
-                  const key = pf.degree_level === "all" ? "All Levels" :
-                              pf.degree_level === "bachelor" ? "Bachelor's" :
-                              pf.degree_level === "master" ? "Master's" :
-                              pf.degree_level === "phd" ? "PhD" : pf.degree_level;
+                  const key = pf.degree_level === "all" ? t("university.degreeLevelAll") :
+                              pf.degree_level === "bachelor" ? t("university.degreeLevelBachelor") :
+                              pf.degree_level === "master" ? t("university.degreeLevelMaster") :
+                              pf.degree_level === "phd" ? t("university.degreeLevelPhd") : pf.degree_level;
                   if (!groups[key]) groups[key] = [];
                   groups[key].push(pf);
                 }
-                const order = ["All Levels", "Bachelor's", "Master's", "PhD"];
+                const order = [t("university.degreeLevelAll"), t("university.degreeLevelBachelor"), t("university.degreeLevelMaster"), t("university.degreeLevelPhd")];
                 return order.filter(k => groups[k]).map(level => (
                   <div key={level} className="mb-5 last:mb-0">
                     {Object.keys(groups).length > 1 && (
@@ -676,8 +679,8 @@ const UniversityDetail = () => {
                       <table className="w-full text-sm">
                         <thead>
                           <tr className="bg-gray-50">
-                            <th className="text-left py-2 px-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Field of Study</th>
-                            <th className="text-right py-2 px-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Annual Fee</th>
+                            <th className="text-left py-2 px-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">{t("university.fieldOfStudyHeader")}</th>
+                            <th className="text-right py-2 px-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">{t("university.annualFeeHeader")}</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -688,7 +691,7 @@ const UniversityDetail = () => {
                               <td className="py-2.5 px-3 font-medium text-gray-800">{pf.field_of_study}</td>
                               <td className="py-2.5 px-3 text-right">
                                 {pf.tuition_fee_eur === 0 ? (
-                                  <span className="text-green-600 font-bold">Free ✓</span>
+                                  <span className="text-green-600 font-bold">{t("university.freeTuitionShort")}</span>
                                 ) : (
                                   <span className="font-bold" style={{ color: theme.accent }}>
                                     €{pf.tuition_fee_eur.toLocaleString()}/yr
@@ -707,13 +710,13 @@ const UniversityDetail = () => {
               <div className="mt-3 flex items-start gap-2 bg-amber-50 border border-amber-100 rounded-xl p-3">
                 <span className="text-amber-500 mt-0.5 shrink-0">⚠️</span>
                 <p className="text-xs text-amber-800 leading-relaxed">
-                  Fees may vary by specific program and are updated annually. Always verify on the{" "}
+                  {t("university.programFeesDisclaimer")}{" "}
                   {uni.website ? (
                     <a href={uni.website} target="_blank" rel="noreferrer"
                       className="font-semibold underline" style={{ color: theme.accent }}>
-                      official university website
+                      {t("university.officialWebsiteLink")}
                     </a>
-                  ) : "official university website"} before applying.
+                  ) : t("university.officialWebsiteLink")} {t("university.programFeesDisclaimerEnd")}
                 </p>
               </div>
             </Section>
@@ -726,7 +729,7 @@ const UniversityDetail = () => {
           </Section>
 
           {docs.length > 0 && (
-            <Section icon="📄" title="Required Documents" accentColor={theme.accent}>
+            <Section icon="📄" title={t("university.requiredDocumentsSection")} accentColor={theme.accent}>
               <ul className="space-y-2">
                 {docs.map((d, i) => (
                   <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
@@ -739,7 +742,7 @@ const UniversityDetail = () => {
           )}
 
           {uni.scholarships?.length > 0 && (
-            <Section icon="💰" title="Scholarships & Financial Aid" accentColor={theme.accent}>
+            <Section icon="💰" title={t("university.scholarshipsTitle")} accentColor={theme.accent}>
               <div className="grid sm:grid-cols-2 gap-4">
                 {uni.scholarships.map(s => <ScholarshipCard key={s.id} s={s} />)}
               </div>
@@ -768,17 +771,14 @@ const UniversityDetail = () => {
           {/* German free-tuition explainer */}
           {uni.country === "Germany" && uni.tuition_fee_eur === 0 && (
             <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
-              <p className="font-bold mb-1">ℹ️ What does €0 tuition mean?</p>
+              <p className="font-bold mb-1">{t("university.germanTuitionTitle")}</p>
               <p className="leading-relaxed text-amber-800">
-                Germany abolished tuition fees — you pay <strong>nothing for the degree itself</strong>.
-                However, every semester you pay a <strong>Semesterbeitrag</strong> (semester contribution)
+                {t("university.germanTuitionDesc")}
                 {uni.semester_fee_eur ? ` of €${uni.semester_fee_eur}` : ""}.
-                This is <em>not</em> a tuition fee — it covers the student union, a city-wide public transport
-                semester ticket (worth €200–300 alone), cafeteria subsidies, and university health &amp; sports services.
               </p>
               {uni.semester_fee_eur && (
                 <p className="mt-2 text-amber-700 font-medium">
-                  Annual semester contribution: €{(uni.semester_fee_eur * 2).toLocaleString()}/year
+                  {t("university.germanTuitionAnnual")} €{(uni.semester_fee_eur * 2).toLocaleString()}/{t("common.year")}
                 </p>
               )}
             </div>

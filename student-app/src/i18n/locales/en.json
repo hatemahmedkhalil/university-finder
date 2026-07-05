@@ -574,7 +574,31 @@
     "publicType": "Public",
     "privateType": "Private",
     "matchScoreSection": "Your Match Score",
-    "addPipelineBottom": "🚀 Add to Pipeline — AI Analyzes Instantly"
+    "addPipelineBottom": "🚀 Add to Pipeline — AI Analyzes Instantly",
+    "worldRank": "World Rank",
+    "acceptance": "Acceptance",
+    "scoreCountryMatch": "Country Match",
+    "scoreBudgetFit": "Budget Fit",
+    "scoreEnglishFit": "English Fit",
+    "scoreGpaFit": "GPA Fit",
+    "programFeesTitle": "Tuition Fees by Field of Study",
+    "programFeesNote": "All fees shown are per academic year for non-EU/EEA students. EU/EEA students pay €0 at German public universities.",
+    "degreeLevelAll": "All Levels",
+    "degreeLevelBachelor": "Bachelor's",
+    "degreeLevelMaster": "Master's",
+    "degreeLevelPhd": "PhD",
+    "fieldOfStudyHeader": "Field of Study",
+    "annualFeeHeader": "Annual Fee",
+    "freeTuitionShort": "Free ✓",
+    "programFeesDisclaimer": "Fees may vary by specific program and are updated annually. Always verify on the",
+    "officialWebsiteLink": "official university website",
+    "programFeesDisclaimerEnd": "before applying.",
+    "requiredDocumentsSection": "Required Documents",
+    "scholarshipsTitle": "Scholarships & Financial Aid",
+    "eligibilityLabel": "Eligibility:",
+    "germanTuitionTitle": "ℹ️ What does €0 tuition mean?",
+    "germanTuitionDesc": "Germany abolished tuition fees — you pay nothing for the degree itself. However, every semester you pay a Semesterbeitrag (semester contribution)",
+    "germanTuitionAnnual": "Annual semester contribution:"
   },
   "applyHub": {
     "title": "Application Hub",
@@ -816,6 +840,10 @@
     "loading": "Loading questions…",
     "noQuestions": "No questions available for this language yet.",
     "howTitle": "How the Placement Test Will Work",
+    "languageTestBadge": "Language Test",
+    "adminNote": "This section is ready for future content. Questions will be added by an administrator.",
+    "noQuestionsYet": "No questions yet",
+    "comingSoonNote": "🔒 Test content will appear here once added by an admin. Check back soon.",
     "levels": {
       "A1": "Beginner",
       "A2": "Elementary",
@@ -851,7 +879,11 @@
     "loading": "Loading courses…",
     "noCourses": "No courses available yet.",
     "levelsComing": "Course Levels",
-    "min": "min"
+    "min": "min",
+    "backToLearning": "← Learning Center",
+    "statusLabel": "Status:",
+    "adminNote": "This section is prepared for future lessons. Course content will be added by an administrator.",
+    "comingSoonNote": "🔒 Courses will appear here once published by an admin. Check back soon."
   },
   "course": {
     "levels": {
