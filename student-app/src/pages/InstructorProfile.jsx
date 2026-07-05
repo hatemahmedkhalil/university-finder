@@ -204,7 +204,7 @@ const InstructorProfile = () => {
           <div className="flex items-end gap-6 flex-wrap">
             <Avatar name={inst.name} photoUrl={inst.photo_url} size="lg" grad={langCfg.grad} />
             <div className="flex-1 min-w-0 pb-2">
-              <p className="text-white/60 text-sm font-semibold mb-1">{inst.organization ?? "Language Instructor"}</p>
+              <p className="text-white/60 text-sm font-semibold mb-1">{inst.organization ?? t("instructors.languageInstructor")}</p>
               <h1 className="text-3xl font-extrabold leading-tight">
                 {inst.title ? `${inst.title} ` : ""}{inst.name}
               </h1>

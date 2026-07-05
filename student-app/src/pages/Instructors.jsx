@@ -87,7 +87,7 @@ const ChatModal = ({ inst, onClose }) => {
           <Avatar name={inst.name} photoUrl={inst.photo_url} size="sm" grad={langCfg.grad} />
           <div className="flex-1 min-w-0">
             <p className="font-bold text-white text-sm truncate">{inst.title ? `${inst.title} ` : ""}{inst.name}</p>
-            <p className="text-white/70 text-xs">{inst.organization ?? "Language Instructor"}</p>
+            <p className="text-white/70 text-xs">{inst.organization ?? t("instructors.languageInstructor")}</p>
           </div>
           <button onClick={onClose} className="w-8 h-8 rounded-xl bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>

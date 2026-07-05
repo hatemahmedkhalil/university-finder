@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
+import { useTranslation } from "react-i18next";
 
 const LANG_GRAD = {
   english: "from-rose-500 via-pink-500 to-fuchsia-600",
@@ -25,6 +26,7 @@ const StatCard = ({ icon, label, value, sub, grad }) => (
 
 const InstructorDashboard = () => {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -55,7 +57,7 @@ const InstructorDashboard = () => {
                 {loading ? firstName : stats?.instructor_name || firstName}
               </h1>
               <p className="text-white/70 mt-1 text-sm capitalize">
-                {stats?.language} Language Instructor
+                {t(`learning.${stats?.language}`) || stats?.language} {t("instructors.languageInstructor")}
               </p>
             </div>
             <Link

@@ -6,15 +6,16 @@ import toast from "react-hot-toast";
 const FORWARDING_ADDRESS = "ab331c706c0188b0b969@cloudmailin.net";
 
 const STATUS_STYLES = {
-  accepted:     { bg: "bg-green-900/40",  border: "border-green-500/40",  text: "text-green-300",  icon: "🎉", label: "Accepted" },
-  rejected:     { bg: "bg-red-900/40",    border: "border-red-500/40",    text: "text-red-300",    icon: "❌", label: "Rejected" },
-  interview:    { bg: "bg-blue-900/40",   border: "border-blue-500/40",   text: "text-blue-300",   icon: "📅", label: "Interview" },
-  missing_docs: { bg: "bg-yellow-900/40", border: "border-yellow-500/40", text: "text-yellow-300", icon: "📎", label: "Docs Needed" },
-  info:         { bg: "bg-slate-800/40",  border: "border-slate-600/40",  text: "text-slate-300",  icon: "✉️", label: "Info" },
+  accepted:     { bg: "bg-green-900/40",  border: "border-green-500/40",  text: "text-green-300",  icon: "🎉" },
+  rejected:     { bg: "bg-red-900/40",    border: "border-red-500/40",    text: "text-red-300",    icon: "❌" },
+  interview:    { bg: "bg-blue-900/40",   border: "border-blue-500/40",   text: "text-blue-300",   icon: "📅" },
+  missing_docs: { bg: "bg-yellow-900/40", border: "border-yellow-500/40", text: "text-yellow-300", icon: "📎" },
+  info:         { bg: "bg-slate-800/40",  border: "border-slate-600/40",  text: "text-slate-300",  icon: "✉️" },
 };
 
 // ── Consent Screen ─────────────────────────────────────────────────────────────
 function ConsentScreen({ onConsent }) {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [agreed, setAgreed] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -26,7 +27,7 @@ function ConsentScreen({ onConsent }) {
       await api.post("/email-integration/link", { linked_email: email, consent_given: true });
       onConsent();
     } catch (err) {
-      toast.error(err?.response?.data?.detail || "Failed to link email.");
+      toast.error(err?.response?.data?.detail || t("email.failedLink"));
     } finally {
       setLoading(false);
     }
@@ -37,55 +38,53 @@ function ConsentScreen({ onConsent }) {
       {/* Header */}
       <div className="text-center mb-8">
         <div className="text-5xl mb-4">📬</div>
-        <h1 className="text-2xl font-extrabold text-white mb-2">Link Your Email</h1>
-        <p className="text-slate-400 text-sm leading-relaxed">
-          Connect your email so UniPath can automatically track university replies and update your pipeline status — no manual checking needed.
-        </p>
+        <h1 className="text-2xl font-extrabold text-white mb-2">{t("email.linkTitle")}</h1>
+        <p className="text-slate-400 text-sm leading-relaxed">{t("email.linkDesc")}</p>
       </div>
 
       {/* What we read / don't read */}
       <div className="grid grid-cols-2 gap-3 mb-6">
         <div className="bg-green-900/20 border border-green-700/30 rounded-2xl p-4">
-          <p className="text-green-400 font-bold text-xs mb-2 uppercase tracking-wide">✅ We will read</p>
+          <p className="text-green-400 font-bold text-xs mb-2 uppercase tracking-wide">{t("email.willRead")}</p>
           <ul className="text-green-200/80 text-xs space-y-1.5">
-            <li>• Emails from universities</li>
-            <li>• Acceptance / rejection notices</li>
-            <li>• Document requests</li>
-            <li>• Interview invitations</li>
-            <li>• Application deadlines</li>
+            <li>• {t("email.read1")}</li>
+            <li>• {t("email.read2")}</li>
+            <li>• {t("email.read3")}</li>
+            <li>• {t("email.read4")}</li>
+            <li>• {t("email.read5")}</li>
           </ul>
         </div>
         <div className="bg-red-900/20 border border-red-700/30 rounded-2xl p-4">
-          <p className="text-red-400 font-bold text-xs mb-2 uppercase tracking-wide">❌ We will NEVER read</p>
+          <p className="text-red-400 font-bold text-xs mb-2 uppercase tracking-wide">{t("email.willNeverRead")}</p>
           <ul className="text-red-200/80 text-xs space-y-1.5">
-            <li>• Personal emails</li>
-            <li>• Social media emails</li>
-            <li>• Banking / shopping</li>
-            <li>• Any non-university email</li>
-            <li>• Your contacts or drafts</li>
+            <li>• {t("email.noRead1")}</li>
+            <li>• {t("email.noRead2")}</li>
+            <li>• {t("email.noRead3")}</li>
+            <li>• {t("email.noRead4")}</li>
+            <li>• {t("email.noRead5")}</li>
           </ul>
         </div>
       </div>
 
       {/* How it works */}
       <div className="bg-slate-800/60 border border-slate-700/40 rounded-2xl p-5 mb-6">
-        <p className="text-slate-300 font-semibold text-sm mb-3">🔧 How it works</p>
+        <p className="text-slate-300 font-semibold text-sm mb-3">{t("email.howItWorks")}</p>
         <ol className="text-slate-400 text-xs space-y-2">
-          <li className="flex gap-2"><span className="text-indigo-400 font-bold">1.</span> You enter your email and agree below</li>
-          <li className="flex gap-2"><span className="text-indigo-400 font-bold shrink-0">2.</span> <span>We give you a forwarding address (<span className="text-indigo-300 font-mono break-all">{FORWARDING_ADDRESS}</span>)</span></li>
-          <li className="flex gap-2"><span className="text-indigo-400 font-bold">3.</span> You set up Gmail/Outlook to forward emails to it (we guide you step by step)</li>
-          <li className="flex gap-2"><span className="text-indigo-400 font-bold">4.</span> UniPath auto-detects university replies and updates your pipeline</li>
+          <li className="flex gap-2"><span className="text-indigo-400 font-bold">1.</span> {t("email.step1")}</li>
+          <li className="flex gap-2"><span className="text-indigo-400 font-bold shrink-0">2.</span> <span>{t("email.step2")} (<span className="text-indigo-300 font-mono break-all">{FORWARDING_ADDRESS}</span>)</span></li>
+          <li className="flex gap-2"><span className="text-indigo-400 font-bold">3.</span> {t("email.step3")}</li>
+          <li className="flex gap-2"><span className="text-indigo-400 font-bold">4.</span> {t("email.step4")}</li>
         </ol>
       </div>
 
       {/* Legal note */}
       <div className="bg-indigo-900/20 border border-indigo-700/30 rounded-2xl px-4 py-3 mb-6 text-xs text-indigo-300/80 leading-relaxed">
-        🔒 Your consent is recorded with a timestamp and IP address. You can revoke access at any time and all data will be deleted immediately. This complies with GDPR Article 6(1)(a).
+        {t("email.gdpr")}
       </div>
 
       {/* Email input */}
       <div className="mb-4">
-        <label className="block text-slate-300 text-sm font-semibold mb-1.5">Your email address</label>
+        <label className="block text-slate-300 text-sm font-semibold mb-1.5">{t("email.yourEmail")}</label>
         <input
           type="email"
           value={email}
@@ -103,9 +102,7 @@ function ConsentScreen({ onConsent }) {
           onChange={e => setAgreed(e.target.checked)}
           className="mt-0.5 w-4 h-4 accent-indigo-500 shrink-0"
         />
-        <span className="text-slate-400 text-xs leading-relaxed">
-          I understand that UniPath will receive forwarded emails from my inbox. I give explicit consent to process emails from universities for the purpose of tracking my application status. I can revoke this at any time.
-        </span>
+        <span className="text-slate-400 text-xs leading-relaxed">{t("email.consentText")}</span>
       </label>
 
       <button
@@ -113,7 +110,7 @@ function ConsentScreen({ onConsent }) {
         disabled={!email || !agreed || loading}
         className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-bold text-sm shadow-lg hover:opacity-90 transition disabled:opacity-40 disabled:cursor-not-allowed"
       >
-        {loading ? "Linking…" : "✅ I Agree — Link My Email"}
+        {loading ? t("email.linking") : t("email.agreeBtn")}
       </button>
     </div>
   );
@@ -121,6 +118,7 @@ function ConsentScreen({ onConsent }) {
 
 // ── Setup Instructions ──────────────────────────────────────────────────────────
 function SetupInstructions({ linkedEmail, onConfirm, onUnlink }) {
+  const { t } = useTranslation();
   const [confirming, setConfirming] = useState(false);
   const [tab, setTab] = useState("gmail");
 
@@ -130,26 +128,26 @@ function SetupInstructions({ linkedEmail, onConfirm, onUnlink }) {
       await api.post("/email-integration/confirm-forwarding");
       onConfirm();
     } catch {
-      toast.error("Something went wrong.");
+      toast.error(t("email.somethingWrong"));
     } finally {
       setConfirming(false);
     }
   };
 
   const gmailSteps = [
-    { step: 1, title: "Open Gmail Settings", desc: 'Click the ⚙️ gear icon (top right) → "See all settings"' },
-    { step: 2, title: 'Go to "Forwarding and POP/IMAP"', desc: "Click the tab named exactly that at the top of Settings" },
-    { step: 3, title: "Add a forwarding address", desc: `Click "Add a forwarding address" → type: ${FORWARDING_ADDRESS} → click Next` },
-    { step: 4, title: "Google sends a verification email", desc: "Check your inbox for a confirmation email from Google and click the verification link" },
-    { step: 5, title: "Activate forwarding", desc: `Back in Settings → select "Forward a copy to ${FORWARDING_ADDRESS}" → Save Changes` },
-    { step: 6, title: "Come back here and confirm", desc: 'Click "I\'ve Set It Up" below so we know you\'re ready' },
+    { step: 1, title: t("email.gmailStep1Title"), desc: t("email.gmailStep1Desc") },
+    { step: 2, title: t("email.gmailStep2Title"), desc: t("email.gmailStep2Desc") },
+    { step: 3, title: t("email.gmailStep3Title"), desc: t("email.gmailStep3Desc", { address: FORWARDING_ADDRESS }) },
+    { step: 4, title: t("email.gmailStep4Title"), desc: t("email.gmailStep4Desc") },
+    { step: 5, title: t("email.gmailStep5Title"), desc: t("email.gmailStep5Desc", { address: FORWARDING_ADDRESS }) },
+    { step: 6, title: t("email.gmailStep6Title"), desc: t("email.gmailStep6Desc") },
   ];
 
   const outlookSteps = [
-    { step: 1, title: "Open Outlook Settings", desc: 'Click ⚙️ Settings → "View all Outlook settings"' },
-    { step: 2, title: "Go to Mail → Forwarding", desc: 'Navigate to: Mail → Forwarding' },
-    { step: 3, title: "Enable forwarding", desc: `Toggle "Enable forwarding" → enter: ${FORWARDING_ADDRESS}` },
-    { step: 4, title: "Save and confirm here", desc: 'Click Save → then click "I\'ve Set It Up" below' },
+    { step: 1, title: t("email.outlookStep1Title"), desc: t("email.outlookStep1Desc") },
+    { step: 2, title: t("email.outlookStep2Title"), desc: t("email.outlookStep2Desc") },
+    { step: 3, title: t("email.outlookStep3Title"), desc: t("email.outlookStep3Desc", { address: FORWARDING_ADDRESS }) },
+    { step: 4, title: t("email.outlookStep4Title"), desc: t("email.outlookStep4Desc") },
   ];
 
   const steps = tab === "gmail" ? gmailSteps : outlookSteps;
@@ -158,35 +156,35 @@ function SetupInstructions({ linkedEmail, onConfirm, onUnlink }) {
     <div className="max-w-lg mx-auto">
       <div className="text-center mb-6">
         <div className="text-4xl mb-3">⚙️</div>
-        <h2 className="text-xl font-extrabold text-white mb-1">Set Up Email Forwarding</h2>
+        <h2 className="text-xl font-extrabold text-white mb-1">{t("email.setupTitle")}</h2>
         <p className="text-slate-400 text-sm">
-          Linked email: <span className="text-indigo-300 font-mono">{linkedEmail}</span>
+          {t("email.linkedEmail")} <span className="text-indigo-300 font-mono">{linkedEmail}</span>
         </p>
       </div>
 
       {/* Forwarding address box */}
       <div className="bg-indigo-900/30 border border-indigo-600/40 rounded-2xl px-5 py-4 mb-6 flex items-center justify-between gap-3">
         <div>
-          <p className="text-indigo-300 text-xs font-semibold mb-0.5">Forward your emails to this address:</p>
+          <p className="text-indigo-300 text-xs font-semibold mb-0.5">{t("email.forwardTo")}</p>
           <p className="text-white font-mono font-bold text-base">{FORWARDING_ADDRESS}</p>
         </div>
         <button
-          onClick={() => { navigator.clipboard.writeText(FORWARDING_ADDRESS); toast.success("Copied!"); }}
+          onClick={() => { navigator.clipboard.writeText(FORWARDING_ADDRESS); toast.success(t("email.copied")); }}
           className="text-xs bg-indigo-600/50 hover:bg-indigo-600 text-white px-3 py-1.5 rounded-lg transition font-semibold shrink-0"
         >
-          Copy
+          {t("email.copy")}
         </button>
       </div>
 
       {/* Tab selector */}
       <div className="flex gap-2 mb-5">
-        {["gmail", "outlook"].map(t => (
+        {["gmail", "outlook"].map(provider => (
           <button
-            key={t}
-            onClick={() => setTab(t)}
-            className={`px-4 py-2 rounded-xl text-sm font-semibold transition ${tab === t ? "bg-indigo-600 text-white" : "bg-slate-800 text-slate-400 hover:text-white"}`}
+            key={provider}
+            onClick={() => setTab(provider)}
+            className={`px-4 py-2 rounded-xl text-sm font-semibold transition ${tab === provider ? "bg-indigo-600 text-white" : "bg-slate-800 text-slate-400 hover:text-white"}`}
           >
-            {t === "gmail" ? "📧 Gmail" : "📨 Outlook"}
+            {provider === "gmail" ? "📧 Gmail" : "📨 Outlook"}
           </button>
         ))}
       </div>
@@ -211,13 +209,13 @@ function SetupInstructions({ linkedEmail, onConfirm, onUnlink }) {
         disabled={confirming}
         className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold text-sm shadow-lg hover:opacity-90 transition mb-3"
       >
-        {confirming ? "Confirming…" : "✅ I've Set It Up — Activate"}
+        {confirming ? t("email.confirming") : t("email.activateBtn")}
       </button>
       <button
         onClick={onUnlink}
         className="w-full py-2.5 rounded-2xl border border-slate-700 text-slate-400 hover:text-white hover:border-slate-500 text-sm font-medium transition"
       >
-        Cancel &amp; Unlink
+        {t("email.cancelUnlink")}
       </button>
     </div>
   );
@@ -225,29 +223,39 @@ function SetupInstructions({ linkedEmail, onConfirm, onUnlink }) {
 
 // ── Active State ────────────────────────────────────────────────────────────────
 function ActiveView({ linked, emails, onUnlink, onRefresh }) {
+  const { t } = useTranslation();
+
+  const statusLabels = {
+    accepted:     t("email.statusAccepted"),
+    rejected:     t("email.statusRejected"),
+    interview:    t("email.statusInterview"),
+    missing_docs: t("email.statusDocsNeeded"),
+    info:         t("email.statusInfo"),
+  };
+
   return (
     <div className="max-w-2xl mx-auto">
       {/* Status banner */}
       <div className="flex items-center gap-4 bg-green-900/20 border border-green-600/30 rounded-2xl px-5 py-4 mb-6">
         <div className="w-3 h-3 rounded-full bg-green-400 animate-pulse shrink-0" />
         <div className="flex-1">
-          <p className="text-green-300 font-semibold text-sm">Email Integration Active</p>
-          <p className="text-green-400/70 text-xs">Monitoring: <span className="font-mono">{linked.linked_email}</span></p>
+          <p className="text-green-300 font-semibold text-sm">{t("email.active")}</p>
+          <p className="text-green-400/70 text-xs">{t("email.monitoring")} <span className="font-mono">{linked.linked_email}</span></p>
         </div>
         <button
           onClick={onRefresh}
           className="text-xs text-slate-400 hover:text-white transition px-3 py-1.5 bg-slate-800 rounded-lg"
         >
-          🔄 Refresh
+          {t("email.refresh")}
         </button>
       </div>
 
       {/* How it works reminder */}
       <div className="grid grid-cols-3 gap-3 mb-6">
         {[
-          { icon: "✉️", label: "Email arrives", desc: "University sends you an email" },
-          { icon: "🔍", label: "We detect it", desc: "UniPath reads the forwarded copy" },
-          { icon: "🔔", label: "You're notified", desc: "Pipeline updates automatically" },
+          { icon: "✉️", label: t("email.emailArrives"),   desc: t("email.emailArrivesDesc") },
+          { icon: "🔍", label: t("email.weDetectIt"),     desc: t("email.weDetectItDesc") },
+          { icon: "🔔", label: t("email.youreNotified"),  desc: t("email.youreNotifiedDesc") },
         ].map(item => (
           <div key={item.label} className="bg-slate-800/50 border border-slate-700/40 rounded-2xl p-3 text-center">
             <div className="text-2xl mb-1">{item.icon}</div>
@@ -259,20 +267,21 @@ function ActiveView({ linked, emails, onUnlink, onRefresh }) {
 
       {/* Email list */}
       <div className="mb-4 flex items-center justify-between">
-        <h3 className="text-white font-bold text-base">University Emails Received</h3>
-        <span className="text-slate-500 text-xs">{emails.length} email{emails.length !== 1 ? "s" : ""}</span>
+        <h3 className="text-white font-bold text-base">{t("email.universityEmails")}</h3>
+        <span className="text-slate-500 text-xs">{emails.length} {emails.length !== 1 ? t("email.emailCount_other", { count: emails.length }) : t("email.emailCount_one", { count: emails.length })}</span>
       </div>
 
       {emails.length === 0 ? (
         <div className="text-center py-12 text-slate-500">
           <div className="text-4xl mb-3">📭</div>
-          <p className="text-sm">No university emails detected yet.</p>
-          <p className="text-xs mt-1">Make sure you set up Gmail/Outlook forwarding correctly.</p>
+          <p className="text-sm">{t("email.noEmails")}</p>
+          <p className="text-xs mt-1">{t("email.noEmailsHint")}</p>
         </div>
       ) : (
         <div className="space-y-2">
           {emails.map(email => {
             const style = STATUS_STYLES[email.detected_status] || STATUS_STYLES.info;
+            const label = statusLabels[email.detected_status] || statusLabels.info;
             return (
               <div
                 key={email.id}
@@ -285,15 +294,15 @@ function ActiveView({ linked, emails, onUnlink, onRefresh }) {
                       <span className="text-white font-semibold text-sm">{email.detected_university}</span>
                     )}
                     <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${style.bg} ${style.text} border ${style.border}`}>
-                      {style.label}
+                      {label}
                     </span>
                     {!email.is_read && (
-                      <span className="text-xs bg-indigo-600/40 text-indigo-300 px-2 py-0.5 rounded-full font-semibold">New</span>
+                      <span className="text-xs bg-indigo-600/40 text-indigo-300 px-2 py-0.5 rounded-full font-semibold">{t("email.new")}</span>
                     )}
                   </div>
                   <p className="text-slate-300 text-xs truncate">{email.subject}</p>
                   <p className="text-slate-500 text-xs mt-0.5">
-                    From: {email.from_address} · {new Date(email.received_at).toLocaleDateString()}
+                    {t("email.from")} {email.from_address} · {new Date(email.received_at).toLocaleDateString()}
                   </p>
                 </div>
               </div>
@@ -306,14 +315,14 @@ function ActiveView({ linked, emails, onUnlink, onRefresh }) {
       <div className="mt-8 pt-6 border-t border-slate-800">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-white font-semibold text-sm">Remove Email Integration</p>
-            <p className="text-slate-500 text-xs mt-0.5">All received email records will be deleted immediately.</p>
+            <p className="text-white font-semibold text-sm">{t("email.removeTitle")}</p>
+            <p className="text-slate-500 text-xs mt-0.5">{t("email.removeDesc")}</p>
           </div>
           <button
             onClick={onUnlink}
             className="px-4 py-2 rounded-xl border border-red-700/50 text-red-400 hover:bg-red-900/20 text-sm font-semibold transition"
           >
-            Unlink
+            {t("email.unlink")}
           </button>
         </div>
       </div>
@@ -323,7 +332,8 @@ function ActiveView({ linked, emails, onUnlink, onRefresh }) {
 
 // ── Main Page ───────────────────────────────────────────────────────────────────
 export default function EmailIntegration() {
-  const [linked, setLinked] = useState(null);   // null = loading, false = not linked
+  const { t } = useTranslation();
+  const [linked, setLinked] = useState(null);
   const [emails, setEmails] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -345,14 +355,14 @@ export default function EmailIntegration() {
   useEffect(() => { fetchStatus(); }, []);
 
   const handleUnlink = async () => {
-    if (!window.confirm("Remove email integration? All email records will be deleted.")) return;
+    if (!window.confirm(t("email.unlinkConfirm"))) return;
     try {
       await api.delete("/email-integration/unlink");
       setLinked(false);
       setEmails([]);
-      toast.success("Email unlinked and data deleted.");
+      toast.success(t("email.unlinkSuccess"));
     } catch {
-      toast.error("Failed to unlink.");
+      toast.error(t("email.unlinkFailed"));
     }
   };
 
@@ -369,12 +379,10 @@ export default function EmailIntegration() {
       {/* Page header */}
       <div className="max-w-2xl mx-auto mb-8">
         <div className="inline-flex items-center gap-2 bg-indigo-900/30 border border-indigo-700/30 rounded-full px-4 py-1.5 text-indigo-300 text-xs font-semibold mb-4">
-          📬 Email Integration
+          📬 {t("email.badge")}
         </div>
-        <h1 className="text-3xl font-extrabold text-white mb-2">Email Tracking</h1>
-        <p className="text-slate-400 text-sm">
-          Automatically detect university replies and keep your pipeline up to date — without checking your inbox manually.
-        </p>
+        <h1 className="text-3xl font-extrabold text-white mb-2">{t("email.title")}</h1>
+        <p className="text-slate-400 text-sm">{t("email.subtitle")}</p>
       </div>
 
       {/* Main content based on state */}
