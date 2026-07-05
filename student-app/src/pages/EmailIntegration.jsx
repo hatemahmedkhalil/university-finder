@@ -72,7 +72,7 @@ function ConsentScreen({ onConsent }) {
         <p className="text-slate-300 font-semibold text-sm mb-3">🔧 How it works</p>
         <ol className="text-slate-400 text-xs space-y-2">
           <li className="flex gap-2"><span className="text-indigo-400 font-bold">1.</span> You enter your email and agree below</li>
-          <li className="flex gap-2"><span className="text-indigo-400 font-bold">2.</span> We give you a forwarding address (<span className="text-indigo-300 font-mono">{FORWARDING_ADDRESS}</span>)</li>
+          <li className="flex gap-2"><span className="text-indigo-400 font-bold shrink-0">2.</span> <span>We give you a forwarding address (<span className="text-indigo-300 font-mono break-all">{FORWARDING_ADDRESS}</span>)</span></li>
           <li className="flex gap-2"><span className="text-indigo-400 font-bold">3.</span> You set up Gmail/Outlook to forward emails to it (we guide you step by step)</li>
           <li className="flex gap-2"><span className="text-indigo-400 font-bold">4.</span> UniPath auto-detects university replies and updates your pipeline</li>
         </ol>

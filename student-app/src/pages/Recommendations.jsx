@@ -27,17 +27,17 @@ const FitRing = ({ score }) => {
     return () => clearTimeout(t);
   }, [score]);
   const color = score >= 80 ? "#22c55e" : score >= 60 ? "#f59e0b" : "#ef4444";
-  const r = 22, circ = 2 * Math.PI * r;
+  const r = 26, circ = 2 * Math.PI * r;
   const dash = (displayed / 100) * circ;
   return (
-    <div className="relative w-14 h-14 shrink-0">
-      <svg viewBox="0 0 56 56" className="w-full h-full -rotate-90">
-        <circle cx="28" cy="28" r={r} fill="none" stroke="#e5e7eb" strokeWidth="5" />
-        <circle cx="28" cy="28" r={r} fill="none" stroke={color} strokeWidth="5"
+    <div className="relative w-16 h-16 shrink-0">
+      <svg viewBox="0 0 64 64" className="w-full h-full -rotate-90">
+        <circle cx="32" cy="32" r={r} fill="none" stroke="#e5e7eb" strokeWidth="5" />
+        <circle cx="32" cy="32" r={r} fill="none" stroke={color} strokeWidth="5"
           strokeDasharray={`${dash} ${circ}`} strokeLinecap="round"
           style={{ transition: "stroke-dasharray 0.9s cubic-bezier(0.22,1,0.36,1)" }} />
       </svg>
-      <div className="absolute inset-0 flex items-center justify-center text-xs font-bold" style={{ color }}>{score}%</div>
+      <div className="absolute inset-0 flex items-center justify-center font-bold leading-none" style={{ color, fontSize: "10px" }}>{score}%</div>
     </div>
   );
 };
@@ -684,16 +684,18 @@ const MatchCard = ({ match, index }) => {
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden card-lift">
       <div className={`h-1.5 bg-gradient-to-r ${topBar}`} />
-      <div className="p-6">
-        <div className="flex items-start gap-5">
-          <div className="flex flex-col items-center gap-2 shrink-0">
-            <span className={`text-xs font-extrabold px-2.5 py-1 rounded-full ${rankBadge}`}>#{index + 1}</span>
+      <div className="p-4 sm:p-6">
+        <div className="flex items-start gap-4">
+          <div className="flex flex-col items-center gap-1.5 shrink-0 pt-0.5">
             <FitRing score={match.score} />
           </div>
 
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between flex-wrap gap-2">
               <div>
+                <div className="flex items-center gap-2 mb-0.5">
+                  <span className={`text-xs font-extrabold px-2.5 py-1 rounded-full ${rankBadge}`}>#{index + 1}</span>
+                </div>
                 <Link to={`/university/${uni.id}`}
                   state={{ score: match.score, reasons: match.reasons, breakdown: match.breakdown }}
                   className="text-lg font-bold text-gray-900 hover:text-indigo-700 transition">
