@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import api from "../api/axios";
 import toast from "react-hot-toast";
+import PageHero from "../components/PageHero";
 
 const FORWARDING_ADDRESS = "ab331c706c0188b0b969@cloudmailin.net";
 
@@ -108,7 +109,7 @@ function ConsentScreen({ onConsent }) {
       <button
         onClick={submit}
         disabled={!email || !agreed || loading}
-        className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-bold text-sm shadow-lg hover:opacity-90 transition disabled:opacity-40 disabled:cursor-not-allowed"
+        className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-bold text-sm hover:opacity-90 transition disabled:opacity-40 disabled:cursor-not-allowed"
       >
         {loading ? t("email.linking") : t("email.agreeBtn")}
       </button>
@@ -207,7 +208,7 @@ function SetupInstructions({ linkedEmail, onConfirm, onUnlink }) {
       <button
         onClick={confirm}
         disabled={confirming}
-        className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold text-sm shadow-lg hover:opacity-90 transition mb-3"
+        className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold text-sm hover:opacity-90 transition mb-3"
       >
         {confirming ? t("email.confirming") : t("email.activateBtn")}
       </button>
@@ -375,15 +376,13 @@ export default function EmailIntegration() {
   }
 
   return (
-    <div className="min-h-screen px-4 py-8">
-      {/* Page header */}
-      <div className="max-w-2xl mx-auto mb-8">
-        <div className="inline-flex items-center gap-2 bg-indigo-900/30 border border-indigo-700/30 rounded-full px-4 py-1.5 text-indigo-300 text-xs font-semibold mb-4">
-          📬 {t("email.badge")}
-        </div>
-        <h1 className="text-3xl font-extrabold text-white mb-2">{t("email.title")}</h1>
-        <p className="text-slate-400 text-sm">{t("email.subtitle")}</p>
-      </div>
+    <div className="min-h-screen">
+      <PageHero
+        photo="https://images.unsplash.com/photo-1526554850534-7c78330d5f90?w=1400&q=80"
+        title={t("email.title")}
+        subtitle={t("email.subtitle")}
+      />
+      <div className="px-4 py-8">
 
       {/* Main content based on state */}
       {!linked && (
@@ -404,6 +403,7 @@ export default function EmailIntegration() {
           onRefresh={fetchStatus}
         />
       )}
+      </div>
     </div>
   );
 }

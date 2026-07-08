@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import api from "../api/axios";
 import toast from "react-hot-toast";
+import { useAuth } from "../context/AuthContext";
 
 /* ─── helpers ─── */
 const fmt = (bytes) => {
@@ -107,8 +108,44 @@ function DocumentLocker() {
     }
   };
 
+  const REQUIRED_DOCS = [
+    { type: "passport",      icon: "🛂", label: "Passport / National ID",        desc: "Valid passport or national identity card (colour scan)" },
+    { type: "transcript",    icon: "📄", label: "Academic Transcript",            desc: "Official university/school transcript with GPA" },
+    { type: "language_cert", icon: "🌐", label: "Language Certificate",           desc: "IELTS, TOEFL, TestDaF, Goethe-Zertifikat, or equivalent" },
+    { type: "cv",            icon: "📋", label: "CV / Résumé",                    desc: "Academic or professional CV (max 2 pages)" },
+    { type: "recommendation",icon: "✉️", label: "Recommendation Letter",          desc: "At least one letter from a professor or employer" },
+    { type: "photo",         icon: "🖼️", label: "Passport Photo",                 desc: "Recent passport-size photo (white background)" },
+  ];
+
+  const uploadedTypes = new Set(docs.map(d => d.doc_type));
+
   return (
     <div className="space-y-6">
+
+      {/* Required documents checklist */}
+      <div className="rounded-2xl p-5 space-y-3" style={{ background: "oklch(0.17 0.022 285)", border: "1px solid oklch(1 0 0 / 0.07)" }}>
+        <h3 className="text-white font-bold text-sm flex items-center gap-2">
+          <span>📋</span> Documents You Need to Upload
+        </h3>
+        <p className="text-xs" style={{ color: "oklch(0.55 0.02 285)" }}>
+          Most European universities require these documents. Upload them below.
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1">
+          {REQUIRED_DOCS.map(({ type, icon, label, desc }) => {
+            const done = uploadedTypes.has(type);
+            return (
+              <div key={type} className="flex items-start gap-3 rounded-xl px-3 py-2.5" style={{ background: done ? "oklch(0.25 0.06 160 / 0.25)" : "oklch(0.20 0.024 285)", border: `1px solid ${done ? "oklch(0.50 0.15 160 / 0.4)" : "oklch(1 0 0 / 0.06)"}` }}>
+                <span className="text-lg mt-0.5">{done ? "✅" : icon}</span>
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold" style={{ color: done ? "oklch(0.75 0.15 160)" : "#fff" }}>{label}</p>
+                  <p className="text-[11px] mt-0.5" style={{ color: "oklch(0.55 0.02 285)" }}>{desc}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Upload card */}
       <div className="bg-slate-800/50 rounded-2xl p-5 border border-slate-700/50">
         <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
@@ -445,7 +482,7 @@ function CopyField({ label, value }) {
 }
 
 /* ─── Tab: Portal Guide ─── */
-function PortalGuide({ universityId }) {
+function PortalGuide({ universityId, onUniSelected, onGoToDocuments }) {
   const { t } = useTranslation();
   const [uni, setUni] = useState(null);
   const [profile, setProfile] = useState(null);
@@ -496,10 +533,10 @@ function PortalGuide({ universityId }) {
   }, []);
 
   useEffect(() => {
-    if (!selectedId) { setUni(null); return; }
+    if (!selectedId) { setUni(null); onUniSelected?.("", ""); return; }
     setLoading(true);
     api.get(`/universities/${selectedId}`)
-      .then(r => setUni(r.data))
+      .then(r => { setUni(r.data); onUniSelected?.(r.data.name, r.data.programs?.[0] || ""); })
       .catch(() => toast.error(t("applyHub.guide.loadFailed")))
       .finally(() => setLoading(false));
   }, [selectedId]);
@@ -624,13 +661,12 @@ function PortalGuide({ universityId }) {
                       )}
 
                       {step.hasDocLink && (
-                        <Link
-                          to="/apply-hub"
+                        <button
                           className="inline-flex items-center gap-1.5 mt-2 text-sm text-indigo-400 hover:text-indigo-300 font-medium"
-                          onClick={() => {}}
+                          onClick={() => onGoToDocuments?.()}
                         >
                           {t("applyHub.guide.docLockerLink")}
-                        </Link>
+                        </button>
                       )}
                     </div>
                   </div>
@@ -659,60 +695,229 @@ function PortalGuide({ universityId }) {
   );
 }
 
+/* ─── Step 1: Personal Info (editable) ─── */
+function PersonalInfoStep() {
+  const { user } = useAuth();
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [email, setEmail] = useState("");
+  const [savingEmail, setSavingEmail] = useState(false);
+
+  const SURF   = "oklch(0.17 0.022 285)";
+  const CARD   = "oklch(0.20 0.024 285)";
+  const BORDER = "oklch(1 0 0 / 0.07)";
+  const DIM    = "oklch(0.55 0.02 285)";
+  const GRAD   = "linear-gradient(135deg, oklch(0.55 0.22 296), oklch(0.50 0.20 264))";
+
+  const roStyle = { background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, padding: "10px 14px", color: "oklch(0.75 0.01 285)", width: "100%", fontSize: 14, opacity: 0.8 };
+  const editStyle = { background: CARD, border: `1px solid oklch(0.62 0.24 296 / 0.4)`, borderRadius: 12, padding: "10px 14px", color: "#fff", width: "100%", fontSize: 14, outline: "none" };
+
+  useEffect(() => {
+    api.get("/profiles/me")
+      .then(r => { setProfile(r.data); })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  useEffect(() => { setEmail(user?.email || ""); }, [user]);
+
+  const saveEmail = async () => {
+    if (!email || email === user?.email) return;
+    setSavingEmail(true);
+    try {
+      await api.patch("/auth/update-email", { email });
+      toast.success("Email updated");
+    } catch (e) {
+      toast.error(e?.response?.data?.detail || "Failed to update email");
+    } finally {
+      setSavingEmail(false);
+    }
+  };
+
+  if (loading) return <div className="py-16 text-center" style={{ color: DIM }}>Loading…</div>;
+
+  const Row = ({ label, value }) => (
+    <div>
+      <label className="block text-[11px] font-bold uppercase tracking-wide mb-1.5" style={{ color: DIM }}>{label}</label>
+      <div style={roStyle}>{value || <span style={{ opacity: 0.4 }}>—</span>}</div>
+    </div>
+  );
+
+  return (
+    <div className="rounded-2xl p-6 space-y-5" style={{ background: SURF, border: `1px solid ${BORDER}` }}>
+      <div>
+        <h3 className="text-white font-bold text-base">Personal & academic info</h3>
+        <p className="text-xs mt-1" style={{ color: DIM }}>
+          Your info is pulled from your profile.{" "}
+          <a href="/profile" className="underline" style={{ color: "oklch(0.72 0.18 296)" }}>Edit in My Profile →</a>
+        </p>
+      </div>
+
+      {/* Email — editable */}
+      <div>
+        <label className="block text-[11px] font-bold uppercase tracking-wide mb-1.5" style={{ color: DIM }}>Email</label>
+        <div className="flex gap-2">
+          <input
+            type="email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            style={editStyle}
+            onFocus={e => { e.target.style.borderColor = "oklch(0.62 0.24 296 / 0.7)"; }}
+            onBlur={e => { e.target.style.borderColor = "oklch(0.62 0.24 296 / 0.4)"; }}
+          />
+          <button
+            onClick={saveEmail}
+            disabled={savingEmail || email === user?.email}
+            className="px-4 py-2 rounded-xl text-sm font-bold text-white transition hover:opacity-90 disabled:opacity-40 whitespace-nowrap"
+            style={{ background: GRAD }}>
+            {savingEmail ? "Saving…" : "Save"}
+          </button>
+        </div>
+      </div>
+
+      {/* Read-only profile fields */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <Row label="Full Name"       value={profile?.full_name} />
+        <Row label="GPA"             value={profile?.gpa} />
+        <Row label="Degree Level"    value={profile?.degree_level} />
+        <Row label="Field of Study"  value={profile?.field_of_study} />
+        <Row label="Nationality"     value={profile?.nationality} />
+        <Row label="English Level"   value={profile?.english_level?.toUpperCase()} />
+        <Row label="Target Language" value={profile?.language} />
+        <Row label="Budget (€/yr)"   value={profile?.budget_eur ? `€${profile.budget_eur.toLocaleString()}` : null} />
+      </div>
+
+      <Row label="Target Countries" value={profile?.preferred_countries} />
+    </div>
+  );
+}
+
 /* ─── Main page ─── */
 export default function ApplicationHub() {
   const { t } = useTranslation();
   const { universityId } = useParams();
-  const [tab, setTab] = useState(universityId ? "guide" : "locker");
+  const [step, setStep] = useState(universityId ? 4 : 1);
+  const [selectedUniName, setSelectedUniName] = useState("");
+  const [selectedUniProgram, setSelectedUniProgram] = useState("");
 
-  const tabs = [
-    { id: "locker", label: t("applyHub.tabs.locker"), icon: "🗂️" },
-    { id: "letter", label: t("applyHub.tabs.letter"), icon: "✍️" },
-    { id: "guide",  label: t("applyHub.tabs.guide"),  icon: "🗺️" },
-  ];
+  const BG     = "oklch(0.13 0.018 285)";
+  const SURF   = "oklch(0.17 0.022 285)";
+  const CARD   = "oklch(0.20 0.024 285)";
+  const BORDER = "oklch(1 0 0 / 0.07)";
+  const GRAD   = "linear-gradient(135deg, oklch(0.55 0.22 296), oklch(0.50 0.20 264))";
+  const DIM    = "oklch(0.55 0.02 285)";
+
+  const stepLabels = ["Personal Info", "Documents", "Motivation Letter", "Review"];
 
   return (
-    <div className="min-h-screen bg-slate-950 px-4 py-6 max-w-4xl mx-auto">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-white flex items-center gap-3">
-          <span className="text-3xl">🚀</span> {t("applyHub.title")}
-        </h1>
-        <p className="text-slate-400 mt-1 text-sm">
-          {t("applyHub.subtitle")}
-        </p>
-      </div>
+    <div className="min-h-screen" style={{ background: BG, color: "#fff" }}>
+      <div className="max-w-6xl mx-auto px-6 py-6">
 
-      {/* Clarification banner */}
-      <div className="flex items-start gap-3 bg-indigo-900/40 border border-indigo-700/40 rounded-2xl px-5 py-4 text-sm mb-6">
-        <span className="text-xl shrink-0">💡</span>
-        <div className="flex-1">
-          <p className="font-semibold text-indigo-200">{t("applyHub.clarifyTitle")}</p>
-          <p className="text-indigo-300/80 text-xs mt-0.5">{t("applyHub.clarifyDesc")}</p>
+        {/* Page title */}
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-white">{t("applyHub.title")}</h1>
+          <p className="text-sm mt-1" style={{ color: DIM }}>{t("applyHub.subtitle")}</p>
         </div>
-        <Link to="/pipeline" className="shrink-0 text-xs font-bold text-indigo-300 bg-indigo-700/50 hover:bg-indigo-700 px-3 py-1.5 rounded-lg transition">
-          {t("applyHub.myPipeline")}
-        </Link>
-      </div>
 
-      {/* Tab bar */}
-      <div className="flex gap-2 mb-6 bg-slate-800/50 p-1 rounded-2xl border border-slate-700/50">
-        {tabs.map(tb => (
-          <button
-            key={tb.id}
-            onClick={() => setTab(tb.id)}
-            className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
-              tab === tb.id ? "bg-indigo-600 text-white shadow-sm" : "text-slate-400 hover:text-white hover:bg-slate-700/50"
-            }`}
-          >
-            <span>{tb.icon}</span>
-            <span className="hidden sm:inline">{tb.label}</span>
-          </button>
-        ))}
-      </div>
+        {/* Step indicator */}
+        <div className="mb-6 rounded-2xl overflow-hidden" style={{ background: SURF, border: `1px solid ${BORDER}` }}>
+          {/* progress bar */}
+          <div className="h-1" style={{ background: "oklch(1 0 0 / 0.06)" }}>
+            <div className="h-full transition-all duration-300" style={{ width: `${((step - 1) / (stepLabels.length - 1)) * 100}%`, background: GRAD }} />
+          </div>
+          <div className="flex px-6 py-4">
+            {stepLabels.map((label, i) => {
+              const n = i + 1;
+              const active = n === step;
+              const done   = n < step;
+              return (
+                <div key={n} className="flex items-center flex-1 min-w-0">
+                  <button onClick={() => setStep(n)}
+                    className="flex items-center gap-2 text-sm font-semibold transition min-w-0"
+                    style={{ color: active ? "#fff" : done ? "oklch(0.72 0.18 296)" : DIM }}>
+                    <span className="w-6 h-6 rounded-full text-[11px] font-extrabold flex items-center justify-center shrink-0"
+                          style={{ background: active ? GRAD : done ? "oklch(0.55 0.22 296 / 0.3)" : "oklch(1 0 0 / 0.07)", color: active || done ? "#fff" : DIM }}>
+                      {done ? "✓" : n}
+                    </span>
+                    <span className="hidden sm:inline truncate">{label}</span>
+                  </button>
+                  {i < stepLabels.length - 1 && (
+                    <div className="flex-1 mx-3 h-px" style={{ background: BORDER }} />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
 
-      {tab === "locker" && <DocumentLocker />}
-      {tab === "letter" && <MotivationLetterWriter />}
-      {tab === "guide"  && <PortalGuide universityId={universityId} />}
+        {/* Main 2-column layout */}
+        <div className="flex gap-6">
+
+          {/* Left: content */}
+          <div className="flex-1 min-w-0">
+            {step === 1 && <PersonalInfoStep />}
+            {step === 2 && <DocumentLocker />}
+            {step === 3 && <MotivationLetterWriter />}
+            {step === 4 && <PortalGuide universityId={universityId} onUniSelected={(name, program) => { setSelectedUniName(name); setSelectedUniProgram(program); }} onGoToDocuments={() => setStep(2)} />}
+
+            {/* Back / Continue */}
+            <div className="flex justify-between mt-6">
+              {step > 1
+                ? <button onClick={() => setStep(s => s - 1)}
+                    className="px-5 py-2.5 rounded-xl text-sm font-bold text-white transition hover:opacity-80"
+                    style={{ background: CARD, border: `1px solid ${BORDER}` }}>
+                    ← Back
+                  </button>
+                : <div />
+              }
+              {step < 4 && (
+                <button onClick={() => setStep(s => s + 1)}
+                  className="px-6 py-2.5 rounded-xl text-sm font-bold text-white transition hover:opacity-90"
+                  style={{ background: GRAD }}>
+                  Continue →
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Right sidebar */}
+          <div className="w-72 shrink-0 hidden lg:flex flex-col gap-4">
+            {/* Applying to card */}
+            <div className="rounded-2xl p-5" style={{ background: SURF, border: `1px solid ${BORDER}` }}>
+              <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: DIM }}>Applying to</p>
+              {selectedUniName ? (
+                <>
+                  <p className="font-bold text-white text-base">{selectedUniName}</p>
+                  {selectedUniProgram && <p className="text-sm mt-0.5" style={{ color: DIM }}>{selectedUniProgram}</p>}
+                </>
+              ) : (
+                <p className="text-sm" style={{ color: DIM }}>Select a university in the Application Guide tab</p>
+              )}
+            </div>
+
+            {/* What universities look for */}
+            <div className="rounded-2xl p-5" style={{ background: SURF, border: `1px solid ${BORDER}` }}>
+              <div className="flex items-center gap-2 mb-3">
+                <span>💡</span>
+                <p className="text-sm font-bold text-white">What universities look for</p>
+              </div>
+              <p className="text-sm leading-relaxed" style={{ color: DIM }}>
+                Strong GPA, a clear motivation letter tailored to the program, and proof of language readiness matter more than perfect test scores.
+              </p>
+            </div>
+
+            {/* Pipeline link */}
+            <div className="rounded-2xl p-4" style={{ background: "oklch(0.55 0.22 296 / 0.08)", border: "1px solid oklch(0.55 0.22 296 / 0.2)" }}>
+              <p className="text-xs font-semibold mb-2" style={{ color: "oklch(0.78 0.12 296)" }}>Track applications with status updates</p>
+              <Link to="/pipeline"
+                className="text-xs font-bold text-white px-3 py-1.5 rounded-lg inline-block transition hover:opacity-90"
+                style={{ background: GRAD }}>
+                {t("applyHub.myPipeline")}
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

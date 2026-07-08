@@ -121,6 +121,23 @@ def resend_verification(request: Request, current_user: User = Depends(get_curre
     return {"message": "Verification email sent"}
 
 
+@router.patch("/update-email", response_model=UserOut)
+def update_email(
+    payload: dict,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    new_email = (payload.get("email") or "").strip().lower()
+    if not new_email or "@" not in new_email:
+        raise HTTPException(status_code=400, detail="Invalid email address")
+    if db.query(User).filter(User.email == new_email, User.id != current_user.id).first():
+        raise HTTPException(status_code=409, detail="Email already in use")
+    current_user.email = new_email
+    db.commit()
+    db.refresh(current_user)
+    return current_user
+
+
 @router.post("/onboarding/complete", response_model=UserOut)
 def complete_onboarding(
     current_user: User = Depends(get_current_user),

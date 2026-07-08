@@ -2,30 +2,35 @@ import { useState, useEffect } from "react";
 import api from "../api/axios";
 import { useTranslation } from "react-i18next";
 
-const TYPE_CONFIG = {
-  government: { color: "from-blue-500 to-cyan-500",    bg: "bg-blue-50",   text: "text-blue-700",   border: "border-blue-100",  icon: "🏛️" },
-  university: { color: "from-violet-500 to-purple-600", bg: "bg-violet-50", text: "text-violet-700", border: "border-violet-100", icon: "🎓" },
-  private:    { color: "from-orange-400 to-rose-500",   bg: "bg-orange-50", text: "text-orange-700", border: "border-orange-100", icon: "🏢" },
-  erasmus:    { color: "from-emerald-500 to-teal-500",  bg: "bg-emerald-50",text: "text-emerald-700",border: "border-emerald-100",icon: "🇪🇺" },
+/* ── design tokens ── */
+const bg      = "bg-[oklch(0.13_0.018_285)]";
+const card    = "bg-[oklch(0.17_0.02_285)]";
+const border  = "border-[oklch(1_0_0/0.07)]";
+const textDim = "text-[oklch(0.72_0.02_285)]";
+const textFt  = "text-[oklch(0.52_0.02_285)]";
+const grad    = "linear-gradient(135deg,oklch(0.62_0.24_296),oklch(0.64_0.21_264))";
+
+const TYPE_CFG = {
+  government: { accent: "oklch(0.55 0.18 220)", icon: "🏛️" },
+  university: { accent: "oklch(0.55 0.22 296)", icon: "🎓" },
+  private:    { accent: "oklch(0.65 0.18 55)",  icon: "🏢" },
+  erasmus:    { accent: "oklch(0.55 0.18 158)",  icon: "🇪🇺" },
 };
-const DEFAULT_TYPE = { color: "from-gray-400 to-gray-500", bg: "bg-gray-50", text: "text-gray-600", border: "border-gray-100", icon: "💰" };
+const DEFAULT_CFG = { accent: "oklch(0.50 0.12 285)", icon: "💰" };
 
 const SkeletonCard = () => (
-  <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden animate-pulse">
-    <div className="h-1.5 bg-gradient-to-r from-indigo-300 to-purple-300" />
+  <div className={`${card} rounded-2xl border ${border} overflow-hidden animate-pulse`}>
+    <div className="h-1.5 bg-[oklch(0.30_0.04_296)]" />
     <div className="p-5 space-y-3">
-      <div className="flex justify-between gap-2">
-        <div className="h-5 bg-gray-100 rounded-lg flex-1" />
-        <div className="h-6 w-20 bg-gray-100 rounded-full" />
-      </div>
+      <div className="h-5 bg-[oklch(0.22_0.02_285)] rounded w-3/4" />
       <div className="flex gap-2">
-        <div className="h-6 w-16 bg-gray-100 rounded-full" />
-        <div className="h-6 w-24 bg-gray-100 rounded-full" />
+        <div className="h-5 w-16 bg-[oklch(0.22_0.02_285)] rounded-full" />
+        <div className="h-5 w-24 bg-[oklch(0.22_0.02_285)] rounded-full" />
       </div>
-      <div className="space-y-2 pt-1">
-        <div className="h-3 bg-gray-100 rounded w-full" />
-        <div className="h-3 bg-gray-100 rounded w-4/5" />
-        <div className="h-3 bg-gray-100 rounded w-2/3" />
+      <div className="h-10 bg-[oklch(0.22_0.02_285)] rounded-xl" />
+      <div className="space-y-1.5">
+        <div className="h-3 bg-[oklch(0.22_0.02_285)] rounded w-full" />
+        <div className="h-3 bg-[oklch(0.22_0.02_285)] rounded w-4/5" />
       </div>
     </div>
   </div>
@@ -41,11 +46,12 @@ const Scholarships = () => {
     { value: "private",    label: t("scholarships.types.private"),    icon: "🏢" },
     { value: "erasmus",    label: t("scholarships.types.erasmus"),    icon: "🇪🇺" },
   ];
+
   const [scholarships, setScholarships] = useState([]);
-  const [total, setTotal] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [type, setType] = useState("");
-  const [page, setPage] = useState(1);
+  const [total, setTotal]               = useState(0);
+  const [loading, setLoading]           = useState(true);
+  const [type, setType]                 = useState("");
+  const [page, setPage]                 = useState(1);
   const perPage = 9;
 
   useEffect(() => {
@@ -60,117 +66,105 @@ const Scholarships = () => {
   const totalPages = Math.ceil(total / perPage);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className={`min-h-screen ${bg} text-[oklch(0.96_0.006_285)]`}>
 
-      {/* ── Hero ── */}
-      <div className="bg-gradient-to-br from-violet-700 via-purple-700 to-fuchsia-800 text-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
-          <p className="text-violet-200 text-sm font-semibold uppercase tracking-widest mb-2">💰 Funding</p>
-          <h1 className="text-4xl font-extrabold tracking-tight mb-2">{t("scholarships.title")}</h1>
-          <p className="text-violet-200 text-lg">
+      {/* ── Hero: 220px full-bleed photo ── */}
+      <div style={{ position: "relative", height: 220, overflow: "hidden" }}>
+        <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1600&q=70"
+             alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%" }} />
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, oklch(0.13 0.05 296 / 0.4), oklch(0.13 0.018 285) 95%)" }} />
+        <div style={{ position: "relative", height: "100%", display: "flex", flexDirection: "column", justifyContent: "center", padding: "0 32px" }}>
+          <div style={{ fontSize: 28, fontWeight: 800, color: "#fff" }}>{t("scholarships.title")}</div>
+          <div style={{ fontSize: 14, color: "oklch(0.80 0.02 285)", marginTop: 6 }}>
             {loading ? t("common.loading") : t("scholarships.available", { count: total })}
-          </p>
-
-          {/* Filter pills inside hero */}
-          <div className="flex flex-wrap gap-2 mt-8">
-            {FILTER_ITEMS.map(({ value, label, icon }) => (
-              <button key={value} onClick={() => { setType(value); setPage(1); }}
-                className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
-                  type === value
-                    ? "bg-white text-purple-700 shadow-lg scale-105"
-                    : "bg-white/15 text-white border border-white/25 hover:bg-white/25 hover:scale-105"
-                }`}>
-                <span>{icon}</span> {label}
-              </button>
-            ))}
           </div>
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      {/* ── Type filter pills below hero ── */}
+      <div className="px-8 py-4" style={{ borderBottom: "1px solid oklch(1 0 0 / 0.07)" }}>
+        <div className="flex flex-wrap gap-2">
+          {FILTER_ITEMS.map(({ value, label, icon }) => (
+            <button key={value} onClick={() => { setType(value); setPage(1); }}
+              className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200"
+              style={{
+                background: type === value ? grad : "oklch(0.20 0.024 285)",
+                color: type === value ? "#fff" : "oklch(0.72 0.02 285)",
+                border: `1px solid ${type === value ? "transparent" : "oklch(1 0 0 / 0.08)"}`,
+              }}>
+              <span>{icon}</span> {label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="max-w-6xl mx-auto px-6 py-7">
 
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {Array.from({ length: 9 }).map((_, i) => <SkeletonCard key={i} />)}
           </div>
         ) : scholarships.length === 0 ? (
           <div className="text-center py-32">
             <div className="text-7xl mb-4">💸</div>
-            <p className="text-gray-700 font-bold text-xl mb-2">{t("scholarships.noFound")}</p>
-            <p className="text-gray-400 text-sm mb-6">{t("scholarships.tryFilter")}</p>
+            <p className="text-white font-bold text-xl mb-2">{t("scholarships.noFound")}</p>
+            <p className={`${textFt} text-sm mb-6`}>{t("scholarships.tryFilter")}</p>
             <button onClick={() => setType("")}
-              className="bg-violet-600 text-white px-6 py-2.5 rounded-xl font-semibold text-sm hover:bg-violet-700 transition">
+              className="text-white text-sm font-bold px-6 py-2.5 rounded-xl transition hover:opacity-90"
+              style={{ background: grad }}>
               {t("scholarships.showAll")}
             </button>
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 stagger">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {scholarships.map(s => {
-                const cfg = TYPE_CONFIG[s.scholarship_type] || DEFAULT_TYPE;
+                const cfg = TYPE_CFG[s.scholarship_type] || DEFAULT_CFG;
                 const deadlineSoon = s.deadline && (new Date(s.deadline) - new Date()) < 30 * 86400000;
                 return (
-                  <div key={s.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col card-lift">
+                  <div key={s.id} className="flex flex-col rounded-2xl overflow-hidden transition-all duration-200 cursor-pointer"
+                       style={{ background: "oklch(0.17 0.02 285)", border: "1px solid oklch(1 0 0 / 0.07)" }}
+                       onMouseEnter={e => { e.currentTarget.style.borderColor = "oklch(0.62 0.24 296 / 0.35)"; e.currentTarget.style.transform = "translateY(-2px)"; }}
+                       onMouseLeave={e => { e.currentTarget.style.borderColor = "oklch(1 0 0 / 0.07)"; e.currentTarget.style.transform = "none"; }}>
 
-                    {/* Colored top bar */}
-                    <div className={`h-1.5 bg-gradient-to-r ${cfg.color}`} />
-
-                    <div className="p-5 flex flex-col flex-1">
-                      {/* Header */}
-                      <div className="flex items-start justify-between gap-2 mb-3">
-                        <div className="flex items-center gap-2.5 min-w-0">
-                          <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${cfg.color} flex items-center justify-center text-lg shrink-0 shadow-sm`}>
-                            {cfg.icon}
-                          </div>
-                          <h3 className="font-bold text-gray-900 text-sm leading-tight line-clamp-2">{s.name}</h3>
+                    <div className="p-5 flex flex-col gap-3">
+                      {/* Row 1: name + org + amount pill */}
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          <div className="font-bold text-white text-[15px] leading-snug">{s.name}</div>
+                          {s.organization && <div className="text-xs mt-0.5" style={{ color: "oklch(0.60 0.02 285)" }}>{s.organization}</div>}
                         </div>
-                      </div>
-
-                      {/* Type + country badges */}
-                      <div className="flex flex-wrap gap-1.5 mb-3">
-                        {s.scholarship_type && (
-                          <span className={`flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full font-semibold border ${cfg.bg} ${cfg.text} ${cfg.border}`}>
-                            {cfg.icon} {s.scholarship_type}
-                          </span>
-                        )}
-                        {s.country && (
-                          <span className="bg-gray-50 text-gray-600 text-[11px] px-2.5 py-1 rounded-full border border-gray-100 font-medium">
-                            📍 {s.country}
+                        {s.amount_eur && (
+                          <span className="shrink-0 text-sm font-extrabold px-3 py-1.5 rounded-xl text-white whitespace-nowrap"
+                                style={{ background: grad }}>
+                            €{s.amount_eur.toLocaleString()}{s.amount_eur >= 5000 ? " / yr" : " total"}
                           </span>
                         )}
                       </div>
 
-                      {/* Amount highlight */}
-                      {s.amount_eur && (
-                        <div className="bg-emerald-50 border border-emerald-100 rounded-xl px-4 py-2.5 mb-3 flex items-center justify-between">
-                          <span className="text-xs text-emerald-600 font-semibold">{t("scholarships.awardAmount")}</span>
-                          <span className="text-base font-extrabold text-emerald-700">€{s.amount_eur.toLocaleString()}</span>
-                        </div>
-                      )}
-
-                      {/* Deadline */}
-                      {s.deadline && (
-                        <div className={`rounded-xl px-4 py-2 mb-3 flex items-center justify-between ${
-                          deadlineSoon ? "bg-red-50 border border-red-100" : "bg-gray-50 border border-gray-100"
-                        }`}>
-                          <span className={`text-xs font-semibold ${deadlineSoon ? "text-red-600" : "text-gray-500"}`}>
-                            {deadlineSoon ? `⚠️ ${t("scholarships.deadlineSoon")}` : `📅 ${t("scholarships.deadline")}`}
-                          </span>
-                          <span className={`text-xs font-bold ${deadlineSoon ? "text-red-700" : "text-gray-700"}`}>
-                            {new Date(s.deadline).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
-                          </span>
-                        </div>
-                      )}
-
+                      {/* Row 2: coverage / description */}
                       {s.description && (
-                        <p className="text-gray-500 text-xs mb-4 flex-1 line-clamp-3 leading-relaxed">{s.description}</p>
+                        <p className="text-sm line-clamp-1" style={{ color: "oklch(0.75 0.02 285)" }}>{s.description}</p>
                       )}
 
-                      {s.link && (
-                        <a href={s.link} target="_blank" rel="noreferrer"
-                          className={`mt-auto flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r ${cfg.color} hover:opacity-90 transition shadow-sm`}>
-                          {t("scholarships.applyNow")} →
-                        </a>
+                      {/* Row 3: country flag + deadline */}
+                      <div className="flex items-center justify-between text-xs">
+                        <span style={{ color: "oklch(0.60 0.02 285)" }}>
+                          {s.country ? `🌍 ${s.country}` : ""}
+                        </span>
+                        {s.deadline && (
+                          <span className="font-semibold" style={{ color: deadlineSoon ? "oklch(0.75 0.18 25)" : "oklch(0.60 0.02 285)" }}>
+                            {deadlineSoon ? "⚠️ " : ""}Deadline {new Date(s.deadline).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Row 4: eligibility (scholarship_type as tag) */}
+                      {s.scholarship_type && (
+                        <div className="text-xs" style={{ color: "oklch(0.60 0.02 285)" }}>
+                          Eligibility: {s.scholarship_type} scholarship
+                          {s.gpa_requirement ? `, GPA ${s.gpa_requirement}+` : ""}
+                        </div>
                       )}
                     </div>
                   </div>
@@ -182,11 +176,14 @@ const Scholarships = () => {
               <div className="flex justify-center gap-2 mt-10">
                 {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
                   <button key={p} onClick={() => setPage(p)}
-                    className={`w-10 h-10 rounded-xl text-sm font-bold transition ${
-                      p === page
-                        ? "bg-violet-600 text-white shadow-lg shadow-violet-200"
-                        : "bg-white border-2 border-gray-200 text-gray-600 hover:border-violet-400 hover:text-violet-600"
-                    }`}>{p}</button>
+                    className="w-10 h-10 rounded-xl text-sm font-bold transition"
+                    style={{
+                      background: p === page ? grad : "oklch(0.20 0.024 285)",
+                      color: p === page ? "#fff" : "oklch(0.72 0.02 285)",
+                      border: `1px solid ${p === page ? "transparent" : "oklch(1 0 0 / 0.08)"}`,
+                    }}>
+                    {p}
+                  </button>
                 ))}
               </div>
             )}

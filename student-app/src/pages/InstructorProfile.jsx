@@ -81,7 +81,7 @@ const ChatSection = ({ inst, langCfg }) => {
   };
 
   return (
-    <div className="bg-white rounded-3xl border-2 border-gray-100 shadow-sm overflow-hidden">
+    <div className="bg-[oklch(0.17_0.02_285)] rounded-3xl border-2 border-[oklch(1_0_0/0.08)]  overflow-hidden">
       <div className={`bg-gradient-to-r ${langCfg.grad} px-5 py-4 flex items-center gap-3`}>
         <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center text-xl">💬</div>
         <h3 className="font-bold text-white">{t("instructors.askQuestion", { name: inst.name.split(" ")[0] })}</h3>
@@ -90,17 +90,17 @@ const ChatSection = ({ inst, langCfg }) => {
       {/* Messages */}
       <div className="px-5 py-4 space-y-4 min-h-[160px] max-h-80 overflow-y-auto bg-gray-50">
         {loading ? (
-          <p className="text-center text-gray-400 text-sm py-6">Loading…</p>
+          <p className="text-center text-[oklch(0.45_0.02_285)] text-sm py-6">Loading…</p>
         ) : messages.length === 0 ? (
           <div className="text-center py-8">
             <div className="text-4xl mb-2">💬</div>
-            <p className="text-gray-400 text-sm">{t("instructors.noMessagesYet")}</p>
+            <p className="text-[oklch(0.45_0.02_285)] text-sm">{t("instructors.noMessagesYet")}</p>
           </div>
         ) : (
           messages.map(msg => (
             <div key={msg.id} className="space-y-2">
               <div className="flex justify-end">
-                <div className={`bg-gradient-to-r ${langCfg.grad} text-white text-sm rounded-2xl rounded-br-sm px-4 py-2.5 max-w-[80%] shadow-sm`}>
+                <div className={`bg-gradient-to-r ${langCfg.grad} text-white text-sm rounded-2xl rounded-br-sm px-4 py-2.5 max-w-[80%] `}>
                   <p>{msg.question}</p>
                   <p className="text-[10px] text-white/60 mt-1 text-right">{new Date(msg.created_at).toLocaleString()}</p>
                 </div>
@@ -108,13 +108,13 @@ const ChatSection = ({ inst, langCfg }) => {
               {msg.reply ? (
                 <div className="flex justify-start gap-2">
                   <Avatar name={inst.name} photoUrl={inst.photo_url} size="sm" grad={langCfg.grad} />
-                  <div className="bg-white border border-gray-200 text-gray-800 text-sm rounded-2xl rounded-bl-sm px-4 py-2.5 max-w-[80%] shadow-sm">
+                  <div className="bg-white border border-[oklch(1_0_0/0.08)] text-white text-sm rounded-2xl rounded-bl-sm px-4 py-2.5 max-w-[80%] ">
                     <p>{msg.reply}</p>
-                    <p className="text-[10px] text-gray-400 mt-1">{new Date(msg.replied_at).toLocaleString()}</p>
+                    <p className="text-[10px] text-[oklch(0.45_0.02_285)] mt-1">{new Date(msg.replied_at).toLocaleString()}</p>
                   </div>
                 </div>
               ) : (
-                <p className="text-xs text-gray-400 italic pl-12">{t("instructors.waitingReply")}</p>
+                <p className="text-xs text-[oklch(0.45_0.02_285)] italic pl-12">{t("instructors.waitingReply")}</p>
               )}
             </div>
           ))
@@ -123,14 +123,14 @@ const ChatSection = ({ inst, langCfg }) => {
       </div>
 
       {/* Input */}
-      <div className="px-4 py-3 border-t border-gray-100 flex gap-2 bg-white">
+      <div className="px-4 py-3 border-t border-[oklch(1_0_0/0.07)] flex gap-2 bg-white">
         <textarea
           value={text}
           onChange={e => setText(e.target.value)}
           onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
           rows={2}
           placeholder={t("instructors.questionPlaceholder")}
-          className="flex-1 resize-none border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400"
+          className="flex-1 resize-none border border-[oklch(1_0_0/0.08)] rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400"
         />
         <button
           onClick={send}
@@ -165,10 +165,10 @@ const InstructorProfile = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-sky-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-400 text-sm">{t("instructors.loadingProfile")}</p>
+          <p className="text-[oklch(0.45_0.02_285)] text-sm">{t("instructors.loadingProfile")}</p>
         </div>
       </div>
     );
@@ -180,7 +180,7 @@ const InstructorProfile = () => {
   const specialties = inst.specialty ? inst.specialty.split(",").map(s => s.trim()) : [];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
 
       {/* Hero banner */}
       <div className={`relative overflow-hidden bg-gradient-to-br ${langCfg.grad} text-white`}>
@@ -234,43 +234,43 @@ const InstructorProfile = () => {
         <div className="lg:col-span-1 space-y-5">
 
           {/* Quick info card */}
-          <div className="bg-white rounded-3xl border-2 border-gray-100 shadow-sm overflow-hidden">
+          <div className="bg-[oklch(0.17_0.02_285)] rounded-3xl border-2 border-[oklch(1_0_0/0.08)]  overflow-hidden">
             <div className={`bg-gradient-to-r ${langCfg.grad} px-5 py-3 flex items-center gap-2`}>
               <span className="text-white font-bold text-sm">ℹ️ {t("instructors.quickInfo")}</span>
             </div>
             <div className="p-5 space-y-3">
               {inst.language && (
                 <div className="flex items-center gap-3">
-                  <div className={`w-8 h-8 rounded-xl bg-gradient-to-br ${langCfg.grad} flex items-center justify-center text-sm shadow-sm`}>🌍</div>
+                  <div className={`w-8 h-8 rounded-xl bg-gradient-to-br ${langCfg.grad} flex items-center justify-center text-sm `}>🌍</div>
                   <div>
-                    <p className="text-xs text-gray-400">{t("instructors.teaches")}</p>
-                    <p className="text-sm font-semibold text-gray-800">{langCfg.label}</p>
+                    <p className="text-xs text-[oklch(0.45_0.02_285)]">{t("instructors.teaches")}</p>
+                    <p className="text-sm font-semibold text-white">{langCfg.label}</p>
                   </div>
                 </div>
               )}
               {inst.years_experience && (
                 <div className="flex items-center gap-3">
-                  <div className={`w-8 h-8 rounded-xl bg-gradient-to-br ${langCfg.grad} flex items-center justify-center text-sm shadow-sm`}>⏱️</div>
+                  <div className={`w-8 h-8 rounded-xl bg-gradient-to-br ${langCfg.grad} flex items-center justify-center text-sm `}>⏱️</div>
                   <div>
-                    <p className="text-xs text-gray-400">{t("instructors.experience")}</p>
-                    <p className="text-sm font-semibold text-gray-800">{inst.years_experience} {t("instructors.years")}</p>
+                    <p className="text-xs text-[oklch(0.45_0.02_285)]">{t("instructors.experience")}</p>
+                    <p className="text-sm font-semibold text-white">{inst.years_experience} {t("instructors.years")}</p>
                   </div>
                 </div>
               )}
               {inst.organization && (
                 <div className="flex items-center gap-3">
-                  <div className={`w-8 h-8 rounded-xl bg-gradient-to-br ${langCfg.grad} flex items-center justify-center text-sm shadow-sm`}>🏛️</div>
+                  <div className={`w-8 h-8 rounded-xl bg-gradient-to-br ${langCfg.grad} flex items-center justify-center text-sm `}>🏛️</div>
                   <div>
-                    <p className="text-xs text-gray-400">{t("instructors.organization")}</p>
-                    <p className="text-sm font-semibold text-gray-800">{inst.organization}</p>
+                    <p className="text-xs text-[oklch(0.45_0.02_285)]">{t("instructors.organization")}</p>
+                    <p className="text-sm font-semibold text-white">{inst.organization}</p>
                   </div>
                 </div>
               )}
               {inst.email && (
                 <div className="flex items-center gap-3">
-                  <div className={`w-8 h-8 rounded-xl bg-gradient-to-br ${langCfg.grad} flex items-center justify-center text-sm shadow-sm`}>✉️</div>
+                  <div className={`w-8 h-8 rounded-xl bg-gradient-to-br ${langCfg.grad} flex items-center justify-center text-sm `}>✉️</div>
                   <div>
-                    <p className="text-xs text-gray-400">{t("profile.emailLabel")}</p>
+                    <p className="text-xs text-[oklch(0.45_0.02_285)]">{t("profile.emailLabel")}</p>
                     <a href={`mailto:${inst.email}`} className="text-sm font-semibold text-sky-600 hover:underline truncate block max-w-[160px]">{inst.email}</a>
                   </div>
                 </div>
@@ -280,9 +280,9 @@ const InstructorProfile = () => {
 
           {/* Specialties */}
           {specialties.length > 0 && (
-            <div className="bg-white rounded-3xl border-2 border-gray-100 shadow-sm p-5">
-              <h3 className="font-bold text-gray-700 text-sm mb-3 flex items-center gap-2">
-                <div className={`w-7 h-7 rounded-lg bg-gradient-to-br ${langCfg.grad} flex items-center justify-center text-xs shadow-sm`}>🎯</div>
+            <div className="bg-[oklch(0.17_0.02_285)] rounded-3xl border-2 border-[oklch(1_0_0/0.08)]  p-5">
+              <h3 className="font-bold text-[oklch(0.75_0.02_285)] text-sm mb-3 flex items-center gap-2">
+                <div className={`w-7 h-7 rounded-lg bg-gradient-to-br ${langCfg.grad} flex items-center justify-center text-xs `}>🎯</div>
                 {t("instructors.specialties")}
               </h3>
               <div className="flex flex-wrap gap-2">
@@ -297,15 +297,15 @@ const InstructorProfile = () => {
 
           {/* Posts */}
           {posts.length > 0 && (
-            <div className="bg-white rounded-3xl border-2 border-gray-100 shadow-sm overflow-hidden">
+            <div className="bg-[oklch(0.17_0.02_285)] rounded-3xl border-2 border-[oklch(1_0_0/0.08)]  overflow-hidden">
               <div className={`bg-gradient-to-r ${langCfg.grad} px-5 py-3`}>
                 <span className="text-white font-bold text-sm">📢 Posts ({posts.length})</span>
               </div>
               <div className="p-4 space-y-3 max-h-64 overflow-y-auto">
                 {posts.map(p => (
                   <div key={p.id} className={`${langCfg.light} rounded-2xl px-4 py-3 border ${langCfg.border}`}>
-                    <p className="text-sm text-gray-800 leading-relaxed">{p.content}</p>
-                    <p className="text-[10px] text-gray-400 mt-1.5">{new Date(p.created_at).toLocaleDateString()}</p>
+                    <p className="text-sm text-white leading-relaxed">{p.content}</p>
+                    <p className="text-[10px] text-[oklch(0.45_0.02_285)] mt-1.5">{new Date(p.created_at).toLocaleDateString()}</p>
                   </div>
                 ))}
               </div>
@@ -318,12 +318,12 @@ const InstructorProfile = () => {
 
           {/* Bio */}
           {inst.bio && (
-            <div className="bg-white rounded-3xl border-2 border-gray-100 shadow-sm overflow-hidden">
+            <div className="bg-[oklch(0.17_0.02_285)] rounded-3xl border-2 border-[oklch(1_0_0/0.08)]  overflow-hidden">
               <div className={`bg-gradient-to-r ${langCfg.grad} px-5 py-3 flex items-center gap-2`}>
                 <span className="text-white font-bold text-sm">👤 {t("instructors.about", { name: inst.name.split(" ")[0] })}</span>
               </div>
               <div className="p-6">
-                <p className="text-gray-600 leading-relaxed whitespace-pre-wrap">{inst.bio}</p>
+                <p className="text-[oklch(0.65_0.02_285)] leading-relaxed whitespace-pre-wrap">{inst.bio}</p>
               </div>
             </div>
           )}
@@ -331,7 +331,7 @@ const InstructorProfile = () => {
           {/* Chat */}
           <ChatSection inst={inst} langCfg={langCfg} />
 
-          <p className="text-center text-xs text-gray-400">
+          <p className="text-center text-xs text-[oklch(0.45_0.02_285)]">
             <Link to="/my-questions" className={`${langCfg.text} hover:underline font-semibold`}>
               {t("instructors.viewAllQuestions")}
             </Link>
@@ -343,3 +343,4 @@ const InstructorProfile = () => {
 };
 
 export default InstructorProfile;
+

@@ -583,67 +583,63 @@ function CardDetail({ entry, onClose, onUpdate, onDelete, onRegenerate }) {
   );
 }
 
-/* ─── Pipeline Card (compact) ─── */
+/* ─── country → photo ─── */
+const COUNTRY_PHOTOS = {
+  Germany:     "https://images.unsplash.com/photo-1556660616-a3577e4f8fdf?w=400&q=60",
+  Poland:      "https://images.unsplash.com/photo-1519197924294-4ba991a11128?w=400&q=60",
+  Austria:     "https://images.unsplash.com/photo-1516550893885-985c836c5eba?w=400&q=60",
+  Netherlands: "https://images.unsplash.com/photo-1541963463532-d68292c34b19?w=400&q=60",
+  France:      "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=400&q=60",
+  Sweden:      "https://images.unsplash.com/photo-1509356843151-3e7d96241e11?w=400&q=60",
+};
+const DEFAULT_PHOTO = "https://images.unsplash.com/photo-1562774053-701939374585?w=400&q=60";
+
+/* ─── Pipeline Card (photo style) ─── */
 function PipelineCard({ entry, onClick }) {
   const { t } = useTranslation();
   const uni = entry.university;
-  const checklist = Array.isArray(entry.checklist) ? entry.checklist : [];
-  const doneCount = checklist.filter(i => i.done).length;
-  const gaps = Array.isArray(entry.fit_gaps) ? entry.fit_gaps.filter(g => !g.startsWith("Strengths:")) : [];
+  const photo = COUNTRY_PHOTOS[uni.country] || DEFAULT_PHOTO;
 
   return (
-    <div
-      onClick={onClick}
-      className="bg-slate-800/60 border border-slate-700/50 rounded-2xl p-4 cursor-pointer hover:border-indigo-500/50 hover:bg-slate-800 transition-all group space-y-3"
-    >
-      {/* University */}
-      <div className="flex items-start gap-2">
-        {uni.logo_url
-          ? <img src={uni.logo_url} alt={uni.name} className="w-8 h-8 rounded-lg bg-white object-contain p-0.5 shrink-0" />
-          : <div className="w-8 h-8 rounded-lg bg-slate-700 flex items-center justify-center text-base shrink-0">{flag(uni.country)}</div>
-        }
-        <div className="min-w-0">
-          <p className="text-white text-sm font-semibold leading-tight truncate">{uni.name}</p>
-          <p className="text-slate-500 text-xs">{uni.city}, {uni.country}</p>
-        </div>
-      </div>
+    <div onClick={onClick}
+      className="rounded-2xl overflow-hidden cursor-pointer transition-all group hover:opacity-90"
+      style={{ border: "1px solid oklch(1 0 0 / 0.08)", background: "oklch(0.20 0.024 285)" }}>
 
-      {/* Fit score */}
-      {entry.fit_score ? (
-        <div className={`flex items-center gap-2 px-2.5 py-1.5 rounded-xl border text-xs font-bold w-fit ${scoreBg(entry.fit_score)}`}>
-          <span className={scoreColor(entry.fit_score)}>{t("pipeline.match", { score: entry.fit_score })}</span>
-        </div>
-      ) : (
-        <div className="text-xs text-slate-500 italic">{t("pipeline.noAnalysisCard")}</div>
-      )}
-
-      {/* Gaps (max 2) */}
-      {gaps.slice(0, 2).map((g, i) => (
-        <div key={i} className="flex items-start gap-1.5 text-xs text-amber-400">
-          <span className="shrink-0 mt-0.5">⚠</span>
-          <span className="line-clamp-1">{g}</span>
-        </div>
-      ))}
-
-      {/* Checklist + decision */}
-      <div className="flex items-center justify-between">
-        {checklist.length > 0 && (
-          <div className="flex items-center gap-1.5">
-            <div className="h-1 w-16 bg-slate-700 rounded-full overflow-hidden">
-              <div className="h-full bg-indigo-500 rounded-full" style={{ width: `${(doneCount / checklist.length) * 100}%` }} />
-            </div>
-            <span className="text-xs text-slate-400">{doneCount}/{checklist.length}</span>
-          </div>
-        )}
-        {entry.decision && (
-          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border capitalize ${DECISION_STYLES[entry.decision]}`}>
-            {entry.decision}
+      {/* Photo */}
+      <div className="h-28 relative overflow-hidden">
+        <img src={photo} alt="" className="w-full h-full object-cover"
+             style={{ filter: "brightness(0.7)" }} />
+        <div className="absolute inset-0" style={{ background: "linear-gradient(to top, oklch(0.13 0.018 285 / 0.85), transparent 55%)" }} />
+        {/* country flag top-left */}
+        <span className="absolute top-2 start-2 text-lg">{flag(uni.country)}</span>
+        {/* score badge top-right */}
+        {entry.fit_score && (
+          <span className="absolute top-2 end-2 text-[11px] font-extrabold text-white px-2 py-0.5 rounded-lg"
+                style={{ background: "linear-gradient(135deg, oklch(0.55 0.22 296), oklch(0.50 0.20 264))" }}>
+            {entry.fit_score}%
           </span>
         )}
       </div>
 
-      <div className="text-[10px] text-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity text-right">
-        {t("pipeline.clickToOpen")}
+      {/* Info */}
+      <div className="p-3">
+        <p className="font-bold text-white text-sm leading-snug">{uni.name}</p>
+        <p className="text-xs mt-0.5" style={{ color: "oklch(0.55 0.02 285)" }}>{uni.city}</p>
+
+        {/* deadline pill */}
+        {entry.deadline_note && (
+          <span className="inline-block mt-2 text-[11px] font-semibold px-2.5 py-1 rounded-lg"
+                style={{ background: "oklch(0.55 0.22 296 / 0.18)", color: "oklch(0.78 0.12 296)" }}>
+            {entry.deadline_note}
+          </span>
+        )}
+
+        {/* decision badge */}
+        {entry.decision && (
+          <span className={`inline-block mt-2 text-[10px] font-bold px-2 py-0.5 rounded-full border capitalize ${DECISION_STYLES[entry.decision]}`}>
+            {entry.decision}
+          </span>
+        )}
       </div>
     </div>
   );
@@ -723,46 +719,52 @@ export default function Pipeline() {
     : null;
   const acceptedCount = entries.filter(e => e.decision === "accepted").length;
 
+  const BG     = "oklch(0.13 0.018 285)";
+  const SURF   = "oklch(0.17 0.022 285)";
+  const CARD   = "oklch(0.20 0.024 285)";
+  const BORDER = "oklch(1 0 0 / 0.07)";
+  const GRAD   = "linear-gradient(135deg, oklch(0.55 0.22 296), oklch(0.50 0.20 264))";
+
+  const decisionCount  = entries.filter(e => e.status === "decision").length;
+  const deadlineCount  = entries.filter(e => e.deadline_note).length;
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-        <div className="text-slate-400">{t("pipeline.loadingPipeline")}</div>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: BG }}>
+        <div className="w-8 h-8 border-4 border-violet-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 px-4 py-6">
+    <div className="min-h-screen" style={{ background: BG, color: "#fff" }}>
+      <div className="max-w-7xl mx-auto px-6 py-6">
+
       {/* Header */}
-      <div className="max-w-7xl mx-auto mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-3">
-            <span className="text-3xl">🚀</span> {t("pipeline.title")}
-          </h1>
-          <p className="text-slate-400 text-sm mt-0.5">
-            {t("pipeline.subtitle")}
-          </p>
+          <h1 className="text-2xl font-bold text-white">{t("pipeline.title")}</h1>
+          <p className="text-sm mt-0.5" style={{ color: "oklch(0.55 0.02 285)" }}>{t("pipeline.subtitle")}</p>
         </div>
-        <button
-          onClick={() => setShowAdd(true)}
-          className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl transition-colors shadow-lg shadow-indigo-900/30 shrink-0"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          {t("pipeline.addUniversity")}
+        <button onClick={() => setShowAdd(true)}
+          className="flex items-center gap-2 px-5 py-2.5 text-white font-bold rounded-xl transition hover:opacity-90 shrink-0"
+          style={{ background: GRAD, boxShadow: "0 4px 18px oklch(0.55 0.22 296 / 0.35)" }}>
+          + {t("pipeline.addUniversity")}
         </button>
       </div>
 
-      {/* Stats bar */}
+      {/* Stats */}
       {totalCount > 0 && (
-        <div className="max-w-7xl mx-auto mb-6 grid grid-cols-3 gap-3">
+        <div className="mb-6 grid grid-cols-3 gap-4">
           {[
-            { label: t("pipeline.stats.universities"), value: totalCount, color: "text-indigo-400" },
-            { label: t("pipeline.stats.avgScore"), value: avgScore ? `${avgScore}%` : "—", color: avgScore ? scoreColor(avgScore) : "text-slate-400" },
-            { label: t("pipeline.stats.accepted"), value: acceptedCount, color: "text-emerald-400" },
+            { label: t("pipeline.stats.universities"), value: totalCount },
+            { label: t("pipeline.stats.avgScore"),     value: decisionCount },
+            { label: t("pipeline.stats.accepted"),     value: deadlineCount },
           ].map(s => (
-            <div key={s.label} className="bg-slate-800/50 border border-slate-700/50 rounded-2xl p-4 text-center">
-              <div className={`text-2xl font-bold ${s.color}`}>{s.value}</div>
-              <div className="text-slate-500 text-xs mt-0.5">{s.label}</div>
+            <div key={s.label} className="rounded-2xl p-5 text-center"
+                 style={{ background: SURF, border: `1px solid ${BORDER}` }}>
+              <div className="text-3xl font-extrabold text-white">{s.value}</div>
+              <div className="text-xs mt-1" style={{ color: "oklch(0.55 0.02 285)" }}>{s.label}</div>
             </div>
           ))}
         </div>
@@ -773,11 +775,10 @@ export default function Pipeline() {
         <div className="max-w-lg mx-auto text-center py-20">
           <div className="text-6xl mb-4">🚀</div>
           <h2 className="text-white text-xl font-bold mb-2">{t("pipeline.emptyTitle")}</h2>
-          <p className="text-slate-400 text-sm mb-6">
-            {t("pipeline.emptyDesc")}
-          </p>
+          <p className="text-sm mb-6" style={{ color: "oklch(0.55 0.02 285)" }}>{t("pipeline.emptyDesc")}</p>
           <button onClick={() => setShowAdd(true)}
-            className="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl transition-colors">
+            className="px-6 py-3 text-white font-bold rounded-xl transition hover:opacity-90"
+            style={{ background: GRAD }}>
             {t("pipeline.addFirst")}
           </button>
         </div>
@@ -785,20 +786,18 @@ export default function Pipeline() {
 
       {/* Kanban board */}
       {totalCount > 0 && (
-        <div className="max-w-7xl mx-auto overflow-x-auto pb-4">
+        <div className="overflow-x-auto pb-4">
           <div className="flex gap-4 min-w-max">
             {COLUMNS.map(col => {
               const colEntries = entries.filter(e => e.status === col.id);
-              const style = COL_STYLES[col.color];
               return (
-                <div key={col.id} className="w-64 shrink-0 flex flex-col gap-3">
+                <div key={col.id} className="w-56 shrink-0 flex flex-col gap-3">
                   {/* Column header */}
-                  <div className={`flex items-center justify-between px-3 py-2.5 rounded-xl border ${style.header}`}>
-                    <div className="flex items-center gap-2">
-                      <span className={`w-2 h-2 rounded-full ${style.dot}`} />
-                      <span className="text-white text-sm font-semibold">{col.icon} {col.label}</span>
-                    </div>
-                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${style.badge}`}>{colEntries.length}</span>
+                  <div className="flex items-center justify-between px-3 py-2.5 rounded-xl"
+                       style={{ background: SURF, border: `1px solid ${BORDER}` }}>
+                    <span className="text-white text-sm font-bold">{col.label}</span>
+                    <span className="text-[11px] font-bold text-white px-1.5 py-0.5 rounded-full"
+                          style={{ background: GRAD }}>{colEntries.length}</span>
                   </div>
 
                   {/* Cards */}
@@ -807,8 +806,9 @@ export default function Pipeline() {
                       <PipelineCard key={entry.id} entry={entry} onClick={() => setActiveEntry(entry)} />
                     ))}
                     {colEntries.length === 0 && (
-                      <div className="border-2 border-dashed border-slate-800 rounded-2xl h-24 flex items-center justify-center">
-                        <span className="text-slate-600 text-xs">{t("pipeline.empty")}</span>
+                      <div className="rounded-2xl h-24 flex items-center justify-center"
+                           style={{ border: `2px dashed ${BORDER}` }}>
+                        <span className="text-xs" style={{ color: "oklch(0.35 0.02 285)" }}>{t("pipeline.empty")}</span>
                       </div>
                     )}
                   </div>
@@ -818,6 +818,8 @@ export default function Pipeline() {
           </div>
         </div>
       )}
+
+      </div>
 
       {/* Modals */}
       {showAdd && <AddModal onAdd={addToPipeline} onClose={() => !adding && setShowAdd(false)} adding={adding} />}

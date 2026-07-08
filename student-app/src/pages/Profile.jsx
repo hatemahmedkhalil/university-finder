@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import toast from "react-hot-toast";
 import { useAuth } from "../context/AuthContext";
+import PageHero from "../components/PageHero";
 import { useTranslation } from "react-i18next";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
@@ -129,36 +130,36 @@ const CountryDropdown = ({ value, onChange }) => {
         type="button"
         onClick={() => setOpen((o) => !o)}
         className={`w-full border rounded-lg px-4 py-2.5 text-left flex items-center justify-between transition focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-          value ? "border-gray-200 text-gray-900" : "border-gray-200 text-gray-400"
+          value ? "border-gray-200 text-white" : "border-gray-200 text-[oklch(0.45_0.02_285)]"
         }`}
       >
         <span>{value || t("profile.selectNationality")}</span>
-        <svg className={`w-4 h-4 text-gray-400 transition-transform ${open ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg className={`w-4 h-4 text-[oklch(0.45_0.02_285)] transition-transform ${open ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
       </button>
 
       {open && (
-        <div className="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden">
-          <div className="p-2 border-b border-gray-100">
+        <div className="absolute z-50 mt-1 w-full bg-white border border-[oklch(1_0_0/0.08)] rounded-xl overflow-hidden">
+          <div className="p-2 border-b border-[oklch(1_0_0/0.07)]">
             <input
               autoFocus
               type="text"
               placeholder={t("profile.searchNationality")}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 text-sm border border-[oklch(1_0_0/0.08)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
           <ul className="max-h-52 overflow-y-auto py-1">
             {filtered.length === 0 ? (
-              <li className="px-4 py-2 text-sm text-gray-400">{t("profile.noResults")}</li>
+              <li className="px-4 py-2 text-sm text-[oklch(0.45_0.02_285)]">{t("profile.noResults")}</li>
             ) : filtered.map((n) => (
               <li
                 key={n}
                 onClick={() => { onChange(n); setOpen(false); setSearch(""); }}
                 className={`px-4 py-2 text-sm cursor-pointer hover:bg-blue-50 hover:text-blue-700 ${
-                  value === n ? "bg-blue-50 text-blue-700 font-medium" : "text-gray-700"
+                  value === n ? "bg-blue-50 text-blue-700 font-medium" : "text-[oklch(0.75_0.02_285)]"
                 }`}
               >
                 {n}
@@ -195,36 +196,36 @@ const FieldOfStudyDropdown = ({ value, onChange }) => {
         type="button"
         onClick={() => setOpen(o => !o)}
         className={`w-full border rounded-lg px-4 py-2.5 text-left flex items-center justify-between transition focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-          value ? "border-gray-200 text-gray-900" : "border-gray-200 text-gray-400"
+          value ? "border-gray-200 text-white" : "border-gray-200 text-[oklch(0.45_0.02_285)]"
         }`}
       >
         <span>{value || "Select your field of study"}</span>
-        <svg className={`w-4 h-4 text-gray-400 transition-transform ${open ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg className={`w-4 h-4 text-[oklch(0.45_0.02_285)] transition-transform ${open ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
       </button>
 
       {open && (
-        <div className="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden">
+        <div className="absolute z-50 mt-1 w-full bg-white border border-[oklch(1_0_0/0.08)] rounded-xl overflow-hidden">
           {/* Search */}
-          <div className="p-2 border-b border-gray-100">
+          <div className="p-2 border-b border-[oklch(1_0_0/0.07)]">
             <input
               autoFocus
               type="text"
               placeholder="Search field…"
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 text-sm border border-[oklch(1_0_0/0.08)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
           <ul className="max-h-64 overflow-y-auto py-1">
             {filtered.length === 0 ? (
-              <li className="px-4 py-2 text-sm text-gray-400">No results</li>
+              <li className="px-4 py-2 text-sm text-[oklch(0.45_0.02_285)]">No results</li>
             ) : filtered.map(g => (
               <li key={g.category}>
                 {/* Category header */}
-                <div className="px-4 pt-2.5 pb-1 text-[10px] font-bold text-gray-400 uppercase tracking-widest bg-gray-50 border-b border-gray-100">
+                <div className="px-4 pt-2.5 pb-1 text-[10px] font-bold text-[oklch(0.45_0.02_285)] uppercase tracking-widest bg-gray-50 border-b border-[oklch(1_0_0/0.07)]">
                   {g.category}
                 </div>
                 {g.fields.map(f => (
@@ -233,7 +234,7 @@ const FieldOfStudyDropdown = ({ value, onChange }) => {
                     type="button"
                     onClick={() => { onChange(f); setOpen(false); setSearch(""); }}
                     className={`w-full text-left px-5 py-2 text-sm transition hover:bg-blue-50 hover:text-blue-700 ${
-                      value === f ? "bg-blue-50 text-blue-700 font-medium" : "text-gray-700"
+                      value === f ? "bg-blue-50 text-blue-700 font-medium" : "text-[oklch(0.75_0.02_285)]"
                     }`}
                   >
                     {f}
@@ -321,11 +322,11 @@ const LanguageManager = () => {
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 space-y-4">
+    <div className="bg-[oklch(0.17_0.02_285)] rounded-2xl border border-[oklch(1_0_0/0.07)] p-5 space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="font-bold text-gray-800 flex items-center gap-2">🗣️ {t("profile.languages.title")}</h3>
-          <p className="text-xs text-gray-400 mt-0.5">{t("profile.languages.subtitle")}</p>
+          <h3 className="font-bold text-white flex items-center gap-2">🗣️ {t("profile.languages.title")}</h3>
+          <p className="text-xs text-[oklch(0.45_0.02_285)] mt-0.5">{t("profile.languages.subtitle")}</p>
         </div>
         {!adding && (
           <button
@@ -343,7 +344,7 @@ const LanguageManager = () => {
         <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-4 space-y-3">
           <p className="text-xs font-bold text-indigo-700 uppercase tracking-wide">{t("profile.languages.addTitle")}</p>
           <div>
-            <p className="text-xs text-gray-500 mb-1.5 font-medium">{t("profile.languages.languageLabel")}</p>
+            <p className="text-xs text-[oklch(0.55_0.02_285)] mb-1.5 font-medium">{t("profile.languages.languageLabel")}</p>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {LANG_OPTIONS.map(({ value, label, flag }) => (
                 <button
@@ -353,7 +354,7 @@ const LanguageManager = () => {
                   className={`py-2 rounded-xl border text-xs font-semibold transition flex flex-col items-center gap-0.5 ${
                     addForm.language === value
                       ? "bg-indigo-600 text-white border-indigo-600"
-                      : "bg-white text-gray-600 border-gray-200 hover:border-indigo-300"
+                      : "bg-white text-[oklch(0.65_0.02_285)] border-gray-200 hover:border-indigo-300"
                   }`}
                 >
                   <span className="text-base">{flag}</span>
@@ -363,7 +364,7 @@ const LanguageManager = () => {
             </div>
           </div>
           <div>
-            <p className="text-xs text-gray-500 mb-1.5 font-medium">{t("profile.languages.proficiency")}</p>
+            <p className="text-xs text-[oklch(0.55_0.02_285)] mb-1.5 font-medium">{t("profile.languages.proficiency")}</p>
             <div className="flex gap-2 flex-wrap">
               {CEFR.map(l => (
                 <button
@@ -373,7 +374,7 @@ const LanguageManager = () => {
                   className={`px-3 py-1.5 rounded-lg border text-xs font-bold transition ${
                     addForm.level === l
                       ? "bg-indigo-600 text-white border-indigo-600"
-                      : "bg-white text-gray-600 border-gray-200 hover:border-indigo-400"
+                      : "bg-white text-[oklch(0.65_0.02_285)] border-gray-200 hover:border-indigo-400"
                   }`}
                 >
                   {l}
@@ -393,7 +394,7 @@ const LanguageManager = () => {
             <button
               type="button"
               onClick={() => setAdding(false)}
-              className="px-4 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-600 hover:bg-gray-50 transition"
+              className="px-4 py-2.5 border border-[oklch(1_0_0/0.08)] rounded-xl text-sm text-[oklch(0.65_0.02_285)] hover:bg-[oklch(0.20_0.024_285)] transition"
             >
               {t("common.cancel")}
             </button>
@@ -403,9 +404,9 @@ const LanguageManager = () => {
 
       {/* Language cards */}
       {loading ? (
-        <div className="text-center py-4 text-gray-400 text-sm">{t("common.loading")}</div>
+        <div className="text-center py-4 text-[oklch(0.45_0.02_285)] text-sm">{t("common.loading")}</div>
       ) : langs.length === 0 ? (
-        <div className="text-center py-6 text-gray-400">
+        <div className="text-center py-6 text-[oklch(0.45_0.02_285)]">
           <div className="text-3xl mb-2">🗣️</div>
           <p className="text-sm">{t("profile.languages.empty")}</p>
           <p className="text-xs mt-1">{t("profile.languages.emptySub")}</p>
@@ -416,12 +417,12 @@ const LanguageManager = () => {
             const meta = getLangMeta(l.language);
             const isEditing = editingId === l.id;
             return (
-              <div key={l.id} className="flex items-start gap-3 bg-gray-50 rounded-xl p-4 border border-gray-100">
+              <div key={l.id} className="flex items-start gap-3 bg-[oklch(0.17_0.02_285)] rounded-xl p-4 border border-[oklch(1_0_0/0.07)]">
                 <div className="text-2xl shrink-0 mt-0.5">{meta.flag}</div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-bold text-gray-900 text-sm">{meta.label}</span>
-                    <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${CEFR_COLOR[l.level] || "bg-gray-100 text-gray-600"}`}>
+                    <span className="font-bold text-white text-sm">{meta.label}</span>
+                    <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${CEFR_COLOR[l.level] || "bg-gray-100 text-[oklch(0.65_0.02_285)]"}`}>
                       {l.level} · {CEFR_LABEL[l.level] || l.level}
                     </span>
                   </div>
@@ -437,7 +438,7 @@ const LanguageManager = () => {
                             className={`px-2.5 py-1 rounded-lg border text-xs font-bold transition ${
                               editLevel === lvl
                                 ? "bg-indigo-600 text-white border-indigo-600"
-                                : "bg-white text-gray-600 border-gray-200 hover:border-indigo-400"
+                                : "bg-white text-[oklch(0.65_0.02_285)] border-gray-200 hover:border-indigo-400"
                             }`}
                           >
                             {lvl}
@@ -456,7 +457,7 @@ const LanguageManager = () => {
                         <button
                           type="button"
                           onClick={() => setEditingId(null)}
-                          className="text-xs text-gray-500 border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-50 transition"
+                          className="text-xs text-[oklch(0.55_0.02_285)] border border-[oklch(1_0_0/0.08)] px-3 py-1.5 rounded-lg hover:bg-[oklch(0.20_0.024_285)] transition"
                         >
                           {t("common.cancel")}
                         </button>
@@ -637,24 +638,13 @@ const Profile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
 
-      {/* Hero */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-indigo-700 via-violet-700 to-purple-800 text-white">
-        <div className="absolute inset-0">
-          <div className="absolute top-6 left-1/4 w-64 h-64 bg-violet-400/20 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 right-1/4 w-72 h-72 bg-indigo-400/20 rounded-full blur-3xl" />
-        </div>
-        <div className="relative max-w-2xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
-          <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-violet-200 text-xs font-bold px-4 py-1.5 rounded-full mb-4">
-            👤 {t("profile.profileBadge")}
-          </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-2">
-            {profile ? t("profile.title") : t("profile.titleNew")}
-          </h1>
-          <p className="text-indigo-200">{t("profile.tellUs")}</p>
-        </div>
-      </div>
+      <PageHero
+        photo="https://images.unsplash.com/photo-1529665253569-6d01c0eaf7b6?w=1400&q=80"
+        title={profile ? t("profile.title") : t("profile.titleNew")}
+        subtitle={t("profile.tellUs")}
+      />
 
       <div className="max-w-2xl mx-auto px-4 py-8">
 
@@ -663,17 +653,17 @@ const Profile = () => {
         <h3 className="text-sm font-bold text-indigo-800 mb-3 flex items-center gap-2">🔐 {t("profile.accountSection")}</h3>
         <div className="flex items-center justify-between flex-wrap gap-3">
           <div>
-            <p className="text-xs text-gray-500 mb-1">{t("profile.emailLabel")}</p>
-            <p className="text-sm font-semibold text-gray-800">{user?.email}</p>
+            <p className="text-xs text-[oklch(0.55_0.02_285)] mb-1">{t("profile.emailLabel")}</p>
+            <p className="text-sm font-semibold text-white">{user?.email}</p>
           </div>
           <div>
-            <p className="text-xs text-gray-500 mb-1">{t("profile.planLabel")}</p>
+            <p className="text-xs text-[oklch(0.55_0.02_285)] mb-1">{t("profile.planLabel")}</p>
             {user?.plan === "premium" || user?.plan === "pro" ? (
-              <span className="inline-flex items-center gap-1.5 bg-gradient-to-r from-amber-400 to-yellow-500 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">
+              <span className="inline-flex items-center gap-1.5 bg-gradient-to-r from-amber-400 to-yellow-500 text-white text-xs font-bold px-3 py-1.5 rounded-full ">
                 👑 {user.plan.charAt(0).toUpperCase() + user.plan.slice(1)}
               </span>
             ) : (
-              <span className="inline-flex items-center gap-1.5 bg-gray-100 text-gray-600 text-xs font-bold px-3 py-1.5 rounded-full">
+              <span className="inline-flex items-center gap-1.5 bg-gray-100 text-[oklch(0.65_0.02_285)] text-xs font-bold px-3 py-1.5 rounded-full">
                 {t("profile.freePlanBadge")}
               </span>
             )}
@@ -689,8 +679,8 @@ const Profile = () => {
       <form onSubmit={handleSubmit} noValidate className="space-y-7">
 
         {/* ── Contact info ── */}
-        <div className="bg-gray-50 rounded-2xl border border-gray-100 p-5 space-y-4">
-          <h3 className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+        <div className="bg-[oklch(0.17_0.02_285)] rounded-2xl border border-[oklch(1_0_0/0.07)] p-5 space-y-4">
+          <h3 className="text-sm font-semibold text-[oklch(0.75_0.02_285)] flex items-center gap-2">
             <span>👤</span> {t("profile.contactInfo")}
           </h3>
 
@@ -700,27 +690,27 @@ const Profile = () => {
                 type="email"
                 readOnly
                 value={user?.email || ""}
-                className="w-full border border-gray-200 rounded-lg px-4 py-2.5 bg-gray-100 text-gray-500 cursor-not-allowed pr-24"
+                className="w-full border border-[oklch(1_0_0/0.08)] rounded-lg px-4 py-2.5 bg-gray-100 text-[oklch(0.55_0.02_285)] cursor-not-allowed pr-24"
               />
               <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full font-semibold">
                 {t("profile.accountEmail")}
               </span>
             </div>
-            <p className="mt-1 text-xs text-gray-400">{t("profile.emailReadonly")}</p>
+            <p className="mt-1 text-xs text-[oklch(0.45_0.02_285)]">{t("profile.emailReadonly")}</p>
           </Field>
 
           <Field label={t("profile.phoneLabel")}>
             <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm select-none">📞</span>
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[oklch(0.45_0.02_285)] text-sm select-none">📞</span>
               <input
                 type="tel"
                 value={form.phone_number}
                 onChange={(e) => set("phone_number", e.target.value)}
                 placeholder="+1 234 567 8900"
-                className="w-full border border-gray-200 rounded-lg pl-9 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-[oklch(1_0_0/0.08)] rounded-lg pl-9 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
-            <p className="mt-1 text-xs text-gray-400">{t("profile.phoneOptional")}</p>
+            <p className="mt-1 text-xs text-[oklch(0.45_0.02_285)]">{t("profile.phoneOptional")}</p>
           </Field>
         </div>
 
@@ -742,8 +732,8 @@ const Profile = () => {
                 onClick={() => set("degree_level", value)}
                 className={`flex-1 py-2.5 rounded-xl border text-sm font-medium transition ${
                   form.degree_level === value
-                    ? "bg-blue-600 text-white border-blue-600 shadow-sm"
-                    : "bg-white text-gray-600 border-gray-200 hover:border-blue-400"
+                    ? "bg-blue-600 text-white border-blue-600 "
+                    : "bg-white text-[oklch(0.65_0.02_285)] border-gray-200 hover:border-blue-400"
                 }`}
               >
                 {label}
@@ -763,7 +753,7 @@ const Profile = () => {
                 className={`px-4 py-1.5 rounded-lg border text-sm font-medium transition ${
                   form.gpa_scale === val
                     ? "bg-indigo-600 text-white border-indigo-600"
-                    : "bg-white text-gray-600 border-gray-200 hover:border-indigo-400"
+                    : "bg-white text-[oklch(0.65_0.02_285)] border-gray-200 hover:border-indigo-400"
                 }`}
               >
                 {lbl}
@@ -780,14 +770,14 @@ const Profile = () => {
               value={form.gpa_value}
               onChange={(e) => set("gpa_value", e.target.value)}
               placeholder={form.gpa_scale === "4.0" ? "e.g. 3.5" : "e.g. 85"}
-              className="w-full border border-gray-200 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 pr-20"
+              className="w-full border border-[oklch(1_0_0/0.08)] rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 pr-20"
             />
-            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-gray-400 font-medium">
+            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-[oklch(0.45_0.02_285)] font-medium">
               {form.gpa_scale === "4.0" ? "/ 4.0" : "%"}
             </span>
           </div>
           {form.gpa_value && form.gpa_scale === "percentage" && (
-            <p className="mt-1 text-xs text-gray-500">
+            <p className="mt-1 text-xs text-[oklch(0.55_0.02_285)]">
               ≈ {((parseFloat(form.gpa_value) / 100) * 4).toFixed(2)} {t("profile.gpaApprox")}
             </p>
           )}
@@ -799,7 +789,7 @@ const Profile = () => {
             <select
               value={form.budget_currency}
               onChange={(e) => set("budget_currency", e.target.value)}
-              className="border border-gray-200 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium bg-white"
+              className="border border-[oklch(1_0_0/0.08)] rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium bg-white"
             >
               {CURRENCIES.map(({ code, label }) => (
                 <option key={code} value={code}>{label}</option>
@@ -809,7 +799,7 @@ const Profile = () => {
             <button
               type="button"
               onClick={() => adjustBudget(-100)}
-              className="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 text-xl font-bold flex-shrink-0"
+              className="w-10 h-10 flex items-center justify-center rounded-lg border border-[oklch(1_0_0/0.08)] text-[oklch(0.65_0.02_285)] hover:bg-[oklch(0.20_0.024_285)] text-xl font-bold flex-shrink-0"
             >
               −
             </button>
@@ -820,13 +810,13 @@ const Profile = () => {
               step="100"
               value={form.budget_input}
               onChange={(e) => set("budget_input", parseInt(e.target.value) || 0)}
-              className="flex-1 border border-gray-200 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 text-center font-mono text-base"
+              className="flex-1 border border-[oklch(1_0_0/0.08)] rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 text-center font-mono text-base"
             />
 
             <button
               type="button"
               onClick={() => adjustBudget(100)}
-              className="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 text-xl font-bold flex-shrink-0"
+              className="w-10 h-10 flex items-center justify-center rounded-lg border border-[oklch(1_0_0/0.08)] text-[oklch(0.65_0.02_285)] hover:bg-[oklch(0.20_0.024_285)] text-xl font-bold flex-shrink-0"
             >
               +
             </button>
@@ -835,11 +825,11 @@ const Profile = () => {
           {form.budget_currency !== "EUR" && (
             <div className="mt-2 flex items-center gap-2">
               {ratesLoading ? (
-                <span className="text-xs text-gray-400">{t("profile.loadingRate")}</span>
+                <span className="text-xs text-[oklch(0.45_0.02_285)]">{t("profile.loadingRate")}</span>
               ) : budgetEur != null ? (
                 <span className="text-sm text-green-700 bg-green-50 border border-green-200 rounded-lg px-3 py-1.5">
                   ≈ <strong>€{budgetEur.toLocaleString()}</strong> EUR
-                  <span className="text-gray-400 ml-1 text-xs">({t("profile.usedForRec")})</span>
+                  <span className="text-[oklch(0.45_0.02_285)] ml-1 text-xs">({t("profile.usedForRec")})</span>
                 </span>
               ) : (
                 <span className="text-xs text-red-500">{t("profile.rateUnavailable")}</span>
@@ -873,8 +863,8 @@ const Profile = () => {
                 onClick={() => set("preferred_country", value)}
                 className={`flex-1 py-2.5 rounded-xl border text-sm font-medium transition ${
                   form.preferred_country === value
-                    ? "bg-blue-600 text-white border-blue-600 shadow-sm"
-                    : "bg-white text-gray-600 border-gray-200 hover:border-blue-400"
+                    ? "bg-blue-600 text-white border-blue-600 "
+                    : "bg-white text-[oklch(0.65_0.02_285)] border-gray-200 hover:border-blue-400"
                 }`}
               >
                 {label}
@@ -882,7 +872,7 @@ const Profile = () => {
             ))}
           </div>
           {form.preferred_country === "both" && (
-            <p className="mt-1.5 text-xs text-gray-400">{t("profile.bothCountriesNote")}</p>
+            <p className="mt-1.5 text-xs text-[oklch(0.45_0.02_285)]">{t("profile.bothCountriesNote")}</p>
           )}
         </Field>
 
@@ -890,7 +880,7 @@ const Profile = () => {
         <button
           type="submit"
           disabled={saving}
-          className="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white py-3.5 rounded-xl font-bold transition disabled:opacity-50 text-base mt-2 shadow-lg shadow-indigo-200"
+          className="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white py-3.5 rounded-xl font-bold transition disabled:opacity-50 text-base mt-2 shadow-indigo-200"
         >
           {saving ? (
             <span className="flex items-center justify-center gap-2">
@@ -901,11 +891,11 @@ const Profile = () => {
         </button>
 
         {/* Restart onboarding */}
-        <div className="pt-4 border-t border-gray-100 mt-4">
+        <div className="pt-4 border-t border-[oklch(1_0_0/0.07)] mt-4">
           <button
             type="button"
             onClick={restartOnboarding}
-            className="w-full text-center text-xs text-gray-400 hover:text-indigo-600 transition py-2"
+            className="w-full text-center text-xs text-[oklch(0.45_0.02_285)] hover:text-indigo-600 transition py-2"
           >
             🎓 {t("profile.restartTour")}
           </button>
@@ -920,7 +910,7 @@ const Profile = () => {
 
 const Field = ({ label, error, required, children }) => (
   <div>
-    <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+    <label className="block text-sm font-semibold text-[oklch(0.75_0.02_285)] mb-1.5">
       {label}{required && <span className="text-red-500 ml-0.5">*</span>}
     </label>
     {children}
@@ -936,3 +926,4 @@ const Field = ({ label, error, required, children }) => (
 );
 
 export default Profile;
+

@@ -36,7 +36,7 @@ const Announcements = () => {
   const unreadCount = items.filter(a => !a.is_read).length;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       {/* Hero */}
       <div className="relative overflow-hidden bg-gradient-to-br from-violet-700 via-purple-700 to-indigo-700 text-white">
         <div className="absolute inset-0">
@@ -62,12 +62,12 @@ const Announcements = () => {
 
       <div className="max-w-3xl mx-auto px-4 py-10">
         {loading ? (
-          <div className="text-center py-16 text-gray-400">{t("announcements.loading")}</div>
+          <div className="text-center py-16 text-[oklch(0.45_0.02_285)]">{t("announcements.loading")}</div>
         ) : items.length === 0 ? (
           <div className="text-center py-16">
             <p className="text-5xl mb-4">📭</p>
-            <p className="text-gray-500 font-semibold text-lg">{t("announcements.empty")}</p>
-            <p className="text-gray-400 text-sm mt-1">{t("announcements.emptySub")}</p>
+            <p className="text-[oklch(0.55_0.02_285)] font-semibold text-lg">{t("announcements.empty")}</p>
+            <p className="text-[oklch(0.45_0.02_285)] text-sm mt-1">{t("announcements.emptySub")}</p>
           </div>
         ) : (
           <div className="space-y-4 stagger">
@@ -81,7 +81,7 @@ const Announcements = () => {
                     relative rounded-2xl p-6 border transition cursor-pointer card-lift
                     ${ann.is_read
                       ? "bg-white border-gray-100 opacity-70"
-                      : `${s.bg} ${s.border} shadow-sm hover:shadow-md`
+                      : `${s.bg} ${s.border}  hover:shadow-md`
                     }
                   `}
                 >
@@ -94,7 +94,7 @@ const Announcements = () => {
                     <div className="text-2xl mt-0.5 shrink-0">{s.icon}</div>
                     <div className="flex-1 min-w-0 pr-4">
                       <div className="flex items-center gap-2 flex-wrap mb-1">
-                        <h3 className={`font-bold text-base ${ann.is_read ? "text-gray-600" : s.text}`}>
+                        <h3 className={`font-bold text-base ${ann.is_read ? "text-[oklch(0.65_0.02_285)]" : s.text}`}>
                           {ann.title}
                         </h3>
                         {!ann.is_read && (
@@ -106,13 +106,13 @@ const Announcements = () => {
                           {ann.type}
                         </span>
                       </div>
-                      <p className={`text-sm leading-relaxed ${ann.is_read ? "text-gray-400" : "text-gray-700"}`}>
+                      <p className={`text-sm leading-relaxed ${ann.is_read ? "text-[oklch(0.45_0.02_285)]" : "text-[oklch(0.75_0.02_285)]"}`}>
                         {ann.body}
                       </p>
                       <div className="flex items-center justify-between mt-3">
-                        <p className="text-gray-400 text-xs">📅 {fmt(ann.created_at)}</p>
+                        <p className="text-[oklch(0.45_0.02_285)] text-xs">📅 {fmt(ann.created_at)}</p>
                         {ann.is_read
-                          ? <span className="text-xs text-gray-300 flex items-center gap-1">✓ {t("announcements.seen")}</span>
+                          ? <span className="text-xs text-[oklch(0.35_0.02_285)] flex items-center gap-1">✓ {t("announcements.seen")}</span>
                           : <span className="text-xs text-indigo-500 font-medium">{t("announcements.markRead")}</span>
                         }
                       </div>
@@ -129,3 +129,4 @@ const Announcements = () => {
 };
 
 export default Announcements;
+

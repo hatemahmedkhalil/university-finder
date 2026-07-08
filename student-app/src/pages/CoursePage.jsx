@@ -40,7 +40,7 @@ const CoursePage = () => {
   }, {});
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       {/* Hero */}
       <div className={`relative overflow-hidden bg-gradient-to-br ${meta.color} text-white`}>
         <div className="absolute inset-0">
@@ -71,10 +71,10 @@ const CoursePage = () => {
           <div className="text-3xl mt-0.5">🎓</div>
           <div>
             <p className={`font-bold text-lg ${meta.text}`}>{langLabel} {t("learning.coursesSuffix")}</p>
-            <p className="text-gray-600 mt-1">
+            <p className="text-[oklch(0.65_0.02_285)] mt-1">
               <span className="font-semibold">{t("courses.statusLabel")}</span> {t("courses.noContent")}
             </p>
-            <p className="text-gray-500 text-sm mt-1">
+            <p className="text-[oklch(0.55_0.02_285)] text-sm mt-1">
               {t("courses.adminNote")}
             </p>
           </div>
@@ -82,35 +82,35 @@ const CoursePage = () => {
 
         {/* Level grid */}
         <div>
-          <h2 className="text-lg font-bold text-gray-800 mb-4">{t("courses.levelsComing")}</h2>
+          <h2 className="text-lg font-bold text-white mb-4">{t("courses.levelsComing")}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 stagger">
             {LEVELS.map((lvl) => {
               const lvlCourses = coursesByLevel[lvl.code] || [];
               return (
-                <div key={lvl.code} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex flex-col gap-3 card-lift">
+                <div key={lvl.code} className="bg-[oklch(0.17_0.02_285)] rounded-2xl border border-[oklch(1_0_0/0.07)] p-5 flex flex-col gap-3 card-lift">
                   {/* Level badge */}
                   <div className="flex items-center justify-between">
                     <div className={`w-12 h-12 ${meta.light} rounded-xl flex items-center justify-center text-lg font-bold ${meta.text}`}>
                       {lvl.code}
                     </div>
-                    <span className="text-xs bg-gray-100 text-gray-400 px-2.5 py-1 rounded-full font-medium">
+                    <span className="text-xs bg-gray-100 text-[oklch(0.45_0.02_285)] px-2.5 py-1 rounded-full font-medium">
                       {lvlCourses.length === 0 ? t("course.noCourses") : t("course.courseCount", { count: lvlCourses.length })}
                     </span>
                   </div>
 
                   <div>
-                    <p className="font-bold text-gray-800">{lvl.code} — {lvl.label}</p>
-                    <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">{lvl.desc}</p>
+                    <p className="font-bold text-white">{lvl.code} — {lvl.label}</p>
+                    <p className="text-xs text-[oklch(0.55_0.02_285)] mt-0.5 leading-relaxed">{lvl.desc}</p>
                   </div>
 
                   {lvlCourses.length === 0 ? (
-                    <div className="mt-2 flex items-center gap-2 text-xs text-gray-400 bg-gray-50 rounded-xl px-3 py-2.5">
+                    <div className="mt-2 flex items-center gap-2 text-xs text-[oklch(0.45_0.02_285)] bg-[oklch(0.17_0.02_285)] rounded-xl px-3 py-2.5">
                       <span>📭</span> {t("courses.lessonsAppear")}
                     </div>
                   ) : (
                     <ul className="mt-1 space-y-1.5">
                       {lvlCourses.map((c) => (
-                        <li key={c.id} className="text-sm text-gray-700 flex items-center gap-2">
+                        <li key={c.id} className="text-sm text-[oklch(0.75_0.02_285)] flex items-center gap-2">
                           <span className="text-green-500">▶</span> {c.title}
                         </li>
                       ))}
@@ -123,8 +123,8 @@ const CoursePage = () => {
         </div>
 
         {/* What courses will include */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-7">
-          <h2 className="text-base font-bold text-gray-800 mb-5">{t("courses.includes")}</h2>
+        <div className="bg-[oklch(0.17_0.02_285)] rounded-2xl border border-[oklch(1_0_0/0.07)] p-7">
+          <h2 className="text-base font-bold text-white mb-5">{t("courses.includes")}</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             {[
               ["🎬", t("course.features.video"), t("course.features.videoDesc")],
@@ -134,16 +134,16 @@ const CoursePage = () => {
               ["🏆", t("course.features.cert"),  t("course.features.certDesc")],
               ["💬", t("course.features.exercises"), t("course.features.exercisesDesc")],
             ].map(([icon, title, desc]) => (
-              <div key={title} className="bg-gray-50 rounded-xl p-4 flex flex-col gap-1">
+              <div key={title} className="bg-[oklch(0.17_0.02_285)] rounded-xl p-4 flex flex-col gap-1">
                 <span className="text-xl">{icon}</span>
-                <p className="font-semibold text-sm text-gray-800">{title}</p>
-                <p className="text-xs text-gray-500">{desc}</p>
+                <p className="font-semibold text-sm text-white">{title}</p>
+                <p className="text-xs text-[oklch(0.55_0.02_285)]">{desc}</p>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="text-center py-4 text-gray-400 text-sm">
+        <div className="text-center py-4 text-[oklch(0.45_0.02_285)] text-sm">
           {t("courses.comingSoonNote")}
         </div>
       </div>
@@ -152,3 +152,4 @@ const CoursePage = () => {
 };
 
 export default CoursePage;
+

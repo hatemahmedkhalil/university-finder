@@ -5,25 +5,13 @@ import { useTranslation } from "react-i18next";
 
 /* ── Plan icons ── */
 const PLAN_META = {
-  Free:    { icon: "🚗", color: "blue",   gradient: "from-blue-500 to-indigo-600" },
-  Premium: { icon: "✈️", color: "purple", gradient: "from-purple-500 to-pink-600" },
-  Pro:     { icon: "🚀", color: "amber",  gradient: "from-amber-400 to-orange-500" },
+  Free:    { icon: "🚗", accent: "oklch(0.55 0.18 220)", gradStyle: "linear-gradient(135deg, oklch(0.50 0.18 220), oklch(0.55 0.22 264))" },
+  Premium: { icon: "✈️", accent: "oklch(0.55 0.22 296)", gradStyle: "linear-gradient(135deg, oklch(0.55 0.22 296), oklch(0.50 0.20 264))" },
+  Pro:     { icon: "🚀", accent: "oklch(0.65 0.18 55)",  gradStyle: "linear-gradient(135deg, oklch(0.65 0.18 55),  oklch(0.60 0.20 25))" },
 };
 
-const COLOR = {
-  blue:   { ring: "ring-blue-500",   btn: "bg-blue-600 hover:bg-blue-700",   badge: "bg-blue-100 text-blue-700",   check: "text-blue-500",  bg: "bg-blue-50"   },
-  purple: { ring: "ring-purple-500", btn: "bg-purple-600 hover:bg-purple-700", badge: "bg-purple-100 text-purple-700", check: "text-purple-500", bg: "bg-purple-50" },
-  amber:  { ring: "ring-amber-500",  btn: "bg-amber-500 hover:bg-amber-600",  badge: "bg-amber-100 text-amber-700",  check: "text-amber-500", bg: "bg-amber-50"  },
-};
-
-const CheckIcon = ({ color }) => (
-  <svg className={`w-4 h-4 shrink-0 mt-0.5 ${color}`} viewBox="0 0 20 20" fill="currentColor">
-    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-  </svg>
-);
-
-const ClockIcon = ({ color }) => (
-  <svg className={`w-4 h-4 shrink-0 mt-0.5 ${color}`} viewBox="0 0 20 20" fill="currentColor">
+const ClockIcon = () => (
+  <svg className="w-4 h-4 shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor" style={{ color: "oklch(0.45 0.02 285)" }}>
     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
   </svg>
 );
@@ -36,76 +24,71 @@ const PLAN_EXTRAS = {
 };
 
 /* ── Single plan card ── */
-const PlanCard = ({ plan, index }) => {
+const PlanCard = ({ plan }) => {
   const { t } = useTranslation();
-  const meta   = PLAN_META[plan.name] ?? { icon: "📦", color: "blue", gradient: "from-blue-500 to-indigo-600" };
-  const colors = COLOR[meta.color];
+  const meta   = PLAN_META[plan.name] ?? { icon: "📦", accent: "oklch(0.55 0.18 220)", gradStyle: "linear-gradient(135deg,oklch(0.50 0.18 220),oklch(0.55 0.22 264))" };
   const extras = PLAN_EXTRAS[plan.name] ?? { badge: null, cta: null, ctaLabel: "Get Started", ctaTo: "/register" };
-  const isFree = plan.price === 0;
   const isComingSoon = plan.price === null;
   const featured = plan.is_featured;
 
   return (
-    <div
-      className={`
-        relative flex flex-col bg-white rounded-3xl border-2 shadow-sm
-        transition-all duration-300 hover:-translate-y-2 hover:shadow-xl
-        ${featured ? `${colors.ring} ring-2 shadow-lg` : "border-gray-100"}
-      `}
-    >
-      {/* Featured ribbon */}
+    <div className="relative flex flex-col rounded-3xl transition-all duration-300 hover:-translate-y-2"
+         style={{
+           background: featured ? "oklch(0.19 0.028 285)" : "oklch(0.17 0.02 285)",
+           border: `2px solid ${featured ? meta.accent + " / 0.50" : "oklch(1 0 0 / 0.08)"}`,
+           boxShadow: featured ? `0 0 40px ${meta.accent} / 0.15` : "none",
+         }}>
+
       {featured && (
-        <div className={`absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold text-white bg-gradient-to-r ${meta.gradient} shadow`}>
+        <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold text-white"
+             style={{ background: meta.gradStyle }}>
           ✦ {t("pricing.recommended")}
         </div>
       )}
 
-      {/* Card header */}
-      <div className={`px-8 pt-8 pb-6 rounded-t-3xl ${featured ? colors.bg : ""}`}>
-        {/* Icon + name */}
-        <div className="flex items-center gap-3 mb-4">
-          <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${meta.gradient} flex items-center justify-center text-2xl shadow-sm`}>
+      <div className="px-7 pt-8 pb-5">
+        <div className="flex items-center gap-3 mb-5">
+          <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl"
+               style={{ background: meta.gradStyle }}>
             {meta.icon}
           </div>
           <div>
-            <h3 className="text-xl font-extrabold text-gray-900">{plan.name}</h3>
+            <h3 className="text-xl font-extrabold text-white">{plan.name}</h3>
             {extras.badge && (
-              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${colors.badge}`}>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full mt-0.5 block"
+                    style={{ background: `color-mix(in oklch, ${meta.accent} 15%, transparent)`, color: meta.accent }}>
                 {extras.badge}
               </span>
             )}
           </div>
         </div>
 
-        {/* Price */}
-        <div className="mb-2">
+        <div className="mb-3">
           {isComingSoon ? (
             <div className="flex items-end gap-1">
-              <span className="text-4xl font-extrabold text-gray-300">---</span>
-              <span className="text-gray-400 text-sm mb-1.5 font-medium">USD {t("pricing.mo")}</span>
+              <span className="text-4xl font-extrabold" style={{ color: "oklch(0.35 0.02 285)" }}>---</span>
+              <span className="text-sm mb-1.5 font-medium" style={{ color: "oklch(0.45 0.02 285)" }}>USD {t("pricing.mo")}</span>
             </div>
           ) : (
             <div className="flex items-end gap-1">
-              <span className="text-lg font-bold text-gray-500">$</span>
-              <span className="text-5xl font-extrabold text-gray-900 leading-none">{plan.price}</span>
-              <span className="text-gray-400 text-sm mb-1.5 font-medium">{t("pricing.mo")}</span>
+              <span className="text-lg font-bold" style={{ color: "oklch(0.55 0.02 285)" }}>$</span>
+              <span className="text-5xl font-extrabold text-white leading-none">{plan.price}</span>
+              <span className="text-sm mb-1.5 font-medium" style={{ color: "oklch(0.45 0.02 285)" }}>{t("pricing.mo")}</span>
             </div>
           )}
         </div>
 
-        <p className={`text-sm ${isComingSoon ? "text-gray-400 italic" : "text-gray-500"}`}>
+        <p className="text-sm" style={{ color: isComingSoon ? "oklch(0.45 0.02 285)" : "oklch(0.60 0.02 285)" }}>
           {plan.description}
         </p>
       </div>
 
-      {/* Divider */}
-      <div className="mx-8 border-t border-gray-100" />
+      <div className="mx-7" style={{ borderTop: "1px solid oklch(1 0 0 / 0.07)" }} />
 
-      {/* Features */}
-      <div className="px-8 py-6 flex-1 flex flex-col gap-3">
+      <div className="px-7 py-5 flex-1 flex flex-col gap-3">
         {isComingSoon ? (
-          <div className="flex items-start gap-2.5 text-gray-400">
-            <ClockIcon color={colors.check} />
+          <div className="flex items-start gap-2.5" style={{ color: "oklch(0.45 0.02 285)" }}>
+            <ClockIcon color="oklch(0.45 0.02 285)" />
             <span className="text-sm italic">{t("pricing.featuresComingSoon")}</span>
           </div>
         ) : (
@@ -114,33 +97,34 @@ const PlanCard = ({ plan, index }) => {
             return (
               <div key={i} className="flex items-start gap-2.5">
                 {isCrossed ? (
-                  <svg className="w-4 h-4 shrink-0 mt-0.5 text-gray-300" viewBox="0 0 20 20" fill="currentColor">
+                  <svg className="w-4 h-4 shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor"
+                       style={{ color: "oklch(0.35 0.02 285)" }}>
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                   </svg>
                 ) : (
-                  <CheckIcon color={colors.check} />
+                  <svg className="w-4 h-4 shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor"
+                       style={{ color: meta.accent }}>
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
                 )}
-                <span className={`text-sm ${isCrossed ? "text-gray-400" : "text-gray-700"}`}>{feat}</span>
+                <span className="text-sm" style={{ color: isCrossed ? "oklch(0.40 0.02 285)" : "oklch(0.80 0.01 285)" }}>{feat}</span>
               </div>
             );
           })
         )}
       </div>
 
-      {/* CTA */}
-      <div className="px-8 pb-8">
+      <div className="px-7 pb-7">
         {extras.ctaTo ? (
-          <Link
-            to={extras.ctaTo}
-            className={`block w-full text-center py-3 rounded-2xl font-bold text-white text-sm transition ${colors.btn} shadow-sm hover:shadow-md`}
-          >
+          <Link to={extras.ctaTo}
+            className="block w-full text-center py-3 rounded-2xl font-bold text-white text-sm transition hover:opacity-90"
+            style={{ background: meta.gradStyle }}>
             {t("pricing.getStartedFree")}
           </Link>
         ) : (
-          <button
-            disabled
-            className="block w-full text-center py-3 rounded-2xl font-bold text-sm bg-gray-100 text-gray-400 cursor-not-allowed"
-          >
+          <button disabled
+            className="block w-full text-center py-3 rounded-2xl font-bold text-sm cursor-not-allowed"
+            style={{ background: "oklch(0.22 0.024 285)", color: "oklch(0.45 0.02 285)" }}>
             🕐 {t("pricing.comingSoon")}
           </button>
         )}
@@ -161,21 +145,21 @@ const FAQ = () => {
   return (
     <div className="max-w-2xl mx-auto">
       {faqs.map((item, i) => (
-        <div key={i} className="border-b border-gray-100 last:border-0">
+        <div key={i} className="border-b border-[oklch(1_0_0/0.07)] last:border-0">
           <button
             onClick={() => setOpen(open === i ? null : i)}
             className="w-full text-left flex items-center justify-between py-5 gap-4"
           >
-            <span className="font-semibold text-gray-800 text-sm">{item.q}</span>
+            <span className="font-semibold text-white text-sm">{item.q}</span>
             <svg
-              className={`w-4 h-4 text-gray-400 shrink-0 transition-transform ${open === i ? "rotate-180" : ""}`}
+              className={`w-4 h-4 text-[oklch(0.45_0.02_285)] shrink-0 transition-transform ${open === i ? "rotate-180" : ""}`}
               fill="none" viewBox="0 0 24 24" stroke="currentColor"
             >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
             </svg>
           </button>
           {open === i && (
-            <p className="pb-5 text-sm text-gray-500 leading-relaxed">{item.a}</p>
+            <p className="pb-5 text-sm text-[oklch(0.55_0.02_285)] leading-relaxed">{item.a}</p>
           )}
         </div>
       ))}
@@ -203,56 +187,59 @@ const Pricing = () => {
     { id: 3, name: "Pro",     price: null, description: "Coming Soon", features: [], is_active: true, is_featured: false },
   ];
 
+  const mainGrad = "linear-gradient(135deg, oklch(0.55 0.22 296), oklch(0.50 0.20 264))";
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[oklch(0.13_0.018_285)] text-[oklch(0.96_0.006_285)]">
 
       {/* ── Hero ── */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-indigo-700 via-blue-700 to-blue-800 text-white">
-        <div className="absolute inset-0">
-          <div className="absolute top-6 left-1/4 w-72 h-72 bg-indigo-400/20 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 right-1/4 w-72 h-72 bg-blue-400/20 rounded-full blur-3xl" />
-        </div>
-        <div className="relative max-w-4xl mx-auto px-4 py-16 text-center">
-          <div className="inline-flex items-center gap-2 bg-white/15 border border-white/25 rounded-full px-4 py-1.5 text-sm font-bold mb-6">
+      <div className="relative overflow-hidden" style={{ background: "oklch(0.15 0.020 285)" }}>
+        <div className="absolute -top-32 -start-16 w-96 h-96 rounded-full blur-[120px] pointer-events-none"
+             style={{ background: "oklch(0.55 0.22 296 / 0.15)" }} />
+        <div className="absolute -bottom-16 end-24 w-72 h-72 rounded-full blur-[100px] pointer-events-none"
+             style={{ background: "oklch(0.50 0.20 264 / 0.12)" }} />
+        <div className="relative max-w-4xl mx-auto px-6 py-16 text-center">
+          <div className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-bold mb-6"
+               style={{ background: "oklch(0.55 0.22 296 / 0.12)", border: "1px solid oklch(0.55 0.22 296 / 0.28)", color: "oklch(0.88 0.08 296)" }}>
             💳 {t("pricing.badge")}
           </div>
-          <h1 className="text-4xl sm:text-5xl font-extrabold leading-tight mb-4">
+          <h1 className="text-4xl sm:text-5xl font-extrabold leading-tight mb-4 text-white">
             {t("pricing.title")}
           </h1>
-          <p className="text-indigo-200 text-lg max-w-xl mx-auto">
+          <p className="text-lg max-w-xl mx-auto" style={{ color: "oklch(0.65 0.04 296)" }}>
             {t("pricing.subtitle")}
           </p>
         </div>
       </div>
 
       {/* ── Plans ── */}
-      <div className="max-w-5xl mx-auto px-4 -mt-8 pb-16">
+      <div className="max-w-5xl mx-auto px-6 py-12">
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-8">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {[1, 2, 3].map(i => (
-              <div key={i} className="bg-white rounded-3xl border-2 border-gray-100 h-96 animate-pulse" />
+              <div key={i} className="rounded-3xl h-96 animate-pulse"
+                   style={{ background: "oklch(0.17 0.02 285)", border: "2px solid oklch(1 0 0 / 0.08)" }} />
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-8 stagger">
-            {displayed.map((plan, i) => (
-              <PlanCard key={plan.id} plan={plan} index={i} />
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            {displayed.map((plan) => (
+              <PlanCard key={plan.id} plan={plan} />
             ))}
           </div>
         )}
-
-        {/* Note */}
-        <p className="text-center text-xs text-gray-400 mt-6">{t("pricing.note")}</p>
+        <p className="text-center text-xs mt-6" style={{ color: "oklch(0.45 0.02 285)" }}>{t("pricing.note")}</p>
       </div>
 
       {/* ── Feature comparison teaser ── */}
-      <div className="bg-white border-y border-gray-100 py-14">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-2xl font-extrabold text-gray-900 mb-3">{t("pricing.comparison.title")}</h2>
-          <p className="text-gray-500 text-sm mb-8 max-w-md mx-auto">
+      <div className="py-14" style={{ background: "oklch(0.15 0.020 285)", borderTop: "1px solid oklch(1 0 0 / 0.07)", borderBottom: "1px solid oklch(1 0 0 / 0.07)" }}>
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <h2 className="text-2xl font-extrabold text-white mb-3">{t("pricing.comparison.title")}</h2>
+          <p className="text-sm mb-8 max-w-md mx-auto" style={{ color: "oklch(0.55 0.02 285)" }}>
             {t("pricing.comparison.subtitle")}
           </p>
-          <div className="inline-flex items-center gap-3 bg-indigo-50 border border-indigo-100 rounded-2xl px-6 py-4 text-indigo-700 text-sm font-medium">
+          <div className="inline-flex items-center gap-3 rounded-2xl px-6 py-4 text-sm font-medium"
+               style={{ background: "oklch(0.55 0.22 296 / 0.10)", border: "1px solid oklch(0.55 0.22 296 / 0.25)", color: "oklch(0.85 0.10 296)" }}>
             <span className="text-2xl">🔔</span>
             <span>{t("pricing.comparison.notify")}</span>
           </div>
@@ -260,8 +247,8 @@ const Pricing = () => {
       </div>
 
       {/* ── Why UniPath ── */}
-      <div className="max-w-5xl mx-auto px-4 py-16">
-        <h2 className="text-2xl font-extrabold text-gray-900 text-center mb-10">{t("pricing.why.title")}</h2>
+      <div className="max-w-5xl mx-auto px-6 py-16">
+        <h2 className="text-2xl font-extrabold text-white text-center mb-10">{t("pricing.why.title")}</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {[
             { icon: "🎯", title: t("pricing.why.matching.title"), desc: t("pricing.why.matching.desc") },
@@ -269,39 +256,38 @@ const Pricing = () => {
             { icon: "💬", title: t("pricing.why.chat.title"),     desc: t("pricing.why.chat.desc")     },
             { icon: "📋", title: t("pricing.why.tracker.title"),  desc: t("pricing.why.tracker.desc")  },
           ].map(({ icon, title, desc }) => (
-            <div key={title} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 text-center hover:shadow-md transition">
+            <div key={title} className="rounded-2xl p-6 text-center transition-all duration-200 hover:-translate-y-1"
+                 style={{ background: "oklch(0.17 0.02 285)", border: "1px solid oklch(1 0 0 / 0.07)" }}>
               <div className="text-3xl mb-3">{icon}</div>
-              <h3 className="font-bold text-gray-800 text-sm mb-1">{title}</h3>
-              <p className="text-gray-500 text-xs leading-relaxed">{desc}</p>
+              <h3 className="font-bold text-white text-sm mb-1">{title}</h3>
+              <p className="text-xs leading-relaxed" style={{ color: "oklch(0.55 0.02 285)" }}>{desc}</p>
             </div>
           ))}
         </div>
       </div>
 
       {/* ── FAQ ── */}
-      <div className="bg-white border-t border-gray-100 py-16">
-        <div className="max-w-4xl mx-auto px-4">
-          <h2 className="text-2xl font-extrabold text-gray-900 text-center mb-8">{t("pricing.faq.title")}</h2>
+      <div className="py-16" style={{ borderTop: "1px solid oklch(1 0 0 / 0.07)" }}>
+        <div className="max-w-4xl mx-auto px-6">
+          <h2 className="text-2xl font-extrabold text-white text-center mb-8">{t("pricing.faq.title")}</h2>
           <FAQ />
         </div>
       </div>
 
       {/* ── Bottom CTA ── */}
-      <div className="bg-gradient-to-br from-indigo-700 to-blue-800 text-white py-16">
-        <div className="max-w-xl mx-auto px-4 text-center">
+      <div className="py-16 text-white" style={{ background: "linear-gradient(135deg, oklch(0.28 0.08 296), oklch(0.22 0.06 264))" }}>
+        <div className="max-w-xl mx-auto px-6 text-center">
           <h2 className="text-2xl font-extrabold mb-3">{t("pricing.cta.title")}</h2>
-          <p className="text-indigo-200 text-sm mb-8">{t("pricing.cta.subtitle")}</p>
+          <p className="text-sm mb-8" style={{ color: "oklch(0.75 0.06 296)" }}>{t("pricing.cta.subtitle")}</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Link
-              to="/register"
-              className="bg-white text-indigo-700 font-bold px-8 py-3 rounded-2xl hover:bg-indigo-50 transition shadow text-sm"
-            >
+            <Link to="/register"
+              className="font-bold px-8 py-3 rounded-2xl text-sm transition hover:opacity-90 text-white"
+              style={{ background: mainGrad }}>
               🚀 {t("pricing.cta.start")}
             </Link>
-            <Link
-              to="/universities"
-              className="bg-white/15 border border-white/30 text-white font-semibold px-8 py-3 rounded-2xl hover:bg-white/25 transition text-sm"
-            >
+            <Link to="/universities"
+              className="font-semibold px-8 py-3 rounded-2xl text-sm transition text-white"
+              style={{ background: "oklch(1 0 0 / 0.08)", border: "1px solid oklch(1 0 0 / 0.20)" }}>
               {t("pricing.cta.browse")}
             </Link>
           </div>
@@ -312,3 +298,4 @@ const Pricing = () => {
 };
 
 export default Pricing;
+

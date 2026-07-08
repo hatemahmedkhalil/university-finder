@@ -75,6 +75,32 @@ html.dark {
 .stagger > *:nth-child(11) { animation-delay: 550ms; }
 .stagger > *:nth-child(12) { animation-delay: 605ms; }
 
+/* ── Dark layout: global input / select / textarea styling ── */
+.dark-layout input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
+.dark-layout select,
+.dark-layout textarea {
+  background-color: oklch(0.18 0.022 285) !important;
+  color: white !important;
+  border-color: oklch(1 0 0 / 0.10) !important;
+}
+.dark-layout input::placeholder,
+.dark-layout textarea::placeholder {
+  color: oklch(0.45 0.02 285) !important;
+}
+.dark-layout select option {
+  background-color: oklch(0.18 0.022 285);
+  color: white;
+}
+/* White cards inside the dark layout keep their own bg */
+.dark-layout .keep-light,
+.dark-layout .keep-light input,
+.dark-layout .keep-light select,
+.dark-layout .keep-light textarea {
+  background-color: revert !important;
+  color: revert !important;
+  border-color: revert !important;
+}
+
 /* ── Card lift hover ── */
 .card-lift {
   transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;

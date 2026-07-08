@@ -2,12 +2,13 @@ import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import { useTranslation } from "react-i18next";
+import PageHero from "../components/PageHero";
 
 const TYPE_CONFIG = {
   support_reply:      { icon: "💬", grad: "from-blue-500 to-cyan-500",    bg: "bg-blue-50",   text: "text-blue-700",  label: "Support Reply" },
   application_update: { icon: "📋", grad: "from-violet-500 to-purple-600", bg: "bg-violet-50", text: "text-violet-700",label: "Application" },
   scholarship_update: { icon: "🎓", grad: "from-emerald-500 to-teal-500", bg: "bg-emerald-50",text: "text-emerald-700",label: "Scholarship" },
-  system:             { icon: "🔔", grad: "from-gray-400 to-slate-500",    bg: "bg-gray-50",   text: "text-gray-600",  label: "System" },
+  system:             { icon: "🔔", grad: "from-gray-400 to-slate-500",    bg: "bg-[oklch(0.17_0.02_285)]",   text: "text-[oklch(0.65_0.02_285)]",  label: "System" },
 };
 const DEFAULT_CFG = { icon: "🔔", grad: "from-indigo-500 to-violet-600", bg: "bg-indigo-50", text: "text-indigo-700", label: "Notice" };
 
@@ -55,26 +56,20 @@ const Notifications = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
 
-      {/* Hero */}
-      <div className="bg-gradient-to-br from-indigo-700 via-blue-700 to-cyan-700 text-white">
-        <div className="max-w-3xl mx-auto px-6 py-12 flex items-center justify-between gap-4 flex-wrap">
-          <div>
-            <p className="text-blue-200 text-sm font-semibold uppercase tracking-widest mb-2">🔔 Inbox</p>
-            <h1 className="text-4xl font-extrabold tracking-tight mb-1">{t("nav.notifications")}</h1>
-            <p className="text-blue-200">
-              {unreadCount > 0 ? `${unreadCount} unread message${unreadCount > 1 ? "s" : ""}` : "You're all caught up ✅"}
-            </p>
-          </div>
-          {unreadCount > 0 && (
-            <button onClick={markAllRead}
-              className="bg-white/15 border border-white/25 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-white/25 transition">
-              ✓ {t("notifications.markAllRead")}
-            </button>
-          )}
-        </div>
-      </div>
+      <PageHero
+        photo="https://images.unsplash.com/photo-1614680376573-df3480f0c6ff?w=1400&q=80"
+        title={t("nav.notifications")}
+        subtitle={unreadCount > 0 ? `${unreadCount} unread message${unreadCount > 1 ? "s" : ""}` : "You're all caught up ✅"}
+      >
+        {unreadCount > 0 && (
+          <button onClick={markAllRead}
+            className="mt-4 bg-[oklch(1_0_0/0.08)] border border-[oklch(1_0_0/0.15)] text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-white/25 transition">
+            ✓ {t("notifications.markAllRead")}
+          </button>
+        )}
+      </PageHero>
 
       <div className="max-w-3xl mx-auto px-6 py-6">
 
@@ -84,13 +79,13 @@ const Notifications = () => {
             <button key={f.key} onClick={() => setFilter(f.key)}
               className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold border-2 transition-all ${
                 filter === f.key
-                  ? "bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-200"
-                  : "bg-white text-gray-500 border-gray-200 hover:border-indigo-300 hover:text-indigo-600"
+                  ? "bg-indigo-600 text-white border-indigo-600 shadow-indigo-200"
+                  : "bg-white text-[oklch(0.55_0.02_285)] border-gray-200 hover:border-indigo-300 hover:text-indigo-600"
               }`}>
               {f.label}
               {f.count != null && (
                 <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-extrabold ${
-                  filter === f.key ? "bg-white/25" : "bg-gray-100 text-gray-500"
+                  filter === f.key ? "bg-white/25" : "bg-gray-100 text-[oklch(0.55_0.02_285)]"
                 }`}>{f.count}</span>
               )}
             </button>
@@ -101,14 +96,14 @@ const Notifications = () => {
         {loading ? (
           <div className="space-y-3">
             {[0,1,2,3].map(i => (
-              <div key={i} className="bg-white rounded-2xl border border-gray-100 h-20 animate-pulse" />
+              <div key={i} className="bg-[oklch(0.17_0.02_285)] rounded-2xl border border-[oklch(1_0_0/0.07)] h-20 animate-pulse" />
             ))}
           </div>
         ) : shown.length === 0 ? (
-          <div className="text-center py-24 bg-white rounded-2xl border border-gray-100">
+          <div className="text-center py-24 bg-[oklch(0.17_0.02_285)] rounded-2xl border border-[oklch(1_0_0/0.07)]">
             <div className="text-6xl mb-4">🔔</div>
-            <p className="text-gray-700 font-bold text-lg mb-1">{t("notifications.nothing")}</p>
-            <p className="text-gray-400 text-sm">{t("notifications.empty")}</p>
+            <p className="text-[oklch(0.75_0.02_285)] font-bold text-lg mb-1">{t("notifications.nothing")}</p>
+            <p className="text-[oklch(0.45_0.02_285)] text-sm">{t("notifications.empty")}</p>
           </div>
         ) : (
           <div className="space-y-2 stagger">
@@ -122,7 +117,7 @@ const Notifications = () => {
                       : "bg-indigo-50/60 border-indigo-100 hover:border-indigo-300"
                   }`}>
 
-                  <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${cfg.grad} flex items-center justify-center text-xl shrink-0 shadow-sm`}>
+                  <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${cfg.grad} flex items-center justify-center text-xl shrink-0 `}>
                     {cfg.icon}
                   </div>
 
@@ -135,16 +130,16 @@ const Notifications = () => {
                         <span className="w-2 h-2 rounded-full bg-indigo-500 shrink-0" />
                       )}
                     </div>
-                    <p className={`text-sm font-semibold leading-snug ${n.is_read ? "text-gray-700" : "text-gray-900"}`}>
+                    <p className={`text-sm font-semibold leading-snug ${n.is_read ? "text-[oklch(0.75_0.02_285)]" : "text-white"}`}>
                       {n.title}
                     </p>
-                    <p className="text-xs text-gray-400 mt-0.5 truncate">{n.message}</p>
-                    <p className="text-[10px] text-gray-300 mt-1">
+                    <p className="text-xs text-[oklch(0.45_0.02_285)] mt-0.5 truncate">{n.message}</p>
+                    <p className="text-[10px] text-[oklch(0.35_0.02_285)] mt-1">
                       {new Date(n.created_at).toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
                     </p>
                   </div>
 
-                  <span className="text-gray-300 group-hover:text-indigo-400 transition text-sm shrink-0 mt-1">→</span>
+                  <span className="text-[oklch(0.35_0.02_285)] group-hover:text-indigo-400 transition text-sm shrink-0 mt-1">→</span>
                 </button>
               );
             })}
@@ -156,3 +151,4 @@ const Notifications = () => {
 };
 
 export default Notifications;
+

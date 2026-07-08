@@ -32,7 +32,7 @@ const COUNTRY_THEME = {
     cardBorder: "#fda4af",
     tagBg: "#ffe4e6",
     tagText: "#9f1239",
-    btnPrimary: "bg-white hover:bg-gray-100 text-[#DC143C]",
+    btnPrimary: "bg-white hover:bg-[oklch(0.22_0.026_285)] text-[#DC143C]",
     btnSave: "border-white text-white hover:bg-white/10",
     sectionAccent: "#ffffff",
   },
@@ -47,7 +47,7 @@ const COUNTRY_THEME = {
     cardBorder: "#fca5a5",
     tagBg: "#fee2e2",
     tagText: "#991b1b",
-    btnPrimary: "bg-white hover:bg-gray-100 text-[#ED2939]",
+    btnPrimary: "bg-white hover:bg-[oklch(0.22_0.026_285)] text-[#ED2939]",
     btnSave: "border-white text-white hover:bg-white/10",
     sectionAccent: "#ffffff",
   },
@@ -147,7 +147,7 @@ const DEFAULT_THEME = {
 /* ── small reusable pieces ── */
 const Badge = ({ children, color = "gray" }) => {
   const colors = {
-    gray:   "bg-gray-100 text-gray-600",
+    gray:   "bg-gray-100 text-[oklch(0.65_0.02_285)]",
     blue:   "bg-blue-50 text-blue-700",
     green:  "bg-green-50 text-green-700",
     yellow: "bg-yellow-50 text-yellow-700",
@@ -163,8 +163,8 @@ const Badge = ({ children, color = "gray" }) => {
 };
 
 const Section = ({ icon, title, children, className = "", accentColor, id }) => (
-  <div id={id} className={`bg-white rounded-2xl border border-gray-100 shadow-sm p-6 ${className}`}>
-    <h2 className="text-base font-bold text-gray-800 mb-4 flex items-center gap-2">
+  <div id={id} className={`bg-[oklch(0.17_0.02_285)] rounded-2xl border border-[oklch(1_0_0/0.07)] p-6 ${className}`}>
+    <h2 className="text-base font-bold text-white mb-4 flex items-center gap-2">
       <span
         className="w-7 h-7 rounded-lg flex items-center justify-center text-base"
         style={{ backgroundColor: accentColor ? accentColor + "22" : "#f3f4f6" }}
@@ -181,8 +181,8 @@ const InfoRow = ({ label, value }) => {
   if (!value && value !== 0) return null;
   return (
     <div className="flex flex-col sm:flex-row sm:items-start gap-1 py-2.5 border-b border-gray-50 last:border-0">
-      <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide sm:w-44 shrink-0 pt-0.5">{label}</span>
-      <span className="text-sm text-gray-800 leading-relaxed">{value}</span>
+      <span className="text-xs font-semibold text-[oklch(0.45_0.02_285)] uppercase tracking-wide sm:w-44 shrink-0 pt-0.5">{label}</span>
+      <span className="text-sm text-white leading-relaxed">{value}</span>
     </div>
   );
 };
@@ -209,10 +209,10 @@ const ScoreArc = ({ score, t }) => {
 
 const ScoreBar = ({ label, value, max, color }) => (
   <div>
-    <div className="flex justify-between text-xs text-gray-500 mb-1">
+    <div className="flex justify-between text-xs text-[oklch(0.55_0.02_285)] mb-1">
       <span>{label}</span><span className="font-medium">{value}/{max}</span>
     </div>
-    <div className="h-1.5 bg-gray-100 rounded-full">
+    <div className="h-1.5 bg-[oklch(0.20_0.024_285)] rounded-full">
       <div className={`h-1.5 rounded-full ${color}`} style={{ width: `${(value / max) * 100}%` }} />
     </div>
   </div>
@@ -221,11 +221,11 @@ const ScoreBar = ({ label, value, max, color }) => (
 const ScholarshipCard = ({ s }) => {
   const { t } = useTranslation();
   return (
-    <div className="border border-gray-100 rounded-xl p-4 hover:border-green-200 hover:bg-green-50/30 transition">
+    <div className="border border-[oklch(1_0_0/0.07)] rounded-xl p-4 hover:border-green-200 hover:bg-green-50/30 transition">
       <div className="flex items-start justify-between gap-2 flex-wrap">
         <div>
-          <p className="font-semibold text-gray-800 text-sm">{s.name}</p>
-          <p className="text-xs text-gray-500">{s.provider}</p>
+          <p className="font-semibold text-white text-sm">{s.name}</p>
+          <p className="text-xs text-[oklch(0.55_0.02_285)]">{s.provider}</p>
         </div>
         <div className="flex flex-col items-end gap-1">
           {s.amount_eur && <Badge color="green">€{s.amount_eur.toLocaleString()}/yr</Badge>}
@@ -234,10 +234,10 @@ const ScholarshipCard = ({ s }) => {
           </Badge>
         </div>
       </div>
-      {s.description && <p className="text-xs text-gray-600 mt-2 leading-relaxed">{s.description}</p>}
-      {s.eligibility && <p className="text-xs text-gray-400 mt-1 italic">{t("university.eligibilityLabel")} {s.eligibility}</p>}
+      {s.description && <p className="text-xs text-[oklch(0.65_0.02_285)] mt-2 leading-relaxed">{s.description}</p>}
+      {s.eligibility && <p className="text-xs text-[oklch(0.45_0.02_285)] mt-1 italic">{t("university.eligibilityLabel")} {s.eligibility}</p>}
       <div className="flex items-center gap-3 mt-3 flex-wrap">
-        {s.deadline && <span className="text-xs text-gray-500">📅 {s.deadline}</span>}
+        {s.deadline && <span className="text-xs text-[oklch(0.55_0.02_285)]">📅 {s.deadline}</span>}
         {s.link && (
           <a href={s.link} target="_blank" rel="noreferrer" onClick={e => e.stopPropagation()}
             className="text-xs text-blue-600 hover:underline font-semibold">{t("university.applyLink")} →</a>
@@ -297,15 +297,15 @@ function TrackModal({ uni, onClose, onConfirm }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={onClose}>
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+      <div className="bg-[oklch(0.17_0.02_285)] rounded-2xl-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
 
         {/* Header */}
-        <div className="flex items-start justify-between p-6 border-b border-gray-100">
+        <div className="flex items-start justify-between p-6 border-b border-[oklch(1_0_0/0.07)]">
           <div>
-            <h2 className="text-lg font-extrabold text-gray-900">📋 {t("university.apply")}</h2>
-            <p className="text-sm text-gray-500 mt-0.5">{uni.name}</p>
+            <h2 className="text-lg font-extrabold text-white">📋 {t("university.apply")}</h2>
+            <p className="text-sm text-[oklch(0.55_0.02_285)] mt-0.5">{uni.name}</p>
           </div>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-700 text-xl leading-none">✕</button>
+          <button onClick={onClose} className="text-[oklch(0.45_0.02_285)] hover:text-[oklch(0.75_0.02_285)] text-xl leading-none">✕</button>
         </div>
 
         <div className="p-6 space-y-5">
@@ -313,10 +313,10 @@ function TrackModal({ uni, onClose, onConfirm }) {
           {/* Required docs checklist */}
           {requiredDocs.length > 0 && (
             <div>
-              <p className="text-sm font-bold text-gray-700 mb-2">📄 {t("university.requiredDocuments")}</p>
+              <p className="text-sm font-bold text-[oklch(0.75_0.02_285)] mb-2">📄 {t("university.requiredDocuments")}</p>
               <ul className="space-y-1.5">
                 {requiredDocs.map((doc, i) => (
-                  <li key={i} className="flex items-center gap-2 text-sm text-gray-600 bg-gray-50 rounded-lg px-3 py-2">
+                  <li key={i} className="flex items-center gap-2 text-sm text-[oklch(0.65_0.02_285)] bg-[oklch(0.17_0.02_285)] rounded-lg px-3 py-2">
                     <span className="text-amber-500">⚠️</span>
                     {doc}
                   </li>
@@ -327,7 +327,7 @@ function TrackModal({ uni, onClose, onConfirm }) {
 
           {/* Upload area */}
           <div>
-            <p className="text-sm font-bold text-gray-700 mb-2">⬆️ {t("applications.uploadFile")}</p>
+            <p className="text-sm font-bold text-[oklch(0.75_0.02_285)] mb-2">⬆️ {t("applications.uploadFile")}</p>
             <div
               onDrop={handleDrop}
               onDragOver={e => e.preventDefault()}
@@ -335,10 +335,10 @@ function TrackModal({ uni, onClose, onConfirm }) {
               className="border-2 border-dashed border-gray-200 hover:border-blue-400 rounded-xl p-6 text-center cursor-pointer transition group"
             >
               <div className="text-3xl mb-2">📁</div>
-              <p className="text-sm text-gray-500 group-hover:text-blue-600 transition">
+              <p className="text-sm text-[oklch(0.55_0.02_285)] group-hover:text-blue-600 transition">
                 {t("university.dropFiles")}
               </p>
-              <p className="text-xs text-gray-400 mt-1">{t("university.maxFileSize")}</p>
+              <p className="text-xs text-[oklch(0.45_0.02_285)] mt-1">{t("university.maxFileSize")}</p>
               <input ref={fileRef} type="file" multiple className="hidden" onChange={e => addFiles(e.target.files)} />
             </div>
 
@@ -348,8 +348,8 @@ function TrackModal({ uni, onClose, onConfirm }) {
                   <li key={f.name} className="flex items-center gap-2 bg-blue-50 rounded-lg px-3 py-2 text-xs">
                     <span>📎</span>
                     <span className="flex-1 truncate text-blue-800 font-medium">{f.name}</span>
-                    <span className="text-gray-400 shrink-0">{fmt(f.size)}</span>
-                    <button onClick={() => removeFile(f.name)} className="text-gray-300 hover:text-red-500 transition">✕</button>
+                    <span className="text-[oklch(0.45_0.02_285)] shrink-0">{fmt(f.size)}</span>
+                    <button onClick={() => removeFile(f.name)} className="text-[oklch(0.35_0.02_285)] hover:text-red-500 transition">✕</button>
                   </li>
                 ))}
               </ul>
@@ -359,7 +359,7 @@ function TrackModal({ uni, onClose, onConfirm }) {
 
         {/* Footer */}
         <div className="flex gap-3 p-6 pt-0">
-          <button onClick={onClose} className="flex-1 py-3 rounded-xl text-sm font-semibold border border-gray-200 text-gray-600 hover:bg-gray-50 transition">
+          <button onClick={onClose} className="flex-1 py-3 rounded-xl text-sm font-semibold border border-[oklch(1_0_0/0.08)] text-[oklch(0.65_0.02_285)] hover:bg-[oklch(0.20_0.024_285)] transition">
             {t("common.cancel")}
           </button>
           <button
@@ -434,7 +434,7 @@ const UniversityDetail = () => {
   };
 
   if (loading) return (
-    <div className="flex items-center justify-center h-screen text-gray-400 text-sm">
+    <div className="flex items-center justify-center h-screen text-[oklch(0.45_0.02_285)] text-sm">
       {t("university.loading")}
     </div>
   );
@@ -449,7 +449,7 @@ const UniversityDetail = () => {
 
   return (
     <>
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
 
       {/* ── Hero with flag-stripe design ── */}
       <div className="relative overflow-hidden text-white" style={{ backgroundColor: theme.heroBg }}>
@@ -484,12 +484,12 @@ const UniversityDetail = () => {
             <div className="shrink-0 flex flex-col items-center gap-3">
               {/* University logo */}
               {uni.logo_url && !imgError ? (
-                <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center p-2 shadow-xl">
+                <div className="w-20 h-20 bg-[oklch(0.17_0.02_285)] rounded-2xl flex items-center justify-center p-2">
                   <img src={uni.logo_url} alt={uni.name} className="w-full h-full object-contain"
                     onError={() => setImgError(true)} />
                 </div>
               ) : (
-                <div className="w-20 h-20 bg-white/15 rounded-2xl flex items-center justify-center text-4xl shadow-xl backdrop-blur-sm">
+                <div className="w-20 h-20 bg-white/15 rounded-2xl flex items-center justify-center text-4xl backdrop-blur-sm">
                   🎓
                 </div>
               )}
@@ -497,7 +497,7 @@ const UniversityDetail = () => {
               {/* Country flag */}
               {theme.flagSrc && (
                 <div className="relative">
-                  <div className="w-14 h-10 rounded-lg overflow-hidden shadow-lg border-2 border-white/20">
+                  <div className="w-14 h-10 rounded-lg overflow-hidden border-2 border-white/20">
                     <img src={theme.flagSrc} alt={uni.country} className="w-full h-full object-cover" />
                   </div>
                   <div
@@ -552,18 +552,18 @@ const UniversityDetail = () => {
               </button>
               <button
                 onClick={() => navigate(`/apply-hub/${uni.id}`)}
-                className="px-4 py-2.5 rounded-xl text-sm font-semibold transition text-center shadow-sm bg-emerald-500 hover:bg-emerald-400 text-white">
+                className="px-4 py-2.5 rounded-xl text-sm font-semibold transition text-center  bg-emerald-500 hover:bg-emerald-400 text-white">
                 📋 {t("university.startApplying")}
               </button>
               <button
                 onClick={() => navigate("/ai-chat", { state: { prefill: `Tell me about ${uni.name} in ${uni.city}, ${uni.country}. What are my chances of getting admitted, what programs do they offer, and what should I prepare?` } })}
-                className="px-4 py-2.5 rounded-xl text-sm font-semibold transition text-center shadow-sm bg-violet-600 hover:bg-violet-500 text-white">
+                className="px-4 py-2.5 rounded-xl text-sm font-semibold transition text-center  bg-violet-600 hover:bg-violet-500 text-white">
                 🤖 {t("university.askAI")}
               </button>
               <button
                 onClick={addToPipeline}
                 disabled={pipelineLoading}
-                className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition text-center shadow-sm ${inPipeline ? "bg-indigo-500 text-white hover:bg-indigo-400" : "bg-white text-indigo-700 hover:bg-indigo-50"}`}>
+                className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition text-center  ${inPipeline ? "bg-indigo-500 text-white hover:bg-indigo-400" : "bg-white text-indigo-700 hover:bg-indigo-50"}`}>
                 {pipelineLoading ? t("common.adding") : inPipeline ? t("university.inPipelineBtn") : `🚀 ${t("university.addPipeline")}`}
               </button>
             </div>
@@ -579,7 +579,7 @@ const UniversityDetail = () => {
       </div>
 
       {/* ── Sticky section nav ── */}
-      <div className="sticky top-[60px] z-10 bg-white border-b border-gray-100 shadow-sm">
+      <div className="sticky top-[60px] z-10 bg-white border-b border-[oklch(1_0_0/0.07)] ">
         <div className="max-w-5xl mx-auto px-4 flex gap-1 overflow-x-auto scrollbar-hide py-1">
           {[
             { id: "overview",      label: t("university.matchScoreSection") },
@@ -592,7 +592,7 @@ const UniversityDetail = () => {
             <button
               key={id}
               onClick={() => document.getElementById(`section-${id}`)?.scrollIntoView({ behavior: "smooth", block: "start" })}
-              className="shrink-0 px-2.5 py-1.5 text-[11px] font-semibold text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition whitespace-nowrap"
+              className="shrink-0 px-2.5 py-1.5 text-[11px] font-semibold text-[oklch(0.55_0.02_285)] hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition whitespace-nowrap"
             >
               {label}
             </button>
@@ -650,7 +650,7 @@ const UniversityDetail = () => {
           {/* ── Program-specific tuition fees ── */}
           {uni.program_fees?.length > 0 && (
             <Section icon="💰" title={t("university.programFeesTitle")} accentColor={theme.accent} id="section-program-fees">
-              <p className="text-xs text-gray-400 mb-4">
+              <p className="text-xs text-[oklch(0.45_0.02_285)] mb-4">
                 {t("university.programFeesNote")}
               </p>
 
@@ -675,20 +675,20 @@ const UniversityDetail = () => {
                         <div className="flex-1 h-px bg-gray-100" />
                       </div>
                     )}
-                    <div className="overflow-hidden rounded-xl border border-gray-100">
+                    <div className="overflow-hidden rounded-xl border border-[oklch(1_0_0/0.07)]">
                       <table className="w-full text-sm">
                         <thead>
-                          <tr className="bg-gray-50">
-                            <th className="text-left py-2 px-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">{t("university.fieldOfStudyHeader")}</th>
-                            <th className="text-right py-2 px-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">{t("university.annualFeeHeader")}</th>
+                          <tr className="bg-[oklch(0.17_0.02_285)]">
+                            <th className="text-left py-2 px-3 text-xs font-semibold text-[oklch(0.55_0.02_285)] uppercase tracking-wide">{t("university.fieldOfStudyHeader")}</th>
+                            <th className="text-right py-2 px-3 text-xs font-semibold text-[oklch(0.55_0.02_285)] uppercase tracking-wide">{t("university.annualFeeHeader")}</th>
                           </tr>
                         </thead>
                         <tbody>
                           {groups[level].map((pf, i) => (
                             <tr key={pf.id}
-                              className={`border-t border-gray-50 ${i % 2 === 0 ? "bg-white" : "bg-gray-50/40"} hover:bg-indigo-50/30 transition`}
+                              className={`border-t border-gray-50 ${i % 2 === 0 ? "bg-[oklch(0.17_0.02_285)]" : "bg-gray-50/40"} hover:bg-indigo-50/30 transition`}
                               title={pf.notes || ""}>
-                              <td className="py-2.5 px-3 font-medium text-gray-800">{pf.field_of_study}</td>
+                              <td className="py-2.5 px-3 font-medium text-white">{pf.field_of_study}</td>
                               <td className="py-2.5 px-3 text-right">
                                 {pf.tuition_fee_eur === 0 ? (
                                   <span className="text-green-600 font-bold">{t("university.freeTuitionShort")}</span>
@@ -732,7 +732,7 @@ const UniversityDetail = () => {
             <Section icon="📄" title={t("university.requiredDocumentsSection")} accentColor={theme.accent}>
               <ul className="space-y-2">
                 {docs.map((d, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
+                  <li key={i} className="flex items-start gap-2 text-sm text-[oklch(0.75_0.02_285)]">
                     <span className="font-bold mt-0.5" style={{ color: theme.accent }}>✓</span>
                     <span>{d}</span>
                   </li>
@@ -789,43 +789,43 @@ const UniversityDetail = () => {
             <Section icon="💶" title={t("university.costBreakdown")} accentColor={theme.accent} id="section-costs">
               <div className="space-y-2">
                 <div className="flex justify-between items-center py-2 border-b border-gray-50">
-                  <span className="text-sm text-gray-600">{t("university.tuitionRowLabel")}</span>
-                  <span className={`text-sm font-bold ${uni.tuition_fee_eur === 0 ? "text-green-600" : "text-gray-800"}`}>
+                  <span className="text-sm text-[oklch(0.65_0.02_285)]">{t("university.tuitionRowLabel")}</span>
+                  <span className={`text-sm font-bold ${uni.tuition_fee_eur === 0 ? "text-green-600" : "text-white"}`}>
                     {uni.tuition_fee_eur === 0 ? t("university.tuitionFreeLabel") : uni.tuition_fee_eur ? `€${uni.tuition_fee_eur.toLocaleString()}` : "—"}
                   </span>
                 </div>
                 {uni.semester_fee_eur && (
                   <div className="flex justify-between items-center py-2 border-b border-gray-50">
                     <div>
-                      <span className="text-sm text-gray-600">{t("university.semesterContrib")}</span>
-                      <p className="text-xs text-gray-400">{t("university.semesterContribDesc")}</p>
+                      <span className="text-sm text-[oklch(0.65_0.02_285)]">{t("university.semesterContrib")}</span>
+                      <p className="text-xs text-[oklch(0.45_0.02_285)]">{t("university.semesterContribDesc")}</p>
                     </div>
-                    <span className="text-sm font-bold text-gray-800">
+                    <span className="text-sm font-bold text-white">
                       €{(uni.semester_fee_eur * 2).toLocaleString()}/yr
                     </span>
                   </div>
                 )}
                 {uni.dormitory_cost_eur && (
                   <div className="flex justify-between items-center py-2 border-b border-gray-50">
-                    <span className="text-sm text-gray-600">{t("university.dormitory12")}</span>
-                    <span className="text-sm font-bold text-gray-800">
+                    <span className="text-sm text-[oklch(0.65_0.02_285)]">{t("university.dormitory12")}</span>
+                    <span className="text-sm font-bold text-white">
                       ~€{(uni.dormitory_cost_eur * 12).toLocaleString()}/yr
                     </span>
                   </div>
                 )}
                 <div className="flex justify-between items-center py-2 border-b border-gray-50">
                   <div>
-                    <span className="text-sm text-gray-600">{t("university.foodGroceries")}</span>
-                    <p className="text-xs text-gray-400">{t("university.foodEstimate")}</p>
+                    <span className="text-sm text-[oklch(0.65_0.02_285)]">{t("university.foodGroceries")}</span>
+                    <p className="text-xs text-[oklch(0.45_0.02_285)]">{t("university.foodEstimate")}</p>
                   </div>
-                  <span className="text-sm font-bold text-gray-400">~€2,400/yr</span>
+                  <span className="text-sm font-bold text-[oklch(0.45_0.02_285)]">~€2,400/yr</span>
                 </div>
                 <div className="flex justify-between items-center py-2 border-b border-gray-50">
                   <div>
-                    <span className="text-sm text-gray-600">{t("university.healthInsurance")}</span>
-                    <p className="text-xs text-gray-400">{t("university.healthInsuranceDesc")}</p>
+                    <span className="text-sm text-[oklch(0.65_0.02_285)]">{t("university.healthInsurance")}</span>
+                    <p className="text-xs text-[oklch(0.45_0.02_285)]">{t("university.healthInsuranceDesc")}</p>
                   </div>
-                  <span className="text-sm font-bold text-gray-400">~€1,200/yr</span>
+                  <span className="text-sm font-bold text-[oklch(0.45_0.02_285)]">~€1,200/yr</span>
                 </div>
                 {(() => {
                   const tuition = uni.tuition_fee_eur ?? 0;
@@ -835,14 +835,14 @@ const UniversityDetail = () => {
                   const total   = tuition + semFee + dorm + fixed;
                   return (
                     <div className="flex justify-between items-center pt-3 mt-1">
-                      <span className="text-sm font-extrabold text-gray-800">{t("university.estimatedTotal")}</span>
+                      <span className="text-sm font-extrabold text-white">{t("university.estimatedTotal")}</span>
                       <span className="text-base font-extrabold" style={{ color: theme.accent }}>
                         ~€{total.toLocaleString()}
                       </span>
                     </div>
                   );
                 })()}
-                <p className="text-xs text-gray-400 mt-1 leading-relaxed">{t("university.costDisclaimer")}</p>
+                <p className="text-xs text-[oklch(0.45_0.02_285)] mt-1 leading-relaxed">{t("university.costDisclaimer")}</p>
               </div>
             </Section>
           )}
@@ -850,8 +850,8 @@ const UniversityDetail = () => {
           <Section icon="🏠" title={t("university.accommodationTitle")} accentColor={theme.accent} id="section-accommodation">
             <InfoRow label={t("university.dormitoryCostLabel")} value={uni.dormitory_cost_eur ? `~€${uni.dormitory_cost_eur}/month` : null} />
             {uni.accommodation_info
-              ? <p className="text-sm text-gray-700 leading-relaxed mt-2">{uni.accommodation_info}</p>
-              : <p className="text-sm text-gray-400">{t("university.accommodation")}</p>}
+              ? <p className="text-sm text-[oklch(0.75_0.02_285)] leading-relaxed mt-2">{uni.accommodation_info}</p>
+              : <p className="text-sm text-[oklch(0.45_0.02_285)]">{t("university.accommodation")}</p>}
           </Section>
 
           <Section icon="🗺️" title={t("university.locationContact")} accentColor={theme.accent} id="section-location">
@@ -873,7 +873,7 @@ const UniversityDetail = () => {
           <button
             onClick={addToPipeline}
             disabled={pipelineLoading}
-            className={`block w-full text-center font-bold py-3 rounded-2xl transition shadow-sm ${inPipeline ? "bg-emerald-600 hover:bg-emerald-500" : "bg-indigo-600 hover:bg-indigo-500"} text-white`}>
+            className={`block w-full text-center font-bold py-3 rounded-2xl transition  ${inPipeline ? "bg-emerald-600 hover:bg-emerald-500" : "bg-indigo-600 hover:bg-indigo-500"} text-white`}>
             {pipelineLoading ? t("university.analyzingFit") : inPipeline ? t("university.viewInPipeline") : t("university.addPipelineBottom")}
           </button>
         </div>
@@ -885,7 +885,7 @@ const UniversityDetail = () => {
     <div className="fixed bottom-6 right-6 z-30">
       <button
         onClick={() => navigate("/instructors")}
-        className="flex items-center gap-2 bg-violet-600 hover:bg-violet-500 text-white text-sm font-bold px-4 py-3 rounded-2xl shadow-xl shadow-violet-900/30 transition-all hover:scale-105 active:scale-95"
+        className="flex items-center gap-2 bg-violet-600 hover:bg-violet-500 text-white text-sm font-bold px-4 py-3 rounded-2xl shadow-violet-900/30 transition-all hover:scale-105 active:scale-95"
       >
         <span className="text-base">👨‍🏫</span>
         {t("university.askInstructor")}
@@ -896,3 +896,4 @@ const UniversityDetail = () => {
 };
 
 export default UniversityDetail;
+

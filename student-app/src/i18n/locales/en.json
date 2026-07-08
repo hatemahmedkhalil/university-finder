@@ -37,19 +37,19 @@
   "nav": {
     "brand": "UniPath",
     "support": "Support",
-    "emailIntegration": "Email Tracking",
+    "emailIntegration": "Email Sync",
     "calendar": "Calendar",
     "myProfile": "My Profile",
     "dashboard": "Dashboard",
     "recommendations": "Recommendations",
     "universities": "Universities",
     "scholarships": "Scholarships",
-    "learning": "Learning",
+    "learning": "Learning Center",
     "learningOverview": "Learning Center Overview",
     "placementTests": "Placement Tests",
     "courses": "Courses",
     "instructors": "Instructors",
-    "pipeline": "My Pipeline",
+    "pipeline": "Pipeline",
     "applyHub": "Apply Hub",
     "applications": "Applications",
     "favourites": "Favourites",
@@ -71,7 +71,10 @@
     "instructorPanel": "Student Inbox",
     "myCourses": "My Courses",
     "myInstructorProfile": "My Profile",
-    "freePlan": "Free Plan"
+    "freePlan": "Free Plan",
+    "sectionMain": "Main",
+    "sectionCommunity": "Community",
+    "sectionAccount": "Account"
   },
   "notifications": {
     "markAllRead": "Mark all read",
@@ -1212,15 +1215,15 @@
     "addFirst": "✨ Add Your First University",
     "loadingPipeline": "Loading pipeline…",
     "stats": {
-      "universities": "Universities",
-      "avgScore": "Avg Fit Score",
-      "accepted": "Accepted"
+      "universities": "Total applications",
+      "avgScore": "In decision stage",
+      "accepted": "Upcoming deadlines"
     },
     "columns": {
-      "shortlisted": "Shortlisted",
-      "preparing": "Preparing",
-      "ready": "Ready to Submit",
-      "submitted": "Submitted",
+      "shortlisted": "Researching",
+      "preparing": "Applied",
+      "ready": "Documents",
+      "submitted": "Interview",
       "decision": "Decision"
     },
     "tabs": {

@@ -1,6 +1,8 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import func
 from sqlalchemy.orm import Session, joinedload
+from pydantic import BaseModel
+from typing import Optional
 
 from app.dependencies import get_db, require_admin
 from app.models.announcement import Announcement
@@ -11,6 +13,7 @@ from app.models.scholarship import Scholarship
 from app.models.student_profile import StudentProfile
 from app.models.university import University
 from app.models.user import User
+from app.models.notification import Notification
 
 router = APIRouter(prefix="/admin", tags=["Admin"])
 
@@ -85,3 +88,103 @@ def get_students(
             "field_of_study": p.field_of_study if p else None,
         })
     return result
+
+
+class UserUpdatePayload(BaseModel):
+    is_active: Optional[bool] = None
+    role: Optional[str] = None
+    plan: Optional[str] = None
+
+
+@router.get("/users")
+def admin_list_users(db: Session = Depends(get_db), _=Depends(require_admin)):
+    users = db.query(User).order_by(User.id.desc()).all()
+    return [
+        {
+            "id": u.id, "email": u.email, "role": u.role,
+            "plan": u.plan, "is_active": u.is_active,
+            "is_verified": u.is_verified,
+            "created_at": u.created_at.isoformat() if u.created_at else None,
+        }
+        for u in users
+    ]
+
+
+@router.get("/users/{user_id}")
+def admin_get_user(user_id: int, db: Session = Depends(get_db), _=Depends(require_admin)):
+    u = db.get(User, user_id)
+    if not u:
+        raise HTTPException(status_code=404, detail="User not found")
+    return {
+        "id": u.id, "email": u.email, "role": u.role,
+        "plan": u.plan, "is_active": u.is_active,
+        "is_verified": u.is_verified,
+        "created_at": u.created_at.isoformat() if u.created_at else None,
+    }
+
+
+@router.patch("/users/{user_id}")
+def admin_update_user(user_id: int, payload: UserUpdatePayload, db: Session = Depends(get_db), _=Depends(require_admin)):
+    u = db.get(User, user_id)
+    if not u:
+        raise HTTPException(status_code=404, detail="User not found")
+    if payload.is_active is not None:
+        u.is_active = payload.is_active
+    if payload.role is not None:
+        u.role = payload.role
+    if payload.plan is not None:
+        u.plan = payload.plan
+    db.commit()
+    db.refresh(u)
+    return {"id": u.id, "email": u.email, "role": u.role, "plan": u.plan, "is_active": u.is_active}
+
+
+@router.delete("/users/{user_id}", status_code=204)
+def admin_delete_user(user_id: int, db: Session = Depends(get_db), _=Depends(require_admin)):
+    u = db.get(User, user_id)
+    if not u:
+        raise HTTPException(status_code=404, detail="User not found")
+    db.delete(u)
+    db.commit()
+
+
+class NotificationPayload(BaseModel):
+    title: str
+    message: str
+    type: str = "system"
+    user_ids: Optional[list[int]] = None  # None = broadcast to all
+
+
+@router.post("/notifications/send", status_code=201)
+def admin_send_notification(payload: NotificationPayload, db: Session = Depends(get_db), _=Depends(require_admin)):
+    if payload.user_ids:
+        user_ids = payload.user_ids
+    else:
+        user_ids = [u.id for u in db.query(User.id).filter(User.role == "student").all()]
+    notifs = [
+        Notification(user_id=uid, title=payload.title, message=payload.message, type=payload.type)
+        for uid in user_ids
+    ]
+    db.add_all(notifs)
+    db.commit()
+    return {"sent": len(notifs)}
+
+
+@router.get("/notifications")
+def admin_list_notifications(db: Session = Depends(get_db), _=Depends(require_admin)):
+    rows = (
+        db.query(Notification, User.email)
+        .join(User, User.id == Notification.user_id)
+        .order_by(Notification.id.desc())
+        .limit(500)
+        .all()
+    )
+    return [
+        {
+            "id": n.id, "user_id": n.user_id, "user_email": email,
+            "title": n.title, "message": n.message, "type": n.type,
+            "is_read": n.is_read,
+            "created_at": n.created_at.isoformat() if n.created_at else None,
+        }
+        for n, email in rows
+    ]

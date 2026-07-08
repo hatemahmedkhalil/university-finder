@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import api from "../api/axios";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
+import PageHero from "../components/PageHero";
 
 const COUNTRY_FLAG = {
   Germany: "🇩🇪", Poland: "🇵🇱", Austria: "🇦🇹", Netherlands: "🇳🇱",
@@ -48,16 +49,16 @@ const SORT_OPTIONS = [
 ];
 
 const SkeletonCard = () => (
-  <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden animate-pulse">
+  <div className="bg-[oklch(0.17_0.02_285)] rounded-2xl border border-[oklch(1_0_0/0.07)] overflow-hidden animate-pulse">
     <div className="h-1.5 bg-gradient-to-r from-rose-200 to-pink-200" />
     <div className="p-5 flex gap-4 items-center">
       <div className="w-12 h-12 rounded-xl bg-gray-100 shrink-0" />
       <div className="flex-1 space-y-2">
-        <div className="h-4 bg-gray-100 rounded w-2/3" />
-        <div className="h-3 bg-gray-100 rounded w-1/3" />
+        <div className="h-4 bg-[oklch(0.20_0.024_285)] rounded w-2/3" />
+        <div className="h-3 bg-[oklch(0.20_0.024_285)] rounded w-1/3" />
         <div className="flex gap-2 pt-1">
-          <div className="h-5 w-14 bg-gray-100 rounded-full" />
-          <div className="h-5 w-18 bg-gray-100 rounded-full" />
+          <div className="h-5 w-14 bg-[oklch(0.20_0.024_285)] rounded-full" />
+          <div className="h-5 w-18 bg-[oklch(0.20_0.024_285)] rounded-full" />
         </div>
       </div>
     </div>
@@ -117,22 +118,13 @@ const Favourites = () => {
   }, [universities, search, sort]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
 
-      {/* Hero */}
-      <div className="relative bg-gradient-to-br from-rose-600 via-pink-600 to-fuchsia-700 text-white overflow-hidden">
-        <div className="absolute top-4 left-10 w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 right-8 w-48 h-48 bg-fuchsia-400/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
-          <span className="inline-block bg-white/15 backdrop-blur-sm text-rose-100 text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-3">
-            ❤️ Saved
-          </span>
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-1">{t("favourites.title")}</h1>
-          <p className="text-rose-200 text-lg">
-            {loading ? t("common.loading") : `${universities.length} ${t("favourites.subtitle")}`}
-          </p>
-        </div>
-      </div>
+      <PageHero
+        photo="https://images.unsplash.com/photo-1507537297725-24a1c029d3ca?w=1400&q=80"
+        title={t("favourites.title")}
+        subtitle={loading ? t("common.loading") : `${universities.length} ${t("favourites.subtitle")}`}
+      />
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
 
@@ -140,9 +132,9 @@ const Favourites = () => {
         {!loading && universities.length > 0 && (
           <div className="flex flex-col sm:flex-row gap-3 mb-6">
             <div className="relative flex-1">
-              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm">🔍</span>
+              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[oklch(0.45_0.02_285)] text-sm">🔍</span>
               <input
-                className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-rose-400 transition"
+                className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-[oklch(1_0_0/0.08)] bg-white text-sm focus:outline-none focus:ring-2 focus:ring-rose-400 transition"
                 placeholder={t("favourites.searchPlaceholder")}
                 value={search}
                 onChange={e => setSearch(e.target.value)}
@@ -151,7 +143,7 @@ const Favourites = () => {
             <select
               value={sort}
               onChange={e => setSort(e.target.value)}
-              className="px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-rose-400 transition"
+              className="px-4 py-2.5 rounded-xl border border-[oklch(1_0_0/0.08)] bg-white text-sm font-medium text-[oklch(0.75_0.02_285)] focus:outline-none focus:ring-2 focus:ring-rose-400 transition"
             >
               {SORT_OPTIONS.map(o => (
                 <option key={o.value} value={o.value}>{o.label}</option>
@@ -167,11 +159,11 @@ const Favourites = () => {
 
         ) : universities.length === 0 ? (
           <div className="text-center py-32">
-            <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-rose-100 to-pink-100 flex items-center justify-center text-5xl mx-auto mb-6 shadow-sm">🤍</div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">{t("favourites.noFavourites")}</h2>
-            <p className="text-gray-500 mb-8">{t("favourites.browseSub")}</p>
+            <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-rose-100 to-pink-100 flex items-center justify-center text-5xl mx-auto mb-6 ">🤍</div>
+            <h2 className="text-2xl font-bold text-white mb-2">{t("favourites.noFavourites")}</h2>
+            <p className="text-[oklch(0.55_0.02_285)] mb-8">{t("favourites.browseSub")}</p>
             <Link to="/universities"
-              className="inline-block bg-gradient-to-r from-rose-500 to-pink-600 text-white px-8 py-3.5 rounded-2xl font-bold shadow-lg shadow-rose-200 hover:from-rose-600 hover:to-pink-700 transition">
+              className="inline-block bg-gradient-to-r from-rose-500 to-pink-600 text-white px-8 py-3.5 rounded-2xl font-bold shadow-rose-200 hover:from-rose-600 hover:to-pink-700 transition">
               {t("favourites.browse")} →
             </Link>
           </div>
@@ -179,7 +171,7 @@ const Favourites = () => {
         ) : filtered.length === 0 ? (
           <div className="text-center py-24">
             <div className="text-5xl mb-4">🔍</div>
-            <h3 className="text-xl font-bold text-gray-700 mb-2">No results for "{search}"</h3>
+            <h3 className="text-xl font-bold text-[oklch(0.75_0.02_285)] mb-2">No results for "{search}"</h3>
             <button onClick={() => setSearch("")} className="text-rose-500 font-semibold hover:underline text-sm">
               Clear search
             </button>
@@ -192,17 +184,17 @@ const Favourites = () => {
               const flag = COUNTRY_FLAG[uni.country] || "🏛️";
               return (
                 <div key={uni.id}
-                  className="group bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col card-lift">
+                  className="group bg-[oklch(0.17_0.02_285)] rounded-2xl border border-[oklch(1_0_0/0.07)] overflow-hidden flex flex-col card-lift">
                   <div className={`h-1.5 bg-gradient-to-r ${grad}`} />
                   <div className="p-5 flex items-start gap-4 flex-1">
-                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${grad} flex items-center justify-center text-2xl shrink-0 shadow-sm`}>
+                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${grad} flex items-center justify-center text-2xl shrink-0 `}>
                       {flag}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-gray-900 text-base truncate group-hover:text-indigo-700 transition">
+                      <h3 className="font-bold text-white text-base truncate group-hover:text-indigo-700 transition">
                         {uni.name}
                       </h3>
-                      <p className="text-gray-400 text-sm mt-0.5">📍 {uni.city}, {uni.country}</p>
+                      <p className="text-[oklch(0.45_0.02_285)] text-sm mt-0.5">📍 {uni.city}, {uni.country}</p>
                       <div className="flex flex-wrap gap-1.5 mt-2">
                         {uni.ranking && (
                           <span className="bg-amber-50 text-amber-700 text-[11px] px-2.5 py-1 rounded-full font-semibold border border-amber-100">
@@ -222,7 +214,7 @@ const Favourites = () => {
                         <span className={`text-[11px] px-2.5 py-1 rounded-full font-semibold border ${
                           uni.tuition_fee_eur === 0
                             ? "bg-emerald-50 text-emerald-700 border-emerald-100"
-                            : "bg-gray-50 text-gray-600 border-gray-100"
+                            : "bg-gray-50 text-[oklch(0.65_0.02_285)] border-gray-100"
                         }`}>
                           {uni.tuition_fee_eur === 0 ? "✨ Free" : `€${uni.tuition_fee_eur?.toLocaleString()}/yr`}
                         </span>
@@ -237,7 +229,7 @@ const Favourites = () => {
                       </Link>
                       {uni.website && (
                         <a href={uni.website} target="_blank" rel="noreferrer"
-                          className="text-xs font-semibold text-gray-500 hover:text-gray-700 bg-gray-50 hover:bg-gray-100 px-3 py-1.5 rounded-lg transition text-center">
+                          className="text-xs font-semibold text-[oklch(0.55_0.02_285)] hover:text-[oklch(0.75_0.02_285)] bg-gray-50 hover:bg-[oklch(0.22_0.026_285)] px-3 py-1.5 rounded-lg transition text-center">
                           Site
                         </a>
                       )}
@@ -269,3 +261,4 @@ const Favourites = () => {
 };
 
 export default Favourites;
+

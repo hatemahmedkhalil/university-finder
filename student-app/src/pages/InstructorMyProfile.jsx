@@ -15,11 +15,11 @@ const Avatar = ({ name, photoUrl, grad }) => {
     const src = photoUrl.startsWith("http") ? photoUrl : photoUrl;
     return (
       <img src={src} alt={name} onError={() => setErr(true)}
-        className="w-24 h-24 rounded-2xl object-cover shadow-xl ring-4 ring-white" />
+        className="w-24 h-24 rounded-2xl object-cover ring-4 ring-white" />
     );
   }
   return (
-    <div className={`w-24 h-24 rounded-2xl bg-gradient-to-br ${grad} flex items-center justify-center text-white text-3xl font-bold shadow-xl ring-4 ring-white`}>
+    <div className={`w-24 h-24 rounded-2xl bg-gradient-to-br ${grad} flex items-center justify-center text-white text-3xl font-bold ring-4 ring-white`}>
       {initials}
     </div>
   );
@@ -27,14 +27,14 @@ const Avatar = ({ name, photoUrl, grad }) => {
 
 const Field = ({ label, value, onChange, type = "text", rows, placeholder }) => (
   <div className="space-y-1.5">
-    <label className="block text-sm font-semibold text-gray-700">{label}</label>
+    <label className="block text-sm font-semibold text-[oklch(0.75_0.02_285)]">{label}</label>
     {rows ? (
       <textarea
         value={value || ""}
         onChange={e => onChange(e.target.value)}
         rows={rows}
         placeholder={placeholder}
-        className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none"
+        className="w-full border border-[oklch(1_0_0/0.08)] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none"
       />
     ) : (
       <input
@@ -42,7 +42,7 @@ const Field = ({ label, value, onChange, type = "text", rows, placeholder }) => 
         value={value || ""}
         onChange={e => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+        className="w-full border border-[oklch(1_0_0/0.08)] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
       />
     )}
   </div>
@@ -109,7 +109,7 @@ const InstructorMyProfile = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className={`w-10 h-10 border-4 border-t-transparent rounded-full animate-spin`}
           style={{ borderColor: "rgb(99,102,241)", borderTopColor: "transparent" }} />
       </div>
@@ -118,18 +118,18 @@ const InstructorMyProfile = () => {
 
   if (!profile?.id) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="text-5xl mb-4">👤</div>
-          <p className="text-gray-600 font-semibold">No instructor profile linked to your account.</p>
-          <p className="text-gray-400 text-sm mt-1">Contact an admin to set up your profile.</p>
+          <p className="text-[oklch(0.65_0.02_285)] font-semibold">No instructor profile linked to your account.</p>
+          <p className="text-[oklch(0.45_0.02_285)] text-sm mt-1">Contact an admin to set up your profile.</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
 
       {/* Hero */}
       <div className={`relative overflow-hidden bg-gradient-to-br ${grad} text-white`}>
@@ -149,14 +149,14 @@ const InstructorMyProfile = () => {
       <div className="max-w-3xl mx-auto px-6 py-8 space-y-6">
 
         {/* Photo upload */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex items-center gap-4">
+        <div className="bg-[oklch(0.17_0.02_285)] rounded-2xl border border-[oklch(1_0_0/0.07)] p-6 flex items-center gap-4">
           <Avatar name={form.name} photoUrl={form.photo_url} grad={grad} />
           <div className="flex-1">
-            <p className="font-semibold text-gray-700 text-sm mb-2">Profile Photo</p>
+            <p className="font-semibold text-[oklch(0.75_0.02_285)] text-sm mb-2">Profile Photo</p>
             <input
               type="file" accept="image/jpeg,image/png,image/webp"
               onChange={e => setPhotoFile(e.target.files[0])}
-              className="text-sm text-gray-500 file:mr-3 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
+              className="text-sm text-[oklch(0.55_0.02_285)] file:mr-3 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
             />
             {photoFile && (
               <button
@@ -171,8 +171,8 @@ const InstructorMyProfile = () => {
         </div>
 
         {/* Info fields */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5">
-          <h2 className="font-bold text-gray-800 text-base">Basic Information</h2>
+        <div className="bg-[oklch(0.17_0.02_285)] rounded-2xl border border-[oklch(1_0_0/0.07)] p-6 space-y-5">
+          <h2 className="font-bold text-white text-base">Basic Information</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Field label="Full Name"     value={form.name}         onChange={v => set("name", v)}         placeholder="Dr. Mohamed Arafa" />
             <Field label="Title / Prefix" value={form.title}        onChange={v => set("title", v)}        placeholder="Mr. / Dr. / Prof." />
@@ -200,7 +200,7 @@ const InstructorMyProfile = () => {
           <button
             onClick={save}
             disabled={saving}
-            className={`px-8 py-3 rounded-xl font-bold text-white bg-gradient-to-r ${grad} shadow-lg hover:opacity-90 disabled:opacity-50 transition`}
+            className={`px-8 py-3 rounded-xl font-bold text-white bg-gradient-to-r ${grad} hover:opacity-90 disabled:opacity-50 transition`}
           >
             {saving ? "Saving…" : "💾 Save Changes"}
           </button>
@@ -211,3 +211,4 @@ const InstructorMyProfile = () => {
 };
 
 export default InstructorMyProfile;
+

@@ -2,14 +2,15 @@ import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import { changeLanguage } from "../i18n";
 import toast from "react-hot-toast";
+import PageHero from "../components/PageHero";
 
 const Section = ({ icon, title, subtitle, children }) => (
-  <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+  <div className="bg-[oklch(0.17_0.02_285)] rounded-2xl border border-[oklch(1_0_0/0.07)] overflow-hidden">
     <div className="flex items-center gap-3 px-6 py-4 border-b border-gray-50">
       <div className="w-9 h-9 rounded-xl bg-indigo-50 flex items-center justify-center text-lg">{icon}</div>
       <div>
-        <h2 className="font-bold text-gray-900 text-sm">{title}</h2>
-        {subtitle && <p className="text-gray-400 text-xs mt-0.5">{subtitle}</p>}
+        <h2 className="font-bold text-white text-sm">{title}</h2>
+        {subtitle && <p className="text-[oklch(0.45_0.02_285)] text-xs mt-0.5">{subtitle}</p>}
       </div>
     </div>
     <div className="p-6">{children}</div>
@@ -29,16 +30,13 @@ const Settings = () => {
   const isPaid = user?.plan === "premium" || user?.plan === "pro";
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
 
-      {/* Hero */}
-      <div className="bg-gradient-to-br from-slate-700 via-gray-700 to-zinc-800 text-white">
-        <div className="max-w-2xl mx-auto px-6 py-12">
-          <p className="text-gray-400 text-sm font-semibold uppercase tracking-widest mb-2">⚙️ Preferences</p>
-          <h1 className="text-4xl font-extrabold tracking-tight mb-2">{t("settings.title")}</h1>
-          <p className="text-gray-400 text-base">{t("settings.subtitle")}</p>
-        </div>
-      </div>
+      <PageHero
+        photo="https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=1400&q=80"
+        title={t("settings.title")}
+        subtitle={t("settings.subtitle")}
+      />
 
       <div className="max-w-2xl mx-auto px-6 py-8 space-y-4">
 
@@ -47,19 +45,19 @@ const Settings = () => {
           <Section icon="👤" title={t("settings.account.title")} subtitle="Your account details">
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white text-xl font-bold shadow-sm">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white text-xl font-bold ">
                   {user.email?.[0]?.toUpperCase()}
                 </div>
                 <div>
-                  <p className="font-semibold text-gray-800 text-sm">{user.email}</p>
-                  <p className="text-gray-400 text-xs mt-0.5">{t("settings.account.email")}</p>
+                  <p className="font-semibold text-white text-sm">{user.email}</p>
+                  <p className="text-[oklch(0.45_0.02_285)] text-xs mt-0.5">{t("settings.account.email")}</p>
                 </div>
               </div>
               <div className="flex flex-col items-end gap-1.5">
                 <span className={`text-xs px-3 py-1.5 rounded-full font-bold ${
                   isPaid
-                    ? "bg-gradient-to-r from-amber-400 to-orange-400 text-white shadow-sm"
-                    : "bg-gray-100 text-gray-500"
+                    ? "bg-gradient-to-r from-amber-400 to-orange-400 text-white "
+                    : "bg-gray-100 text-[oklch(0.55_0.02_285)]"
                 }`}>
                   {isPaid ? `👑 ${user.plan}` : "Free plan"}
                 </span>
@@ -85,13 +83,13 @@ const Settings = () => {
               <button key={code} onClick={() => handleLangChange(code)}
                 className={`flex items-center gap-3 px-4 py-4 rounded-xl border-2 text-left transition-all ${
                   currentLang === code
-                    ? "border-indigo-500 bg-indigo-50 shadow-sm shadow-indigo-100"
+                    ? "border-indigo-500 bg-indigo-50  shadow-indigo-100"
                     : "border-gray-200 hover:border-indigo-300 hover:bg-indigo-50/50"
                 }`}>
                 <span className="text-2xl">{flag}</span>
                 <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-gray-900 text-sm">{name}</p>
-                  <p className="text-gray-400 text-xs">{sub}</p>
+                  <p className="font-semibold text-white text-sm">{name}</p>
+                  <p className="text-[oklch(0.45_0.02_285)] text-xs">{sub}</p>
                 </div>
                 {currentLang === code && (
                   <div className="w-5 h-5 rounded-full bg-indigo-500 flex items-center justify-center shrink-0">
@@ -108,13 +106,13 @@ const Settings = () => {
         {/* Welcome tour */}
         <Section icon="🎓" title={t("settings.onboarding.title")} subtitle={t("settings.onboarding.restartDesc")}>
           <button onClick={restartOnboarding}
-            className="flex items-center gap-2 px-5 py-3 bg-indigo-600 text-white rounded-xl font-semibold text-sm hover:bg-indigo-700 transition shadow-sm shadow-indigo-200">
+            className="flex items-center gap-2 px-5 py-3 bg-indigo-600 text-white rounded-xl font-semibold text-sm hover:bg-indigo-700 transition  shadow-indigo-200">
             🎓 {t("settings.onboarding.restart")}
           </button>
         </Section>
 
         {/* Danger zone */}
-        <div className="bg-white rounded-2xl border-2 border-red-100 overflow-hidden">
+        <div className="bg-[oklch(0.17_0.02_285)] rounded-2xl border-2 border-red-100 overflow-hidden">
           <div className="flex items-center gap-3 px-6 py-4 border-b border-red-50 bg-red-50/50">
             <div className="w-9 h-9 rounded-xl bg-red-100 flex items-center justify-center text-lg">⚠️</div>
             <div>
@@ -124,7 +122,7 @@ const Settings = () => {
           </div>
           <div className="p-6">
             <button onClick={logout}
-              className="flex items-center gap-2 px-5 py-3 bg-red-500 text-white rounded-xl font-bold text-sm hover:bg-red-600 transition shadow-sm shadow-red-200">
+              className="flex items-center gap-2 px-5 py-3 bg-red-500 text-white rounded-xl font-bold text-sm hover:bg-red-600 transition  shadow-red-200">
               🚪 {t("settings.danger.logout")}
             </button>
           </div>
@@ -136,3 +134,4 @@ const Settings = () => {
 };
 
 export default Settings;
+

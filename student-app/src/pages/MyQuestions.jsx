@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import api from "../api/axios";
 import { useTranslation } from "react-i18next";
+import PageHero from "../components/PageHero";
 
 const Avatar = ({ name, photoUrl }) => {
   const [err, setErr] = useState(false);
@@ -20,13 +21,13 @@ const MessageCard = ({ msg }) => {
   const { t } = useTranslation();
   const inst = msg.instructor;
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex flex-col gap-4">
+    <div className="bg-[oklch(0.17_0.02_285)] rounded-2xl border border-[oklch(1_0_0/0.07)] p-5 flex flex-col gap-4">
       {/* Instructor info */}
       <div className="flex items-center gap-3">
         <Avatar name={inst.name} photoUrl={inst.photo_url} />
         <div>
-          <p className="font-semibold text-gray-800 text-sm">{inst.title ? `${inst.title} ` : ""}{inst.name}</p>
-          <p className="text-xs text-gray-400">{inst.organization ?? "Instructor"} · {inst.language}</p>
+          <p className="font-semibold text-white text-sm">{inst.title ? `${inst.title} ` : ""}{inst.name}</p>
+          <p className="text-xs text-[oklch(0.45_0.02_285)]">{inst.organization ?? "Instructor"} · {inst.language}</p>
         </div>
         {!msg.reply && (
           <span className="ml-auto text-xs bg-yellow-100 text-yellow-700 px-2.5 py-1 rounded-full font-semibold">
@@ -52,13 +53,13 @@ const MessageCard = ({ msg }) => {
       {msg.reply ? (
         <div className="flex gap-2">
           <Avatar name={inst.name} photoUrl={inst.photo_url} />
-          <div className="bg-gray-100 text-gray-800 text-sm rounded-2xl rounded-bl-sm px-4 py-3 max-w-[85%]">
+          <div className="bg-gray-100 text-white text-sm rounded-2xl rounded-bl-sm px-4 py-3 max-w-[85%]">
             <p>{msg.reply}</p>
-            <p className="text-[10px] text-gray-400 mt-1">{new Date(msg.replied_at).toLocaleString()}</p>
+            <p className="text-[10px] text-[oklch(0.45_0.02_285)] mt-1">{new Date(msg.replied_at).toLocaleString()}</p>
           </div>
         </div>
       ) : (
-        <p className="text-xs text-gray-400 italic pl-2">{t("myQuestions.noReply")}</p>
+        <p className="text-xs text-[oklch(0.45_0.02_285)] italic pl-2">{t("myQuestions.noReply")}</p>
       )}
     </div>
   );
@@ -87,28 +88,24 @@ export default function MyQuestions() {
   const pendingCount  = messages.filter(m => !m.reply).length;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Hero */}
-      <div className="bg-gradient-to-br from-indigo-700 to-blue-800 text-white py-10 px-4">
-        <div className="max-w-3xl mx-auto">
-          <div className="flex items-center gap-3 mb-2">
-            <span className="text-3xl">💬</span>
-            <h1 className="text-3xl font-bold">{t("myQuestions.title")}</h1>
+    <div className="min-h-screen">
+      <PageHero
+        photo="https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?w=1400&q=80"
+        title={t("myQuestions.title")}
+        subtitle={t("myQuestions.allConversations")}
+      >
+        <div className="flex gap-3 flex-wrap mt-4">
+          <div className="bg-white/10 rounded-xl px-4 py-2 text-sm font-medium text-white">
+            Total <span className="font-bold ml-1">{messages.length}</span>
           </div>
-          <p className="text-indigo-200 mb-5">{t("myQuestions.allConversations")}</p>
-          <div className="flex gap-3 flex-wrap">
-            <div className="bg-white/10 rounded-xl px-4 py-2 text-sm font-medium">
-              Total <span className="font-bold ml-1">{messages.length}</span>
-            </div>
-            <div className="bg-green-500/20 rounded-xl px-4 py-2 text-sm font-medium text-green-200">
-              Answered <span className="font-bold ml-1">{answeredCount}</span>
-            </div>
-            <div className="bg-yellow-500/20 rounded-xl px-4 py-2 text-sm font-medium text-yellow-200">
-              Pending <span className="font-bold ml-1">{pendingCount}</span>
-            </div>
+          <div className="bg-green-500/20 rounded-xl px-4 py-2 text-sm font-medium text-green-200">
+            Answered <span className="font-bold ml-1">{answeredCount}</span>
+          </div>
+          <div className="bg-yellow-500/20 rounded-xl px-4 py-2 text-sm font-medium text-yellow-200">
+            Pending <span className="font-bold ml-1">{pendingCount}</span>
           </div>
         </div>
-      </div>
+      </PageHero>
 
       <div className="max-w-3xl mx-auto px-4 py-6">
         {/* Tabs */}
@@ -124,7 +121,7 @@ export default function MyQuestions() {
               className={`px-4 py-2 rounded-xl text-sm font-semibold transition border ${
                 tab === t.key
                   ? "bg-indigo-600 text-white border-indigo-600"
-                  : "bg-white text-gray-600 border-gray-200 hover:border-indigo-300 hover:text-indigo-600"
+                  : "bg-white text-[oklch(0.65_0.02_285)] border-gray-200 hover:border-indigo-300 hover:text-indigo-600"
               }`}
             >
               {t.label}
@@ -133,11 +130,11 @@ export default function MyQuestions() {
         </div>
 
         {loading ? (
-          <div className="text-center py-16 text-gray-400">{t("common.loading")}</div>
+          <div className="text-center py-16 text-[oklch(0.45_0.02_285)]">{t("common.loading")}</div>
         ) : filtered.length === 0 ? (
           <div className="text-center py-16">
             <div className="text-5xl mb-4">📭</div>
-            <p className="text-gray-500 font-semibold text-lg">
+            <p className="text-[oklch(0.55_0.02_285)] font-semibold text-lg">
               {messages.length === 0 ? t("myQuestions.noQuestions") : t("common.noResults")}
             </p>
             {messages.length === 0 && (
@@ -155,3 +152,4 @@ export default function MyQuestions() {
     </div>
   );
 }
+

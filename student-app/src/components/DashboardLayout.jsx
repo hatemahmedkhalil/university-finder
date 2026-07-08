@@ -61,7 +61,7 @@ const DashboardLayout = ({ children }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[oklch(0.13_0.018_285)] dark-layout">
       <Sidebar
         collapsed={collapsed}
         onToggle={toggleCollapsed}

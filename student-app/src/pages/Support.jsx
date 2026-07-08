@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import api from "../api/axios";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
+import PageHero from "../components/PageHero";
 
 const STATUS_STYLE = {
   open:            { bg: "bg-yellow-50",  text: "text-yellow-700",  border: "border-yellow-200", dot: "bg-yellow-400",  label: "Open" },
@@ -10,7 +11,7 @@ const STATUS_STYLE = {
   waiting_student: { bg: "bg-blue-50",    text: "text-blue-700",    border: "border-blue-200",   dot: "bg-blue-400",    label: "Support Replied" },
   in_progress:     { bg: "bg-purple-50",  text: "text-purple-700",  border: "border-purple-200", dot: "bg-purple-400",  label: "In Progress" },
   resolved:        { bg: "bg-green-50",   text: "text-green-700",   border: "border-green-200",  dot: "bg-green-500",   label: "Resolved" },
-  closed:          { bg: "bg-gray-50",    text: "text-gray-600",    border: "border-gray-200",   dot: "bg-gray-400",    label: "Closed" },
+  closed:          { bg: "bg-[oklch(0.17_0.02_285)]",    text: "text-[oklch(0.65_0.02_285)]",    border: "border-gray-200",   dot: "bg-gray-400",    label: "Closed" },
 };
 
 const StatusBadge = ({ status }) => {
@@ -56,28 +57,28 @@ const NewTicketForm = ({ onCreated }) => {
   };
 
   return (
-    <form onSubmit={submit} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-      <h2 className="font-bold text-gray-800 text-base mb-4">✉️ {t("support.form.newTicket")}</h2>
+    <form onSubmit={submit} className="bg-[oklch(0.17_0.02_285)] rounded-2xl border border-[oklch(1_0_0/0.07)] p-6">
+      <h2 className="font-bold text-white text-base mb-4">✉️ {t("support.form.newTicket")}</h2>
       <div className="space-y-4">
         <div>
-          <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">{t("support.form.subject")}</label>
+          <label className="block text-xs font-semibold text-[oklch(0.55_0.02_285)] uppercase tracking-wide mb-1">{t("support.form.subject")}</label>
           <input
             value={subject}
             onChange={e => setSubject(e.target.value)}
             placeholder={t("support.form.subjectPlaceholder")}
             required
-            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full border border-[oklch(1_0_0/0.08)] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
         </div>
         <div>
-          <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">{t("support.form.message")}</label>
+          <label className="block text-xs font-semibold text-[oklch(0.55_0.02_285)] uppercase tracking-wide mb-1">{t("support.form.message")}</label>
           <textarea
             value={message}
             onChange={e => setMessage(e.target.value)}
             rows={4}
             placeholder={t("support.form.messagePlaceholder")}
             required
-            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full border border-[oklch(1_0_0/0.08)] rounded-xl px-4 py-2.5 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
         </div>
         <button
@@ -98,13 +99,13 @@ const Bubble = ({ msg }) => {
   const isStudent = msg.sender_role === "student";
   return (
     <div className={`flex ${isStudent ? "justify-end" : "justify-start"}`}>
-      <div className={`max-w-[80%] px-4 py-3 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap shadow-sm ${
+      <div className={`max-w-[80%] px-4 py-3 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap  ${
         isStudent
           ? "bg-blue-600 text-white rounded-br-md"
-          : "bg-white border border-gray-200 text-gray-800 rounded-bl-md"
+          : "bg-white border border-[oklch(1_0_0/0.08)] text-white rounded-bl-md"
       }`}>
         <p>{msg.message}</p>
-        <p className={`text-[10px] mt-1 ${isStudent ? "text-blue-200 text-right" : "text-gray-400"}`}>
+        <p className={`text-[10px] mt-1 ${isStudent ? "text-blue-200 text-right" : "text-[oklch(0.45_0.02_285)]"}`}>
           {isStudent ? t("support.you") : t("support.supportTeam")} · {new Date(msg.created_at).toLocaleString()}
         </p>
       </div>
@@ -143,7 +144,7 @@ const TicketThread = ({ ticket, onUpdated, autoOpen }) => {
   const hasNewReply = ticket.status === "waiting_student";
 
   return (
-    <div className={`bg-white rounded-2xl border shadow-sm overflow-hidden ${
+    <div className={`bg-[oklch(0.17_0.02_285)] rounded-2xl border  overflow-hidden ${
       hasNewReply ? "border-blue-300 ring-1 ring-blue-200" : "border-gray-100"
     }`}>
       {/* Header */}
@@ -152,13 +153,13 @@ const TicketThread = ({ ticket, onUpdated, autoOpen }) => {
         className="w-full text-left flex items-start gap-4 p-5"
       >
         <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg shrink-0 ${
-          hasNewReply ? "bg-blue-50" : ticket.status === "resolved" ? "bg-green-50" : "bg-gray-50"
+          hasNewReply ? "bg-blue-50" : ticket.status === "resolved" ? "bg-green-50" : "bg-[oklch(0.17_0.02_285)]"
         }`}>
           {hasNewReply ? "💬" : ticket.status === "resolved" ? "✅" : "📩"}
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2 flex-wrap">
-            <p className="font-bold text-gray-800 text-sm truncate">{ticket.subject}</p>
+            <p className="font-bold text-white text-sm truncate">{ticket.subject}</p>
             <div className="flex items-center gap-2 flex-wrap">
               {hasNewReply && (
                 <span className="text-[10px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-semibold animate-pulse">
@@ -168,11 +169,11 @@ const TicketThread = ({ ticket, onUpdated, autoOpen }) => {
               <StatusBadge status={ticket.status} />
             </div>
           </div>
-          <p className="text-xs text-gray-400 mt-0.5">
+          <p className="text-xs text-[oklch(0.45_0.02_285)] mt-0.5">
             #{ticket.id} · {ticket.conversation?.length ?? 0} message{ticket.conversation?.length !== 1 ? "s" : ""} · {new Date(ticket.created_at).toLocaleDateString()}
           </p>
         </div>
-        <svg className={`w-4 h-4 text-gray-400 shrink-0 transition-transform mt-1 ${open ? "rotate-180" : ""}`}
+        <svg className={`w-4 h-4 text-[oklch(0.45_0.02_285)] shrink-0 transition-transform mt-1 ${open ? "rotate-180" : ""}`}
           fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
@@ -180,11 +181,11 @@ const TicketThread = ({ ticket, onUpdated, autoOpen }) => {
 
       {/* Conversation */}
       {open && (
-        <div className="border-t border-gray-100">
+        <div className="border-t border-[oklch(1_0_0/0.07)]">
           {/* Chat area */}
           <div className="px-5 py-4 space-y-3 bg-gray-50 min-h-24 max-h-96 overflow-y-auto">
             {(ticket.conversation ?? []).length === 0 ? (
-              <div className="text-center text-gray-400 text-sm py-6">{t("support.noMessages")}</div>
+              <div className="text-center text-[oklch(0.45_0.02_285)] text-sm py-6">{t("support.noMessages")}</div>
             ) : (
               (ticket.conversation ?? []).map(msg => <Bubble key={msg.id} msg={msg} />)
             )}
@@ -193,13 +194,13 @@ const TicketThread = ({ ticket, onUpdated, autoOpen }) => {
 
           {/* Reply input (only if not closed/resolved) */}
           {!["resolved", "closed"].includes(ticket.status) && (
-            <form onSubmit={sendFollowup} className="flex items-end gap-3 p-4 border-t border-gray-100 bg-white">
+            <form onSubmit={sendFollowup} className="flex items-end gap-3 p-4 border-t border-[oklch(1_0_0/0.07)] bg-white">
               <textarea
                 value={reply}
                 onChange={e => setReply(e.target.value)}
                 rows={2}
                 placeholder={t("support.followUpPlaceholder")}
-                className="flex-1 border border-gray-200 rounded-xl px-3 py-2.5 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="flex-1 border border-[oklch(1_0_0/0.08)] rounded-xl px-3 py-2.5 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-400"
                 onKeyDown={e => {
                   if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendFollowup(e); }
                 }}
@@ -271,25 +272,12 @@ const Support = () => {
                           tickets;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Hero */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-indigo-700 via-blue-700 to-blue-800 text-white">
-        <div className="absolute inset-0">
-          <div className="absolute top-6 left-1/4 w-64 h-64 bg-indigo-400/20 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 right-1/4 w-72 h-72 bg-blue-400/20 rounded-full blur-3xl" />
-        </div>
-        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-14 text-center">
-          <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-blue-200 text-xs font-bold px-4 py-1.5 rounded-full mb-5">
-            🎧 We're here to help
-          </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-2">
-            {t("support.title")}
-          </h1>
-          <p className="text-indigo-200 text-base max-w-md mx-auto">
-            {t("support.subtitle")}
-          </p>
-        </div>
-      </div>
+    <div className="min-h-screen">
+      <PageHero
+        photo="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1400&q=80"
+        title={t("support.title")}
+        subtitle={t("support.subtitle")}
+      />
 
       <div className="max-w-3xl mx-auto px-4 py-8 space-y-6">
 
@@ -299,7 +287,7 @@ const Support = () => {
         {/* My tickets */}
         <div>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-bold text-gray-800">{t("support.myTickets")}</h2>
+            <h2 className="font-bold text-white">{t("support.myTickets")}</h2>
             <div className="flex items-center gap-3">
               {waiting > 0 && (
                 <span className="text-xs bg-blue-100 text-blue-700 px-2.5 py-1 rounded-full font-semibold animate-pulse">
@@ -333,7 +321,7 @@ const Support = () => {
                 className={`px-4 py-1.5 rounded-xl text-xs font-semibold border transition ${
                   tab === t.key
                     ? "bg-blue-600 text-white border-blue-600"
-                    : "bg-white text-gray-500 border-gray-200 hover:border-blue-300 hover:text-blue-600"
+                    : "bg-white text-[oklch(0.55_0.02_285)] border-gray-200 hover:border-blue-300 hover:text-blue-600"
                 }`}
               >
                 {t.label}
@@ -343,13 +331,13 @@ const Support = () => {
 
           {loading ? (
             <div className="space-y-3">
-              {[1, 2].map(i => <div key={i} className="bg-white rounded-2xl border border-gray-100 h-20 animate-pulse" />)}
+              {[1, 2].map(i => <div key={i} className="bg-[oklch(0.17_0.02_285)] rounded-2xl border border-[oklch(1_0_0/0.07)] h-20 animate-pulse" />)}
             </div>
           ) : shown.length === 0 ? (
-            <div className="text-center py-14 bg-white rounded-2xl border border-gray-100">
+            <div className="text-center py-14 bg-[oklch(0.17_0.02_285)] rounded-2xl border border-[oklch(1_0_0/0.07)]">
               <div className="text-5xl mb-3">📭</div>
-              <p className="font-semibold text-gray-500">{t("support.noTickets")}</p>
-              <p className="text-sm text-gray-400 mt-1">{t("support.noTicketsSub")}</p>
+              <p className="font-semibold text-[oklch(0.55_0.02_285)]">{t("support.noTickets")}</p>
+              <p className="text-sm text-[oklch(0.45_0.02_285)] mt-1">{t("support.noTicketsSub")}</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -370,3 +358,4 @@ const Support = () => {
 };
 
 export default Support;
+

@@ -13,7 +13,7 @@ const LANG_GRAD = {
 const Avatar = ({ name, isInstructor, grad }) => {
   const initials = name?.split(" ").map(w => w[0]).slice(0, 2).join("").toUpperCase() || "?";
   return (
-    <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-white text-xs font-bold shrink-0 shadow-sm ${
+    <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-white text-xs font-bold shrink-0  ${
       isInstructor
         ? `bg-gradient-to-br ${grad}`
         : "bg-gradient-to-br from-slate-500 to-slate-700"
@@ -33,7 +33,7 @@ const Message = ({ msg, currentUserId, grad, onDelete }) => {
       <div className={`max-w-[75%] ${isMe ? "items-end" : "items-start"} flex flex-col gap-0.5`}>
         <div className="flex items-center gap-2">
           {!isMe && (
-            <span className={`text-xs font-bold ${isInstructor ? "text-indigo-600" : "text-gray-500"}`}>
+            <span className={`text-xs font-bold ${isInstructor ? "text-indigo-600" : "text-[oklch(0.55_0.02_285)]"}`}>
               {msg.author_name}
               {isInstructor && (
                 <span className="ms-1.5 text-[10px] bg-indigo-100 text-indigo-600 px-1.5 py-0.5 rounded-full font-semibold">
@@ -43,21 +43,21 @@ const Message = ({ msg, currentUserId, grad, onDelete }) => {
             </span>
           )}
         </div>
-        <div className={`rounded-2xl px-4 py-2.5 text-sm leading-relaxed shadow-sm ${
+        <div className={`rounded-2xl px-4 py-2.5 text-sm leading-relaxed  ${
           isMe
             ? `bg-gradient-to-br ${grad} text-white rounded-br-sm`
             : isInstructor
-              ? "bg-indigo-50 border border-indigo-100 text-gray-800 rounded-bl-sm"
-              : "bg-white border border-gray-100 text-gray-800 rounded-bl-sm"
+              ? "bg-indigo-50 border border-indigo-100 text-white rounded-bl-sm"
+              : "bg-white border border-[oklch(1_0_0/0.07)] text-white rounded-bl-sm"
         }`}>
           <p className="whitespace-pre-wrap break-words">{msg.content}</p>
         </div>
         <div className="flex items-center gap-2">
-          <p className="text-[10px] text-gray-400">
+          <p className="text-[10px] text-[oklch(0.45_0.02_285)]">
             {new Date(msg.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
           </p>
           {isMe && (
-            <button onClick={() => onDelete(msg.id)} className="text-[10px] text-gray-300 hover:text-red-400 transition">
+            <button onClick={() => onDelete(msg.id)} className="text-[10px] text-[oklch(0.35_0.02_285)] hover:text-red-400 transition">
               ✕
             </button>
           )}
@@ -134,7 +134,7 @@ const CourseChat = () => {
     <div className="flex flex-col h-[calc(100vh-60px)] bg-gray-50">
 
       {/* Header */}
-      <div className={`relative overflow-hidden bg-gradient-to-r ${grad} px-5 py-4 flex items-center gap-3 shadow-md`}>
+      <div className={`relative overflow-hidden bg-gradient-to-r ${grad} px-5 py-4 flex items-center gap-3`}>
         <div className="absolute -right-6 -top-6 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
         <Link to="/dashboard" className="relative text-white/70 hover:text-white transition text-xl shrink-0">←</Link>
         <div className="relative w-10 h-10 rounded-xl bg-white/20 border border-white/30 flex items-center justify-center text-white text-lg backdrop-blur shrink-0">
@@ -163,8 +163,8 @@ const CourseChat = () => {
         ) : messages.length === 0 ? (
           <div className="text-center py-16">
             <div className="text-5xl mb-4">💬</div>
-            <h3 className="text-lg font-bold text-gray-700 mb-2">No messages yet</h3>
-            <p className="text-gray-400 text-sm">Be the first to say something to the community!</p>
+            <h3 className="text-lg font-bold text-[oklch(0.75_0.02_285)] mb-2">No messages yet</h3>
+            <p className="text-[oklch(0.45_0.02_285)] text-sm">Be the first to say something to the community!</p>
           </div>
         ) : (
           messages.map(msg => (
@@ -181,7 +181,7 @@ const CourseChat = () => {
       </div>
 
       {/* Input */}
-      <div className="bg-white border-t border-gray-100 px-4 py-3">
+      <div className="bg-white border-t border-[oklch(1_0_0/0.07)] px-4 py-3">
         <div className="flex gap-2 max-w-4xl mx-auto">
           <textarea
             ref={inputRef}
@@ -190,7 +190,7 @@ const CourseChat = () => {
             onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
             rows={1}
             placeholder="Write a message to the community… (Enter to send)"
-            className="flex-1 resize-none border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            className="flex-1 resize-none border border-[oklch(1_0_0/0.08)] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
             style={{ minHeight: "44px", maxHeight: "120px" }}
           />
           <button
@@ -204,7 +204,7 @@ const CourseChat = () => {
             }
           </button>
         </div>
-        <p className="text-center text-[10px] text-gray-300 mt-1.5">
+        <p className="text-center text-[10px] text-[oklch(0.35_0.02_285)] mt-1.5">
           Be respectful · Messages are visible to all course members
         </p>
       </div>

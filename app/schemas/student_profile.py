@@ -13,6 +13,7 @@ class StudentProfileCreate(BaseModel):
     preferred_countries: str = ""
     field_of_study: str | None = None
     phone_number: str | None = None
+    full_name: str | None = None
 
 
 class StudentProfileUpdate(BaseModel):
@@ -25,6 +26,7 @@ class StudentProfileUpdate(BaseModel):
     preferred_countries: str | None = None
     field_of_study: str | None = None
     phone_number: str | None = None
+    full_name: str | None = None
 
 
 class StudentProfileOut(BaseModel):
@@ -39,5 +41,6 @@ class StudentProfileOut(BaseModel):
     preferred_countries: str
     field_of_study: str | None
     phone_number: str | None = None
+    full_name: str | None = None
 
     model_config = {"from_attributes": True}

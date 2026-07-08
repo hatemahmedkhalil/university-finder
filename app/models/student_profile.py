@@ -38,6 +38,7 @@ class StudentProfile(Base):
     preferred_countries: Mapped[str] = mapped_column(Text, nullable=False, default="")
     field_of_study: Mapped[str | None] = mapped_column(String(200))
     phone_number: Mapped[str | None] = mapped_column(String(30), nullable=True, default=None)
+    full_name: Mapped[str | None] = mapped_column(String(200), nullable=True, default=None)
     # JSON: {"english": {"level": "B2", "score": 14, "total": 20}, "german": {...}}
     placement_results: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True, default=None)
 

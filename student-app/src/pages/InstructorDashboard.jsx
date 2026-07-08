@@ -16,7 +16,7 @@ const LANG_LIGHT = {
 };
 
 const StatCard = ({ icon, label, value, sub, grad }) => (
-  <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${grad} p-5 text-white shadow-lg`}>
+  <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${grad} p-5 text-white`}>
     <div className="absolute -right-3 -top-3 text-7xl opacity-10 select-none">{icon}</div>
     <p className="text-4xl font-extrabold tracking-tight leading-none mb-1">{value}</p>
     <p className="text-white/80 text-sm font-semibold">{label}</p>
@@ -43,7 +43,7 @@ const InstructorDashboard = () => {
   const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
 
       {/* Hero */}
       <div className={`relative overflow-hidden bg-gradient-to-br ${grad} text-white`}>
@@ -101,55 +101,55 @@ const InstructorDashboard = () => {
         {/* Quick actions */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <Link to="/instructor-panel"
-            className="flex items-center gap-4 bg-white rounded-2xl border border-gray-100 shadow-sm p-5 hover:shadow-md transition card-lift">
+            className="flex items-center gap-4 bg-[oklch(0.17_0.02_285)] rounded-2xl border border-[oklch(1_0_0/0.07)] p-5 hover:shadow-md transition card-lift">
             <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${grad} flex items-center justify-center text-2xl shadow`}>
               💬
             </div>
             <div>
-              <p className="font-bold text-gray-800">Student Messages</p>
-              <p className="text-gray-400 text-sm">Reply to questions</p>
+              <p className="font-bold text-white">Student Messages</p>
+              <p className="text-[oklch(0.45_0.02_285)] text-sm">Reply to questions</p>
             </div>
           </Link>
           <Link to="/learning"
-            className="flex items-center gap-4 bg-white rounded-2xl border border-gray-100 shadow-sm p-5 hover:shadow-md transition card-lift">
+            className="flex items-center gap-4 bg-[oklch(0.17_0.02_285)] rounded-2xl border border-[oklch(1_0_0/0.07)] p-5 hover:shadow-md transition card-lift">
             <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${grad} flex items-center justify-center text-2xl shadow`}>
               📚
             </div>
             <div>
-              <p className="font-bold text-gray-800">Learning Center</p>
-              <p className="text-gray-400 text-sm">Browse your courses</p>
+              <p className="font-bold text-white">Learning Center</p>
+              <p className="text-[oklch(0.45_0.02_285)] text-sm">Browse your courses</p>
             </div>
           </Link>
           <Link to="/profile"
-            className="flex items-center gap-4 bg-white rounded-2xl border border-gray-100 shadow-sm p-5 hover:shadow-md transition card-lift">
+            className="flex items-center gap-4 bg-[oklch(0.17_0.02_285)] rounded-2xl border border-[oklch(1_0_0/0.07)] p-5 hover:shadow-md transition card-lift">
             <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${grad} flex items-center justify-center text-2xl shadow`}>
               👤
             </div>
             <div>
-              <p className="font-bold text-gray-800">My Profile</p>
-              <p className="text-gray-400 text-sm">Update your info</p>
+              <p className="font-bold text-white">My Profile</p>
+              <p className="text-[oklch(0.45_0.02_285)] text-sm">Update your info</p>
             </div>
           </Link>
         </div>
 
         {/* Courses with community chat links */}
         {!loading && stats?.courses?.length > 0 && (
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+          <div className="bg-[oklch(0.17_0.02_285)] rounded-2xl border border-[oklch(1_0_0/0.07)] overflow-hidden">
             <div className="flex items-center gap-3 px-6 py-4 border-b border-gray-50">
               <span className={`w-8 h-8 rounded-lg bg-gradient-to-br ${grad} flex items-center justify-center text-white text-sm`}>📚</span>
-              <h2 className="font-bold text-gray-800">Your Courses</h2>
-              <span className="ms-auto text-xs text-gray-400">{stats.courses.length} course{stats.courses.length !== 1 ? "s" : ""}</span>
+              <h2 className="font-bold text-white">Your Courses</h2>
+              <span className="ms-auto text-xs text-[oklch(0.45_0.02_285)]">{stats.courses.length} course{stats.courses.length !== 1 ? "s" : ""}</span>
             </div>
             <div className="divide-y divide-gray-50">
               {stats.courses.map(course => (
-                <div key={course.id} className="flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition">
+                <div key={course.id} className="flex items-center justify-between px-6 py-4 hover:bg-[oklch(0.20_0.024_285)] transition">
                   <div className="flex items-center gap-3">
-                    <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${grad} flex items-center justify-center text-white text-sm font-bold shadow-sm`}>
+                    <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${grad} flex items-center justify-center text-white text-sm font-bold `}>
                       {course.level || "?"}
                     </div>
                     <div>
-                      <p className="font-semibold text-gray-800 text-sm">{course.title}</p>
-                      <p className="text-gray-400 text-xs capitalize">{stats.language} · {course.level || "All levels"}</p>
+                      <p className="font-semibold text-white text-sm">{course.title}</p>
+                      <p className="text-[oklch(0.45_0.02_285)] text-xs capitalize">{stats.language} · {course.level || "All levels"}</p>
                     </div>
                   </div>
                   <Link
@@ -165,10 +165,10 @@ const InstructorDashboard = () => {
         )}
 
         {!loading && (!stats?.courses || stats.courses.length === 0) && (
-          <div className="text-center py-12 bg-white rounded-2xl border border-gray-100 shadow-sm">
+          <div className="text-center py-12 bg-[oklch(0.17_0.02_285)] rounded-2xl border border-[oklch(1_0_0/0.07)]">
             <div className="text-5xl mb-3">📚</div>
-            <p className="text-gray-600 font-semibold">No published courses yet</p>
-            <p className="text-gray-400 text-sm mt-1">Ask an admin to publish courses in your language</p>
+            <p className="text-[oklch(0.65_0.02_285)] font-semibold">No published courses yet</p>
+            <p className="text-[oklch(0.45_0.02_285)] text-sm mt-1">Ask an admin to publish courses in your language</p>
           </div>
         )}
       </div>
@@ -177,3 +177,4 @@ const InstructorDashboard = () => {
 };
 
 export default InstructorDashboard;
+

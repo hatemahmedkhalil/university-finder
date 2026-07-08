@@ -41,7 +41,7 @@ const LANG_META = {
   polish: {
     flagSrc: "https://flagcdn.com/w80/pl.png",
     heroBg: "bg-[#DC143C]",
-    heroStripe: "bg-white",
+    heroStripe: "bg-[oklch(0.17_0.02_285)]",
     accent: "#DC143C",
     accentLight: "#fff0f3",
     accentBorder: "#fda4af",
@@ -83,7 +83,7 @@ const PlacementTestPage = () => {
   }, [language]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
 
       {/* ── Hero with flag-stripe design ── */}
       <div className={`${meta.heroBg} relative overflow-hidden`}>
@@ -164,10 +164,10 @@ const PlacementTestPage = () => {
           <div className="text-3xl mt-0.5">📝</div>
           <div>
             <p className="font-bold text-lg" style={{ color: meta.accent }}>{langLabel} {t("placement.title")}</p>
-            <p className="text-gray-600 mt-1">
+            <p className="text-[oklch(0.65_0.02_285)] mt-1">
               <span className="font-semibold">{t("courses.statusLabel")}</span> {t("placement.noContent")}
             </p>
-            <p className="text-gray-500 text-sm mt-1">
+            <p className="text-[oklch(0.55_0.02_285)] text-sm mt-1">
               {t("placement.adminNote")}
             </p>
           </div>
@@ -175,12 +175,12 @@ const PlacementTestPage = () => {
 
         {/* Level cards */}
         <div>
-          <h2 className="text-lg font-bold text-gray-800 mb-4">{t("placement.testLevels")}</h2>
+          <h2 className="text-lg font-bold text-white mb-4">{t("placement.testLevels")}</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 stagger">
             {LEVELS.map((lvl) => (
               <div
                 key={lvl.code}
-                className="bg-white rounded-2xl shadow-sm p-5 flex flex-col items-center gap-2 border opacity-70 card-lift"
+                className="bg-[oklch(0.17_0.02_285)] rounded-2xl-sm p-5 flex flex-col items-center gap-2 border opacity-70 card-lift"
                 style={{ borderColor: meta.cardBorder }}
               >
                 <div
@@ -189,7 +189,7 @@ const PlacementTestPage = () => {
                 >
                   {lvl.code}
                 </div>
-                <p className="text-sm font-semibold text-gray-700">{lvl.label}</p>
+                <p className="text-sm font-semibold text-[oklch(0.75_0.02_285)]">{lvl.label}</p>
                 <span
                   className="text-xs px-2.5 py-1 rounded-full font-medium"
                   style={{ backgroundColor: meta.tagBg, color: meta.tagText }}
@@ -202,7 +202,7 @@ const PlacementTestPage = () => {
         </div>
 
         {/* How it will work */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-7">
+        <div className="bg-[oklch(0.17_0.02_285)] rounded-2xl border border-[oklch(1_0_0/0.07)] p-7">
           <div className="flex items-center gap-3 mb-6">
             {/* Mini flag stripe accent */}
             <div className="flex flex-col gap-0.5">
@@ -210,7 +210,7 @@ const PlacementTestPage = () => {
                 <div key={i} className="w-1 h-3 rounded-full" style={{ backgroundColor: c }} />
               ))}
             </div>
-            <h2 className="text-base font-bold text-gray-800">{t("placement.howTitle")}</h2>
+            <h2 className="text-base font-bold text-white">{t("placement.howTitle")}</h2>
           </div>
           <ol className="space-y-4">
             {[
@@ -227,15 +227,15 @@ const PlacementTestPage = () => {
                   {icon}
                 </div>
                 <div>
-                  <p className="font-semibold text-gray-800 text-sm">{title}</p>
-                  <p className="text-xs text-gray-500 mt-0.5">{desc}</p>
+                  <p className="font-semibold text-white text-sm">{title}</p>
+                  <p className="text-xs text-[oklch(0.55_0.02_285)] mt-0.5">{desc}</p>
                 </div>
               </li>
             ))}
           </ol>
         </div>
 
-        <div className="text-center py-4 text-gray-400 text-sm">
+        <div className="text-center py-4 text-[oklch(0.45_0.02_285)] text-sm">
           {t("placement.comingSoonNote")}
         </div>
       </div>
@@ -244,3 +244,4 @@ const PlacementTestPage = () => {
 };
 
 export default PlacementTestPage;
+

@@ -37,14 +37,14 @@
   "nav": {
     "brand": "UniPath",
     "support": "الدعم",
-    "emailIntegration": "متابعة البريد",
+    "emailIntegration": "مزامنة البريد",
     "calendar": "التقويم",
     "myProfile": "ملفي الشخصي",
     "dashboard": "لوحة التحكم",
     "recommendations": "التوصيات",
     "universities": "الجامعات",
     "scholarships": "المنح الدراسية",
-    "learning": "التعلم",
+    "learning": "مركز التعلم",
     "learningOverview": "نظرة عامة على مركز التعلم",
     "placementTests": "اختبارات تحديد المستوى",
     "courses": "الدورات",
@@ -71,7 +71,10 @@
     "instructorPanel": "رسائل الطلاب",
     "myCourses": "كورساتي",
     "myInstructorProfile": "ملفي الشخصي",
-    "freePlan": "الخطة المجانية"
+    "freePlan": "الخطة المجانية",
+    "sectionMain": "الرئيسية",
+    "sectionCommunity": "المجتمع",
+    "sectionAccount": "الحساب"
   },
   "notifications": {
     "markAllRead": "تعيين الكل كمقروء",

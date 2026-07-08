@@ -1,217 +1,249 @@
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import api from "../api/axios";
 
-const LANG_META = [
-  { lang: "english", flag: "🇬🇧", grad: "from-rose-500 via-pink-500 to-fuchsia-600", glow: "shadow-pink-200",   light: "bg-pink-50",   text: "text-pink-700",   border: "border-pink-100",   ring: "ring-pink-300"   },
-  { lang: "german",  flag: "🇩🇪", grad: "from-amber-500 via-orange-500 to-red-500",  glow: "shadow-orange-200",light: "bg-orange-50", text: "text-orange-700", border: "border-orange-100", ring: "ring-orange-300" },
-  { lang: "polish",  flag: "🇵🇱", grad: "from-emerald-500 via-teal-500 to-cyan-600", glow: "shadow-teal-200",  light: "bg-teal-50",   text: "text-teal-700",  border: "border-teal-100",   ring: "ring-teal-300"   },
-];
+const BG     = "oklch(0.13 0.018 285)";
+const SURF   = "oklch(0.17 0.022 285)";
+const CARD   = "oklch(0.20 0.024 285)";
+const BORDER = "oklch(1 0 0 / 0.07)";
+const DIM    = "oklch(0.55 0.02 285)";
+const GRAD   = "linear-gradient(135deg, oklch(0.55 0.22 296), oklch(0.50 0.20 264))";
 
-const LEVELS = ["A1","A2","B1","B2","C1","C2"];
+const LEVEL_ORDER = ["A1","A2","B1","B2","C1","C2","native"];
+const LEVEL_PCT   = { A1: 10, A2: 25, B1: 42, B2: 62, C1: 78, C2: 92, native: 100 };
 
-const COMING_SOON_META = [
-  { key: "cs_video",    icon: "🎬", grad: "from-red-400 to-pink-500"     },
-  { key: "cs_pdf",      icon: "📄", grad: "from-blue-400 to-indigo-500"  },
-  { key: "cs_quizzes",  icon: "🧠", grad: "from-violet-400 to-purple-500"},
-  { key: "cs_certs",    icon: "🏆", grad: "from-amber-400 to-orange-500" },
-  { key: "cs_progress", icon: "📊", grad: "from-emerald-400 to-teal-500" },
-  { key: "cs_tutoring", icon: "👨‍🏫", grad: "from-rose-400 to-fuchsia-500"},
-];
-
-const LearningCenter = () => {
-  const { t } = useTranslation();
-
-  return (
-  <div className="min-h-screen bg-gray-50">
-
-    {/* Hero */}
-    <div className="relative overflow-hidden bg-gradient-to-br from-indigo-900 via-violet-900 to-fuchsia-900 text-white">
-      <div className="absolute inset-0">
-        <div className="absolute top-10 left-10 w-64 h-64 bg-pink-500/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-20 w-80 h-80 bg-indigo-400/20 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 w-48 h-48 bg-fuchsia-400/15 rounded-full blur-3xl -translate-x-1/2" />
-      </div>
-      <div className="relative max-w-5xl mx-auto px-4 sm:px-6 py-10 sm:py-16 text-center">
-        <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-fuchsia-200 text-sm font-semibold px-5 py-2 rounded-full mb-6">
-          📚 {t("learning.langBadge")}
-        </div>
-        <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight mb-4">
-          {t("learning.title")}
-        </h1>
-        <p className="text-indigo-200 text-lg max-w-xl mx-auto mb-8">
-          {t("learning.heroSubtitle")}
-        </p>
-        <div className="inline-flex items-center gap-2 bg-amber-400/20 text-amber-300 border border-amber-400/30 px-5 py-2.5 rounded-full text-sm font-semibold">
-          🚧 {t("learning.comingSoonBadge")}
-        </div>
-      </div>
-    </div>
-
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-16">
-
-      {/* Language Cards */}
-      <div>
-        <div className="text-center mb-10">
-          <span className="text-indigo-500 text-sm font-bold uppercase tracking-widest">{t("learning.chooseLanguage")}</span>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mt-2">{t("learning.whatLearn")}</h2>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 stagger">
-          {LANG_META.map(({ lang, flag, grad, glow, light, text, border }) => (
-            <div key={lang} className={`group bg-white rounded-3xl border-2 ${border} shadow-lg ${glow} overflow-hidden card-lift`}>
-              <div className={`bg-gradient-to-br ${grad} p-6 text-white relative overflow-hidden`}>
-                <div className="absolute -right-4 -top-4 text-8xl opacity-20 select-none">{flag}</div>
-                <div className="relative">
-                  <div className="text-5xl mb-3">{flag}</div>
-                  <h3 className="text-2xl font-extrabold">{t(`learning.${lang}`)}</h3>
-                  <p className="text-white/75 text-sm mt-1">{t(`learning.tagline_${lang}`)}</p>
-                </div>
-              </div>
-
-              <div className="px-5 py-4">
-                <p className={`text-xs font-bold uppercase tracking-widest ${text} mb-3`}>{t("learning.cefrLevels")}</p>
-                <div className="flex gap-1.5 flex-wrap mb-5">
-                  {LEVELS.map(lvl => (
-                    <span key={lvl} className={`text-xs font-bold px-2.5 py-1 rounded-lg ${light} ${text} border ${border}`}>
-                      {lvl}
-                    </span>
-                  ))}
-                </div>
-
-                <div className="space-y-2">
-                  <Link to={`/learning/placement/${lang}`}
-                    className={`flex items-center justify-between w-full bg-gradient-to-r ${grad} text-white px-4 py-3 rounded-xl font-bold text-sm shadow-sm hover:opacity-90 transition`}>
-                    <span>📝 {t("learning.takePlacement")}</span>
-                    <span className="group-hover:translate-x-1 transition-transform inline-block">→</span>
-                  </Link>
-                  <Link to={`/learning/courses/${lang}`}
-                    className={`flex items-center justify-between w-full ${light} ${text} border ${border} px-4 py-3 rounded-xl font-bold text-sm hover:opacity-80 transition`}>
-                    <span>🎓 {t("learning.browseCourses")}</span>
-                    <span className="group-hover:translate-x-1 transition-transform inline-block">→</span>
-                  </Link>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Placement Tests */}
-      <div>
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-xl shadow-sm">📝</div>
-          <div>
-            <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900">{t("learning.placementTests")}</h2>
-            <p className="text-gray-500 text-sm">{t("learning.placementSub")}</p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 stagger">
-          {LANG_META.map(({ lang, flag, grad, glow, light, text, border }) => (
-            <Link key={lang} to={`/learning/placement/${lang}`}
-              className={`group bg-white rounded-2xl border-2 ${border} shadow-md ${glow} p-5 flex items-center gap-4 card-lift`}>
-              <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${grad} flex items-center justify-center text-3xl shadow-sm shrink-0`}>
-                {flag}
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-bold text-gray-900 group-hover:text-indigo-700 transition">
-                  {t(`learning.${lang}`)} {t("learning.testSuffix")}
-                </p>
-                <p className="text-xs text-gray-400 mt-0.5">{t("learning.assessLevel")}</p>
-                <span className={`inline-block mt-2 text-[11px] font-bold px-2.5 py-1 rounded-full ${light} ${text}`}>
-                  {t("learning.tenMinutes")}
-                </span>
-              </div>
-              <span className="text-gray-300 group-hover:text-indigo-500 group-hover:translate-x-1 transition-all">→</span>
-            </Link>
-          ))}
-        </div>
-      </div>
-
-      {/* Courses */}
-      <div>
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-xl shadow-sm">🎓</div>
-          <div>
-            <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900">{t("learning.languageCourses")}</h2>
-            <p className="text-gray-500 text-sm">{t("learning.coursesSub")}</p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 stagger">
-          {LANG_META.map(({ lang, flag, grad, glow, light, text, border }) => (
-            <Link key={lang} to={`/learning/courses/${lang}`}
-              className={`group bg-white rounded-2xl border-2 ${border} shadow-md ${glow} p-5 card-lift overflow-hidden relative`}>
-              <div className="absolute -right-3 -bottom-3 text-7xl opacity-8 select-none">{flag}</div>
-              <div className="relative">
-                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${grad} flex items-center justify-center text-2xl shadow-sm mb-3`}>
-                  {flag}
-                </div>
-                <p className="font-bold text-gray-900 group-hover:text-indigo-700 transition">
-                  {t(`learning.${lang}`)} {t("learning.coursesSuffix")}
-                </p>
-                <p className="text-xs text-gray-400 mt-1 mb-3">{t("learning.fullCurriculum")}</p>
-                <div className="flex gap-1 flex-wrap">
-                  {LEVELS.map(l => (
-                    <span key={l} className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${light} ${text}`}>{l}</span>
-                  ))}
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </div>
-
-      {/* IELTS Simulator */}
-      <div>
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-xl shadow-sm">🎓</div>
-          <div>
-            <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900">{t("learning.ieltsSimulator")}</h2>
-            <p className="text-gray-500 text-sm">{t("learning.ieltsDesc")}</p>
-          </div>
-        </div>
-        <Link to="/learning/ielts"
-          className="group flex items-center gap-4 sm:gap-6 bg-white rounded-2xl border-2 border-blue-100 shadow-md hover:shadow-lg hover:border-indigo-300 transition p-5 sm:p-6 card-lift">
-          <div className="flex gap-1.5 sm:gap-2 shrink-0">
-            {["🎧","📖","✍️","🎤"].map((icon, i) => (
-              <div key={i} className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-lg sm:text-xl shadow-sm">
-                {icon}
-              </div>
-            ))}
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="font-bold text-gray-900 group-hover:text-indigo-700 transition text-base sm:text-lg">{t("learning.ieltsFullTest")}</p>
-            <p className="text-gray-400 text-sm mt-1">{t("learning.ieltsSections")}</p>
-            <div className="flex gap-2 mt-2 flex-wrap">
-              <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-blue-50 text-blue-700">~2h 50min</span>
-              <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700">Band 0–9</span>
-            </div>
-          </div>
-          <span className="text-gray-300 group-hover:text-indigo-500 group-hover:translate-x-1 transition-all text-xl shrink-0">→</span>
-        </Link>
-      </div>
-
-      {/* Coming soon */}
-      <div className="bg-gradient-to-br from-indigo-50 via-violet-50 to-fuchsia-50 rounded-3xl border-2 border-indigo-100 p-6 sm:p-10 text-center">
-        <div className="text-5xl mb-4">🔮</div>
-        <h3 className="text-xl sm:text-2xl font-extrabold text-gray-900 mb-2">{t("learning.comingSoonTitle")}</h3>
-        <p className="text-gray-500 mb-8 max-w-md mx-auto text-sm sm:text-base">{t("learning.comingSoonDesc")}</p>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-w-lg mx-auto">
-          {COMING_SOON_META.map(({ key, icon, grad }) => (
-            <div key={key} className="flex items-center gap-2.5 bg-white rounded-2xl px-3 sm:px-4 py-3 shadow-sm border border-white/80">
-              <div className={`w-8 h-8 rounded-xl bg-gradient-to-br ${grad} flex items-center justify-center text-base shadow-sm shrink-0`}>
-                {icon}
-              </div>
-              <span className="text-xs sm:text-sm font-semibold text-gray-700">{t(`learning.${key}`)}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-    </div>
-  </div>
-  );
+const LANG_META = {
+  english: { flag: "🇬🇧", code: "GB", color: "oklch(0.55 0.22 260)", next: { A1:"A2", A2:"B1", B1:"B2", B2:"C1", C1:"C2", C2:"C2", native:"native" } },
+  german:  { flag: "🇩🇪", code: "DE", color: "oklch(0.58 0.20 35)",  next: { A1:"A2", A2:"B1", B1:"B2", B2:"C1", C1:"C2", C2:"C2", native:"native" } },
+  polish:  { flag: "🇵🇱", code: "PL", color: "oklch(0.55 0.18 160)", next: { A1:"A2", A2:"B1", B1:"B2", B2:"C1", C1:"C2", C2:"C2", native:"native" } },
 };
 
-export default LearningCenter;
+/* Circular progress SVG */
+function ProgressRing({ pct, color, size = 80 }) {
+  const r = (size - 10) / 2;
+  const circ = 2 * Math.PI * r;
+  const dash = (pct / 100) * circ;
+  return (
+    <svg width={size} height={size} style={{ transform: "rotate(-90deg)" }}>
+      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="oklch(1 0 0 / 0.07)" strokeWidth={6} />
+      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={color} strokeWidth={6}
+        strokeDasharray={`${dash} ${circ}`} strokeLinecap="round" style={{ transition: "stroke-dasharray 0.8s ease" }} />
+    </svg>
+  );
+}
+
+export default function LearningCenter() {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const [userLangs, setUserLangs] = useState([]);
+  const [courses, setCourses]     = useState([]);
+  const [loading, setLoading]     = useState(true);
+
+  useEffect(() => {
+    Promise.all([
+      api.get("/user-languages"),
+      api.get("/learning/courses"),
+    ]).then(([ul, cr]) => {
+      setUserLangs(Array.isArray(ul.data) ? ul.data : []);
+      setCourses(Array.isArray(cr.data) ? cr.data : []);
+    }).catch(() => {}).finally(() => setLoading(false));
+  }, []);
+
+  const langMap = {};
+  userLangs.forEach(ul => { langMap[ul.language] = ul.level; });
+
+  const trackedLangs = Object.entries(LANG_META).map(([lang, meta]) => ({
+    lang, ...meta,
+    level: langMap[lang] || null,
+    pct: langMap[lang] ? (LEVEL_PCT[langMap[lang]] || 0) : 0,
+  }));
+
+  const hasAnyLang = trackedLangs.some(l => l.level);
+
+  return (
+    <div className="min-h-screen" style={{ background: BG }}>
+
+      {/* ── Hero ── */}
+      <div className="relative overflow-hidden" style={{ height: 240 }}>
+        <img
+          src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1400&q=80"
+          alt="Learning Center"
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ filter: "brightness(0.35)" }}
+        />
+        <div className="absolute inset-0" style={{ background: "linear-gradient(to right, oklch(0.10 0.02 285 / 0.85), transparent)" }} />
+        <div className="absolute inset-0 flex flex-col justify-end px-8 pb-8">
+          <h1 className="text-3xl font-extrabold text-white">Learning Center</h1>
+          <p className="mt-1 text-sm" style={{ color: "oklch(0.75 0.01 285)" }}>
+            Build the language skills your target university expects
+          </p>
+        </div>
+      </div>
+
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-10">
+
+        {/* ── Your Languages ── */}
+        {hasAnyLang && (
+          <section>
+            <h2 className="text-white font-bold text-lg mb-4">Your languages</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {trackedLangs.filter(l => l.level).map(({ lang, flag, code, color, level, pct }) => {
+                const nextLevel = LANG_META[lang].next[level] !== level ? LANG_META[lang].next[level] : null;
+                return (
+                  <div key={lang} className="rounded-2xl p-5 flex items-center gap-4"
+                    style={{ background: SURF, border: `1px solid ${BORDER}` }}>
+                    <div className="relative shrink-0">
+                      <ProgressRing pct={pct} color={color} size={76} />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="text-white font-bold text-sm">{pct}%</span>
+                      </div>
+                    </div>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-1.5 mb-0.5">
+                        <span className="text-xs font-bold px-1.5 py-0.5 rounded" style={{ background: color, color: "#fff", opacity: 0.9 }}>{code}</span>
+                        <span className="text-white font-bold capitalize">{lang}</span>
+                      </div>
+                      <p className="text-xs" style={{ color: DIM }}>
+                        {level}{nextLevel && nextLevel !== level ? ` → targeting ${nextLevel}` : ""}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        )}
+
+        {/* ── Placement Test Banner ── */}
+        <div className="rounded-2xl px-6 py-5 flex items-center justify-between gap-4"
+          style={{ background: "oklch(0.22 0.04 285)", border: `1px solid ${BORDER}` }}>
+          <div>
+            <p className="text-white font-bold">Not sure where to start?</p>
+            <p className="text-sm mt-0.5" style={{ color: DIM }}>Take our 10-minute placement test to find your level.</p>
+          </div>
+          <Link to="/learning/placement/english"
+            className="shrink-0 text-white text-sm font-bold px-5 py-2.5 rounded-xl transition hover:opacity-90 whitespace-nowrap"
+            style={{ background: "oklch(0.25 0.04 285)", border: `1px solid oklch(1 0 0 / 0.15)` }}>
+            Take placement test
+          </Link>
+        </div>
+
+        {/* ── Courses ── */}
+        <section>
+          <h2 className="text-white font-bold text-lg mb-4">Courses</h2>
+          {loading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {[1,2,3].map(i => (
+                <div key={i} className="rounded-2xl h-52 animate-pulse" style={{ background: SURF }} />
+              ))}
+            </div>
+          ) : courses.length === 0 ? (
+            /* No courses yet — show language entry cards */
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {Object.entries(LANG_META).map(([lang, { flag, code, color }]) => (
+                <Link key={lang} to={`/learning/courses/${lang}`}
+                  className="rounded-2xl p-0 overflow-hidden transition hover:opacity-90"
+                  style={{ background: SURF, border: `1px solid ${BORDER}` }}>
+                  <div className="h-28 flex items-center justify-center text-3xl font-black text-white"
+                    style={{ background: color, opacity: 0.85 }}>
+                    {code}
+                  </div>
+                  <div className="p-4">
+                    <p className="text-white font-bold capitalize">{lang === "english" ? "English" : lang === "german" ? "German" : "Polish"} Courses</p>
+                    <p className="text-xs mt-1" style={{ color: DIM }}>Full curriculum from beginner to mastery</p>
+                    <div className="flex gap-1 mt-2 flex-wrap">
+                      {["A1","A2","B1","B2","C1","C2"].map(l => (
+                        <span key={l} className="text-[10px] font-bold px-1.5 py-0.5 rounded" style={{ background: CARD, color: DIM }}>{l}</span>
+                      ))}
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {courses.filter(c => c.is_published).slice(0, 6).map(course => {
+                const meta = LANG_META[course.language] || LANG_META.english;
+                return (
+                  <Link key={course.id} to={`/learning/courses/${course.language}/${course.id}`}
+                    className="rounded-2xl overflow-hidden transition hover:opacity-90"
+                    style={{ background: SURF, border: `1px solid ${BORDER}` }}>
+                    {/* Colour header */}
+                    <div className="h-28 flex items-center justify-center text-3xl font-black text-white"
+                      style={{ background: meta.color, opacity: 0.85 }}>
+                      {meta.code}
+                    </div>
+                    <div className="p-4">
+                      <p className="text-white font-bold text-sm leading-snug">{course.title}</p>
+                      <p className="text-xs mt-1" style={{ color: DIM }}>
+                        {course.lesson_count ?? 0} lessons · {course.level || "All levels"}
+                      </p>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          )}
+        </section>
+
+        {/* ── Placement Tests ── */}
+        <section>
+          <h2 className="text-white font-bold text-lg mb-4">Placement Tests</h2>
+          <p className="text-sm mb-4" style={{ color: DIM }}>Find your exact CEFR level in minutes</p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {Object.entries(LANG_META).map(([lang, { flag, code, color }]) => (
+              <Link key={lang} to={`/learning/placement/${lang}`}
+                className="flex items-center gap-4 rounded-2xl p-4 transition hover:opacity-90"
+                style={{ background: SURF, border: `1px solid ${BORDER}` }}>
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center text-lg font-black text-white shrink-0"
+                  style={{ background: color }}>
+                  {code}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-white font-bold text-sm capitalize">
+                    {lang === "english" ? "English" : lang === "german" ? "German" : "Polish"} Test
+                  </p>
+                  <p className="text-xs mt-0.5" style={{ color: DIM }}>Assess your level A1 → C2</p>
+                  <span className="inline-block mt-1.5 text-[10px] font-bold px-2 py-0.5 rounded-full"
+                    style={{ background: color, color: "#fff", opacity: 0.85 }}>
+                    ~10 minutes
+                  </span>
+                </div>
+                <span style={{ color: DIM }}>→</span>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        {/* ── IELTS Simulator ── */}
+        <section>
+          <h2 className="text-white font-bold text-lg mb-4">IELTS Simulator</h2>
+          <p className="text-sm mb-4" style={{ color: DIM }}>Practice all four sections in a real exam environment</p>
+          <Link to="/learning/ielts"
+            className="flex items-center gap-5 rounded-2xl p-5 transition hover:opacity-90"
+            style={{ background: SURF, border: `1px solid ${BORDER}` }}>
+            <div className="flex gap-2 shrink-0">
+              {["🎧","📖","✍️","🎤"].map((icon, i) => (
+                <div key={i} className="w-10 h-10 rounded-xl flex items-center justify-center text-lg"
+                  style={{ background: GRAD }}>
+                  {icon}
+                </div>
+              ))}
+            </div>
+            <div className="flex-1">
+              <p className="text-white font-bold">IELTS Full Practice Test</p>
+              <p className="text-xs mt-0.5" style={{ color: DIM }}>Listening · Reading · Writing · Speaking</p>
+              <div className="flex gap-2 mt-2">
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: CARD, color: DIM }}>~2h 50min</span>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: CARD, color: DIM }}>Band 0–9</span>
+              </div>
+            </div>
+            <span style={{ color: DIM }}>→</span>
+          </Link>
+        </section>
+
+      </div>
+    </div>
+  );
+}

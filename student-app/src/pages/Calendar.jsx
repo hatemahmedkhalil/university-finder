@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import api from "../api/axios";
 import toast from "react-hot-toast";
+import PageHero from "../components/PageHero";
 
 const TYPE_STYLES = {
   accepted:  { bg: "bg-green-900/40",  border: "border-green-500/40",  text: "text-green-300",  dot: "bg-green-400",  icon: "🎉", labelKey: "calendar.typeAccepted" },
@@ -239,7 +240,13 @@ export default function CalendarPage() {
   }
 
   return (
-    <div className="min-h-screen px-4 py-8 max-w-5xl mx-auto">
+    <div className="min-h-screen">
+      <PageHero
+        photo="https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=1400&q=80"
+        title={t("nav.calendar")}
+        subtitle="Track your deadlines and application events"
+      />
+      <div className="px-4 py-8 max-w-5xl mx-auto">
       {showAdd && (
         <AddEventModal
           defaultDate={addDefaultDate}
@@ -403,6 +410,7 @@ export default function CalendarPage() {
           </div>
         </div>
       </div>
+      </div>{/* end inner px-4 py-8 */}
     </div>
   );
 }
