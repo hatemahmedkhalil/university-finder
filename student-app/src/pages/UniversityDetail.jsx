@@ -254,9 +254,9 @@ function TrackModal({ uni, onClose, onConfirm }) {
   const [files, setFiles] = useState([]);
   const [submitting, setSubmitting] = useState(false);
 
-  const requiredDocs = uni.required_documents
-    ? uni.required_documents.split(",").map(d => d.trim()).filter(Boolean)
-    : [];
+  const requiredDocs = (uni.document_items && uni.document_items.length > 0)
+    ? uni.document_items
+    : (uni.required_documents ? uni.required_documents.split(",").map((d, i) => ({ id: i, name: d.trim(), is_required: true })).filter(x => x.name) : []);
 
   const addFiles = (incoming) => {
     const arr = Array.from(incoming);
@@ -315,10 +315,11 @@ function TrackModal({ uni, onClose, onConfirm }) {
             <div>
               <p className="text-sm font-bold text-[oklch(0.75_0.02_285)] mb-2">📄 {t("university.requiredDocuments")}</p>
               <ul className="space-y-1.5">
-                {requiredDocs.map((doc, i) => (
-                  <li key={i} className="flex items-center gap-2 text-sm text-[oklch(0.65_0.02_285)] bg-[oklch(0.17_0.02_285)] rounded-lg px-3 py-2">
-                    <span className="text-amber-500">⚠️</span>
-                    {doc}
+                {requiredDocs.map((doc) => (
+                  <li key={doc.id} className="flex items-center gap-2 text-sm text-[oklch(0.65_0.02_285)] bg-[oklch(0.17_0.02_285)] rounded-lg px-3 py-2">
+                    <span>{doc.is_required ? "⚠️" : "✓"}</span>
+                    <span className="flex-1">{doc.name}</span>
+                    {!doc.is_required && <span className="text-[10px] text-green-400 font-bold">Optional</span>}
                   </li>
                 ))}
               </ul>
@@ -442,7 +443,11 @@ const UniversityDetail = () => {
 
   const theme = COUNTRY_THEME[uni.country] ?? DEFAULT_THEME;
   const programs = uni.programs ? uni.programs.split(",").map(p => p.trim()) : [];
-  const docs = uni.required_documents ? uni.required_documents.split(",").map(d => d.trim()) : [];
+  // Use structured document_items if available, fall back to legacy text field
+  const docItems = (uni.document_items && uni.document_items.length > 0)
+    ? uni.document_items
+    : (uni.required_documents ? uni.required_documents.split(",").map((d, i) => ({ id: i, name: d.trim(), is_required: true })) : []);
+  const docs = docItems;
   const score = matchData.score ?? null;
   const reasons = matchData.reasons ?? [];
   const bd = matchData.breakdown ?? null;
@@ -731,10 +736,15 @@ const UniversityDetail = () => {
           {docs.length > 0 && (
             <Section icon="📄" title={t("university.requiredDocumentsSection")} accentColor={theme.accent}>
               <ul className="space-y-2">
-                {docs.map((d, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm text-[oklch(0.75_0.02_285)]">
-                    <span className="font-bold mt-0.5" style={{ color: theme.accent }}>✓</span>
-                    <span>{d}</span>
+                {docs.map((doc) => (
+                  <li key={doc.id} className="flex items-center gap-2 text-sm">
+                    <span className="font-bold shrink-0" style={{ color: doc.is_required ? theme.accent : "oklch(0.55 0.18 158)" }}>
+                      {doc.is_required ? "⚠️" : "✓"}
+                    </span>
+                    <span className="flex-1 text-[oklch(0.75_0.02_285)]">{doc.name}</span>
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 ${doc.is_required ? "bg-red-500/15 text-red-400" : "bg-green-500/15 text-green-400"}`}>
+                      {doc.is_required ? t("university.docRequired") : t("university.docOptional")}
+                    </span>
                   </li>
                 ))}
               </ul>

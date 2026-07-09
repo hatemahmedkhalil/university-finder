@@ -52,6 +52,19 @@ class University(Base):
 
     scholarships: Mapped[list["Scholarship"]] = relationship(back_populates="university", cascade="all, delete-orphan")  # noqa: F821
     program_fees: Mapped[list["UniversityProgram"]] = relationship(back_populates="university", cascade="all, delete-orphan", order_by="UniversityProgram.degree_level, UniversityProgram.field_of_study")  # noqa: F821
+    document_items: Mapped[list["UniversityDocumentItem"]] = relationship(back_populates="university", cascade="all, delete-orphan", order_by="UniversityDocumentItem.order_index")
+
+
+class UniversityDocumentItem(Base):
+    __tablename__ = "university_document_items"
+
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    university_id: Mapped[int] = mapped_column(ForeignKey("universities.id", ondelete="CASCADE"), nullable=False, index=True)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    is_required: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    order_index: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+
+    university: Mapped["University"] = relationship(back_populates="document_items")
 
 
 class UniversityProgram(Base):

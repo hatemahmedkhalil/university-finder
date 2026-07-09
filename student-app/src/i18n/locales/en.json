@@ -101,6 +101,8 @@
     "q2": "What is the DAAD scholarship?",
     "q3": "What documents do I need to apply?",
     "q4": "Compare studying in Germany vs Poland",
+    "newConversation": "New conversation",
+    "history": "History",
     "send": "Send",
     "paywallDesc": "Get instant answers about universities, scholarships, visa requirements, language tests, and everything you need to study in Europe.",
     "f1": "Ask about any European university",
@@ -334,7 +336,25 @@
       "title": "Upcoming Deadlines",
       "viewAll": "View all →",
       "daysLeft": "{{count}} days left",
-      "overdue": "Overdue!"
+      "overdue": "Overdue!",
+      "none": "No deadlines yet",
+      "noneSub": "Add universities to your pipeline"
+    },
+    "welcomeBack": "Welcome back",
+    "targeting": "Targeting",
+    "in": "in",
+    "readyToApply": "ready to apply",
+    "continueProfile": "Continue profile",
+    "browseUniversities": "Browse universities",
+    "checkPipeline": "Check pipeline",
+    "universitiesCount": "500+ Universities",
+    "topRecommendations": "Top AI recommendations",
+    "stats2": {
+      "applications": "Applications in progress",
+      "matched": "Universities matched",
+      "languageReady": "Language readiness",
+      "scholarships": "Scholarships available",
+      "openTickets": "Open support tickets"
     }
   },
   "profile": {
@@ -525,6 +545,8 @@
     "accommodation": "Contact the university for accommodation options.",
     "tracking": "Tracking",
     "requiredDocuments": "Required Documents",
+    "docRequired": "Required",
+    "docOptional": "Optional",
     "dropFiles": "Click or drag files here to upload",
     "maxFileSize": "Any file type — PDF, photos, Word, etc. (max 20 MB each)",
     "confirmTrack": "Confirm & Track",

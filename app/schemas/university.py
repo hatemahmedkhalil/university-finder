@@ -130,6 +130,28 @@ class UniversityOut(BaseModel):
     model_config = {"from_attributes": True}
 
 
+class DocumentItemOut(BaseModel):
+    id: int
+    name: str
+    is_required: bool
+    order_index: int
+
+    model_config = {"from_attributes": True}
+
+
+class DocumentItemCreate(BaseModel):
+    name: str
+    is_required: bool = True
+    order_index: int = 0
+
+
+class DocumentItemUpdate(BaseModel):
+    name: str | None = None
+    is_required: bool | None = None
+    order_index: int | None = None
+
+
 class UniversityDetail(UniversityOut):
     scholarships: list[ScholarshipOut] = []
     program_fees: list[ProgramFeeOut] = []
+    document_items: list[DocumentItemOut] = []

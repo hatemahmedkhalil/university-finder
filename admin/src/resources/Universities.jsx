@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   List,
   Datagrid,
@@ -22,9 +22,11 @@ import {
   useNotify,
   useRefresh,
 } from "react-admin";
-import { Button, CircularProgress, Chip, Box, Typography } from "@mui/material";
+import { Button, CircularProgress, Chip, Box, Typography, IconButton, TextField as MuiTextField, Switch, FormControlLabel } from "@mui/material";
 import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import DeleteIcon from "@mui/icons-material/Delete";
+import AddIcon from "@mui/icons-material/Add";
 
 const COUNTRY_CHOICES = [
   "Germany", "Poland",
@@ -62,6 +64,146 @@ const universityFilters = [
     ]}
   />,
 ];
+
+/* ── Document Checklist Manager (used inside Edit form) ── */
+const DocumentChecklistField = () => {
+  const record = useRecordContext();
+  const notify = useNotify();
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [newName, setNewName] = useState("");
+  const [newRequired, setNewRequired] = useState(true);
+  const [adding, setAdding] = useState(false);
+
+  const token = () => localStorage.getItem("auth_token");
+
+  useEffect(() => {
+    if (!record?.id) return;
+    setLoading(true);
+    fetch(`/universities/${record.id}/documents`, {
+      headers: { Authorization: `Bearer ${token()}` },
+    })
+      .then(r => r.json())
+      .then(data => setItems(Array.isArray(data) ? data : []))
+      .catch(() => notify("Failed to load documents", { type: "error" }))
+      .finally(() => setLoading(false));
+  }, [record?.id]);
+
+  const handleAdd = async () => {
+    if (!newName.trim()) return;
+    setAdding(true);
+    try {
+      const res = await fetch(`/universities/${record.id}/documents`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token()}` },
+        body: JSON.stringify({ name: newName.trim(), is_required: newRequired, order_index: items.length }),
+      });
+      if (!res.ok) throw new Error();
+      const item = await res.json();
+      setItems(prev => [...prev, item]);
+      setNewName("");
+      setNewRequired(true);
+    } catch {
+      notify("Failed to add document", { type: "error" });
+    } finally {
+      setAdding(false);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Remove this document?")) return;
+    try {
+      const res = await fetch(`/universities/${record.id}/documents/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token()}` },
+      });
+      if (!res.ok) throw new Error();
+      setItems(prev => prev.filter(i => i.id !== id));
+    } catch {
+      notify("Failed to delete document", { type: "error" });
+    }
+  };
+
+  const handleToggleRequired = async (item) => {
+    try {
+      const res = await fetch(`/universities/${record.id}/documents/${item.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token()}` },
+        body: JSON.stringify({ is_required: !item.is_required }),
+      });
+      if (!res.ok) throw new Error();
+      const updated = await res.json();
+      setItems(prev => prev.map(i => i.id === updated.id ? updated : i));
+    } catch {
+      notify("Failed to update document", { type: "error" });
+    }
+  };
+
+  if (!record?.id) return null;
+
+  return (
+    <Box sx={{ mt: 3, mb: 2, p: 2, border: "1px solid #e0e0e0", borderRadius: 2 }}>
+      <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2 }}>
+        📋 Document Checklist
+      </Typography>
+
+      {loading ? (
+        <CircularProgress size={20} />
+      ) : (
+        <>
+          {items.length === 0 && (
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+              No documents added yet.
+            </Typography>
+          )}
+          {items.map((item, idx) => (
+            <Box key={item.id} sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1, p: 1, bgcolor: "#f9f9f9", borderRadius: 1 }}>
+              <Typography sx={{ flex: 1, fontSize: 14 }}>
+                {idx + 1}. {item.name}
+              </Typography>
+              <Chip
+                label={item.is_required ? "Required" : "Optional"}
+                color={item.is_required ? "error" : "default"}
+                size="small"
+                onClick={() => handleToggleRequired(item)}
+                sx={{ cursor: "pointer" }}
+              />
+              <IconButton size="small" color="error" onClick={() => handleDelete(item.id)}>
+                <DeleteIcon fontSize="small" />
+              </IconButton>
+            </Box>
+          ))}
+
+          {/* Add new document */}
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 2 }}>
+            <MuiTextField
+              size="small"
+              placeholder="Document name (e.g. Passport copy)"
+              value={newName}
+              onChange={e => setNewName(e.target.value)}
+              onKeyDown={e => e.key === "Enter" && handleAdd()}
+              sx={{ flex: 1 }}
+            />
+            <FormControlLabel
+              control={<Switch checked={newRequired} onChange={e => setNewRequired(e.target.checked)} size="small" color="error" />}
+              label={<Typography variant="caption">{newRequired ? "Required" : "Optional"}</Typography>}
+              sx={{ ml: 0 }}
+            />
+            <Button
+              variant="contained"
+              size="small"
+              startIcon={adding ? <CircularProgress size={14} color="inherit" /> : <AddIcon />}
+              onClick={handleAdd}
+              disabled={adding || !newName.trim()}
+            >
+              Add
+            </Button>
+          </Box>
+        </>
+      )}
+    </Box>
+  );
+};
 
 /* ── Generate Guide Button (used inside Edit form) ── */
 const GenerateGuideButton = () => {
@@ -262,6 +404,16 @@ const UniversityFormFields = ({ isEdit = false }) => (
       label="Application Portal URL"
       helperText="Direct link to the application portal (uni-assist, IRK, or own portal)"
     />
+
+    {/* Document Checklist — only in Edit (needs existing record) */}
+    {isEdit && (
+      <>
+        <Typography variant="h6" sx={{ mt: 3, mb: 1, fontWeight: 600, color: "#388e3c" }}>
+          Document Checklist
+        </Typography>
+        <DocumentChecklistField />
+      </>
+    )}
 
     {/* Application Guide — only in Edit (needs existing record) */}
     {isEdit && (

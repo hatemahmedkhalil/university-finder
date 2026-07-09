@@ -62,7 +62,7 @@ const Ring = ({ pct }) => {
       <div className="w-[74px] h-[74px] rounded-full flex flex-col items-center justify-center"
            style={{ background: SURFACE }}>
         <span className="text-xl font-extrabold text-white">{shown}%</span>
-        <span className="text-[9px] text-center leading-tight px-1" style={{ color: FAINT }}>profile</span>
+        <span className="text-[9px] text-center leading-tight px-1" style={{ color: FAINT }}>%</span>
       </div>
     </div>
   );
@@ -130,6 +130,7 @@ const Dashboard = () => {
   const [applications, setApplications] = useState([]);
   const [langCount,    setLangCount]    = useState(0);
   const [scholarships, setScholarships] = useState(0);
+  const [openTickets,  setOpenTickets]  = useState(0);
   const [loading,      setLoading]      = useState(true);
 
   useEffect(() => {
@@ -140,13 +141,18 @@ const Dashboard = () => {
       api.get("/pipeline"),
       api.get("/user-languages"),
       api.get("/scholarships?limit=1"),
-    ]).then(([profR, favR, annR, pipeR, langR, schR]) => {
+      api.get("/support/my"),
+    ]).then(([profR, favR, annR, pipeR, langR, schR, tickR]) => {
       if (profR.status === "fulfilled") setProfile(profR.value.data);
       if (favR.status  === "fulfilled") setFavourites(favR.value.data);
       if (annR.status  === "fulfilled") { const u = annR.value.data.find(a => !a.is_read); if (u) setLatestAnn(u); }
       if (pipeR.status === "fulfilled") setApplications(Array.isArray(pipeR.value.data) ? pipeR.value.data : []);
       if (langR.status === "fulfilled") setLangCount(Array.isArray(langR.value.data) ? langR.value.data.length : 0);
       if (schR.status  === "fulfilled") setScholarships(schR.value.data?.total ?? 0);
+      if (tickR.status === "fulfilled") {
+        const open = (tickR.value.data || []).filter(tk => tk.status !== "closed").length;
+        setOpenTickets(open);
+      }
     }).finally(() => setLoading(false));
   }, []);
 
@@ -163,9 +169,10 @@ const Dashboard = () => {
   const displayName = profile?.full_name || user?.email?.split("@")[0] || "Student";
   const arrow = isRTL ? "←" : "→";
 
-  const animApps = useCountUp(loading ? 0 : applications.length);
+  const animApps    = useCountUp(loading ? 0 : applications.length);
   const animMatches = useCountUp(loading ? 0 : topMatches.length || favourites.length);
-  const animPct  = useCountUp(loading ? 0 : completion);
+  const animPct     = useCountUp(loading ? 0 : completion);
+  const animTickets = useCountUp(loading ? 0 : openTickets);
 
   /* upcoming deadlines from pipeline */
   const deadlines = applications
@@ -201,14 +208,14 @@ const Dashboard = () => {
             {/* left: text + buttons */}
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold mb-2" style={{ color: "oklch(0.72 0.18 296)" }}>
-                Welcome back
+                {t("dashboard.welcomeBack")}
               </p>
               <h1 className="text-[36px] font-extrabold leading-tight mb-2 text-white">
                 {displayName} 👋
               </h1>
               <p className="text-[14px] mb-6 leading-relaxed" style={{ color: DIM }}>
                 {profile?.field_of_study && profile?.preferred_countries
-                  ? <>Targeting <strong className="text-white">{profile.field_of_study}</strong> in <strong className="text-white">{profile.preferred_countries.split(",")[0].trim()}</strong> — you're <strong className="text-white">{completion}%</strong> ready to apply.</>
+                  ? <>{t("dashboard.targeting")} <strong className="text-white">{profile.field_of_study}</strong> {t("dashboard.in")} <strong className="text-white">{profile.preferred_countries.split(",")[0].trim()}</strong> — {completion}% {t("dashboard.readyToApply")}.</>
                   : t("dashboard.subtitle")}
               </p>
 
@@ -216,17 +223,17 @@ const Dashboard = () => {
                 <Link to="/profile"
                   className="text-white text-sm font-bold px-6 py-2.5 rounded-xl transition hover:opacity-90"
                   style={{ background: GRAD, boxShadow: "0 4px 18px oklch(0.55 0.22 296 / 0.38)" }}>
-                  Continue profile
+                  {t("dashboard.continueProfile")}
                 </Link>
                 <Link to="/universities"
                   className="text-white text-sm font-bold px-6 py-2.5 rounded-xl transition hover:opacity-90"
                   style={{ background: CARD, border: `1px solid ${BORDER}` }}>
-                  Browse universities
+                  {t("dashboard.browseUniversities")}
                 </Link>
                 <Link to="/pipeline"
                   className="text-white text-sm font-bold px-6 py-2.5 rounded-xl transition hover:opacity-90"
                   style={{ background: CARD, border: `1px solid ${BORDER}` }}>
-                  Check pipeline
+                  {t("dashboard.checkPipeline")}
                 </Link>
               </div>
             </div>
@@ -256,7 +263,7 @@ const Dashboard = () => {
                 {/* badge */}
                 <div className="absolute -bottom-2 start-2 text-[10px] font-bold text-white px-2.5 py-1 rounded-full"
                      style={{ background: GRAD, boxShadow: "0 3px 12px oklch(0.55 0.22 296 / 0.4)" }}>
-                  🎓 500+ Universities
+                  🎓 {t("dashboard.universitiesCount")}
                 </div>
               </div>
 
@@ -265,7 +272,7 @@ const Dashboard = () => {
                 <Ring pct={animPct} />
                 <Link to="/profile" className="text-xs font-semibold hover:opacity-80 transition"
                       style={{ color: "oklch(0.78 0.10 296)" }}>
-                  View profile {arrow}
+                  {t("dashboard.viewProfile")} {arrow}
                 </Link>
               </div>
             </div>
@@ -273,14 +280,15 @@ const Dashboard = () => {
         </div>
 
         {/* ══ STATS ══ */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
           {loading
-            ? [0,1,2,3].map(i => <div key={i} className="rounded-2xl h-28 animate-pulse" style={{ background: CARD }} />)
+            ? [0,1,2,3,4].map(i => <div key={i} className="rounded-2xl h-28 animate-pulse" style={{ background: CARD }} />)
             : <>
-                <Stat label="Applications in progress" value={animApps}    to="/pipeline"   accent="oklch(0.62 0.24 296)" />
-                <Stat label="Universities matched"      value={animMatches} to="/recommendations" accent="oklch(0.65 0.18 220)" />
-                <Stat label="Language readiness"        value={`${animPct}%`} to="/learning"  accent="oklch(0.55 0.18 158)" />
-                <Stat label="Scholarships available"    value={scholarships || "—"} to="/scholarships" accent="oklch(0.65 0.18 55)" />
+                <Stat label={t("dashboard.stats2.applications")} value={animApps}         to="/pipeline"        accent="oklch(0.62 0.24 296)" />
+                <Stat label={t("dashboard.stats2.matched")}      value={animMatches}       to="/recommendations" accent="oklch(0.65 0.18 220)" />
+                <Stat label={t("dashboard.stats2.languageReady")} value={`${animPct}%`}   to="/learning"        accent="oklch(0.55 0.18 158)" />
+                <Stat label={t("dashboard.stats2.scholarships")} value={scholarships || "—"} to="/scholarships" accent="oklch(0.65 0.18 55)" />
+                <Stat label={t("dashboard.stats2.openTickets")}  value={animTickets}       to="/support"         accent="oklch(0.65 0.18 10)" />
               </>
           }
         </div>
@@ -296,7 +304,7 @@ const Dashboard = () => {
               <span className="text-2xl ps-2">{s.icon}</span>
               <div className="flex-1 min-w-0">
                 <span className="font-bold text-sm text-white">{latestAnn.title} </span>
-                <span className="text-[10px] bg-red-500 text-white px-2 py-0.5 rounded-full font-bold">NEW</span>
+                <span className="text-[10px] bg-red-500 text-white px-2 py-0.5 rounded-full font-bold">{t("dashboard.latestAnn")}</span>
                 <p className="text-xs mt-0.5 truncate" style={{ color: FAINT }}>{latestAnn.body}</p>
               </div>
               <span style={{ color: FAINT }}>{arrow}</span>
@@ -311,11 +319,11 @@ const Dashboard = () => {
           <div className="lg:col-span-2 rounded-2xl overflow-hidden" style={{ background: CARD, border: `1px solid ${BORDER}` }}>
             <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: `1px solid ${BORDER}` }}>
               <h2 className="font-bold text-white flex items-center gap-2">
-                <span>✨</span> Top AI recommendations
+                <span>✨</span> {t("dashboard.topRecommendations")}
               </h2>
               <Link to="/recommendations" className="text-xs font-semibold hover:opacity-80"
                     style={{ color: "oklch(0.78 0.10 296)" }}>
-                See all {arrow}
+                {t("dashboard.seeAll")} {arrow}
               </Link>
             </div>
             <div className="p-4">
@@ -373,7 +381,7 @@ const Dashboard = () => {
           {/* upcoming deadlines — 1/3 width */}
           <div className="rounded-2xl overflow-hidden" style={{ background: CARD, border: `1px solid ${BORDER}` }}>
             <div className="px-5 py-4" style={{ borderBottom: `1px solid ${BORDER}` }}>
-              <h2 className="font-bold text-white">Upcoming deadlines</h2>
+              <h2 className="font-bold text-white">{t("dashboard.deadlines.title")}</h2>
             </div>
             <div className="p-4">
               {loading ? (
@@ -383,8 +391,8 @@ const Dashboard = () => {
               ) : deadlines.length === 0 ? (
                 <div className="text-center py-8">
                   <div className="text-4xl mb-3">📅</div>
-                  <p className="text-sm font-semibold text-white mb-1">No deadlines yet</p>
-                  <p className="text-xs" style={{ color: FAINT }}>Add universities to your pipeline</p>
+                  <p className="text-sm font-semibold text-white mb-1">{t("dashboard.deadlines.none")}</p>
+                  <p className="text-xs" style={{ color: FAINT }}>{t("dashboard.deadlines.noneSub")}</p>
                 </div>
               ) : (
                 <div className="space-y-3">
@@ -418,14 +426,14 @@ const Dashboard = () => {
         {/* profile incomplete nudge */}
         {!loading && profile && completion < 100 && completion > 0 && (() => {
           const missing = [
-            !profile.nationality         && "nationality",
-            !profile.gpa                 && "GPA",
-            !profile.budget_eur          && "budget",
-            !profile.english_level       && "English level",
-            !profile.field_of_study      && "field of study",
-            !profile.preferred_countries && "preferred countries",
-            !profile.language            && "target language",
-            !profile.degree_level        && "degree level",
+            !profile.nationality         && t("dashboard.incomplete.fields.nationality"),
+            !profile.gpa                 && t("dashboard.incomplete.fields.gpa"),
+            !profile.budget_eur          && t("dashboard.incomplete.fields.budget"),
+            !profile.english_level       && t("dashboard.incomplete.fields.englishLevel"),
+            !profile.field_of_study      && t("dashboard.incomplete.fields.fieldOfStudy"),
+            !profile.preferred_countries && t("dashboard.incomplete.fields.preferredCountries"),
+            !profile.language            && t("dashboard.incomplete.fields.language"),
+            !profile.degree_level        && t("dashboard.incomplete.fields.degreeLevel"),
           ].filter(Boolean);
           return (
             <div className="flex items-start gap-4 rounded-2xl px-5 py-4"
@@ -442,7 +450,7 @@ const Dashboard = () => {
               <Link to="/profile"
                 className="shrink-0 text-xs font-bold px-3 py-1.5 rounded-lg transition"
                 style={{ background: "oklch(0.75 0.18 55 / 0.12)", color: "oklch(0.78 0.18 55)" }}>
-                Complete →
+                {t("dashboard.continueProfile")} {arrow}
               </Link>
             </div>
           );
