@@ -503,6 +503,7 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [errors, setErrors] = useState({});
+  const [barWidth, setBarWidth] = useState(0);
 
   const [rates, setRates] = useState({});
   const [ratesLoading, setRatesLoading] = useState(true);
@@ -560,6 +561,9 @@ const Profile = () => {
           field_of_study: p.field_of_study || "",
           preferred_country: preferredCountry,
         });
+        const fields = [p.nationality, p.gpa, p.budget_eur, p.english_level, p.field_of_study, p.preferred_countries, p.language, p.degree_level];
+        const pct = Math.round(fields.filter(f => f != null && f !== "").length / fields.length * 100);
+        setTimeout(() => setBarWidth(pct), 300);
       })
       .catch(() => setProfile(null))
       .finally(() => setLoading(false));
@@ -645,6 +649,34 @@ const Profile = () => {
         title={profile ? t("profile.title") : t("profile.titleNew")}
         subtitle={t("profile.tellUs")}
       />
+
+      {/* ── Completeness bar ── */}
+      {!loading && profile && (
+        <div className="max-w-2xl mx-auto px-4 pt-6 pb-0">
+          <div className="rounded-2xl px-5 py-4" style={{ background: "oklch(0.17 0.022 285)", border: "1px solid oklch(1 0 0 / 0.07)" }}>
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-semibold text-white">Profile completeness</span>
+              <span className="text-sm font-bold" style={{ color: barWidth === 100 ? "oklch(0.65 0.18 158)" : "oklch(0.75 0.18 296)" }}>
+                {barWidth}%
+              </span>
+            </div>
+            <div className="h-2 rounded-full overflow-hidden" style={{ background: "oklch(1 0 0 / 0.08)" }}>
+              <div className="h-full rounded-full transition-all duration-700 ease-out"
+                   style={{ width: `${barWidth}%`, background: barWidth === 100 ? "oklch(0.65 0.18 158)" : "linear-gradient(90deg, oklch(0.55 0.22 296), oklch(0.65 0.18 264))" }} />
+            </div>
+            {barWidth < 100 && (
+              <p className="text-xs mt-2" style={{ color: "oklch(0.55 0.02 285)" }}>
+                Fill all fields below to get better AI university matches
+              </p>
+            )}
+            {barWidth === 100 && (
+              <p className="text-xs mt-2" style={{ color: "oklch(0.65 0.18 158)" }}>
+                ✓ Profile complete — your AI recommendations are fully optimized
+              </p>
+            )}
+          </div>
+        </div>
+      )}
 
       <div className="max-w-2xl mx-auto px-4 py-8">
 
