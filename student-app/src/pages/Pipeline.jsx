@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import api from "../api/axios";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
+import { countryFlag } from "../lib/countries";
 
 /* ─── constants ─── */
 const COLUMN_IDS = [
@@ -38,8 +39,6 @@ const scoreBg = (s) =>
   s >= 50 ? "bg-amber-500/20 border-amber-500/40" :
   "bg-red-500/20 border-red-500/40";
 
-const FLAG = { Germany: "🇩🇪", Poland: "🇵🇱", France: "🇫🇷", Netherlands: "🇳🇱", Austria: "🇦🇹", default: "🎓" };
-const flag = (country) => FLAG[country] || FLAG.default;
 
 /* ─── Add University Modal ─── */
 const useAnalyzingMsg = (active) => {
@@ -150,7 +149,7 @@ function AddModal({ onAdd, onClose, adding }) {
                         : "text-slate-300 hover:bg-slate-800"
                     }`}
                   >
-                    <span className="text-xl shrink-0">{flag(u.country)}</span>
+                    <span className="text-xl shrink-0">{countryFlag(u.country)}</span>
                     <div className="flex-1 min-w-0">
                       <div className="font-medium truncate">{highlight(u.name)}</div>
                       <div className={`text-xs mt-0.5 ${selected?.id === u.id ? "text-indigo-200" : "text-slate-500"}`}>
@@ -291,7 +290,7 @@ function CardDetail({ entry, onClose, onUpdate, onDelete, onRegenerate }) {
         <div className="flex items-start gap-4 p-5 border-b border-slate-800 shrink-0">
           {uni.logo_url && <img src={uni.logo_url} alt={uni.name} className="w-12 h-12 rounded-xl bg-white object-contain p-1 shrink-0" />}
           <div className="flex-1 min-w-0">
-            <h2 className="text-white font-bold text-base truncate">{flag(uni.country)} {uni.name}</h2>
+            <h2 className="text-white font-bold text-base truncate">{countryFlag(uni.country)} {uni.name}</h2>
             <p className="text-slate-400 text-sm">{uni.city}, {uni.country}</p>
             <div className="flex items-center gap-2 mt-1 flex-wrap">
               {entry.fit_score && (
@@ -611,7 +610,7 @@ function PipelineCard({ entry, onClick }) {
              style={{ filter: "brightness(0.7)" }} />
         <div className="absolute inset-0" style={{ background: "linear-gradient(to top, oklch(0.13 0.018 285 / 0.85), transparent 55%)" }} />
         {/* country flag top-left */}
-        <span className="absolute top-2 start-2 text-lg">{flag(uni.country)}</span>
+        <span className="absolute top-2 start-2 text-lg">{countryFlag(uni.country)}</span>
         {/* score badge top-right */}
         {entry.fit_score && (
           <span className="absolute top-2 end-2 text-[11px] font-extrabold text-white px-2 py-0.5 rounded-lg"

@@ -5,6 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 import GettingStarted from "../components/GettingStarted";
+import { COUNTRY_FLAG } from "../lib/countries";
 
 /* ── tokens ── */
 const BG      = "oklch(0.13 0.018 285)";
@@ -15,10 +16,6 @@ const GRAD    = "linear-gradient(135deg, oklch(0.55 0.22 296), oklch(0.50 0.20 2
 const DIM     = "oklch(0.62 0.02 285)";
 const FAINT   = "oklch(0.45 0.02 285)";
 
-const FLAG = {
-  Germany:"🇩🇪", Poland:"🇵🇱", Austria:"🇦🇹", Netherlands:"🇳🇱",
-  France:"🇫🇷", Sweden:"🇸🇪", Italy:"🇮🇹", Spain:"🇪🇸",
-};
 
 const UNI_PHOTOS = [
   "https://images.unsplash.com/photo-1562774053-701939374585?w=400&q=70",
@@ -368,7 +365,7 @@ const Dashboard = () => {
                       <div className="p-3 flex-1" style={{ background: SURFACE }}>
                         <p className="font-bold text-white text-xs truncate">{m.university.name}</p>
                         <p className="text-[10px] mt-0.5" style={{ color: DIM }}>
-                          {FLAG[m.university.country] || "🏛️"} {m.university.city}
+                          {COUNTRY_FLAG[m.university.country] || "🏛️"} {m.university.city}
                         </p>
                       </div>
                     </Link>

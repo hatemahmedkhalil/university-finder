@@ -1,0 +1,28 @@
+export const COUNTRY_FLAG = {
+  Germany:          "🇩🇪",
+  Poland:           "🇵🇱",
+  Austria:          "🇦🇹",
+  Netherlands:      "🇳🇱",
+  France:           "🇫🇷",
+  Sweden:           "🇸🇪",
+  Italy:            "🇮🇹",
+  Spain:            "🇪🇸",
+  Belgium:          "🇧🇪",
+  Denmark:          "🇩🇰",
+  Finland:          "🇫🇮",
+  Hungary:          "🇭🇺",
+  Norway:           "🇳🇴",
+  Portugal:         "🇵🇹",
+  Romania:          "🇷🇴",
+  Switzerland:      "🇨🇭",
+  Ireland:          "🇮🇪",
+  Greece:           "🇬🇷",
+  "Czech Republic": "🇨🇿",
+  Slovakia:         "🇸🇰",
+  Estonia:          "🇪🇪",
+  Latvia:           "🇱🇻",
+  Lithuania:        "🇱🇹",
+  Luxembourg:       "🇱🇺",
+};
+
+export const countryFlag = (country) => COUNTRY_FLAG[country] || "🏛️";

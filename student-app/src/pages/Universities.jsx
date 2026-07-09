@@ -4,11 +4,7 @@ import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-
-const COUNTRY_FLAG = {
-  Germany: "🇩🇪", Poland: "🇵🇱", Austria: "🇦🇹", Netherlands: "🇳🇱",
-  France: "🇫🇷", Sweden: "🇸🇪", Italy: "🇮🇹", Spain: "🇪🇸",
-};
+import { COUNTRY_FLAG } from "../lib/countries";
 
 /* Campus photos per country (Unsplash free) */
 const CAMPUS_PHOTOS = {

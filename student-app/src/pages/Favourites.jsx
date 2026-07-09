@@ -4,15 +4,7 @@ import api from "../api/axios";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import PageHero from "../components/PageHero";
-
-const COUNTRY_FLAG = {
-  Germany: "🇩🇪", Poland: "🇵🇱", Austria: "🇦🇹", Netherlands: "🇳🇱",
-  France: "🇫🇷", Sweden: "🇸🇪", Italy: "🇮🇹", Spain: "🇪🇸",
-  Belgium: "🇧🇪", Denmark: "🇩🇰", Finland: "🇫🇮", Hungary: "🇭🇺",
-  Norway: "🇳🇴", Portugal: "🇵🇹", Romania: "🇷🇴", Switzerland: "🇨🇭",
-  Ireland: "🇮🇪", Greece: "🇬🇷", "Czech Republic": "🇨🇿", Slovakia: "🇸🇰",
-  Estonia: "🇪🇪", Latvia: "🇱🇻", Lithuania: "🇱🇹", Luxembourg: "🇱🇺",
-};
+import { COUNTRY_FLAG } from "../lib/countries";
 
 const COUNTRY_GRAD = {
   Germany:          "from-yellow-400 to-red-500",
