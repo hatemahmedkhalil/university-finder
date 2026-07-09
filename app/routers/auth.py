@@ -9,10 +9,39 @@ from app.core.limiter import limiter
 from app.core.security import create_access_token, create_refresh_token, decode_token, hash_password, verify_password
 from app.dependencies import get_db, get_current_user
 from app.models.user import User
-from app.schemas.user import ForgotPasswordRequest, RefreshRequest, ResetPasswordRequest, Token, UserLogin, UserOut, UserRegister
+from app.schemas.user import EmailUpdateRequest, ForgotPasswordRequest, RefreshRequest, ResetPasswordRequest, Token, UserLogin, UserOut, UserRegister
 from app.services.email import send_password_reset_email, send_verification_email
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
+
+MAX_FAILED_ATTEMPTS = 5
+LOCKOUT_MINUTES = 15
+
+# Dummy hash used to keep response timing constant when user does not exist
+_DUMMY_HASH = hash_password("dummy-constant-time-check-AbC123!")
+
+
+def _check_lockout(user: User) -> None:
+    if user.locked_until and datetime.now(timezone.utc) < user.locked_until:
+        remaining = int((user.locked_until - datetime.now(timezone.utc)).total_seconds() / 60) + 1
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail=f"Account locked due to too many failed attempts. Try again in {remaining} minute(s).",
+        )
+
+
+def _record_failed_login(user: User, db: Session) -> None:
+    user.failed_login_attempts += 1
+    if user.failed_login_attempts >= MAX_FAILED_ATTEMPTS:
+        user.locked_until = datetime.now(timezone.utc) + timedelta(minutes=LOCKOUT_MINUTES)
+    db.commit()
+
+
+def _reset_login_failures(user: User, db: Session) -> None:
+    if user.failed_login_attempts > 0 or user.locked_until:
+        user.failed_login_attempts = 0
+        user.locked_until = None
+        db.commit()
 
 
 @router.post("/register", response_model=Token, status_code=status.HTTP_201_CREATED)
@@ -57,6 +86,45 @@ def verify_email(request: Request, token: str, db: Session = Depends(get_db)):
     return {"message": "Email verified successfully"}
 
 
+@router.post("/login", response_model=Token)
+@limiter.limit("5/minute")
+def login(request: Request, payload: UserLogin, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.email == payload.email).first()
+
+    # Always run bcrypt to prevent timing-based user enumeration
+    if not user:
+        verify_password(payload.password, _DUMMY_HASH)
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
+
+    _check_lockout(user)
+
+    if not verify_password(payload.password, user.hashed_password):
+        _record_failed_login(user, db)
+        attempts_left = MAX_FAILED_ATTEMPTS - user.failed_login_attempts
+        if attempts_left <= 0:
+            raise HTTPException(
+                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+                detail=f"Account locked for {LOCKOUT_MINUTES} minutes due to too many failed attempts.",
+            )
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"Invalid credentials. {attempts_left} attempt(s) remaining before lockout.",
+        )
+
+    if not user.is_verified and payload.email not in settings.ADMIN_EMAILS:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Please verify your email address before logging in. Check your inbox for the verification link.",
+        )
+
+    _reset_login_failures(user, db)
+
+    return Token(
+        access_token=create_access_token(str(user.id), version=user.token_version),
+        refresh_token=create_refresh_token(str(user.id), version=user.token_version),
+    )
+
+
 @router.post("/forgot-password")
 @limiter.limit("5/minute")
 def forgot_password(request: Request, payload: ForgotPasswordRequest, db: Session = Depends(get_db)):
@@ -74,33 +142,19 @@ def forgot_password(request: Request, payload: ForgotPasswordRequest, db: Sessio
 @router.post("/reset-password")
 @limiter.limit("5/minute")
 def reset_password(request: Request, payload: ResetPasswordRequest, db: Session = Depends(get_db)):
-    token = payload.token
-    new_password = payload.password
-    user = db.query(User).filter(User.reset_token == token).first()
+    user = db.query(User).filter(User.reset_token == payload.token).first()
     if not user or not user.reset_token_expires:
         raise HTTPException(status_code=400, detail="Invalid or expired reset token")
     if datetime.now(timezone.utc) > user.reset_token_expires:
         raise HTTPException(status_code=400, detail="Reset token has expired")
-    user.hashed_password = hash_password(new_password)
+    user.hashed_password = hash_password(payload.password)
     user.reset_token = None
     user.reset_token_expires = None
-    user.token_version += 1  # revoke all existing sessions after password reset
+    user.token_version += 1  # revoke all existing sessions
+    user.failed_login_attempts = 0
+    user.locked_until = None
     db.commit()
     return {"message": "Password reset successfully"}
-
-
-@router.post("/login", response_model=Token)
-@limiter.limit("10/minute")
-def login(request: Request, payload: UserLogin, db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.email == payload.email).first()
-    if not user or not verify_password(payload.password, user.hashed_password):
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
-    if not user.is_verified and user.email not in settings.ADMIN_EMAILS:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Please verify your email address before logging in. Check your inbox for the verification link.")
-    return Token(
-        access_token=create_access_token(str(user.id), version=user.token_version),
-        refresh_token=create_refresh_token(str(user.id), version=user.token_version),
-    )
 
 
 @router.get("/me", response_model=UserOut)
@@ -122,14 +176,14 @@ def resend_verification(request: Request, current_user: User = Depends(get_curre
 
 
 @router.patch("/update-email", response_model=UserOut)
+@limiter.limit("5/minute")
 def update_email(
-    payload: dict,
+    request: Request,
+    payload: EmailUpdateRequest,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    new_email = (payload.get("email") or "").strip().lower()
-    if not new_email or "@" not in new_email:
-        raise HTTPException(status_code=400, detail="Invalid email address")
+    new_email = str(payload.email).strip().lower()
     if db.query(User).filter(User.email == new_email, User.id != current_user.id).first():
         raise HTTPException(status_code=409, detail="Email already in use")
     current_user.email = new_email
@@ -139,10 +193,7 @@ def update_email(
 
 
 @router.post("/onboarding/complete", response_model=UserOut)
-def complete_onboarding(
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db),
-):
+def complete_onboarding(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     current_user.has_completed_onboarding = True
     db.commit()
     db.refresh(current_user)
@@ -150,10 +201,7 @@ def complete_onboarding(
 
 
 @router.post("/onboarding/reset", response_model=UserOut)
-def reset_onboarding(
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db),
-):
+def reset_onboarding(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     current_user.has_completed_onboarding = False
     db.commit()
     db.refresh(current_user)
@@ -161,7 +209,8 @@ def reset_onboarding(
 
 
 @router.post("/refresh", response_model=Token)
-def refresh(payload: RefreshRequest, db: Session = Depends(get_db)):
+@limiter.limit("20/minute")
+def refresh(request: Request, payload: RefreshRequest, db: Session = Depends(get_db)):
     result = decode_token(payload.refresh_token, "refresh")
     if result is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired refresh token")
@@ -178,10 +227,7 @@ def refresh(payload: RefreshRequest, db: Session = Depends(get_db)):
 
 
 @router.post("/logout")
-def logout(
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db),
-):
+def logout(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     current_user.token_version += 1
     db.commit()
     return {"message": "Logged out successfully"}

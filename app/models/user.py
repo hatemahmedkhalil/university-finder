@@ -27,6 +27,8 @@ class User(Base):
     reset_token: Mapped[str | None] = mapped_column(Text, nullable=True)
     reset_token_expires: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     token_version: Mapped[int] = mapped_column(default=0, nullable=False)
+    failed_login_attempts: Mapped[int] = mapped_column(default=0, nullable=False)
+    locked_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
     __table_args__ = (CheckConstraint("role IN ('student', 'admin')", name="ck_user_role"),)
 
