@@ -7,9 +7,11 @@ Access:
 """
 
 from datetime import datetime
+from pathlib import Path
 from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session, selectinload
 
@@ -17,6 +19,10 @@ from app.dependencies import get_db, get_current_user, require_admin
 from app.models.ielts import IeltsQuestion, IeltsSection, IeltsTest
 from app.models.instructor import Instructor
 from app.models.user import User
+
+IELTS_AUDIO_DIR = Path(__file__).resolve().parent.parent.parent / "uploads" / "ielts"
+IELTS_AUDIO_DIR.mkdir(parents=True, exist_ok=True)
+ALLOWED_AUDIO = {".mp3", ".wav", ".ogg", ".m4a", ".aac"}
 
 router = APIRouter(prefix="/ielts", tags=["IELTS Simulator"])
 
@@ -67,6 +73,7 @@ class SectionOut(BaseModel):
     test_id: int
     name: str
     instructions: Optional[str] = None
+    audio_url: Optional[str] = None
     order_index: int
     question_count: int = 0
     model_config = {"from_attributes": True}
@@ -309,6 +316,64 @@ def delete_section(
         raise HTTPException(status_code=404, detail="Section not found")
     db.delete(sec)
     db.commit()
+
+
+@router.post("/manage/sections/{section_id}/audio", response_model=SectionOut)
+async def upload_section_audio(
+    section_id: int,
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    _: User = Depends(_require_ielts_manager),
+):
+    sec = db.query(IeltsSection).filter(IeltsSection.id == section_id).first()
+    if not sec:
+        raise HTTPException(status_code=404, detail="Section not found")
+    ext = Path(file.filename).suffix.lower()
+    if ext not in ALLOWED_AUDIO:
+        raise HTTPException(status_code=400, detail=f"File type not allowed. Use: {', '.join(ALLOWED_AUDIO)}")
+    if file.size and file.size > 50 * 1024 * 1024:
+        raise HTTPException(status_code=400, detail="Audio file too large (max 50 MB)")
+    # Remove old file if exists
+    if sec.audio_url:
+        old = IELTS_AUDIO_DIR / Path(sec.audio_url).name
+        if old.exists():
+            old.unlink()
+    filename = f"section_{section_id}{ext}"
+    dest = IELTS_AUDIO_DIR / filename
+    content = await file.read()
+    dest.write_bytes(content)
+    sec.audio_url = f"/uploads/ielts/{filename}"
+    db.commit()
+    db.refresh(sec)
+    out = SectionOut.model_validate(sec)
+    out.question_count = len(sec.questions)
+    return out
+
+
+@router.delete("/manage/sections/{section_id}/audio", status_code=204)
+def delete_section_audio(
+    section_id: int,
+    db: Session = Depends(get_db),
+    _: User = Depends(_require_ielts_manager),
+):
+    sec = db.query(IeltsSection).filter(IeltsSection.id == section_id).first()
+    if not sec:
+        raise HTTPException(status_code=404, detail="Section not found")
+    if sec.audio_url:
+        f = IELTS_AUDIO_DIR / Path(sec.audio_url).name
+        if f.exists():
+            f.unlink()
+        sec.audio_url = None
+        db.commit()
+
+
+@router.get("/audio/{filename}")
+def serve_audio(filename: str, _: User = Depends(get_current_user)):
+    safe = Path(filename).name
+    f = IELTS_AUDIO_DIR / safe
+    if not f.exists() or not f.is_file():
+        raise HTTPException(status_code=404, detail="Audio not found")
+    return FileResponse(f)
 
 
 # ── Admin / English Instructor: question CRUD ─────────────────────────────────

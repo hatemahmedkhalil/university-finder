@@ -30,6 +30,7 @@ class IeltsSection(Base):
     test_id: Mapped[int] = mapped_column(ForeignKey("ielts_tests.id", ondelete="CASCADE"), nullable=False, index=True)
     name: Mapped[str] = mapped_column(String(100), nullable=False)   # Listening | Reading | Writing | Speaking
     instructions: Mapped[str | None] = mapped_column(Text)
+    audio_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
     order_index: Mapped[int] = mapped_column(Integer, default=0)
 
     test: Mapped["IeltsTest"] = relationship(back_populates="sections")

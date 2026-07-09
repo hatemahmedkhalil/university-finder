@@ -29,6 +29,7 @@ import InstructorProfile from "./pages/InstructorProfile";
 import AiChat from "./pages/AiChat";
 import PlacementTestPage from "./pages/PlacementTestPage";
 import IeltsSimulator from "./pages/IeltsSimulator";
+import IeltsExamPage from "./pages/IeltsExamPage";
 import CoursePage from "./pages/CoursePage";
 import ApplicationHub from "./pages/ApplicationHub";
 import Pipeline from "./pages/Pipeline";
@@ -113,7 +114,7 @@ const App = () => (
           <Route path="/instructors/:id" element={<ProtectedRoute><InstructorProfile /></ProtectedRoute>} />
           <Route path="/learning"       element={<ProtectedRoute><LearningCenter /></ProtectedRoute>} />
           <Route path="/learning/ielts"              element={<ProtectedRoute><IeltsSimulator /></ProtectedRoute>} />
-          <Route path="/learning/ielts/:id"          element={<ProtectedRoute><IeltsSimulator /></ProtectedRoute>} />
+          <Route path="/learning/ielts/:id"          element={<ProtectedRoute><IeltsExamPage /></ProtectedRoute>} />
           <Route path="/learning/placement/:language" element={<ProtectedRoute><PlacementTestPage /></ProtectedRoute>} />
           <Route path="/learning/courses/:language"   element={<ProtectedRoute><CoursePage /></ProtectedRoute>} />
           <Route path="/pipeline"       element={<ProtectedRoute><Pipeline /></ProtectedRoute>} />
