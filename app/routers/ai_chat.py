@@ -218,13 +218,17 @@ def get_history(
     current_user: User = Depends(get_current_user),
 ):
     _check_premium(current_user)
-    return (
-        db.query(AiChatMessage)
-        .filter(AiChatMessage.user_id == current_user.id)
-        .order_by(AiChatMessage.created_at.asc())
-        .limit(100)
-        .all()
-    )
+    try:
+        return (
+            db.query(AiChatMessage)
+            .filter(AiChatMessage.user_id == current_user.id)
+            .order_by(AiChatMessage.created_at.asc())
+            .limit(100)
+            .all()
+        )
+    except Exception as e:
+        logger.error("Failed to load chat history: %s", e)
+        return []
 
 
 @router.post("/message", response_model=ChatMessageOut)
@@ -243,7 +247,11 @@ def send_message(
     if not settings.GROQ_API_KEY:
         raise HTTPException(status_code=503, detail="AI service is not configured yet.")
 
-    today_count = _count_today_messages(db, current_user.id)
+    try:
+        today_count = _count_today_messages(db, current_user.id)
+    except Exception as e:
+        logger.error("Failed to count today messages: %s", e)
+        today_count = 0
     if today_count >= DAILY_MESSAGE_LIMIT:
         raise HTTPException(
             status_code=429,
@@ -259,14 +267,18 @@ def send_message(
     system_prompt = BASE_PROMPT.format(app_data=app_data)
 
     # Load last 10 exchanges for context
-    history = (
-        db.query(AiChatMessage)
-        .filter(AiChatMessage.user_id == current_user.id)
-        .order_by(AiChatMessage.created_at.desc())
-        .limit(20)
-        .all()
-    )
-    history.reverse()
+    try:
+        history = (
+            db.query(AiChatMessage)
+            .filter(AiChatMessage.user_id == current_user.id)
+            .order_by(AiChatMessage.created_at.desc())
+            .limit(20)
+            .all()
+        )
+        history.reverse()
+    except Exception as e:
+        logger.error("Failed to load chat history: %s", e)
+        history = []
 
     messages = [{"role": "system", "content": system_prompt}]
     for msg in history:
