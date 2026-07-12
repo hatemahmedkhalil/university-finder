@@ -614,8 +614,8 @@ const Profile = () => {
       if (!form.prev_gpa_value) e.prev_gpa = t("profile.errors.gpa");
       else {
         const v = parseFloat(form.prev_gpa_value);
-        if (form.prev_gpa_scale === "4.0" && (v < 0 || v > 4)) e.prev_gpa = t("profile.errors.gpaRange");
-        if (form.prev_gpa_scale === "percentage" && (v < 0 || v > 100)) e.prev_gpa = t("profile.errors.percentRange");
+        if (form.gpa_scale === "4.0" && (v < 0 || v > 4)) e.prev_gpa = t("profile.errors.gpaRange");
+        if (form.gpa_scale === "percentage" && (v < 0 || v > 100)) e.prev_gpa = t("profile.errors.percentRange");
       }
     }
 
@@ -637,7 +637,7 @@ const Profile = () => {
     const hasPrevDegree = form.degree_level === "master" || form.degree_level === "phd";
     const rawPrevGpa = parseFloat(form.prev_gpa_value);
     const prev_gpa = hasPrevDegree
-      ? (form.prev_gpa_scale === "percentage" ? parseFloat(((rawPrevGpa / 100) * 4.0).toFixed(2)) : rawPrevGpa)
+      ? (form.gpa_scale === "percentage" ? parseFloat(((rawPrevGpa / 100) * 4.0).toFixed(2)) : rawPrevGpa)
       : null;
 
     const payload = {
@@ -869,38 +869,22 @@ const Profile = () => {
             </Field>
 
             <Field label={t("profile.prevDegree.gpa")} error={errors.prev_gpa} required>
-              <div className="flex gap-2 mb-2">
-                {[["4.0", t("profile.gpa40Label")], ["percentage", t("profile.percentLabel")]].map(([val, lbl]) => (
-                  <button
-                    key={val}
-                    type="button"
-                    onClick={() => { set("prev_gpa_scale", val); set("prev_gpa_value", ""); }}
-                    className={`px-4 py-1.5 rounded-lg border text-sm font-medium transition ${
-                      form.prev_gpa_scale === val
-                        ? "bg-indigo-600 text-white border-indigo-600"
-                        : "bg-white text-[oklch(0.65_0.02_285)] border-gray-200 hover:border-indigo-400"
-                    }`}
-                  >
-                    {lbl}
-                  </button>
-                ))}
-              </div>
               <div className="relative">
                 <input
                   type="number"
                   min="0"
-                  max={form.prev_gpa_scale === "4.0" ? "4" : "100"}
-                  step={form.prev_gpa_scale === "4.0" ? "0.01" : "1"}
+                  max={form.gpa_scale === "4.0" ? "4" : "100"}
+                  step={form.gpa_scale === "4.0" ? "0.01" : "1"}
                   value={form.prev_gpa_value}
                   onChange={(e) => set("prev_gpa_value", e.target.value)}
-                  placeholder={form.prev_gpa_scale === "4.0" ? "e.g. 3.5" : "e.g. 85"}
+                  placeholder={form.gpa_scale === "4.0" ? "e.g. 3.5" : "e.g. 85"}
                   className="w-full border border-[oklch(1_0_0/0.08)] rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 pr-20"
                 />
                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-[oklch(0.45_0.02_285)] font-medium">
-                  {form.prev_gpa_scale === "4.0" ? "/ 4.0" : "%"}
+                  {form.gpa_scale === "4.0" ? "/ 4.0" : "%"}
                 </span>
               </div>
-              {form.prev_gpa_value && form.prev_gpa_scale === "percentage" && (
+              {form.prev_gpa_value && form.gpa_scale === "percentage" && (
                 <p className="mt-1 text-xs text-[oklch(0.55_0.02_285)]">
                   ≈ {((parseFloat(form.prev_gpa_value) / 100) * 4).toFixed(2)} {t("profile.gpaApprox")}
                 </p>
