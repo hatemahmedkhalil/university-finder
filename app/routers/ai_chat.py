@@ -77,7 +77,10 @@ def _build_app_data(db: Session, current_user: User) -> str:
     sections = []
 
     # Subscription plans
-    plans = db.query(SubscriptionPlan).filter(SubscriptionPlan.is_active == True).all()
+    try:
+        plans = db.query(SubscriptionPlan).filter(SubscriptionPlan.is_active == True).all()
+    except Exception:
+        plans = []
     if plans:
         lines = ["== SUBSCRIPTION PLANS =="]
         for p in plans:
@@ -248,7 +251,11 @@ def send_message(
         )
 
     # Build dynamic system prompt with live app data
-    app_data = _build_app_data(db, current_user)
+    try:
+        app_data = _build_app_data(db, current_user)
+    except Exception as e:
+        logger.error("Failed to build app data for AI chat: %s", e)
+        app_data = ""
     system_prompt = BASE_PROMPT.format(app_data=app_data)
 
     # Load last 10 exchanges for context

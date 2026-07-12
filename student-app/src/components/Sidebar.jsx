@@ -44,36 +44,36 @@ const STUDENT_NAV_SECTIONS = [
     label: "Main",
     i18nKey: "nav.sectionMain",
     items: [
-      { path: "/dashboard",       i18nKey: "nav.dashboard",       icon: "🏠" },
-      { path: "/universities",    i18nKey: "nav.universities",    icon: "🏫" },
-      { path: "/scholarships",    i18nKey: "nav.scholarships",    icon: "🎓" },
-      { path: "/recommendations", i18nKey: "nav.recommendations", icon: "✨", badge: "AI" },
-      { path: "/ai-chat",         i18nKey: "nav.aiChat",          icon: "💬", badge: "AI" },
-      { path: "/pipeline",        i18nKey: "nav.pipeline",        icon: "📋" },
-      { path: "/apply-hub",       i18nKey: "nav.applyHub",        icon: "📝" },
-      { path: "/learning",        i18nKey: "nav.learning",        icon: "🌐" },
+      { path: "/dashboard",       i18nKey: "nav.dashboard",       iconKey: "dashboard" },
+      { path: "/universities",    i18nKey: "nav.universities",    iconKey: "universities" },
+      { path: "/scholarships",    i18nKey: "nav.scholarships",    iconKey: "scholarships" },
+      { path: "/recommendations", i18nKey: "nav.recommendations", iconKey: "recommendations", badge: "AI" },
+      { path: "/ai-chat",         i18nKey: "nav.aiChat",          iconKey: "aichat", badge: "AI" },
+      { path: "/pipeline",        i18nKey: "nav.pipeline",        iconKey: "pipeline" },
+      { path: "/apply-hub",       i18nKey: "nav.applyHub",        iconKey: "applyhub" },
+      { path: "/learning",        i18nKey: "nav.learning",        iconKey: "learning" },
     ],
   },
   {
     label: "Community",
     i18nKey: "nav.sectionCommunity",
     items: [
-      { path: "/instructors",      i18nKey: "nav.instructors",     icon: "🎓" },
-      { path: "/calendar",         i18nKey: "nav.calendar",        icon: "📅" },
-      { path: "/email-integration",i18nKey: "nav.emailIntegration",icon: "📧" },
-      { path: "/favourites",       i18nKey: "nav.favourites",      icon: "⭐" },
-      { path: "/my-questions",     i18nKey: "nav.myQuestions",     icon: "❓" },
-      { path: "/notifications",    i18nKey: "nav.notifications",   icon: "🔔" },
+      { path: "/instructors",       i18nKey: "nav.instructors",     iconKey: "instructors" },
+      { path: "/calendar",          i18nKey: "nav.calendar",        iconKey: "calendar" },
+      { path: "/email-integration", i18nKey: "nav.emailIntegration",iconKey: "email" },
+      { path: "/favourites",        i18nKey: "nav.favourites",      iconKey: "favourites" },
+      { path: "/my-questions",      i18nKey: "nav.myQuestions",     iconKey: "questions" },
+      { path: "/notifications",     i18nKey: "nav.notifications",   iconKey: "notifications" },
     ],
   },
   {
     label: "Account",
     i18nKey: "nav.sectionAccount",
     items: [
-      { path: "/profile",  i18nKey: "nav.myProfile", icon: "👤" },
-      { path: "/pricing",  i18nKey: "nav.pricing",   icon: "💎" },
-      { path: "/support",  i18nKey: "nav.support",   icon: "🆘" },
-      { path: "/settings", i18nKey: "nav.settings",  icon: "⚙️" },
+      { path: "/profile",  i18nKey: "nav.myProfile", iconKey: "profile" },
+      { path: "/pricing",  i18nKey: "nav.pricing",   iconKey: "pricing" },
+      { path: "/support",  i18nKey: "nav.support",   iconKey: "support" },
+      { path: "/settings", i18nKey: "nav.settings",  iconKey: "settings" },
     ],
   },
 ];
@@ -83,18 +83,18 @@ const INSTRUCTOR_NAV_SECTIONS = [
     label: "Main",
     i18nKey: "nav.sectionMain",
     items: [
-      { path: "/dashboard",             i18nKey: "nav.dashboard",           icon: "🏠" },
-      { path: "/instructor-panel",      i18nKey: "nav.instructorPanel",     icon: "👨‍🏫" },
-      { path: "/my-courses",            i18nKey: "nav.myCourses",           icon: "🌐" },
-      { path: "/my-instructor-profile", i18nKey: "nav.myInstructorProfile", icon: "👤" },
+      { path: "/dashboard",             i18nKey: "nav.dashboard",           iconKey: "dashboard" },
+      { path: "/instructor-panel",      i18nKey: "nav.instructorPanel",     iconKey: "instructors" },
+      { path: "/my-courses",            i18nKey: "nav.myCourses",           iconKey: "learning" },
+      { path: "/my-instructor-profile", i18nKey: "nav.myInstructorProfile", iconKey: "profile" },
     ],
   },
   {
     label: "Account",
     i18nKey: "nav.sectionAccount",
     items: [
-      { path: "/support",  i18nKey: "nav.support",  icon: "🆘" },
-      { path: "/settings", i18nKey: "nav.settings", icon: "⚙️" },
+      { path: "/support",  i18nKey: "nav.support",  iconKey: "support" },
+      { path: "/settings", i18nKey: "nav.settings", iconKey: "settings" },
     ],
   },
 ];
@@ -141,7 +141,7 @@ const Sidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }) => {
             </div>
           )}
           {collapsed && <div className="my-2 mx-2 h-px" style={{ background: "oklch(1 0 0 / 0.06)" }} />}
-          {section.items.map(({ path, i18nKey, icon, badge }) => {
+          {section.items.map(({ path, i18nKey, iconKey, badge }) => {
             const active = isActive(path);
             const label  = t(i18nKey);
             return (
@@ -159,8 +159,8 @@ const Sidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }) => {
                 onMouseEnter={e => { if (!active) e.currentTarget.style.background = "oklch(0.20 0.024 285)"; if (!active) e.currentTarget.style.color = "#fff"; }}
                 onMouseLeave={e => { if (!active) e.currentTarget.style.background = "transparent"; if (!active) e.currentTarget.style.color = "oklch(0.60 0.02 285)"; }}
               >
-                <span className="shrink-0 text-base leading-none" style={{ width: 20, textAlign: "center" }}>
-                  {icon}
+                <span className="shrink-0" style={{ width: 20, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <Icon d={ICONS[iconKey]} size={18} />
                 </span>
 
                 <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${collapsed ? "w-0 opacity-0" : "w-auto opacity-100"}`}>
@@ -331,7 +331,7 @@ const Sidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }) => {
                    style={{ color: "oklch(0.45 0.02 285)" }}>
                 {t(section.i18nKey, section.label)}
               </div>
-              {section.items.map(({ path, i18nKey, icon, badge }) => {
+              {section.items.map(({ path, i18nKey, iconKey, badge }) => {
                 const active = isActive(path);
                 const label  = t(i18nKey);
                 return (
@@ -342,7 +342,7 @@ const Sidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }) => {
                           color: active ? "#fff" : "oklch(0.60 0.02 285)",
                           fontWeight: active ? 600 : 500,
                         }}>
-                    <span className="shrink-0" style={{ width: 18 }}><Icon d={ICONS[icon] ?? ICONS.dashboard} size={16} /></span>
+                    <span className="shrink-0" style={{ width: 18 }}><Icon d={ICONS[iconKey] ?? ICONS.dashboard} size={16} /></span>
                     <span>{label}</span>
                     {badge && <span className="ms-auto text-[10px] font-bold px-1.5 py-0.5 rounded-md"
                                     style={{ background: "oklch(0.55 0.22 296 / 0.2)", color: "oklch(0.80 0.14 296)" }}>{badge}</span>}

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import api from "../api/axios";
 import { useTranslation } from "react-i18next";
+import PageHero from "../components/PageHero";
 
 /* ── design tokens ── */
 const bg      = "bg-[oklch(0.13_0.018_285)]";
@@ -68,18 +69,11 @@ const Scholarships = () => {
   return (
     <div className={`min-h-screen ${bg} text-[oklch(0.96_0.006_285)]`}>
 
-      {/* ── Hero: 220px full-bleed photo ── */}
-      <div style={{ position: "relative", height: 220, overflow: "hidden" }}>
-        <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1600&q=70"
-             alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%" }} />
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, oklch(0.13 0.05 296 / 0.4), oklch(0.13 0.018 285) 95%)" }} />
-        <div style={{ position: "relative", height: "100%", display: "flex", flexDirection: "column", justifyContent: "center", padding: "0 32px" }}>
-          <div style={{ fontSize: 28, fontWeight: 800, color: "#fff" }}>{t("scholarships.title")}</div>
-          <div style={{ fontSize: 14, color: "oklch(0.80 0.02 285)", marginTop: 6 }}>
-            {loading ? t("common.loading") : t("scholarships.available", { count: total })}
-          </div>
-        </div>
-      </div>
+      <PageHero
+        photo="https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=1600&q=70"
+        title={t("scholarships.title")}
+        subtitle={loading ? t("common.loading") : t("scholarships.available", { count: total })}
+      />
 
       {/* ── Type filter pills below hero ── */}
       <div className="px-8 py-4" style={{ borderBottom: "1px solid oklch(1 0 0 / 0.07)" }}>

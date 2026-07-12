@@ -6,8 +6,8 @@ import PageHero from "../components/PageHero";
 
 const Section = ({ icon, title, subtitle, children }) => (
   <div className="bg-[oklch(0.17_0.02_285)] rounded-2xl border border-[oklch(1_0_0/0.07)] overflow-hidden">
-    <div className="flex items-center gap-3 px-6 py-4 border-b border-gray-50">
-      <div className="w-9 h-9 rounded-xl bg-indigo-50 flex items-center justify-center text-lg">{icon}</div>
+    <div className="flex items-center gap-3 px-6 py-4 border-b border-[oklch(1_0_0/0.07)]">
+      <div className="w-9 h-9 rounded-xl bg-[oklch(0.22_0.024_285)] flex items-center justify-center text-lg">{icon}</div>
       <div>
         <h2 className="font-bold text-white text-sm">{title}</h2>
         {subtitle && <p className="text-[oklch(0.45_0.02_285)] text-xs mt-0.5">{subtitle}</p>}
@@ -43,28 +43,28 @@ const Settings = () => {
         {/* Account info */}
         {user && (
           <Section icon="👤" title={t("settings.account.title")} subtitle="Your account details">
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white text-xl font-bold ">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="flex items-center gap-4 min-w-0">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white text-xl font-bold shrink-0">
                   {user.email?.[0]?.toUpperCase()}
                 </div>
-                <div>
-                  <p className="font-semibold text-white text-sm">{user.email}</p>
+                <div className="min-w-0">
+                  <p className="font-semibold text-white text-sm truncate">{user.email}</p>
                   <p className="text-[oklch(0.45_0.02_285)] text-xs mt-0.5">{t("settings.account.email")}</p>
                 </div>
               </div>
-              <div className="flex flex-col items-end gap-1.5">
+              <div className="flex flex-row sm:flex-col items-center sm:items-end gap-2 sm:gap-1.5 flex-wrap">
                 <span className={`text-xs px-3 py-1.5 rounded-full font-bold ${
                   isPaid
-                    ? "bg-gradient-to-r from-amber-400 to-orange-400 text-white "
-                    : "bg-gray-100 text-[oklch(0.55_0.02_285)]"
+                    ? "bg-gradient-to-r from-amber-400 to-orange-400 text-white"
+                    : "bg-[oklch(0.22_0.02_285)] text-[oklch(0.70_0.02_285)] border border-[oklch(1_0_0/0.08)]"
                 }`}>
                   {isPaid ? `👑 ${user.plan}` : "Free plan"}
                 </span>
                 <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full ${
                   user.is_verified
-                    ? "bg-emerald-50 text-emerald-700 border border-emerald-100"
-                    : "bg-yellow-50 text-yellow-700 border border-yellow-100"
+                    ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+                    : "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30"
                 }`}>
                   {user.is_verified ? "✅ Verified" : "⚠️ Not Verified"}
                 </span>
@@ -83,8 +83,8 @@ const Settings = () => {
               <button key={code} onClick={() => handleLangChange(code)}
                 className={`flex items-center gap-3 px-4 py-4 rounded-xl border-2 text-left transition-all ${
                   currentLang === code
-                    ? "border-indigo-500 bg-indigo-50  shadow-indigo-100"
-                    : "border-gray-200 hover:border-indigo-300 hover:bg-indigo-50/50"
+                    ? "border-indigo-500 bg-indigo-500/15"
+                    : "border-[oklch(1_0_0/0.08)] hover:border-indigo-500/50 hover:bg-[oklch(0.20_0.024_285)]"
                 }`}>
                 <span className="text-2xl">{flag}</span>
                 <div className="flex-1 min-w-0">
@@ -106,18 +106,18 @@ const Settings = () => {
         {/* Welcome tour */}
         <Section icon="🎓" title={t("settings.onboarding.title")} subtitle={t("settings.onboarding.restartDesc")}>
           <button onClick={restartOnboarding}
-            className="flex items-center gap-2 px-5 py-3 bg-indigo-600 text-white rounded-xl font-semibold text-sm hover:bg-indigo-700 transition  shadow-indigo-200">
+            className="flex items-center gap-2 px-5 py-3 bg-indigo-600 text-white rounded-xl font-semibold text-sm hover:bg-indigo-700 transition">
             🎓 {t("settings.onboarding.restart")}
           </button>
         </Section>
 
         {/* Danger zone */}
-        <div className="bg-[oklch(0.17_0.02_285)] rounded-2xl border-2 border-red-100 overflow-hidden">
-          <div className="flex items-center gap-3 px-6 py-4 border-b border-red-50 bg-red-50/50">
-            <div className="w-9 h-9 rounded-xl bg-red-100 flex items-center justify-center text-lg">⚠️</div>
+        <div className="bg-[oklch(0.17_0.02_285)] rounded-2xl border-2 border-red-500/30 overflow-hidden">
+          <div className="flex items-center gap-3 px-6 py-4 border-b border-red-500/20 bg-red-500/10">
+            <div className="w-9 h-9 rounded-xl bg-red-500/20 flex items-center justify-center text-lg">⚠️</div>
             <div>
-              <h2 className="font-bold text-red-800 text-sm">{t("settings.danger.title")}</h2>
-              <p className="text-red-400 text-xs mt-0.5">{t("settings.danger.logoutDesc")}</p>
+              <h2 className="font-bold text-red-400 text-sm">{t("settings.danger.title")}</h2>
+              <p className="text-red-400/70 text-xs mt-0.5">{t("settings.danger.logoutDesc")}</p>
             </div>
           </div>
           <div className="p-6">
