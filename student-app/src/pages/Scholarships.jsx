@@ -70,7 +70,7 @@ const Scholarships = () => {
     <div className={`min-h-screen ${bg} text-[oklch(0.96_0.006_285)]`}>
 
       <PageHero
-        photo="https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=1600&q=70"
+        photo="https://images.unsplash.com/photo-1607013251379-e6eecfffe234?w=1600&q=70"
         title={t("scholarships.title")}
         subtitle={loading ? t("common.loading") : t("scholarships.available", { count: total })}
       />

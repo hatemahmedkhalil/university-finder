@@ -287,12 +287,17 @@ def send_message(
         raise HTTPException(status_code=502, detail="AI service is temporarily unavailable.")
 
     # Save both messages to DB
-    user_msg = AiChatMessage(user_id=current_user.id, role="user", content=body.message.strip())
-    ai_msg = AiChatMessage(user_id=current_user.id, role="assistant", content=ai_reply)
-    db.add(user_msg)
-    db.add(ai_msg)
-    db.commit()
-    db.refresh(ai_msg)
+    try:
+        user_msg = AiChatMessage(user_id=current_user.id, role="user", content=body.message.strip())
+        ai_msg = AiChatMessage(user_id=current_user.id, role="assistant", content=ai_reply)
+        db.add(user_msg)
+        db.add(ai_msg)
+        db.commit()
+        db.refresh(ai_msg)
+    except Exception as e:
+        logger.error("Failed to save AI chat messages: %s", e)
+        db.rollback()
+        return ChatMessageOut(id=0, role="assistant", content=ai_reply, created_at=datetime.utcnow())
     return ai_msg
 
 
