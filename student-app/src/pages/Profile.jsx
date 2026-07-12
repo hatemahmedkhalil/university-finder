@@ -172,6 +172,84 @@ const CountryDropdown = ({ value, onChange }) => {
   );
 };
 
+// ─── Searchable Country-of-Study Dropdown ────────────────────────────────────
+
+const COUNTRIES = [
+  "Afghanistan","Albania","Algeria","Argentina","Armenia","Australia","Austria","Azerbaijan",
+  "Bahrain","Bangladesh","Belarus","Belgium","Bolivia","Bosnia","Brazil","Bulgaria","Cambodia",
+  "Cameroon","Canada","Chile","China","Colombia","Croatia","Cuba","Czech Republic","Denmark",
+  "Dominican Republic","Ecuador","Egypt","Estonia","Ethiopia","Finland","France","Georgia",
+  "Germany","Ghana","Greece","Guatemala","Hungary","India","Indonesia","Iran","Iraq","Ireland",
+  "Israel","Italy","Japan","Jordan","Kazakhstan","Kenya","Kuwait","Kyrgyzstan","Latvia","Lebanon",
+  "Libya","Lithuania","Luxembourg","Malaysia","Malta","Mexico","Moldova","Mongolia","Morocco",
+  "Netherlands","New Zealand","Nigeria","Norway","Oman","Pakistan","Palestine","Panama","Peru",
+  "Philippines","Poland","Portugal","Qatar","Romania","Russia","Saudi Arabia","Senegal","Serbia",
+  "Singapore","Slovakia","Slovenia","Somalia","South Africa","South Korea","Spain","Sri Lanka",
+  "Sudan","Sweden","Switzerland","Syria","Taiwan","Tanzania","Thailand","Tunisia","Turkey",
+  "Uganda","Ukraine","United Arab Emirates","United Kingdom","United States","Uzbekistan",
+  "Venezuela","Vietnam","Yemen","Zambia","Zimbabwe",
+];
+
+const CountryOfStudyDropdown = ({ value, onChange }) => {
+  const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const handler = (e) => { if (!ref.current?.contains(e.target)) setOpen(false); };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const filtered = COUNTRIES.filter((c) => c.toLowerCase().includes(search.toLowerCase()));
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className={`w-full border rounded-lg px-4 py-2.5 text-left flex items-center justify-between transition focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
+          value ? "border-gray-200 text-white" : "border-gray-200 text-[oklch(0.45_0.02_285)]"
+        }`}
+      >
+        <span>{value || "Select country…"}</span>
+        <svg className={`w-4 h-4 text-[oklch(0.45_0.02_285)] transition-transform ${open ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      {open && (
+        <div className="absolute z-50 mt-1 w-full bg-white border border-[oklch(1_0_0/0.08)] rounded-xl overflow-hidden">
+          <div className="p-2 border-b border-[oklch(1_0_0/0.07)]">
+            <input
+              autoFocus
+              type="text"
+              placeholder="Search country…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full px-3 py-2 text-sm border border-[oklch(1_0_0/0.08)] rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
+          <ul className="max-h-52 overflow-y-auto py-1">
+            {filtered.length === 0 ? (
+              <li className="px-4 py-2 text-sm text-[oklch(0.45_0.02_285)]">No results</li>
+            ) : filtered.map((c) => (
+              <li
+                key={c}
+                onClick={() => { onChange(c); setOpen(false); setSearch(""); }}
+                className={`px-4 py-2 text-sm cursor-pointer hover:bg-indigo-50 hover:text-indigo-700 ${
+                  value === c ? "bg-indigo-50 text-indigo-700 font-medium" : "text-[oklch(0.75_0.02_285)]"
+                }`}
+              >
+                {c}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+};
+
 // ─── Searchable Field-of-Study Dropdown ──────────────────────────────────────
 
 const FieldOfStudyDropdown = ({ value, onChange }) => {
@@ -523,7 +601,6 @@ const Profile = () => {
     prev_country: "",
     prev_major: "",
     graduation_year: "",
-    prev_gpa: "",
   });
 
   const budgetEur = (() => {
@@ -567,7 +644,6 @@ const Profile = () => {
           prev_country: p.prev_country || "",
           prev_major: p.prev_major || "",
           graduation_year: p.graduation_year?.toString() || "",
-          prev_gpa: p.prev_gpa?.toString() || "",
         });
         const fields = [p.nationality, p.gpa, p.budget_eur, p.english_level, p.field_of_study, p.preferred_countries, p.language, p.degree_level];
         const pct = Math.round(fields.filter(f => f != null && f !== "").length / fields.length * 100);
@@ -595,21 +671,15 @@ const Profile = () => {
       if (v < 0 || v > 4) e.gpa = t("profile.errors.gpaRange");
     }
     if (!form.budget_input || form.budget_input <= 0) e.budget = t("profile.errors.budget");
-    if (!form.field_of_study) e.field_of_study = t("common.required");
+    if (form.degree_level === "bachelor" && !form.field_of_study) e.field_of_study = t("common.required");
 
     if (form.degree_level === "master" || form.degree_level === "phd") {
-      if (!form.prev_university) e.prev_university = t("common.required");
       if (!form.prev_country) e.prev_country = t("common.required");
       if (!form.prev_major) e.prev_major = t("common.required");
       if (!form.graduation_year) e.graduation_year = t("common.required");
       else {
         const yr = parseInt(form.graduation_year);
         if (yr < 1950 || yr > new Date().getFullYear()) e.graduation_year = t("profile.errors.invalidYear");
-      }
-      if (!form.prev_gpa) e.prev_gpa = t("profile.errors.gpa");
-      else {
-        const v = parseFloat(form.prev_gpa);
-        if (v < 0 || v > 4) e.prev_gpa = t("profile.errors.gpaRange");
       }
     }
 
@@ -636,13 +706,12 @@ const Profile = () => {
       english_level: form.language_level,
       language: form.language,
       preferred_countries,
-      field_of_study: form.field_of_study,
+      field_of_study: hasPrevDegree ? form.prev_major.trim() || null : form.field_of_study,
       phone_number: form.phone_number.trim() || null,
       prev_university: hasPrevDegree ? form.prev_university.trim() || null : null,
       prev_country: hasPrevDegree ? form.prev_country.trim() || null : null,
       prev_major: hasPrevDegree ? form.prev_major.trim() || null : null,
       graduation_year: hasPrevDegree ? parseInt(form.graduation_year) || null : null,
-      prev_gpa: hasPrevDegree ? parseFloat(form.prev_gpa) || null : null,
     };
 
     setSaving(true);
@@ -814,7 +883,7 @@ const Profile = () => {
             </div>
             <p className="text-xs text-[oklch(0.45_0.02_285)] -mt-2">{t("profile.prevDegree.subtitle")}</p>
 
-            <Field label={t("profile.prevDegree.university")} error={errors.prev_university} required>
+            <Field label={t("profile.prevDegree.university")} error={errors.prev_university}>
               <input
                 type="text"
                 value={form.prev_university}
@@ -825,22 +894,16 @@ const Profile = () => {
             </Field>
 
             <Field label={t("profile.prevDegree.country")} error={errors.prev_country} required>
-              <input
-                type="text"
+              <CountryOfStudyDropdown
                 value={form.prev_country}
-                onChange={(e) => set("prev_country", e.target.value)}
-                placeholder={t("profile.prevDegree.countryPlaceholder")}
-                className="w-full border border-[oklch(1_0_0/0.08)] rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                onChange={(v) => set("prev_country", v)}
               />
             </Field>
 
             <Field label={t("profile.prevDegree.major")} error={errors.prev_major} required>
-              <input
-                type="text"
+              <FieldOfStudyDropdown
                 value={form.prev_major}
-                onChange={(e) => set("prev_major", e.target.value)}
-                placeholder={t("profile.prevDegree.majorPlaceholder")}
-                className="w-full border border-[oklch(1_0_0/0.08)] rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                onChange={(v) => set("prev_major", v)}
               />
             </Field>
 
@@ -856,21 +919,6 @@ const Profile = () => {
               />
             </Field>
 
-            <Field label={t("profile.prevDegree.gpa")} error={errors.prev_gpa} required>
-              <div className="relative">
-                <input
-                  type="number"
-                  min="0"
-                  max="4"
-                  step="0.01"
-                  value={form.prev_gpa}
-                  onChange={(e) => set("prev_gpa", e.target.value)}
-                  placeholder="e.g. 3.5"
-                  className="w-full border border-[oklch(1_0_0/0.08)] rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 pr-20"
-                />
-                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-[oklch(0.45_0.02_285)] font-medium">/ 4.0</span>
-              </div>
-            </Field>
           </div>
         )}
 
@@ -950,13 +998,15 @@ const Profile = () => {
         {/* ── Languages ── */}
         <LanguageManager />
 
-        {/* ── Field of Study ── */}
-        <Field label={t("profile.fieldOfStudy")} error={errors.field_of_study} required>
-          <FieldOfStudyDropdown
-            value={form.field_of_study}
-            onChange={(v) => set("field_of_study", v)}
-          />
-        </Field>
+        {/* ── Field of Study (Bachelor only — Master/PhD use prev_major) ── */}
+        {form.degree_level === "bachelor" && (
+          <Field label={t("profile.fieldOfStudy")} error={errors.field_of_study} required>
+            <FieldOfStudyDropdown
+              value={form.field_of_study}
+              onChange={(v) => set("field_of_study", v)}
+            />
+          </Field>
+        )}
 
         {/* ── Preferred Countries ── */}
         <Field label={t("profile.preferredCountry")}>
