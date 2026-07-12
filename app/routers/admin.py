@@ -86,8 +86,60 @@ def get_students(
             "english_level": p.english_level if p else None,
             "preferred_countries": p.preferred_countries if p else None,
             "field_of_study": p.field_of_study if p else None,
+            "prev_university": p.prev_university if p else None,
+            "prev_country": p.prev_country if p else None,
+            "prev_major": p.prev_major if p else None,
+            "graduation_year": p.graduation_year if p else None,
+            "prev_gpa": p.prev_gpa if p else None,
         })
     return result
+
+
+class StudentProfileUpdatePayload(BaseModel):
+    prev_university: Optional[str] = None
+    prev_country: Optional[str] = None
+    prev_major: Optional[str] = None
+    graduation_year: Optional[int] = None
+    prev_gpa: Optional[float] = None
+
+
+@router.get("/students/{user_id}")
+def get_student(user_id: int, db: Session = Depends(get_db), _=Depends(require_admin)):
+    u = db.query(User).filter(User.id == user_id, User.role == "student").options(joinedload(User.profile)).first()
+    if not u:
+        raise HTTPException(status_code=404, detail="Student not found")
+    p = u.profile
+    return {
+        "id": u.id,
+        "email": u.email,
+        "is_active": u.is_active,
+        "created_at": u.created_at.isoformat() if u.created_at else None,
+        "has_profile": p is not None,
+        "nationality": p.nationality if p else None,
+        "degree_level": p.degree_level if p else None,
+        "gpa": p.gpa if p else None,
+        "budget_eur": p.budget_eur if p else None,
+        "english_level": p.english_level if p else None,
+        "preferred_countries": p.preferred_countries if p else None,
+        "field_of_study": p.field_of_study if p else None,
+        "prev_university": p.prev_university if p else None,
+        "prev_country": p.prev_country if p else None,
+        "prev_major": p.prev_major if p else None,
+        "graduation_year": p.graduation_year if p else None,
+        "prev_gpa": p.prev_gpa if p else None,
+    }
+
+
+@router.patch("/students/{user_id}")
+def update_student_profile(user_id: int, payload: StudentProfileUpdatePayload, db: Session = Depends(get_db), _=Depends(require_admin)):
+    u = db.query(User).filter(User.id == user_id, User.role == "student").options(joinedload(User.profile)).first()
+    if not u or not u.profile:
+        raise HTTPException(status_code=404, detail="Student profile not found")
+    for field, value in payload.model_dump(exclude_unset=True).items():
+        setattr(u.profile, field, value)
+    db.commit()
+    db.refresh(u.profile)
+    return {"ok": True}
 
 
 class UserUpdatePayload(BaseModel):

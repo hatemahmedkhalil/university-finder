@@ -14,6 +14,11 @@ class StudentProfileCreate(BaseModel):
     field_of_study: str | None = None
     phone_number: str | None = None
     full_name: str | None = None
+    prev_university: str | None = None
+    prev_country: str | None = None
+    prev_major: str | None = None
+    graduation_year: int | None = None
+    prev_gpa: float | None = Field(default=None, ge=0.0, le=4.0)
 
 
 class StudentProfileUpdate(BaseModel):
@@ -27,6 +32,11 @@ class StudentProfileUpdate(BaseModel):
     field_of_study: str | None = None
     phone_number: str | None = None
     full_name: str | None = None
+    prev_university: str | None = None
+    prev_country: str | None = None
+    prev_major: str | None = None
+    graduation_year: int | None = None
+    prev_gpa: float | None = Field(default=None, ge=0.0, le=4.0)
 
 
 class StudentProfileOut(BaseModel):
@@ -42,5 +52,10 @@ class StudentProfileOut(BaseModel):
     field_of_study: str | None
     phone_number: str | None = None
     full_name: str | None = None
+    prev_university: str | None = None
+    prev_country: str | None = None
+    prev_major: str | None = None
+    graduation_year: int | None = None
+    prev_gpa: float | None = None
 
     model_config = {"from_attributes": True}

@@ -31,7 +31,7 @@ import { InstructorMessageList, InstructorMessageShow } from "./resources/Instru
 import { PlacementTestList, PlacementTestEdit, PlacementTestCreate, PlacementTestShow, CourseList, CourseEdit, CourseCreate, CourseShow } from "./resources/Learning";
 import { IeltsTestList, IeltsTestCreate, IeltsTestEdit, IeltsTestShow, IeltsSectionList, IeltsSectionCreate, IeltsSectionEdit, IeltsSectionShow, IeltsQuestionList, IeltsQuestionCreate, IeltsQuestionEdit, IeltsQuestionShow } from "./resources/Ielts";
 import { PipelineList } from "./resources/Pipeline";
-import { StudentList, StudentShow } from "./resources/Students";
+import { StudentList, StudentShow, StudentEdit } from "./resources/Students";
 import { NotificationList, SendNotificationPanel } from "./resources/Notifications";
 
 import { Layout, Menu, CustomRoutes } from "react-admin";
@@ -98,7 +98,7 @@ const App = () => (
 
         /* ── People ── */
         <Resource key="admin-users"    name="admin/users"    list={UserList}      edit={UserEdit}    show={UserShow}    icon={PeopleIcon}          options={{ label: "Users" }} />,
-        <Resource key="admin-students" name="admin/students" list={StudentList}   show={StudentShow}                   icon={SchoolRoundedIcon}   options={{ label: "Students" }} />,
+        <Resource key="admin-students" name="admin/students" list={StudentList}   show={StudentShow} edit={StudentEdit} icon={SchoolRoundedIcon}   options={{ label: "Students" }} />,
         <Resource key="instructors"    name="instructors"    list={InstructorList} edit={InstructorEdit} create={InstructorCreate} show={InstructorShow} icon={PersonIcon} options={{ label: "Instructors" }} />,
 
         /* ── Applications ── */

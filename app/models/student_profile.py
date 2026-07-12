@@ -42,4 +42,11 @@ class StudentProfile(Base):
     # JSON: {"english": {"level": "B2", "score": 14, "total": 20}, "german": {...}}
     placement_results: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True, default=None)
 
+    # Previous degree info (required for master/phd applicants)
+    prev_university: Mapped[str | None] = mapped_column(String(200), nullable=True, default=None)
+    prev_country: Mapped[str | None] = mapped_column(String(100), nullable=True, default=None)
+    prev_major: Mapped[str | None] = mapped_column(String(200), nullable=True, default=None)
+    graduation_year: Mapped[int | None] = mapped_column(Integer, nullable=True, default=None)
+    prev_gpa: Mapped[float | None] = mapped_column(Float, nullable=True, default=None)
+
     user: Mapped["User"] = relationship(back_populates="profile")  # noqa: F821

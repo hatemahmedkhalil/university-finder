@@ -520,6 +520,12 @@ const Profile = () => {
     language_level: "b2",
     field_of_study: "",
     preferred_country: "both",
+    prev_university: "",
+    prev_country: "",
+    prev_major: "",
+    graduation_year: "",
+    prev_gpa_scale: "4.0",
+    prev_gpa_value: "",
   });
 
   const budgetEur = (() => {
@@ -560,6 +566,12 @@ const Profile = () => {
           language_level: p.english_level || "b2",
           field_of_study: p.field_of_study || "",
           preferred_country: preferredCountry,
+          prev_university: p.prev_university || "",
+          prev_country: p.prev_country || "",
+          prev_major: p.prev_major || "",
+          graduation_year: p.graduation_year?.toString() || "",
+          prev_gpa_scale: "4.0",
+          prev_gpa_value: p.prev_gpa?.toString() || "",
         });
         const fields = [p.nationality, p.gpa, p.budget_eur, p.english_level, p.field_of_study, p.preferred_countries, p.language, p.degree_level];
         const pct = Math.round(fields.filter(f => f != null && f !== "").length / fields.length * 100);
@@ -589,6 +601,24 @@ const Profile = () => {
     }
     if (!form.budget_input || form.budget_input <= 0) e.budget = t("profile.errors.budget");
     if (!form.field_of_study) e.field_of_study = t("common.required");
+
+    if (form.degree_level === "master" || form.degree_level === "phd") {
+      if (!form.prev_university) e.prev_university = t("common.required");
+      if (!form.prev_country) e.prev_country = t("common.required");
+      if (!form.prev_major) e.prev_major = t("common.required");
+      if (!form.graduation_year) e.graduation_year = t("common.required");
+      else {
+        const yr = parseInt(form.graduation_year);
+        if (yr < 1950 || yr > new Date().getFullYear()) e.graduation_year = t("profile.errors.invalidYear");
+      }
+      if (!form.prev_gpa_value) e.prev_gpa = t("profile.errors.gpa");
+      else {
+        const v = parseFloat(form.prev_gpa_value);
+        if (form.prev_gpa_scale === "4.0" && (v < 0 || v > 4)) e.prev_gpa = t("profile.errors.gpaRange");
+        if (form.prev_gpa_scale === "percentage" && (v < 0 || v > 100)) e.prev_gpa = t("profile.errors.percentRange");
+      }
+    }
+
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -604,6 +634,12 @@ const Profile = () => {
       form.preferred_country === "both"    ? "Germany,Poland" :
       form.preferred_country === "germany" ? "Germany" : "Poland";
 
+    const hasPrevDegree = form.degree_level === "master" || form.degree_level === "phd";
+    const rawPrevGpa = parseFloat(form.prev_gpa_value);
+    const prev_gpa = hasPrevDegree
+      ? (form.prev_gpa_scale === "percentage" ? parseFloat(((rawPrevGpa / 100) * 4.0).toFixed(2)) : rawPrevGpa)
+      : null;
+
     const payload = {
       nationality: form.nationality,
       degree_level: form.degree_level,
@@ -614,6 +650,11 @@ const Profile = () => {
       preferred_countries,
       field_of_study: form.field_of_study,
       phone_number: form.phone_number.trim() || null,
+      prev_university: hasPrevDegree ? form.prev_university.trim() || null : null,
+      prev_country: hasPrevDegree ? form.prev_country.trim() || null : null,
+      prev_major: hasPrevDegree ? form.prev_major.trim() || null : null,
+      graduation_year: hasPrevDegree ? parseInt(form.graduation_year) || null : null,
+      prev_gpa: hasPrevDegree ? prev_gpa : null,
     };
 
     setSaving(true);
@@ -773,6 +814,100 @@ const Profile = () => {
             ))}
           </div>
         </Field>
+
+        {/* ── Previous Degree Info (Master / PhD only) ── */}
+        {(form.degree_level === "master" || form.degree_level === "phd") && (
+          <div className="bg-[oklch(0.17_0.02_285)] rounded-2xl border border-indigo-500/20 p-5 space-y-4">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-indigo-400">🎓</span>
+              <h3 className="text-sm font-semibold text-indigo-300">
+                {form.degree_level === "master" ? t("profile.prevDegree.bachelorTitle") : t("profile.prevDegree.masterTitle")}
+              </h3>
+            </div>
+            <p className="text-xs text-[oklch(0.45_0.02_285)] -mt-2">{t("profile.prevDegree.subtitle")}</p>
+
+            <Field label={t("profile.prevDegree.university")} error={errors.prev_university} required>
+              <input
+                type="text"
+                value={form.prev_university}
+                onChange={(e) => set("prev_university", e.target.value)}
+                placeholder={t("profile.prevDegree.universityPlaceholder")}
+                className="w-full border border-[oklch(1_0_0/0.08)] rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+            </Field>
+
+            <Field label={t("profile.prevDegree.country")} error={errors.prev_country} required>
+              <input
+                type="text"
+                value={form.prev_country}
+                onChange={(e) => set("prev_country", e.target.value)}
+                placeholder={t("profile.prevDegree.countryPlaceholder")}
+                className="w-full border border-[oklch(1_0_0/0.08)] rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+            </Field>
+
+            <Field label={t("profile.prevDegree.major")} error={errors.prev_major} required>
+              <input
+                type="text"
+                value={form.prev_major}
+                onChange={(e) => set("prev_major", e.target.value)}
+                placeholder={t("profile.prevDegree.majorPlaceholder")}
+                className="w-full border border-[oklch(1_0_0/0.08)] rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+            </Field>
+
+            <Field label={t("profile.prevDegree.graduationYear")} error={errors.graduation_year} required>
+              <input
+                type="number"
+                min="1950"
+                max={new Date().getFullYear()}
+                value={form.graduation_year}
+                onChange={(e) => set("graduation_year", e.target.value)}
+                placeholder="e.g. 2022"
+                className="w-full border border-[oklch(1_0_0/0.08)] rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+            </Field>
+
+            <Field label={t("profile.prevDegree.gpa")} error={errors.prev_gpa} required>
+              <div className="flex gap-2 mb-2">
+                {[["4.0", t("profile.gpa40Label")], ["percentage", t("profile.percentLabel")]].map(([val, lbl]) => (
+                  <button
+                    key={val}
+                    type="button"
+                    onClick={() => { set("prev_gpa_scale", val); set("prev_gpa_value", ""); }}
+                    className={`px-4 py-1.5 rounded-lg border text-sm font-medium transition ${
+                      form.prev_gpa_scale === val
+                        ? "bg-indigo-600 text-white border-indigo-600"
+                        : "bg-white text-[oklch(0.65_0.02_285)] border-gray-200 hover:border-indigo-400"
+                    }`}
+                  >
+                    {lbl}
+                  </button>
+                ))}
+              </div>
+              <div className="relative">
+                <input
+                  type="number"
+                  min="0"
+                  max={form.prev_gpa_scale === "4.0" ? "4" : "100"}
+                  step={form.prev_gpa_scale === "4.0" ? "0.01" : "1"}
+                  value={form.prev_gpa_value}
+                  onChange={(e) => set("prev_gpa_value", e.target.value)}
+                  placeholder={form.prev_gpa_scale === "4.0" ? "e.g. 3.5" : "e.g. 85"}
+                  className="w-full border border-[oklch(1_0_0/0.08)] rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 pr-20"
+                />
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-[oklch(0.45_0.02_285)] font-medium">
+                  {form.prev_gpa_scale === "4.0" ? "/ 4.0" : "%"}
+                </span>
+              </div>
+              {form.prev_gpa_value && form.prev_gpa_scale === "percentage" && (
+                <p className="mt-1 text-xs text-[oklch(0.55_0.02_285)]">
+                  ≈ {((parseFloat(form.prev_gpa_value) / 100) * 4).toFixed(2)} {t("profile.gpaApprox")}
+                </p>
+              )}
+            </Field>
+          </div>
+        )}
 
         {/* ── GPA ── */}
         <Field label={t("profile.academicScore")} error={errors.gpa} required>

@@ -427,7 +427,21 @@
       "gpa": "Please enter a valid GPA.",
       "gpaRange": "GPA must be between 0 and 4.0",
       "percentRange": "Percentage must be between 0 and 100",
-      "budget": "Please enter a budget."
+      "budget": "Please enter a budget.",
+      "invalidYear": "Please enter a valid graduation year."
+    },
+    "prevDegree": {
+      "bachelorTitle": "Bachelor's Degree Information",
+      "masterTitle": "Master's Degree Information",
+      "subtitle": "Required for your application — universities need your previous academic record.",
+      "university": "Previous University",
+      "universityPlaceholder": "e.g. Cairo University",
+      "country": "Country of Study",
+      "countryPlaceholder": "e.g. Egypt",
+      "major": "Major / Field of Study",
+      "majorPlaceholder": "e.g. Computer Science",
+      "graduationYear": "Graduation Year",
+      "gpa": "Previous GPA"
     }
   },
   "recommendations": {
