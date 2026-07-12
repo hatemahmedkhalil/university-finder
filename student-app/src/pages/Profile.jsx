@@ -512,8 +512,7 @@ const Profile = () => {
     nationality: "",
     degree_level: "bachelor",
     phone_number: "",
-    gpa_scale: "4.0",
-    gpa_value: "",
+    gpa: "",
     budget_currency: "EUR",
     budget_input: 5000,
     language: "english",
@@ -524,8 +523,7 @@ const Profile = () => {
     prev_country: "",
     prev_major: "",
     graduation_year: "",
-    prev_gpa_scale: "4.0",
-    prev_gpa_value: "",
+    prev_gpa: "",
   });
 
   const budgetEur = (() => {
@@ -558,8 +556,7 @@ const Profile = () => {
           nationality: p.nationality || "",
           degree_level: p.degree_level || "bachelor",
           phone_number: p.phone_number || "",
-          gpa_scale: "4.0",
-          gpa_value: p.gpa?.toString() || "",
+          gpa: p.gpa?.toString() || "",
           budget_currency: "EUR",
           budget_input: p.budget_eur || 5000,
           language: p.language || "english",
@@ -570,8 +567,7 @@ const Profile = () => {
           prev_country: p.prev_country || "",
           prev_major: p.prev_major || "",
           graduation_year: p.graduation_year?.toString() || "",
-          prev_gpa_scale: "4.0",
-          prev_gpa_value: p.prev_gpa?.toString() || "",
+          prev_gpa: p.prev_gpa?.toString() || "",
         });
         const fields = [p.nationality, p.gpa, p.budget_eur, p.english_level, p.field_of_study, p.preferred_countries, p.language, p.degree_level];
         const pct = Math.round(fields.filter(f => f != null && f !== "").length / fields.length * 100);
@@ -593,11 +589,10 @@ const Profile = () => {
   const validate = () => {
     const e = {};
     if (!form.nationality) e.nationality = t("profile.errors.nationality");
-    if (!form.gpa_value) e.gpa = t("profile.errors.gpa");
+    if (!form.gpa) e.gpa = t("profile.errors.gpa");
     else {
-      const v = parseFloat(form.gpa_value);
-      if (form.gpa_scale === "4.0" && (v < 0 || v > 4)) e.gpa = t("profile.errors.gpaRange");
-      if (form.gpa_scale === "percentage" && (v < 0 || v > 100)) e.gpa = t("profile.errors.percentRange");
+      const v = parseFloat(form.gpa);
+      if (v < 0 || v > 4) e.gpa = t("profile.errors.gpaRange");
     }
     if (!form.budget_input || form.budget_input <= 0) e.budget = t("profile.errors.budget");
     if (!form.field_of_study) e.field_of_study = t("common.required");
@@ -611,11 +606,10 @@ const Profile = () => {
         const yr = parseInt(form.graduation_year);
         if (yr < 1950 || yr > new Date().getFullYear()) e.graduation_year = t("profile.errors.invalidYear");
       }
-      if (!form.prev_gpa_value) e.prev_gpa = t("profile.errors.gpa");
+      if (!form.prev_gpa) e.prev_gpa = t("profile.errors.gpa");
       else {
-        const v = parseFloat(form.prev_gpa_value);
-        if (form.gpa_scale === "4.0" && (v < 0 || v > 4)) e.prev_gpa = t("profile.errors.gpaRange");
-        if (form.gpa_scale === "percentage" && (v < 0 || v > 100)) e.prev_gpa = t("profile.errors.percentRange");
+        const v = parseFloat(form.prev_gpa);
+        if (v < 0 || v > 4) e.prev_gpa = t("profile.errors.gpaRange");
       }
     }
 
@@ -627,23 +621,17 @@ const Profile = () => {
     e.preventDefault();
     if (!validate()) return;
 
-    const rawGpa = parseFloat(form.gpa_value);
-    const gpa = form.gpa_scale === "percentage" ? parseFloat(((rawGpa / 100) * 4.0).toFixed(2)) : rawGpa;
     const budget_eur = budgetEur ?? form.budget_input;
     const preferred_countries =
       form.preferred_country === "both"    ? "Germany,Poland" :
       form.preferred_country === "germany" ? "Germany" : "Poland";
 
     const hasPrevDegree = form.degree_level === "master" || form.degree_level === "phd";
-    const rawPrevGpa = parseFloat(form.prev_gpa_value);
-    const prev_gpa = hasPrevDegree
-      ? (form.gpa_scale === "percentage" ? parseFloat(((rawPrevGpa / 100) * 4.0).toFixed(2)) : rawPrevGpa)
-      : null;
 
     const payload = {
       nationality: form.nationality,
       degree_level: form.degree_level,
-      gpa,
+      gpa: parseFloat(form.gpa),
       budget_eur,
       english_level: form.language_level,
       language: form.language,
@@ -654,7 +642,7 @@ const Profile = () => {
       prev_country: hasPrevDegree ? form.prev_country.trim() || null : null,
       prev_major: hasPrevDegree ? form.prev_major.trim() || null : null,
       graduation_year: hasPrevDegree ? parseInt(form.graduation_year) || null : null,
-      prev_gpa: hasPrevDegree ? prev_gpa : null,
+      prev_gpa: hasPrevDegree ? parseFloat(form.prev_gpa) || null : null,
     };
 
     setSaving(true);
@@ -873,65 +861,35 @@ const Profile = () => {
                 <input
                   type="number"
                   min="0"
-                  max={form.gpa_scale === "4.0" ? "4" : "100"}
-                  step={form.gpa_scale === "4.0" ? "0.01" : "1"}
-                  value={form.prev_gpa_value}
-                  onChange={(e) => set("prev_gpa_value", e.target.value)}
-                  placeholder={form.gpa_scale === "4.0" ? "e.g. 3.5" : "e.g. 85"}
+                  max="4"
+                  step="0.01"
+                  value={form.prev_gpa}
+                  onChange={(e) => set("prev_gpa", e.target.value)}
+                  placeholder="e.g. 3.5"
                   className="w-full border border-[oklch(1_0_0/0.08)] rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 pr-20"
                 />
-                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-[oklch(0.45_0.02_285)] font-medium">
-                  {form.gpa_scale === "4.0" ? "/ 4.0" : "%"}
-                </span>
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-[oklch(0.45_0.02_285)] font-medium">/ 4.0</span>
               </div>
-              {form.prev_gpa_value && form.gpa_scale === "percentage" && (
-                <p className="mt-1 text-xs text-[oklch(0.55_0.02_285)]">
-                  ≈ {((parseFloat(form.prev_gpa_value) / 100) * 4).toFixed(2)} {t("profile.gpaApprox")}
-                </p>
-              )}
             </Field>
           </div>
         )}
 
         {/* ── GPA ── */}
         <Field label={t("profile.academicScore")} error={errors.gpa} required>
-          <div className="flex gap-2 mb-2">
-            {[["4.0", t("profile.gpa40Label")], ["percentage", t("profile.percentLabel")]].map(([val, lbl]) => (
-              <button
-                key={val}
-                type="button"
-                onClick={() => { set("gpa_scale", val); set("gpa_value", ""); }}
-                className={`px-4 py-1.5 rounded-lg border text-sm font-medium transition ${
-                  form.gpa_scale === val
-                    ? "bg-indigo-600 text-white border-indigo-600"
-                    : "bg-white text-[oklch(0.65_0.02_285)] border-gray-200 hover:border-indigo-400"
-                }`}
-              >
-                {lbl}
-              </button>
-            ))}
-          </div>
           <div className="relative">
             <input
               type="number"
               required
               min="0"
-              max={form.gpa_scale === "4.0" ? "4" : "100"}
-              step={form.gpa_scale === "4.0" ? "0.01" : "1"}
-              value={form.gpa_value}
-              onChange={(e) => set("gpa_value", e.target.value)}
-              placeholder={form.gpa_scale === "4.0" ? "e.g. 3.5" : "e.g. 85"}
+              max="4"
+              step="0.01"
+              value={form.gpa}
+              onChange={(e) => set("gpa", e.target.value)}
+              placeholder="e.g. 3.5"
               className="w-full border border-[oklch(1_0_0/0.08)] rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 pr-20"
             />
-            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-[oklch(0.45_0.02_285)] font-medium">
-              {form.gpa_scale === "4.0" ? "/ 4.0" : "%"}
-            </span>
+            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-[oklch(0.45_0.02_285)] font-medium">/ 4.0</span>
           </div>
-          {form.gpa_value && form.gpa_scale === "percentage" && (
-            <p className="mt-1 text-xs text-[oklch(0.55_0.02_285)]">
-              ≈ {((parseFloat(form.gpa_value) / 100) * 4).toFixed(2)} {t("profile.gpaApprox")}
-            </p>
-          )}
         </Field>
 
         {/* ── Budget ── */}
