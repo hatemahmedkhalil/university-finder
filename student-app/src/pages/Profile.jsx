@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import toast from "react-hot-toast";
@@ -581,7 +581,6 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [errors, setErrors] = useState({});
-  const [barWidth, setBarWidth] = useState(0);
 
   const [rates, setRates] = useState({});
   const [ratesLoading, setRatesLoading] = useState(true);
@@ -602,6 +601,17 @@ const Profile = () => {
     prev_major: "",
     graduation_year: "",
   });
+
+  const barWidth = useMemo(() => {
+    const hasPrev = form.degree_level === "master" || form.degree_level === "phd";
+    const fieldOfStudyVal = hasPrev ? form.prev_major : form.field_of_study;
+    const fields = [
+      form.nationality, form.gpa, form.budget_input > 0 ? form.budget_input : null,
+      form.language_level, fieldOfStudyVal, form.preferred_country,
+      form.language, form.degree_level,
+    ];
+    return Math.round(fields.filter(f => f != null && f !== "" && f !== 0).length / fields.length * 100);
+  }, [form]);
 
   const budgetEur = (() => {
     if (form.budget_currency === "EUR") return form.budget_input;
@@ -645,9 +655,6 @@ const Profile = () => {
           prev_major: p.prev_major || "",
           graduation_year: p.graduation_year?.toString() || "",
         });
-        const fields = [p.nationality, p.gpa, p.budget_eur, p.english_level, p.field_of_study, p.preferred_countries, p.language, p.degree_level];
-        const pct = Math.round(fields.filter(f => f != null && f !== "").length / fields.length * 100);
-        setTimeout(() => setBarWidth(pct), 300);
       })
       .catch(() => setProfile(null))
       .finally(() => setLoading(false));
@@ -749,7 +756,7 @@ const Profile = () => {
       />
 
       {/* ── Completeness bar ── */}
-      {!loading && profile && (
+      {!loading && (
         <div className="max-w-2xl mx-auto px-4 pt-6 pb-0">
           <div className="rounded-2xl px-5 py-4" style={{ background: "oklch(0.17 0.022 285)", border: "1px solid oklch(1 0 0 / 0.07)" }}>
             <div className="flex items-center justify-between mb-2">

@@ -927,11 +927,11 @@ const UniversityDetail = () => {
     {/* ── Floating ask-instructor button ── */}
     <div className="fixed bottom-6 right-6 z-30">
       <button
-        onClick={() => navigate("/instructors")}
+        onClick={() => navigate("/ai-chat")}
         className="flex items-center gap-2 bg-violet-600 hover:bg-violet-500 text-white text-sm font-bold px-4 py-3 rounded-2xl shadow-violet-900/30 transition-all hover:scale-105 active:scale-95"
       >
-        <span className="text-base">👨‍🏫</span>
-        {t("university.askInstructor")}
+        <span className="text-base">🤖</span>
+        {t("university.askAI")}
       </button>
     </div>
     </>

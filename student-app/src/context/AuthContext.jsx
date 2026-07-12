@@ -30,7 +30,10 @@ export const AuthProvider = ({ children }) => {
       try {
         const r = await api.get("/auth/me");
         setUser({ token, ...r.data });
-        if (!r.data.has_completed_onboarding) setShowOnboarding(true);
+        if (!r.data.has_completed_onboarding && !sessionStorage.getItem("onboarding_shown")) {
+          setShowOnboarding(true);
+          sessionStorage.setItem("onboarding_shown", "1");
+        }
         await checkProfile(); // awaited so profileComplete is ready before loading=false
       } catch {
         const lang = localStorage.getItem("lang");
@@ -48,7 +51,10 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("refresh_token", res.data.refresh_token);
     const meRes = await api.get("/auth/me");
     setUser({ token: res.data.access_token, ...meRes.data });
-    if (!meRes.data.has_completed_onboarding) setShowOnboarding(true);
+    if (!meRes.data.has_completed_onboarding && !sessionStorage.getItem("onboarding_shown")) {
+      setShowOnboarding(true);
+      sessionStorage.setItem("onboarding_shown", "1");
+    }
     const profileDone = await checkProfile();
     // Return user data + profile status so Login.jsx can navigate correctly
     return { userData: meRes.data, profileComplete: profileDone };
@@ -60,7 +66,10 @@ export const AuthProvider = ({ children }) => {
     if (res.data.refresh_token) localStorage.setItem("refresh_token", res.data.refresh_token);
     const meRes = await api.get("/auth/me");
     setUser({ token: res.data.access_token, ...meRes.data });
-    if (!meRes.data.has_completed_onboarding) setShowOnboarding(true);
+    if (!meRes.data.has_completed_onboarding && !sessionStorage.getItem("onboarding_shown")) {
+      setShowOnboarding(true);
+      sessionStorage.setItem("onboarding_shown", "1");
+    }
     await checkProfile(); // new user → sets profileComplete = false
     return res.data;
   };
@@ -68,6 +77,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     const lang = localStorage.getItem("lang");
     localStorage.clear();
+    sessionStorage.removeItem("onboarding_shown");
     if (lang) localStorage.setItem("lang", lang);
     setUser(null);
     setShowOnboarding(false);
