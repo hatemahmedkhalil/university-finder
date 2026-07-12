@@ -1,0 +1,1201 @@
+{
+  "meta": {
+    "researched_date": "2026-07-10",
+    "notes": "Data gathered from official university websites, uni-assist, and verified sources. APS = Akademische Prüfstelle (Academic Evaluation Centre). Countries consistently requiring APS across German universities: China (mainland), India, Vietnam, Mongolia. Egypt is NOT on the APS-required list. Always verify with the specific university as rules can change. Non-EU tuition: Baden-Württemberg universities charge €1,500/semester for non-EU students. TUM charges €2,000-€6,000/semester since WS2024/25.",
+    "aps_countries_universal": ["China", "India", "Vietnam", "Mongolia"],
+    "standard_documents_all_universities": [
+      "Valid passport",
+      "University entrance qualification (Hochschulzugangsberechtigung)",
+      "Certified translations of all documents not in German or English",
+      "Proof of German or English language proficiency (depending on program language)",
+      "Curriculum vitae (tabular format)",
+      "Health insurance confirmation (at enrollment)"
+    ]
+  },
+  "universities": [
+    {
+      "id": 1,
+      "name": "LMU Munich",
+      "country": "Germany",
+      "state": "Bavaria",
+      "uses_uni_assist": false,
+      "application_portal": "LMU International Office portal (direct)",
+      "aps_required": true,
+      "aps_countries": ["China", "India", "Vietnam"],
+      "documents": [
+        {"name": "Valid passport copy", "required": true, "notes": ""},
+        {"name": "University entrance qualification (school leaving certificate)", "required": true, "notes": "Officially certified copy with certified translation if not in a recognized European language"},
+        {"name": "University degree certificate (for Master's)", "required": true, "notes": "Officially certified copy"},
+        {"name": "Transcript of records", "required": true, "notes": ""},
+        {"name": "Proof of German language proficiency", "required": true, "notes": "Required for all bachelor programs; exceptions for English-taught master's programs"},
+        {"name": "APS certificate", "required": true, "notes": "Only for applicants with school/university degrees from China, India, or Vietnam. Original certificate required."},
+        {"name": "Curriculum vitae (tabular format)", "required": true, "notes": ""},
+        {"name": "Certified translation of documents", "required": true, "notes": "Not required for English, French, Italian, Catalan, Latin, Portuguese, Romanian, Spanish documents"}
+      ],
+      "language_requirements": {
+        "german_programs": "Recognized German language certificate (DSH-2 or TestDaF 4x4 typical)",
+        "english_programs": "Varies by program"
+      },
+      "tuition_non_eu": "Free (no non-EU tuition at LMU as of research date — LMU is not a Baden-Württemberg university)",
+      "source_url": "https://www.lmu.de/en/study/degree-students/applications-for-admission/",
+      "notes": "Applications go directly to LMU International Office, NOT via uni-assist. Bachelor applications: portal open 15 May – 15 July. Master applications: portal open 15 May – 15 July."
+    },
+    {
+      "id": 2,
+      "name": "TU Munich (TUM)",
+      "country": "Germany",
+      "state": "Bavaria",
+      "uses_uni_assist": true,
+      "application_portal": "TUMonline + uni-assist VPD",
+      "aps_required": true,
+      "aps_countries": ["China", "India", "Vietnam"],
+      "documents": [
+        {"name": "Valid passport copy", "required": true, "notes": ""},
+        {"name": "School leaving certificate / Bachelor's degree certificate", "required": true, "notes": "Authentic documents uploaded to TUMonline"},
+        {"name": "Transcript of records", "required": true, "notes": "All semesters"},
+        {"name": "APS certificate", "required": true, "notes": "For applicants with degrees from China, India, or Vietnam"},
+        {"name": "VPD from uni-assist", "required": true, "notes": "Required for international qualifications; apply at least 8 weeks before deadline"},
+        {"name": "Proof of language proficiency (German or English)", "required": true, "notes": "German programs: C1 minimum; English programs: B2/C1"},
+        {"name": "CV", "required": true, "notes": ""},
+        {"name": "Health insurance proof", "required": true, "notes": "Digital notification from German public health insurer required for enrollment"}
+      ],
+      "language_requirements": {
+        "german_programs": "C1 level German required",
+        "english_programs": "B2/C1 English proficiency; TOEFL or IELTS accepted"
+      },
+      "tuition_non_eu": "€2,000–€3,000/semester (Bachelor); €4,000–€6,000/semester (Master) — since WS2024/25. Some programs exempted (Bioinformatics, Information Engineering, etc.). Merit waivers available.",
+      "source_url": "https://www.tum.de/en/studies/application/application-info-portal/application-international",
+      "notes": "TUM introduced non-EU tuition from WS2024/25. Tuition-free exceptions exist for some master's programs. TUM uses uni-assist for VPD (Vorprüfungsdokumentation) processing."
+    },
+    {
+      "id": 3,
+      "name": "Heidelberg University",
+      "country": "Germany",
+      "state": "Baden-Württemberg",
+      "uses_uni_assist": true,
+      "application_portal": "uni-assist (bachelor); direct for some master's programs",
+      "aps_required": true,
+      "aps_countries": ["China", "India", "Vietnam"],
+      "documents": [
+        {"name": "Valid passport copy", "required": true, "notes": ""},
+        {"name": "Secondary school leaving certificate (bachelor) or Bachelor's degree (master's)", "required": true, "notes": "With certified translation if not in German or English"},
+        {"name": "Transcript of records", "required": true, "notes": "With grading scale explanation"},
+        {"name": "APS certificate", "required": true, "notes": "For applicants from China, India, Vietnam"},
+        {"name": "Proof of German language proficiency", "required": true, "notes": "For German-taught programs: TestDaF or DSH"},
+        {"name": "Proof of English language proficiency", "required": true, "notes": "For English-taught programs: IELTS or TOEFL"},
+        {"name": "CV", "required": true, "notes": "Tabular format in German or English"},
+        {"name": "Motivation letter", "required": false, "notes": "Required for many Master's programs"},
+        {"name": "Letters of recommendation", "required": false, "notes": "Program-dependent"}
+      ],
+      "language_requirements": {
+        "german_programs": "TestDaF or DSH (typically DSH-2 / TestDaF 4x4)",
+        "english_programs": "IELTS or TOEFL (specific scores vary by program)"
+      },
+      "tuition_non_eu": "€1,500/semester (Baden-Württemberg non-EU tuition)",
+      "source_url": "https://www.uni-heidelberg.de/en/study/application-enrolment",
+      "notes": "Baden-Württemberg state university — charges €1,500/semester non-EU tuition. Enrollment fully digital since WS2025/26."
+    },
+    {
+      "id": 4,
+      "name": "KIT (Karlsruhe Institute of Technology)",
+      "country": "Germany",
+      "state": "Baden-Württemberg",
+      "uses_uni_assist": true,
+      "application_portal": "uni-assist",
+      "aps_required": true,
+      "aps_countries": ["China", "Vietnam"],
+      "documents": [
+        {"name": "Valid passport copy", "required": true, "notes": ""},
+        {"name": "School leaving certificate (original language + official German/English translation)", "required": true, "notes": ""},
+        {"name": "University entrance exam results (if required in home country)", "required": true, "notes": "Country-specific"},
+        {"name": "Transcript of records (for master's applicants)", "required": true, "notes": ""},
+        {"name": "APS certificate (original)", "required": true, "notes": "Mandatory for China and Vietnam applicants only. Group certificates NOT accepted. Must be current."},
+        {"name": "Proof of German language proficiency", "required": true, "notes": "B1 for application; DSH-2 or TestDaF 4444 required by enrollment. Some programs require DSH-3/TestDaF 5555."}
+      ],
+      "language_requirements": {
+        "german_programs": "B1 at application; DSH-2 (or TestDaF 4444) by enrollment start",
+        "special": "B.A. Wissenschaft – Medien – Kommunikation requires DSH-3 or TestDaF 5555 + B2 English",
+        "english_programs": "Varies by program"
+      },
+      "tuition_non_eu": "€1,500/semester (Baden-Württemberg non-EU tuition)",
+      "source_url": "https://www.intl.kit.edu/istudies/3167.php",
+      "notes": "Baden-Württemberg state university — €1,500/semester non-EU tuition. KIT APS requirement confirmed for China and Vietnam; India not explicitly mentioned in KIT source but APS is typically required for India at all German universities."
+    },
+    {
+      "id": 5,
+      "name": "University of Tübingen",
+      "country": "Germany",
+      "state": "Baden-Württemberg",
+      "uses_uni_assist": false,
+      "application_portal": "ALMA portal (direct application)",
+      "aps_required": true,
+      "aps_countries": ["China", "India", "Vietnam"],
+      "documents": [
+        {"name": "Valid passport copy", "required": true, "notes": ""},
+        {"name": "School leaving certificate / university entrance qualification", "required": true, "notes": ""},
+        {"name": "Transcript of records / degree certificate", "required": true, "notes": "From former studies"},
+        {"name": "University entrance exam results (if applicable)", "required": true, "notes": "Country-specific"},
+        {"name": "APS certificate", "required": true, "notes": "Required for applicants from China (excluding Hong Kong, Taiwan, Macao), India, Vietnam"},
+        {"name": "Proof of German language proficiency", "required": true, "notes": "Required for German-taught programs"},
+        {"name": "Proof of English proficiency", "required": false, "notes": "Required for English-taught programs"}
+      ],
+      "language_requirements": {
+        "german_programs": "Recognized German language certificate (DSH-2 or TestDaF 4x4 standard)",
+        "english_programs": "Varies by program"
+      },
+      "tuition_non_eu": "€1,500/semester (Baden-Württemberg non-EU tuition)",
+      "source_url": "https://uni-tuebingen.de/en/international/study-in-tuebingen/degree-seeking-students/faq/application/",
+      "notes": "Tübingen uses its own ALMA portal — NOT uni-assist. Non-EU applicants receive a separate 5-10% quota for restricted admission programs. Medicine/dentistry/pharmacy apply via Hochschulstart."
+    },
+    {
+      "id": 6,
+      "name": "University of Freiburg",
+      "country": "Germany",
+      "state": "Baden-Württemberg",
+      "uses_uni_assist": false,
+      "application_portal": "Direct application (Service Center Studium)",
+      "aps_required": true,
+      "aps_countries": ["China", "India", "Vietnam"],
+      "documents": [
+        {"name": "Valid passport copy", "required": true, "notes": ""},
+        {"name": "University entrance qualification / Bachelor's degree certificate", "required": true, "notes": "With certified translation if not in German or English"},
+        {"name": "Transcript of records", "required": true, "notes": ""},
+        {"name": "APS certificate", "required": true, "notes": "For applicants from China, India, Vietnam — standard German requirement"},
+        {"name": "Proof of German language proficiency", "required": true, "notes": "Required for most programs"},
+        {"name": "Proof of English language proficiency", "required": false, "notes": "For English-taught programs"}
+      ],
+      "language_requirements": {
+        "german_programs": "DSH-2 or TestDaF 4x4 standard",
+        "english_programs": "IELTS 7.0 or TOEFL iBT 95 (reported for some programs — verify per program)"
+      },
+      "tuition_non_eu": "€1,500/semester (Baden-Württemberg non-EU tuition)",
+      "source_url": "https://uni-freiburg.de/en/studies/applying/international-applicants",
+      "notes": "Baden-Württemberg university — €1,500/semester non-EU tuition. Freiburg appears to handle applications directly through its Service Center Studium. Some programs may use uni-assist VPD; verify per program. Contact: study@uni-freiburg.de",
+      "unverified": ["exact_portal_name", "uni_assist_usage_per_program"]
+    },
+    {
+      "id": 7,
+      "name": "University of Mannheim",
+      "country": "Germany",
+      "state": "Baden-Württemberg",
+      "uses_uni_assist": false,
+      "application_portal": "University of Mannheim online portal (direct)",
+      "aps_required": true,
+      "aps_countries": ["China", "India", "Vietnam"],
+      "documents": [
+        {"name": "Valid passport copy", "required": true, "notes": ""},
+        {"name": "University entrance qualification", "required": true, "notes": "Copy in native language of issuing institution + sworn German or English translation"},
+        {"name": "Transcript of records / degree certificates", "required": true, "notes": "Sworn translation required if not in German or English"},
+        {"name": "APS certificate", "required": true, "notes": "Mandatory for applicants whose entrance qualification or degree is from China, Vietnam, or India"},
+        {"name": "Proof of German language proficiency (C1 level)", "required": true, "notes": "All bachelor programs taught in German. Accepted: TestDaF TDN 4+, DSH-2, telc Deutsch C1 Hochschule, Goethe C2"},
+        {"name": "CV (in German, max 1 page)", "required": true, "notes": ""},
+        {"name": "Motivation letter (in German, max 1 page)", "required": true, "notes": ""}
+      ],
+      "language_requirements": {
+        "german_programs": "C1 minimum (Goethe C2, TestDaF 4+, DSH-2, telc C1 Hochschule)",
+        "english_programs": "Not applicable — all bachelor programs are in German"
+      },
+      "tuition_non_eu": "€1,500/semester (Baden-Württemberg non-EU tuition)",
+      "source_url": "https://www.uni-mannheim.de/en/academics/before-your-studies/applying/bachelors-program/citizens-from-outside-of-the-eu-eea/",
+      "notes": "Mannheim does NOT use uni-assist — applies directly through university portal. Only PDF uploads accepted. All bachelor programs taught in German."
+    },
+    {
+      "id": 8,
+      "name": "University of Stuttgart",
+      "country": "Germany",
+      "state": "Baden-Württemberg",
+      "uses_uni_assist": false,
+      "application_portal": "C@MPUS portal (direct application)",
+      "aps_required": true,
+      "aps_countries": ["China", "India", "Vietnam"],
+      "documents": [
+        {"name": "Valid passport copy", "required": true, "notes": ""},
+        {"name": "University entrance qualification (final record with individual grades)", "required": true, "notes": "With transcript showing individual grades"},
+        {"name": "University entrance exam certificates (if required in home country)", "required": true, "notes": "With accompanying transcript"},
+        {"name": "Higher education degree certificates (if applicable)", "required": true, "notes": "All previous university final records"},
+        {"name": "APS certificate", "required": true, "notes": "Mandatory for India, China, Vietnam. Pakistan applicants need HEC stamp."},
+        {"name": "Proof of German language proficiency", "required": true, "notes": "Required for German-taught programs"},
+        {"name": "Certified translation of all documents", "required": true, "notes": "Into German or English by licensed sworn translator. Upload BOTH original and translation."}
+      ],
+      "language_requirements": {
+        "german_programs": "German language proficiency certificate required (DSH-2 or TestDaF 4x4 standard)",
+        "english_programs": "Varies by program"
+      },
+      "tuition_non_eu": "€1,500/semester (Baden-Württemberg non-EU tuition)",
+      "source_url": "https://www.uni-stuttgart.de/en/study/application/international-degree/application/",
+      "notes": "Stuttgart uses C@MPUS portal for direct application — NOT uni-assist. No paper applications accepted. Pakistan applicants need HEC stamp on degree certificates (unique requirement)."
+    },
+    {
+      "id": 9,
+      "name": "Humboldt University Berlin (HU Berlin)",
+      "country": "Germany",
+      "state": "Berlin",
+      "uses_uni_assist": true,
+      "application_portal": "uni-assist",
+      "aps_required": true,
+      "aps_countries": ["China", "India", "Vietnam"],
+      "documents": [
+        {"name": "Valid passport copy", "required": true, "notes": ""},
+        {"name": "School leaving certificate / Bachelor's degree", "required": true, "notes": "In German or English, or with official translation"},
+        {"name": "Transcript of records", "required": true, "notes": ""},
+        {"name": "APS certificate", "required": true, "notes": "For applicants from China, India, Vietnam. Required for both university application and visa."},
+        {"name": "Proof of German language proficiency", "required": true, "notes": "For German-taught programs"},
+        {"name": "Proof of English language proficiency", "required": false, "notes": "For English-taught programs"},
+        {"name": "CV", "required": true, "notes": ""}
+      ],
+      "language_requirements": {
+        "german_programs": "DSH-2 or TestDaF 4x4 standard",
+        "english_programs": "Varies by program"
+      },
+      "tuition_non_eu": "None (Berlin public university — no non-EU tuition fees)",
+      "source_url": "https://www.hu-berlin.de/en/studies/admission/",
+      "notes": "HU Berlin uses uni-assist for international applications. Some programs may allow direct application — check exceptions page. Deadlines WS2026/27: Undergraduate 1 Jun – 15 Jul; Master NC: 18 May – 14 Jun; Master no-NC: 18 May – 28 Jun."
+    },
+    {
+      "id": 10,
+      "name": "Free University Berlin (FU Berlin)",
+      "country": "Germany",
+      "state": "Berlin",
+      "uses_uni_assist": true,
+      "application_portal": "uni-assist VPD + FU Berlin portal",
+      "aps_required": true,
+      "aps_countries": ["China", "India", "Vietnam"],
+      "documents": [
+        {"name": "Valid passport copy", "required": true, "notes": ""},
+        {"name": "School leaving certificate / Bachelor's degree", "required": true, "notes": "With certified translation if not in German or English"},
+        {"name": "Transcript of records", "required": true, "notes": ""},
+        {"name": "VPD (Vorprüfungsdokumentation) from uni-assist", "required": true, "notes": "Apply at least 6-8 weeks before university portal deadline"},
+        {"name": "APS certificate", "required": true, "notes": "For applicants from China, India, Vietnam — in addition to VPD documents"},
+        {"name": "Proof of German language proficiency", "required": true, "notes": "For German-taught programs"},
+        {"name": "Proof of English language proficiency", "required": false, "notes": "For English-taught programs"}
+      ],
+      "language_requirements": {
+        "german_programs": "DSH-2 or TestDaF 4x4",
+        "english_programs": "Varies by program"
+      },
+      "tuition_non_eu": "None (Berlin public university — no non-EU tuition fees)",
+      "source_url": "https://www.fu-berlin.de/en/studium/bewerbung/master/konsekutive-masterstudiengaenge/uni-assist/index.html",
+      "notes": "FU Berlin uses a two-step process: (1) apply for VPD via uni-assist, (2) apply to FU via university portal using the VPD. uni-assist fee: €75 first application + €30 each additional. Processing: 4-6 weeks."
+    },
+    {
+      "id": 11,
+      "name": "TU Berlin",
+      "country": "Germany",
+      "state": "Berlin",
+      "uses_uni_assist": true,
+      "application_portal": "TU Berlin portal (tuPORT / admission.tu-berlin.de) + uni-assist VPD",
+      "aps_required": true,
+      "aps_countries": ["China", "India", "Vietnam"],
+      "documents": [
+        {"name": "Valid passport copy", "required": true, "notes": ""},
+        {"name": "School leaving certificate / Bachelor's degree", "required": true, "notes": ""},
+        {"name": "Transcript of records", "required": true, "notes": ""},
+        {"name": "VPD (Vorprüfungsdokumentation) from uni-assist", "required": true, "notes": "Required for non-German qualifications; 4-6 weeks processing"},
+        {"name": "APS certificate", "required": true, "notes": "For applicants from China, India, Vietnam"},
+        {"name": "Proof of German language proficiency", "required": true, "notes": "For German-taught programs"},
+        {"name": "Proof of English language proficiency", "required": false, "notes": "For English-taught programs"}
+      ],
+      "language_requirements": {
+        "german_programs": "DSH-2 or TestDaF 4x4",
+        "english_programs": "Varies by program"
+      },
+      "tuition_non_eu": "None (Berlin public university — no non-EU tuition fees)",
+      "source_url": "https://www.tu.berlin/en/studierendensekretariat/bachelors-application-enrollment/prospective-students-with-an-international-higher-education-entrance-qualification/",
+      "notes": "TU Berlin uses its own portal (tuPORT) but requires VPD from uni-assist for international qualifications. Main application portal: admission.tu-berlin.de"
+    },
+    {
+      "id": 12,
+      "name": "RWTH Aachen",
+      "country": "Germany",
+      "state": "North Rhine-Westphalia",
+      "uses_uni_assist": true,
+      "application_portal": "uni-assist (bachelor); RWTHonline (master — direct)",
+      "aps_required": true,
+      "aps_countries": ["China", "India", "Vietnam"],
+      "documents": [
+        {"name": "Valid passport copy", "required": true, "notes": ""},
+        {"name": "School leaving certificate (bachelor) / Transcript + diploma (master)", "required": true, "notes": "With certified translation into German or English"},
+        {"name": "Module catalog / course descriptions", "required": true, "notes": "For master's applications"},
+        {"name": "APS certificate", "required": true, "notes": "For applicants from China, India, Vietnam"},
+        {"name": "Motivation letter", "required": true, "notes": "For many programs"},
+        {"name": "Proof of financial means", "required": true, "notes": "€11,904/year required for visa"},
+        {"name": "Proof of language proficiency", "required": true, "notes": "German or English depending on program"}
+      ],
+      "language_requirements": {
+        "german_programs": "German proficiency required (DSH-2 standard)",
+        "english_programs": "English proficiency required (varies by program)"
+      },
+      "tuition_non_eu": "None (NRW public university — no non-EU tuition fees)",
+      "source_url": "https://www.rwth-aachen.de/cms/root/studium/vor-dem-studium/bewerbung-um-einen-studienplatz/bewerbung-bachelor/internationale-studierende/",
+      "notes": "IMPORTANT: Bachelor applications go through uni-assist; Master applications go directly through RWTHonline portal. Grades for all semesters except last two required at application time. Non-EU Master deadline: March 1; Non-EU Bachelor deadline (via uni-assist): July 15."
+    },
+    {
+      "id": 13,
+      "name": "University of Münster",
+      "country": "Germany",
+      "state": "North Rhine-Westphalia",
+      "uses_uni_assist": true,
+      "application_portal": "Münster online application portal (likely uses uni-assist VPD)",
+      "aps_required": true,
+      "aps_countries": ["China", "India", "Vietnam"],
+      "documents": [
+        {"name": "Valid passport copy", "required": true, "notes": ""},
+        {"name": "School leaving certificate / Bachelor's degree", "required": true, "notes": "With certified translation"},
+        {"name": "Transcript of records", "required": true, "notes": ""},
+        {"name": "APS certificate", "required": true, "notes": "Standard requirement for China, India, Vietnam at German universities"},
+        {"name": "Proof of language proficiency", "required": true, "notes": "German or English depending on program"}
+      ],
+      "language_requirements": {
+        "german_programs": "German proficiency (DSH-2 or TestDaF 4x4)",
+        "english_programs": "Varies by program"
+      },
+      "tuition_non_eu": "None (NRW public university — no non-EU tuition fees)",
+      "source_url": "https://www.uni-muenster.de/studieninteressierte/en/bewerbung/index.html",
+      "notes": "Specific portal name and uni-assist usage not explicitly confirmed from official source. Application deadlines: restricted programs by 31 May; unrestricted by 15 July. Contact: studierendensekretariat@uni-muenster.de",
+      "unverified": ["exact_portal", "uni_assist_confirmation"]
+    },
+    {
+      "id": 14,
+      "name": "University of Cologne",
+      "country": "Germany",
+      "state": "North Rhine-Westphalia",
+      "uses_uni_assist": true,
+      "application_portal": "uni-assist",
+      "aps_required": true,
+      "aps_countries": ["China", "India", "Vietnam"],
+      "documents": [
+        {"name": "Valid passport copy", "required": true, "notes": ""},
+        {"name": "Subject and grade overview of academic achievements (original language)", "required": true, "notes": ""},
+        {"name": "University diploma / degree (original language, if applicable)", "required": true, "notes": ""},
+        {"name": "Feststellungsprüfungszeugnis (FSP)", "required": false, "notes": "If you passed a Studienkolleg (preparatory course)"},
+        {"name": "APS certificate", "required": true, "notes": "Valid individual APS certificate required — NOT group APS. Mandatory for China, India, Vietnam."},
+        {"name": "Certified translation into German or English", "required": true, "notes": "For all documents not issued in German or English"},
+        {"name": "Proof of German language proficiency", "required": true, "notes": ""}
+      ],
+      "language_requirements": {
+        "german_programs": "Very good German language skills required (DSH-2 standard)",
+        "english_programs": "Varies by program"
+      },
+      "tuition_non_eu": "None (NRW public university — no non-EU tuition fees)",
+      "source_url": "https://uni-koeln.de/en/studium-lehre/international/studium-in-koeln/internationale-bewerbungen/bachelor-studium-staatsexamen/bewerbungsverfahren-fuer-nicht-eu-buergerinnen/",
+      "notes": "Cologne requires only INDIVIDUAL APS certificates — group APS not accepted. University uses uni-assist for undergraduate applications."
+    },
+    {
+      "id": 15,
+      "name": "University of Bonn",
+      "country": "Germany",
+      "state": "North Rhine-Westphalia",
+      "uses_uni_assist": false,
+      "application_portal": "application.uni-bonn.de (direct)",
+      "aps_required": true,
+      "aps_countries": ["China", "India", "Vietnam"],
+      "documents": [
+        {"name": "Valid passport copy", "required": true, "notes": ""},
+        {"name": "University entrance qualification / degree", "required": true, "notes": "With apostille; certified translation by sworn translator if not in German or English or French"},
+        {"name": "Proof of passing university entrance examination", "required": true, "notes": "Official certificate of results from examination authority"},
+        {"name": "APS certificate", "required": true, "notes": "For China, India, Vietnam. Individual APS required — group APS NOT accepted."},
+        {"name": "CV (tabular format)", "required": true, "notes": ""},
+        {"name": "Proof of German language proficiency", "required": true, "notes": ""},
+        {"name": "Proof of English language proficiency", "required": false, "notes": "B2 level required for specific programs (Archaeology, Geography, Economics, CS, Media Studies, Molecular Biomedicine, Musicology): TOEFL 72 iBT, IELTS 5.5, Cambridge B2, TELC B2"}
+      ],
+      "language_requirements": {
+        "german_programs": "DSH-2 or TestDaF 4x4",
+        "english_programs": "B2 minimum; TOEFL 72 iBT or IELTS 5.5 for applicable programs"
+      },
+      "tuition_non_eu": "None (NRW public university — no non-EU tuition fees)",
+      "source_url": "https://www.uni-bonn.de/en/studying/application-admission-and-enrollment/special-application-matters/applicants-from-non-eu-eec-countries",
+      "notes": "Bonn does NOT use uni-assist — direct application via application.uni-bonn.de. Documents need apostille. Some English programs require B2 level IELTS/TOEFL."
+    },
+    {
+      "id": 16,
+      "name": "Heinrich Heine University Düsseldorf (HHU)",
+      "country": "Germany",
+      "state": "North Rhine-Westphalia",
+      "uses_uni_assist": true,
+      "application_portal": "uni-assist VPD + HHU portal",
+      "aps_required": true,
+      "aps_countries": ["China", "Vietnam", "Mongolia"],
+      "documents": [
+        {"name": "Valid passport copy", "required": true, "notes": ""},
+        {"name": "School leaving certificate / Bachelor's degree", "required": true, "notes": ""},
+        {"name": "Transcript of records", "required": true, "notes": ""},
+        {"name": "VPD (Vorprüfungsdokumentation) from uni-assist", "required": true, "notes": "Apply at least 8 weeks before HHU application deadline. VPD assessment report NOT sufficient — full VPD required."},
+        {"name": "APS certificate", "required": true, "notes": "For applicants from China, Vietnam, and Mongolia specifically (note: Mongolia listed by HHU — different from most universities that list India instead)"},
+        {"name": "Proof of language proficiency", "required": true, "notes": "German or English depending on program"}
+      ],
+      "language_requirements": {
+        "german_programs": "DSH-2 or TestDaF 4x4",
+        "english_programs": "Varies by program"
+      },
+      "tuition_non_eu": "None (NRW public university — no non-EU tuition fees)",
+      "source_url": "https://www.hhu.de/en/studies/translate-to-english-bewerbung-und-einschreibung/application-of-prospective-students-from-abroad/application-as-a-foreign-student",
+      "notes": "IMPORTANT: HHU lists Mongolia (not India) in their APS-required list alongside China and Vietnam. This is notable — verify directly if applying from India. Home country certificates NOT required after uni-assist review."
+    },
+    {
+      "id": 17,
+      "name": "TU Dortmund University",
+      "country": "Germany",
+      "state": "North Rhine-Westphalia",
+      "uses_uni_assist": true,
+      "application_portal": "uni-assist ('My assist' portal)",
+      "aps_required": true,
+      "aps_countries": ["China", "India", "Vietnam"],
+      "documents": [
+        {"name": "Valid passport copy", "required": true, "notes": ""},
+        {"name": "School leaving certificate", "required": true, "notes": ""},
+        {"name": "Subject and grade overviews of studies", "required": true, "notes": "With completion certificate"},
+        {"name": "University grading system explanation", "required": true, "notes": ""},
+        {"name": "Certified translations (German or English)", "required": true, "notes": ""},
+        {"name": "APS certificate", "required": true, "notes": "For China, India, Vietnam. Note: Group APS only accepted if specifically issued for TU Dortmund."},
+        {"name": "Proof of language proficiency", "required": true, "notes": "German or English depending on program"}
+      ],
+      "language_requirements": {
+        "german_programs": "German proficiency required",
+        "english_programs": "English proficiency required"
+      },
+      "tuition_non_eu": "None (NRW public university — no non-EU tuition fees)",
+      "source_url": "https://international.tu-dortmund.de/en/international-applicants/application/master/application-information-for-non-eu/eea-nationals/",
+      "notes": "Applications entirely through uni-assist 'My assist' portal. Group APS only accepted if specifically issued for TU Dortmund. Application periods: German-taught: mid-March to 15 July; English-taught: January to 15 May."
+    },
+    {
+      "id": 18,
+      "name": "Ruhr University Bochum (RUB)",
+      "country": "Germany",
+      "state": "North Rhine-Westphalia",
+      "uses_uni_assist": false,
+      "application_portal": "RUB direct portal (hio.ruhr-uni-bochum.de)",
+      "aps_required": true,
+      "aps_countries": ["China", "India", "Vietnam"],
+      "documents": [
+        {"name": "Valid passport copy", "required": true, "notes": ""},
+        {"name": "School report (scan of original + certified translation)", "required": true, "notes": "German or English translation"},
+        {"name": "University degree certificate + list of individual grades (scan + certified translation)", "required": true, "notes": ""},
+        {"name": "University entrance exam proof (if applicable)", "required": true, "notes": "With certified translation"},
+        {"name": "APS certificate", "required": true, "notes": "For applicants from China, India, Vietnam. Collective APS for other universities NOT accepted."},
+        {"name": "Proof of German language proficiency", "required": true, "notes": "Required to apply for bachelor programs. TestDaF 16+ points, DSH-2/3, or Goethe C1/C2."}
+      ],
+      "language_requirements": {
+        "german_programs": "TestDaF (16+ points), DSH-2 or DSH-3, Goethe C1 or C2",
+        "english_programs": "Varies by program"
+      },
+      "tuition_non_eu": "None (NRW public university — no non-EU tuition fees)",
+      "source_url": "https://studium.ruhr-uni-bochum.de/en/application-non-eu-citizens",
+      "notes": "RUB does NOT use uni-assist — direct application through hio.ruhr-uni-bochum.de. Collective APS not accepted. Non-EU winter deadline: July 15; summer deadline: January 15."
+    },
+    {
+      "id": 19,
+      "name": "University of Hamburg (UHH)",
+      "country": "Germany",
+      "state": "Hamburg",
+      "uses_uni_assist": false,
+      "application_portal": "UHH direct application portal",
+      "aps_required": true,
+      "aps_countries": ["China", "India", "Vietnam"],
+      "documents": [
+        {"name": "Valid passport copy", "required": true, "notes": ""},
+        {"name": "School leaving certificate / Bachelor's degree", "required": true, "notes": "Properly scanned; certified translation if not in German or English"},
+        {"name": "Transcript of records", "required": true, "notes": ""},
+        {"name": "APS certificate", "required": true, "notes": "For bachelor degree certificates from China, India, Vietnam. India requirement added November 2022."},
+        {"name": "Proof of German language proficiency", "required": true, "notes": "Required for bachelor programs"},
+        {"name": "University entrance exam results (if applicable)", "required": true, "notes": "Country-specific"}
+      ],
+      "language_requirements": {
+        "german_programs": "German language proficiency required (DSH-2 standard)",
+        "english_programs": "Varies by program"
+      },
+      "tuition_non_eu": "None (Hamburg public university — no non-EU tuition fees)",
+      "source_url": "https://www.uni-hamburg.de/en/campuscenter/bewerbung/international/studium-mit-abschluss.html",
+      "notes": "UHH uses direct application portal — NOT uni-assist. University accepts uni-assist evaluation results as valid recognition endorsements. No paper documents needed for bachelor applications. Non-EU bachelor deadline: 15 July. Master's application period: 15 Feb – 31 March."
+    },
+    {
+      "id": 20,
+      "name": "TUHH (Hamburg University of Technology)",
+      "country": "Germany",
+      "state": "Hamburg",
+      "uses_uni_assist": false,
+      "application_portal": "TUHH direct portal (tune.tuhh.de)",
+      "aps_required": true,
+      "aps_countries": ["China", "India", "Vietnam"],
+      "documents": [
+        {"name": "Valid passport copy", "required": true, "notes": ""},
+        {"name": "CV (max 2 pages)", "required": true, "notes": ""},
+        {"name": "Bachelor's degree certificate with aggregate mark", "required": true, "notes": "Or equivalent"},
+        {"name": "Complete university transcript of records", "required": true, "notes": "All semesters with subjects and grades"},
+        {"name": "Official explanation of university grading system", "required": true, "notes": "Issued by registrar or dean; must indicate max passing grade, min passing grade, and min grade for graduation"},
+        {"name": "Proof of English proficiency", "required": true, "notes": "Compulsory for ALL applicants. Minimum: TOEFL 90 iBT or IELTS 6.5. Exempted if degree from: Germany, Australia, Austria, Canada, Ireland, NZ, Switzerland, UK, USA."},
+        {"name": "APS certificate", "required": true, "notes": "Mandatory for all applicants with school/university degree from China, India, or Vietnam, regardless of nationality. DAAD and EU-funded scholarship holders may be exempt."},
+        {"name": "Translation of documents not in German or English", "required": true, "notes": "PDF files only, max 7 MB per file"}
+      ],
+      "language_requirements": {
+        "english_programs": "TOEFL iBT 90 or IELTS 6.5 minimum (all TUHH international master's programs are in English)",
+        "german_programs": "TUHH international master's programs are primarily in English"
+      },
+      "tuition_non_eu": "None (Hamburg public university — no non-EU tuition fees)",
+      "source_url": "https://www.tuhh.de/tuhh/en/studying/before-studying/degree-courses/international-study-programs/how-and-when-to-apply/documents",
+      "notes": "TUHH does NOT use uni-assist. Application portal: tune.tuhh.de. Non-EU application period: 1 Dec – 1 Feb (earlier than EU students who apply June-July). All international master's programs taught in English. English proof compulsory for all (including native English speakers — exemption list is by country of degree, not citizenship)."
+    },
+    {
+      "id": 21,
+      "name": "Goethe University Frankfurt",
+      "country": "Germany",
+      "state": "Hesse",
+      "uses_uni_assist": true,
+      "application_portal": "uni-assist",
+      "aps_required": true,
+      "aps_countries": ["China", "India", "Vietnam"],
+      "documents": [
+        {"name": "Valid passport copy", "required": true, "notes": ""},
+        {"name": "School leaving certificate / Bachelor's degree (officially certified copy)", "required": true, "notes": "In original language with sworn translation if not in German or English"},
+        {"name": "Transcript of records", "required": true, "notes": ""},
+        {"name": "APS certificate", "required": true, "notes": "For applicants from China, India, Vietnam"},
+        {"name": "TestDaF / IELTS certificate", "required": false, "notes": "Can be verified online by uni-assist; standard copy sufficient"},
+        {"name": "OSA verification", "required": false, "notes": "Payment receipt required"},
+        {"name": "Proof of health insurance", "required": true, "notes": "At enrollment"}
+      ],
+      "language_requirements": {
+        "german_programs": "DSH-2 or TestDaF 4x4",
+        "english_programs": "IELTS or TOEFL (varies by program)"
+      },
+      "tuition_non_eu": "None (Hesse public university — no non-EU tuition fees)",
+      "source_url": "https://www.uni-frankfurt.de/en/studium/bewerbung-einschreibung/internationale-studierende/zugang",
+      "notes": "Goethe University uses uni-assist for undergraduate applications. Documents must be in officially certified form. TestDaF and IELTS certificates can be verified online by uni-assist."
+    },
+    {
+      "id": 22,
+      "name": "TU Darmstadt",
+      "country": "Germany",
+      "state": "Hesse",
+      "uses_uni_assist": false,
+      "application_portal": "TUCaN portal (direct — open from March 1 for WS2026/27)",
+      "aps_required": true,
+      "aps_countries": ["China", "India", "Vietnam"],
+      "documents": [
+        {"name": "Valid passport copy", "required": true, "notes": ""},
+        {"name": "University entrance certificate (original language + certified translation)", "required": true, "notes": ""},
+        {"name": "Degree certificate or preliminary completion confirmation (original + certified translation)", "required": true, "notes": ""},
+        {"name": "Transcripts for each semester (original + certified translation)", "required": true, "notes": ""},
+        {"name": "APS certificate", "required": true, "notes": "For China, Vietnam, India. Exception: Hong Kong, Macao, Taiwan do NOT require APS."},
+        {"name": "Proof of German language proficiency", "required": true, "notes": "DSH-2 for German-taught programs"},
+        {"name": "Proof of English language proficiency", "required": false, "notes": "IELTS 7.0 or TOEFL iBT 95 for English-taught programs. Lower thresholds for Mechanics, Mathematics, Particle Accelerator Science."},
+        {"name": "Printed Cover Sheet + paper documents", "required": true, "notes": "IMPORTANT: Electronic application alone is NOT sufficient — must also submit printed Cover Sheet and paper documents to university"}
+      ],
+      "language_requirements": {
+        "german_programs": "DSH-2",
+        "english_programs": "IELTS 7.0 or TOEFL iBT 95 (standard); lower for specific programs"
+      },
+      "tuition_non_eu": "None (Hesse public university — no non-EU tuition fees)",
+      "source_url": "https://www.tu-darmstadt.de/studieren/studieninteressierte/internationale_studieninteressierte/bewerbung_und_zulassung_international/index.en.jsp",
+      "notes": "TU Darmstadt does NOT use uni-assist. Important: Applicants must submit BOTH online application AND printed paper documents (Cover Sheet + docs) — online only is insufficient. Hong Kong, Macao, Taiwan exempt from APS."
+    },
+    {
+      "id": 23,
+      "name": "University of Göttingen",
+      "country": "Germany",
+      "state": "Lower Saxony",
+      "uses_uni_assist": false,
+      "application_portal": "Direct via university online portal (€65 evaluation fee)",
+      "aps_required": true,
+      "aps_countries": ["China", "India", "Vietnam"],
+      "documents": [
+        {"name": "Valid passport copy", "required": true, "notes": ""},
+        {"name": "University entrance qualification (scan, no originals required)", "required": true, "notes": "Only scanned copies needed for application"},
+        {"name": "Proof of German language proficiency", "required": true, "notes": ""},
+        {"name": "APS certificate", "required": true, "notes": "For applicants from China, India, Vietnam"},
+        {"name": "Evaluation fee payment (€65)", "required": true, "notes": "Application only processed after fee payment"}
+      ],
+      "language_requirements": {
+        "german_programs": "German language certificate required (DSH-2 or TestDaF 4x4)",
+        "english_programs": "Varies by program"
+      },
+      "tuition_non_eu": "None (Lower Saxony public university — no non-EU tuition fees)",
+      "source_url": "https://www.uni-goettingen.de/en/informing+yourself+about+the+application+process/572943.html",
+      "notes": "Göttingen does NOT use uni-assist — direct application. Charges €65 evaluation fee for foreign qualifications (application not processed until fee paid). Only scans needed (no originals). Non-EU applications processed earlier to allow time for visa."
+    },
+    {
+      "id": 24,
+      "name": "Leibniz University Hannover (LUH)",
+      "country": "Germany",
+      "state": "Lower Saxony",
+      "uses_uni_assist": true,
+      "application_portal": "uni-assist VPD + LUH online application portal",
+      "aps_required": true,
+      "aps_countries": ["China", "India", "Vietnam"],
+      "documents": [
+        {"name": "Valid passport copy", "required": true, "notes": ""},
+        {"name": "School leaving certificate / Bachelor's degree (officially certified copy)", "required": true, "notes": "With certified translation into German"},
+        {"name": "Transcripts (officially certified copies)", "required": true, "notes": ""},
+        {"name": "CV", "required": true, "notes": ""},
+        {"name": "VPD (Vorprüfungsdokumentation) from uni-assist", "required": true, "notes": "Mandatory for all bachelor programs and state examinations. Apply at least 8 weeks before LUH deadline."},
+        {"name": "APS certificate", "required": true, "notes": "For China, India, Vietnam — mandatory since 2023 for India"},
+        {"name": "Proof of language proficiency", "required": true, "notes": "German or English depending on program"},
+        {"name": "Statement of purpose", "required": false, "notes": "Program-dependent"},
+        {"name": "Letters of recommendation", "required": false, "notes": "Program-dependent"},
+        {"name": "IELTS score", "required": false, "notes": "For English-taught programs"}
+      ],
+      "language_requirements": {
+        "german_programs": "German proficiency required (DSH-2 standard)",
+        "english_programs": "Varies by program"
+      },
+      "tuition_non_eu": "None (Lower Saxony public university — no non-EU tuition fees)",
+      "source_url": "https://www.uni-hannover.de/en/studium/vor-dem-studium/bewerbung-zulassung/voraussetzungen-zum-studium/vorpruefungsdokumentation",
+      "notes": "LUH requires VPD from uni-assist (4-8 weeks processing) for ALL bachelor/state examination programs. After receiving VPD, apply via LUH portal. India APS requirement added 2023."
+    },
+    {
+      "id": 25,
+      "name": "University of Bremen",
+      "country": "Germany",
+      "state": "Bremen",
+      "uses_uni_assist": true,
+      "application_portal": "uni-assist VPD + University of Bremen portal (moin.uni-bremen.de)",
+      "aps_required": true,
+      "aps_countries": ["China", "India", "Vietnam"],
+      "documents": [
+        {"name": "Valid passport copy", "required": true, "notes": ""},
+        {"name": "Officially certified copy of university entrance qualification (Abitur or equivalent)", "required": true, "notes": ""},
+        {"name": "Officially certified copies of any previous university certificates", "required": true, "notes": ""},
+        {"name": "Officially certified translations of all certificates not in German or English", "required": true, "notes": "Only translations into German accepted for enrollment"},
+        {"name": "VPD (Vorprüfungsdokumentation) from uni-assist", "required": true, "notes": "Required for undergraduate applications"},
+        {"name": "APS certificate", "required": true, "notes": "For China, India, Vietnam"},
+        {"name": "Proof of language proficiency", "required": true, "notes": "German proficiency needed for most bachelor programs"}
+      ],
+      "language_requirements": {
+        "german_programs": "German language proficiency required",
+        "english_programs": "Varies by program"
+      },
+      "tuition_non_eu": "None (Bremen public university — no non-EU tuition fees)",
+      "source_url": "https://www.uni-bremen.de/en/studies/orientation-application/applying-for-studies/applications-from-abroad/applications-non-eu",
+      "notes": "IMPORTANT: Bachelor applications require uni-assist VPD FIRST, then apply to Bremen via moin.uni-bremen.de. Master applications go directly to University of Bremen (no uni-assist). Application and processing at Bremen is free of charge. VPD deadline: June 6 (winter) or December 1 (summer)."
+    },
+    {
+      "id": 26,
+      "name": "Otto von Guericke University Magdeburg (OVGU)",
+      "country": "Germany",
+      "state": "Saxony-Anhalt",
+      "uses_uni_assist": true,
+      "application_portal": "uni-assist (for most programs) + OVGU direct portal",
+      "aps_required": true,
+      "aps_countries": ["China", "India", "Vietnam"],
+      "documents": [
+        {"name": "Valid passport copy (with photo and personal details)", "required": true, "notes": ""},
+        {"name": "Secondary school certificate (original language + sworn translation into German/English)", "required": true, "notes": "With grades"},
+        {"name": "University entrance exam proof (if applicable)", "required": true, "notes": ""},
+        {"name": "University degree certificates and transcripts (original language + sworn translation)", "required": true, "notes": ""},
+        {"name": "APS certificate (original digital certificate)", "required": true, "notes": "For applicants from India, China, Vietnam — from Academic Evaluation Center (APS) in New Delhi, Beijing, or Hanoi"},
+        {"name": "Proof of language proficiency (German or English)", "required": true, "notes": "Depending on degree program"},
+        {"name": "Special certificates (motivation letters, internship proof, aptitude tests)", "required": false, "notes": "Program-dependent"}
+      ],
+      "language_requirements": {
+        "german_programs": "German language proof required",
+        "english_programs": "English language proof (TOEFL or IELTS)"
+      },
+      "tuition_non_eu": "None (Saxony-Anhalt public university — no non-EU tuition fees)",
+      "source_url": "https://www.ovgu.de/unimagdeburg/en/International/Incoming+_+Ways+to+the+University/International+Students/Full_Time+Studies/Applying+Directly+to+OVGU/Documents+for+your+direct+application-p-107260.html",
+      "notes": "OVGU is a uni-assist member for international applications. Also has a direct application path for some programs. APS must be the original digital certificate. Deadline: July 15 (winter semester)."
+    },
+    {
+      "id": 27,
+      "name": "University of Jena (Friedrich Schiller Universität)",
+      "country": "Germany",
+      "state": "Thuringia",
+      "uses_uni_assist": true,
+      "application_portal": "Friedolin 2.0 (master's — direct); uni-assist (bachelor's likely)",
+      "aps_required": true,
+      "aps_countries": ["China", "Vietnam", "Mongolia"],
+      "documents": [
+        {"name": "Valid passport copy", "required": true, "notes": ""},
+        {"name": "School leaving certificate / Bachelor's degree", "required": true, "notes": "With certified translation into German or English if not already in those languages"},
+        {"name": "Transcript of records", "required": true, "notes": "With evidence of grading system"},
+        {"name": "APS certificate (original)", "required": true, "notes": "IMPORTANT: For Mongolia, Vietnam, and PR China only (NOT India — unusual among German universities). Verify if India requirement has been added."},
+        {"name": "University entrance examination certificate (country-specific)", "required": true, "notes": "Iran: university entrance exam or pre-university year proof; South Korea: Scholastic Ability Test; China: Gaokao"},
+        {"name": "Proof of German language proficiency", "required": true, "notes": "DSH-2 required for German-taught programs"}
+      ],
+      "language_requirements": {
+        "german_programs": "DSH-2",
+        "english_programs": "Varies by program"
+      },
+      "tuition_non_eu": "None (Thuringia public university — no non-EU tuition fees)",
+      "source_url": "https://www.uni-jena.de/en/200/application-enrolment",
+      "notes": "IMPORTANT: Jena lists Mongolia, Vietnam, and China as APS-required (NOT India). This is different from most German universities. Verify current India requirement with university. Master applications: Friedolin 2.0 portal (direct). Country-specific entrance exam proofs required for Iran, South Korea, China.",
+      "unverified": ["india_aps_requirement"]
+    },
+    {
+      "id": 28,
+      "name": "FAU Erlangen-Nürnberg",
+      "country": "Germany",
+      "state": "Bavaria",
+      "uses_uni_assist": false,
+      "application_portal": "campo.fau.de (direct, with €100 processing fee for non-EU)",
+      "aps_required": true,
+      "aps_countries": ["China", "India", "Vietnam"],
+      "documents": [
+        {"name": "Valid passport copy", "required": true, "notes": ""},
+        {"name": "University entrance examination certificate (if required in home country)", "required": true, "notes": "Certified copy"},
+        {"name": "Assessment examination certificate (if required for the degree program)", "required": false, "notes": "Program-specific"},
+        {"name": "Complete academic transcript of records (if previous university studies)", "required": true, "notes": ""},
+        {"name": "Degree certificate (Bachelor's or Diplom) if already graduated", "required": true, "notes": ""},
+        {"name": "APS certificate", "required": true, "notes": "For applicants who have completed previous study periods in China, India, or Vietnam. Also required for secondary education certificates from India. Applicants from DSDI/DSDII schools in China: also need German Embassy identity confirmation (original)."},
+        {"name": "Officially certified copies of all certificates", "required": true, "notes": ""}
+      ],
+      "language_requirements": {
+        "german_programs": "German language certificate required",
+        "english_programs": "English proficiency required for English-taught programs"
+      },
+      "tuition_non_eu": "Free (Bavaria does not charge non-EU tuition at FAU — unlike TUM which charges from WS2024/25)",
+      "source_url": "https://www.fau.eu/studying/international-students/application-and-enrollment-for-international-applicants/",
+      "notes": "FAU uses campo.fau.de portal directly (not uni-assist). New from WS2026/27: €100 processing fee per application for non-EU students. DSDI/DSDII school applicants from China also need German Embassy identity confirmation."
+    },
+    {
+      "id": 29,
+      "name": "University of Würzburg (JMU)",
+      "country": "Germany",
+      "state": "Bavaria",
+      "uses_uni_assist": true,
+      "application_portal": "uni-assist VPD + JMU portal",
+      "aps_required": true,
+      "aps_countries": ["China", "India", "Vietnam"],
+      "documents": [
+        {"name": "Valid passport copy", "required": true, "notes": ""},
+        {"name": "School leaving certificate / Bachelor's degree", "required": true, "notes": "Officially certified copy"},
+        {"name": "Complete academic history from all institutions attended", "required": true, "notes": "Required by uni-assist for VPD"},
+        {"name": "VPD (Vorprüfungsdokumentation) from uni-assist", "required": true, "notes": "For programs requiring VPD. Apply before university application."},
+        {"name": "APS certificate", "required": true, "notes": "For China, India, Vietnam"},
+        {"name": "Proof of language proficiency", "required": true, "notes": "German or English depending on program"},
+        {"name": "Certified translations", "required": true, "notes": "For non-German/English documents"}
+      ],
+      "language_requirements": {
+        "german_programs": "German language proficiency required",
+        "english_programs": "Varies by program"
+      },
+      "tuition_non_eu": "Free (Bavaria does not charge non-EU tuition at Würzburg)",
+      "source_url": "https://www.uni-wuerzburg.de/en/studying-at-jmu/studienangelegenheiten/application-and-enrolment/international-degree-seeking-students/application/",
+      "notes": "JMU Würzburg uses uni-assist for international applications. Check per-program whether VPD is required. uni-assist fee: €75 first + €30 each additional."
+    },
+    {
+      "id": 30,
+      "name": "University of Augsburg",
+      "country": "Germany",
+      "state": "Bavaria",
+      "uses_uni_assist": true,
+      "application_portal": "VIBS portal + uni-assist VPD",
+      "aps_required": true,
+      "aps_countries": ["China", "India", "Vietnam"],
+      "documents": [
+        {"name": "Valid passport copy", "required": true, "notes": ""},
+        {"name": "Officially certified copies of certificates", "required": true, "notes": ""},
+        {"name": "VPD (Vorprüfungsdokumentation) from uni-assist", "required": true, "notes": "Apply 6-8 weeks in advance. IMPORTANT: allow 6-8 weeks processing time!!"},
+        {"name": "APS certificate", "required": true, "notes": "For certificates from India, China, Vietnam"},
+        {"name": "Proof of German language proficiency", "required": true, "notes": "Level B1 to C1 depending on program"},
+        {"name": "CV", "required": true, "notes": ""},
+        {"name": "Curriculum vitae copy", "required": true, "notes": ""}
+      ],
+      "language_requirements": {
+        "german_programs": "German proficiency required (B1 minimum; higher for some programs)",
+        "english_programs": "Varies"
+      },
+      "tuition_non_eu": "Free (Bavaria — no non-EU tuition at Augsburg)",
+      "source_url": "https://www.uni-augsburg.de/en/studium/bewerbung/bewerbung/internationale-bewerber/",
+      "notes": "Augsburg uses VIBS portal + uni-assist VPD. Application for summer 2026 opened December 3, 2025. Restricted programs: January 15 deadline; open admission programs: mid-March deadline."
+    },
+    {
+      "id": 31,
+      "name": "University of Regensburg",
+      "country": "Germany",
+      "state": "Bavaria",
+      "uses_uni_assist": true,
+      "application_portal": "uni-assist VPD + Regensburg campus portal",
+      "aps_required": true,
+      "aps_countries": ["China", "India", "Vietnam"],
+      "documents": [
+        {"name": "Valid passport copy", "required": true, "notes": ""},
+        {"name": "Bachelor's degree certificate", "required": true, "notes": ""},
+        {"name": "Transcript of records", "required": true, "notes": ""},
+        {"name": "VPD (Vorprüfungsdokumentation) from uni-assist", "required": true, "notes": "Apply as early as possible — 4-6 weeks processing. VPD valid for one year."},
+        {"name": "APS certificate", "required": true, "notes": "For China, India, Vietnam (bachelor's degree from these countries)"},
+        {"name": "GRE score", "required": false, "notes": "If first degree not from a Lisbon Convention signatory state"},
+        {"name": "Proof of English language proficiency", "required": true, "notes": "Proof that degree was taught in English (waived for native English speakers)"},
+        {"name": "CV", "required": true, "notes": ""}
+      ],
+      "language_requirements": {
+        "german_programs": "German proficiency required",
+        "english_programs": "Proof that instruction was in English required (certificate or thesis)"
+      },
+      "tuition_non_eu": "Free (Bavaria — no non-EU tuition at Regensburg)",
+      "source_url": "https://www.uni-regensburg.de/en/international/coming-to-regensburg/pursuing-a-degree-program/application",
+      "notes": "Two-step process: apply for VPD at uni-assist, then apply via Regensburg campus portal. Master programs apply through campus portal (not uni-assist portal). GRE required if first degree not from Lisbon Convention country."
+    },
+    {
+      "id": 32,
+      "name": "University of Bayreuth",
+      "country": "Germany",
+      "state": "Bavaria",
+      "uses_uni_assist": true,
+      "application_portal": "uni-assist VPD + CAMPUSonline (Bayreuth)",
+      "aps_required": true,
+      "aps_countries": ["China", "India", "Vietnam"],
+      "documents": [
+        {"name": "Valid passport copy", "required": true, "notes": ""},
+        {"name": "School leaving certificate / Bachelor's degree", "required": true, "notes": ""},
+        {"name": "Transcript of records", "required": true, "notes": ""},
+        {"name": "VPD (Vorprüfungsdokumentation) from uni-assist", "required": true, "notes": "Required for bachelor and some master programs. 6-8 weeks processing. Valid for 1 year. Apply by mid-May for winter semester."},
+        {"name": "APS certificate", "required": true, "notes": "For India, Vietnam, mainland China"},
+        {"name": "Proof of language proficiency", "required": true, "notes": "German or English depending on program"}
+      ],
+      "language_requirements": {
+        "german_programs": "German proficiency required",
+        "english_programs": "Varies by program"
+      },
+      "tuition_non_eu": "Free (Bavaria — no non-EU tuition at Bayreuth)",
+      "source_url": "https://www.international-office.uni-bayreuth.de/en/come-to-bayreuth/degree-students/uni-assist/index.html",
+      "notes": "Two-step: (1) apply for VPD via uni-assist, (2) apply via CAMPUSonline. VPD valid for 1 year. Apply to uni-assist by mid-May (winter) or mid-November (summer)."
+    },
+    {
+      "id": 33,
+      "name": "University of Mainz (JGU)",
+      "country": "Germany",
+      "state": "Rhineland-Palatinate",
+      "uses_uni_assist": false,
+      "application_portal": "JOGU-StINe portal (direct application)",
+      "aps_required": true,
+      "aps_countries": ["China", "Vietnam"],
+      "documents": [
+        {"name": "Valid passport copy", "required": true, "notes": ""},
+        {"name": "Certificate of recognition from JGU", "required": true, "notes": "JGU evaluates international certificates and converts grades — apply via JOGU-StINe"},
+        {"name": "Officially certified copies of leaving certificates and report cards", "required": true, "notes": ""},
+        {"name": "Officially certified copies of university degree certificates", "required": true, "notes": "Diploma + transcript"},
+        {"name": "CV", "required": true, "notes": "Up to application date"},
+        {"name": "Certified copies of vocational training certificates", "required": false, "notes": "If applicable"},
+        {"name": "APS certificate", "required": true, "notes": "REQUIRED for China (from German Embassy Beijing) and Vietnam (from German Embassy Hanoi) — recognition cannot proceed without APS. NOTE: India NOT explicitly mentioned in JGU source — verify."},
+        {"name": "Certified translations", "required": true, "notes": "By authorized/sworn translators"}
+      ],
+      "language_requirements": {
+        "german_programs": "German language proficiency required",
+        "english_programs": "Varies by program"
+      },
+      "tuition_non_eu": "None (Rhineland-Palatinate — no non-EU tuition fees)",
+      "source_url": "https://www.studium.uni-mainz.de/en/your-application/applying-with-international-certificates/applying-as-an-international-student/",
+      "notes": "JGU uses its own JOGU-StINe portal (direct). APS explicitly confirmed for China and Vietnam from official source. India APS not explicitly mentioned — verify with admissions. JGU performs its own certificate recognition process.",
+      "unverified": ["india_aps_requirement"]
+    },
+    {
+      "id": 34,
+      "name": "Saarland University",
+      "country": "Germany",
+      "state": "Saarland",
+      "uses_uni_assist": true,
+      "application_portal": "uni-assist",
+      "aps_required": true,
+      "aps_countries": ["China", "India", "Vietnam"],
+      "documents": [
+        {"name": "Valid passport copy", "required": true, "notes": ""},
+        {"name": "School leaving certificate with grades", "required": true, "notes": "With results of university entrance exam if taken"},
+        {"name": "Evidence of previous academic study (transcripts) and university qualifications", "required": true, "notes": ""},
+        {"name": "CV (from start of school to application date)", "required": true, "notes": ""},
+        {"name": "APS certificate (original, digitally signed)", "required": true, "notes": "For China, India, Vietnam — must be original digitally signed APS certificate from Academic Evaluation Center"},
+        {"name": "Proof of language proficiency", "required": true, "notes": "German or English depending on program"}
+      ],
+      "language_requirements": {
+        "german_programs": "German language proficiency required (DSH-2 standard)",
+        "english_programs": "Varies by program"
+      },
+      "tuition_non_eu": "None (Saarland — no non-EU tuition fees)",
+      "source_url": "https://www.uni-saarland.de/en/studies/international/undergraduate-degree/no-eu-eea-applicants.html",
+      "notes": "Saarland uses uni-assist for international applications. APS certificate must be original digitally signed version. Deadlines: July 15 (winter), January 15 (summer)."
+    },
+    {
+      "id": 35,
+      "name": "University of Kiel (CAU)",
+      "country": "Germany",
+      "state": "Schleswig-Holstein",
+      "uses_uni_assist": true,
+      "application_portal": "uni-assist",
+      "aps_required": true,
+      "aps_countries": ["China", "India", "Vietnam"],
+      "documents": [
+        {"name": "Valid passport copy", "required": true, "notes": ""},
+        {"name": "University entrance qualification", "required": true, "notes": ""},
+        {"name": "Legally certified and officially translated documents", "required": true, "notes": "Must accompany all information in online application; incomplete application cannot be processed"},
+        {"name": "Language certificates (German or English)", "required": true, "notes": "Depending on program"},
+        {"name": "APS certificate", "required": true, "notes": "Standard requirement for China, India, Vietnam at German universities"},
+        {"name": "Internship or work experience certificates", "required": false, "notes": "Some programs may require"}
+      ],
+      "language_requirements": {
+        "german_programs": "German proficiency required (DSH-2 standard)",
+        "english_programs": "Varies by program"
+      },
+      "tuition_non_eu": "None (Schleswig-Holstein — no non-EU tuition fees)",
+      "source_url": "https://www.international.uni-kiel.de/en/incomings/application-admission",
+      "notes": "Kiel uses uni-assist. Fee: €75 first + €30 additional. Incomplete applications not processed. All documents must be legally certified and officially translated.",
+      "unverified": ["aps_countries_explicitly_verified_from_official_kiel_source"]
+    },
+    {
+      "id": 36,
+      "name": "University of Rostock",
+      "country": "Germany",
+      "state": "Mecklenburg-Vorpommern",
+      "uses_uni_assist": true,
+      "application_portal": "uni-assist",
+      "aps_required": true,
+      "aps_countries": ["China", "India", "Vietnam", "Mongolia"],
+      "documents": [
+        {"name": "Valid passport copy", "required": true, "notes": ""},
+        {"name": "German or English transcripts of all documents", "required": true, "notes": ""},
+        {"name": "CV (complete, from age 16, with date and signature)", "required": true, "notes": ""},
+        {"name": "Certificate of German language skills (required level per program)", "required": true, "notes": "For human medicine/dentistry: C1 (CEFR) required"},
+        {"name": "APS certificate (APS-Zeugnis)", "required": true, "notes": "For applicants from China, Mongolia, Vietnam, and India — proof of pre-check from German embassy"}
+      ],
+      "language_requirements": {
+        "german_programs": "German language certificate required; medicine/dentistry: C1 minimum",
+        "english_programs": "Varies by program"
+      },
+      "tuition_non_eu": "None (Mecklenburg-Vorpommern — no non-EU tuition fees)",
+      "source_url": "https://www.uni-rostock.de/en/study/international-students/degree-students/application-for-non-german-prospective-students-via-uni-assist/",
+      "notes": "Rostock uses uni-assist. APS required for China, Mongolia, Vietnam, AND India (all four countries confirmed). Official certifications must be from public authorities with official seal — NOT from banks, insurers, lawyers, or auditors. Medicine/dentistry requires C1 German."
+    },
+    {
+      "id": 37,
+      "name": "University of Greifswald",
+      "country": "Germany",
+      "state": "Mecklenburg-Vorpommern",
+      "uses_uni_assist": true,
+      "application_portal": "uni-assist",
+      "aps_required": true,
+      "aps_countries": ["China", "India", "Vietnam"],
+      "documents": [
+        {"name": "Valid passport copy", "required": true, "notes": ""},
+        {"name": "University entrance qualification / academic records", "required": true, "notes": "List of subjects and grades, degree certificates"},
+        {"name": "Proof of German language proficiency", "required": true, "notes": "B2–C2 depending on program; some English master programs require no German"},
+        {"name": "Proof of English proficiency", "required": false, "notes": "A2–B2 depending on program"},
+        {"name": "APS certificate", "required": true, "notes": "For India, China, Vietnam"},
+        {"name": "TestAS certificate", "required": false, "notes": "Required for some programs (notably Medicine/Dentistry)"}
+      ],
+      "language_requirements": {
+        "german_programs": "B2–C2 level German; submitted by deadline (15 Jan / 15 Jul) via uni-assist",
+        "english_programs": "A2–B2 English depending on program; some master programs have no German requirement"
+      },
+      "tuition_non_eu": "None (Mecklenburg-Vorpommern — no non-EU tuition fees)",
+      "source_url": "https://www.uni-greifswald.de/en/international/incoming/degree-seeking-students/application-requirements-for-international-applicants-1/",
+      "notes": "Greifswald uses uni-assist. German requirements vary widely by program (B2–C2). Medicine/dentistry also requires TestAS certificate. Some English master programs require no German."
+    },
+    {
+      "id": 38,
+      "name": "University of Leipzig",
+      "country": "Germany",
+      "state": "Saxony",
+      "uses_uni_assist": true,
+      "application_portal": "uni-assist ('My assist' portal)",
+      "aps_required": true,
+      "aps_countries": ["China", "India", "Vietnam"],
+      "documents": [
+        {"name": "Valid passport copy", "required": true, "notes": ""},
+        {"name": "Secondary school certificate with marks for individual subjects", "required": true, "notes": "In original language + certified translation into German or English"},
+        {"name": "Proof of completed university degrees (bachelor's, Diplom)", "required": true, "notes": ""},
+        {"name": "Official transcript of records for all completed credits", "required": true, "notes": ""},
+        {"name": "APS certificate", "required": true, "notes": "For China (APS Peking) and India (APS India) and Vietnam — additional certificate from Akademische Prüfstelle"},
+        {"name": "Certified translation into German or English", "required": true, "notes": "Documents in English do not need translation"}
+      ],
+      "language_requirements": {
+        "german_programs": "German language proficiency required",
+        "english_programs": "Varies by program"
+      },
+      "tuition_non_eu": "None (Saxony — no non-EU tuition fees)",
+      "source_url": "https://www.uni-leipzig.de/en/international/studying-at-leipzig-university/application-and-preparing-to-study/",
+      "notes": "Leipzig uses uni-assist. Application guide PDF available: uni-leipzig.de/fileadmin/ul/Dokumente/250220_SI_Anleitung_uni-assist_EN.pdf. uni-assist fee: €75 first + €30 additional."
+    },
+    {
+      "id": 39,
+      "name": "TU Dresden",
+      "country": "Germany",
+      "state": "Saxony",
+      "uses_uni_assist": true,
+      "application_portal": "uni-assist",
+      "aps_required": true,
+      "aps_countries": ["China", "India", "Vietnam"],
+      "documents": [
+        {"name": "Valid passport copy", "required": true, "notes": ""},
+        {"name": "High school certificate (scan of original or authenticated copy + sworn translation)", "required": true, "notes": "German or English translation"},
+        {"name": "University entrance examination certificate (if applicable)", "required": true, "notes": ""},
+        {"name": "University degree certificates and transcripts (certified + sworn translation)", "required": true, "notes": ""},
+        {"name": "APS certificate", "required": true, "notes": "For applicants with degree or upcoming degree from China, Vietnam, India — from Academic Evaluation Centre at German Embassy"},
+        {"name": "Application form (auto-generated at end of uni-assist online application)", "required": true, "notes": ""}
+      ],
+      "language_requirements": {
+        "german_programs": "German language proficiency required (DSH-2 standard)",
+        "english_programs": "Varies by program"
+      },
+      "tuition_non_eu": "None (Saxony — no non-EU tuition fees)",
+      "source_url": "https://tu-dresden.de/studium/vor-dem-studium/bewerbung/online-bewerbung/bewerbungsverfahren-ueber-uni-assist",
+      "notes": "TU Dresden uses uni-assist entirely. uni-assist evaluates on behalf of TU Dresden. uni-assist fee: €75 first + €30 additional. Application form auto-generated in uni-assist portal — must include with documents."
+    },
+    {
+      "id": 40,
+      "name": "University of Duisburg-Essen (UDE)",
+      "country": "Germany",
+      "state": "North Rhine-Westphalia",
+      "uses_uni_assist": true,
+      "application_portal": "uni-assist (bachelor/some master); UDE portal (most master)",
+      "aps_required": true,
+      "aps_countries": ["China", "India", "Vietnam"],
+      "documents": [
+        {"name": "Valid passport copy", "required": true, "notes": ""},
+        {"name": "University entrance certificate", "required": true, "notes": ""},
+        {"name": "Bachelor's degree certificate (for master's applicants)", "required": true, "notes": ""},
+        {"name": "Complete transcript of records", "required": true, "notes": ""},
+        {"name": "APS certificate", "required": true, "notes": "For China, India, Vietnam — mandatory"},
+        {"name": "Language certificates", "required": true, "notes": "German: DSH-2 for most programs; DSH-3 for Medicine, M.Sc. Business Administration, German as Second Language; English: B1 bachelor / B2 master for English-taught programs"},
+        {"name": "Proof of health insurance", "required": true, "notes": "At enrollment"},
+        {"name": "Passport photo", "required": true, "notes": "For enrollment"}
+      ],
+      "language_requirements": {
+        "german_programs": "DSH-2 minimum; DSH-3 for Medicine, M.Sc. Business Admin, German as Second Language M.A.",
+        "english_programs": "TOEFL or IELTS; B1 level for bachelor, B2 for master (ISE courses)"
+      },
+      "tuition_non_eu": "None (NRW — no non-EU tuition fees)",
+      "source_url": "https://www.uni-due.de/international/international-admissions-en.php",
+      "notes": "Bachelor applications (including Medicine): via uni-assist. Most Master applications: via UDE portal. Exceptions: Psychology and Development & Governance use uni-assist for master's too. DSH-3 required for Medicine."
+    },
+    {
+      "id": 41,
+      "name": "Frankfurt School of Finance & Management",
+      "country": "Germany",
+      "state": "Hesse",
+      "uses_uni_assist": false,
+      "application_portal": "Frankfurt School direct online portal",
+      "aps_required": false,
+      "aps_countries": [],
+      "documents": [
+        {"name": "Valid passport copy", "required": true, "notes": ""},
+        {"name": "Official transcripts of academic records", "required": true, "notes": "With certified German or English translations"},
+        {"name": "Degree/diploma certificate", "required": true, "notes": "Bachelor's degree for master's programs"},
+        {"name": "GMAT/GRE score or Frankfurt School Admission Test (BT Methods)", "required": true, "notes": "Compulsory — no waiver available for most programs"},
+        {"name": "Proof of English proficiency", "required": true, "notes": "TOEFL 90 iBT, IELTS 7.0 or equivalent. Exemptions for native speakers or degrees taught in English."},
+        {"name": "CV / Resume", "required": true, "notes": ""},
+        {"name": "Letters of recommendation", "required": true, "notes": "Typically required"},
+        {"name": "Essay / personal statement", "required": true, "notes": "Career aspirations and reasons for MBA/master's"},
+        {"name": "Application fee (€100)", "required": true, "notes": ""}
+      ],
+      "language_requirements": {
+        "english_programs": "TOEFL 90 iBT or IELTS 7.0 minimum",
+        "german_programs": "Not applicable — programs taught in English"
+      },
+      "tuition_non_eu": "Frankfurt School is a private institution — tuition applies to all students regardless of nationality (no separate non-EU surcharge). Fees vary by program.",
+      "source_url": "https://www.frankfurt-school.de/en/study/master/master-of-finance",
+      "notes": "Frankfurt School is a PRIVATE business school — does NOT use uni-assist. No separate non-EU tuition surcharge (all students pay tuition). APS not mentioned as requirement (private school). GMAT/GRE cannot be waived. Programs primarily in English."
+    },
+    {
+      "id": 42,
+      "name": "ESMT Berlin",
+      "country": "Germany",
+      "state": "Berlin",
+      "uses_uni_assist": false,
+      "application_portal": "ESMT direct application portal",
+      "aps_required": true,
+      "aps_countries": ["China", "India"],
+      "documents": [
+        {"name": "Valid passport copy", "required": true, "notes": ""},
+        {"name": "Transcripts for all post-secondary academic work", "required": true, "notes": ""},
+        {"name": "GMAT, GRE, EA, or ESMT BAT (Business Admissions Test)", "required": true, "notes": "No waiver available"},
+        {"name": "Essay responses", "required": true, "notes": ""},
+        {"name": "Two professional recommendation letters", "required": true, "notes": ""},
+        {"name": "CV/Resume (minimum 3 years postgraduate professional experience for MBA)", "required": true, "notes": "With career aspirations description"},
+        {"name": "Proof of English proficiency", "required": true, "notes": "TOEFL 95 iBT (new format: 5.0 minimum), PTE 64, IELTS 7. Exemptions: native language, degree in English, 12+ months in English-speaking work environment."},
+        {"name": "Application fee (€50)", "required": true, "notes": ""},
+        {"name": "APS certificate", "required": true, "notes": "For graduates of Chinese or Indian universities — additional steps required, process can take up to 6 months"}
+      ],
+      "language_requirements": {
+        "english_programs": "TOEFL 95 iBT or IELTS 7 minimum",
+        "german_programs": "Not applicable — programs taught in English"
+      },
+      "tuition_non_eu": "ESMT is a private institution — all students pay tuition regardless of nationality.",
+      "source_url": "https://esmt.berlin/mba-programs/full-time-mba/admissions",
+      "notes": "ESMT is a private business school — no uni-assist. APS confirmed for China and India graduates. Programs entirely in English. MBA requires minimum 3 years postgraduate work experience. Residence permit needed for non-EU students post-arrival."
+    },
+    {
+      "id": 43,
+      "name": "WHU – Otto Beisheim School of Management",
+      "country": "Germany",
+      "state": "Rhineland-Palatinate (Vallendar)",
+      "uses_uni_assist": false,
+      "application_portal": "WHU direct application portal",
+      "aps_required": true,
+      "aps_countries": ["China", "India", "Vietnam"],
+      "documents": [
+        {
+          "name": "Valid passport / national ID (front and back)",
+          "required": true,
+          "notes": ""
+        },
+        {
+          "name": "School leaving certificate / diploma with transcript",
+          "required": true,
+          "notes": "Or most recent grade report from final school year"
+        },
+        {
+          "name": "Bachelor's degree transcript and certificate (for master's programs)",
+          "required": true,
+          "notes": "High school diploma + transcript for bachelor programs"
+        },
+        {
+          "name": "Proof of English proficiency",
+          "required": true,
+          "notes": "Master's: TOEFL iBT 100 (classic) / 5.5 (new format from Jan 2026), IELTS 7. Bachelor's: proof of English or WHU Institutional TOEFL."
+        },
+        {
+          "name": "GMAT / GRE score (master's programs)",
+          "required": true,
+          "notes": "Minimum GMAT 555 or GRE 158/158 or GTEBS 102 (in English)"
+        },
+        {
+          "name": "Proof of internship / apprenticeship (bachelor programs)",
+          "required": true,
+          "notes": "Minimum 6 weeks total (multiple internships ≥2 weeks each acceptable). Commerce Chamber certificate or equivalent."
+        },
+        {
+          "name": "Proof of practical experience (master's programs)",
+          "required": true,
+          "notes": "Minimum 3 months full-time business-related work experience"
+        },
+        {
+          "name": "APS certificate",
+          "required": true,
+          "notes": "For applicants with bachelor's degree from India, China, or Vietnam — required before German student visa application. Start early — process can take months."
+        }
+      ],
+      "language_requirements": {
+        "english_programs": "TOEFL iBT 100 (classic) / 5.5 (new 2026 format) or IELTS 7",
+        "german_programs": "Bachelor programs taught in English and German; verify per program"
+      },
+      "tuition_non_eu": "WHU is a private institution — all students pay tuition regardless of nationality.",
+      "source_url": "https://www.whu.edu/en/programs/master-of-science-programs/master-in-management/application-admissions/",
+      "notes": "WHU is a private business school — no uni-assist. Three bachelor application rounds: Jan 31, Mar 31, May 15. Non-visa-required applicants have later master's deadline (May 31 vs Apr 30). TOEFL format changed in Jan 2026."
+    },
+    {
+      "id": 44,
+      "name": "Constructor University Bremen (formerly Jacobs University)",
+      "country": "Germany",
+      "state": "Bremen",
+      "uses_uni_assist": false,
+      "application_portal": "Constructor University direct application portal",
+      "aps_required": false,
+      "aps_countries": [],
+      "documents": [
+        {"name": "Valid passport", "required": true, "notes": "Government-issued national ID for EU, passport for non-EU"},
+        {"name": "University transcripts / official mark sheets", "required": true, "notes": "Most updated, all completed semesters, with grading system explanation if applicable"},
+        {"name": "Bachelor's degree certificate", "required": true, "notes": "Or provisional certificate if not yet graduated"},
+        {"name": "CV", "required": true, "notes": "Including academic, professional/work experience, extracurricular, and voluntary activities"},
+        {"name": "Motivation statement (1 page)", "required": true, "notes": "Explaining choice of Constructor University"},
+        {"name": "Recommendation letters", "required": false, "notes": "Mandatory for some programs; from professors, supervisors, or employers"},
+        {"name": "Proof of English proficiency", "required": true, "notes": "TOEFL 90 iBT, IELTS 6.5, PTE Academic 61, or Duolingo 110. Exempt if degree in English or from English-speaking country."},
+        {"name": "Job reference letter (MBA applicants)", "required": true, "notes": ""},
+        {"name": "Financial support statement", "required": true, "notes": "Original bank statement + sponsor letter"},
+        {"name": "Certified translation (if transcripts not in English)", "required": true, "notes": ""}
+      ],
+      "language_requirements": {
+        "english_programs": "TOEFL 90 iBT, IELTS 6.5, PTE 61, or Duolingo 110",
+        "german_programs": "Not applicable — Constructor University teaches primarily in English"
+      },
+      "tuition_non_eu": "Constructor University is a private institution — all students pay tuition regardless of nationality. Scholarships available.",
+      "source_url": "https://constructor.university/admission-aid/application-information-graduate",
+      "notes": "Constructor University (formerly Jacobs University) is a private, predominantly English-language institution. Does NOT use uni-assist. APS not mentioned as requirement. Financial support statement (bank statement + sponsor letter) explicitly required. All teaching primarily in English."
+    }
+  ]
+}

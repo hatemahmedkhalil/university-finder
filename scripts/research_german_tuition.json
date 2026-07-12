@@ -1,0 +1,254 @@
+{
+  "research_date": "2026-07-10",
+  "notes": "Data sourced from official university websites. Fees verified as of research date.",
+  "universities": [
+    {
+      "id": 2,
+      "name": "TUM – Technical University of Munich",
+      "tuition_applies_to": "non-EU international students only",
+      "tuition_by_level": {
+        "bachelor": {
+          "amount_eur_per_semester": "2000–3000",
+          "notes": "Usually €2,000 or €3,000/semester depending on the specific program. Exact amount listed on each program's details page. Fees introduced from WS2024/25."
+        },
+        "master": {
+          "amount_eur_per_semester": "4000–6000",
+          "notes": "Usually €4,000 or €6,000/semester depending on the specific program. Some programs (e.g., Bioinformatics, Quantum Science & Technology, Software Engineering) are tuition-free even for non-EU students — check individual program pages. Students who completed a prior bachelor's at TUM or another German university may be exempt."
+        },
+        "phd": {
+          "amount_eur_per_semester": 0,
+          "notes": "Doctoral candidates are fully exempt from tuition fees."
+        }
+      },
+      "waivers": "Merit/need-based scholarship grants of €500–1,800/semester available. Up to ~20% of students may receive waivers. Exemptions also for: students with established domestic connections (5+ years residence in Germany, or one parent employed in Germany 3+ years), students with disabilities, asylum seekers.",
+      "additional_fees": "Semester fee (~€97–150) applies to all students regardless of tuition, varying by campus location.",
+      "source_url": "https://www.tum.de/en/studies/fees/tuition",
+      "source_url_2": "https://www.tum.de/en/studies/fees"
+    },
+    {
+      "id": 3,
+      "name": "Heidelberg University",
+      "tuition_applies_to": "non-EU international students only",
+      "tuition_by_level": {
+        "bachelor": {
+          "amount_eur_per_semester": 1500,
+          "notes": "€1,500/semester for all bachelor's and consecutive master's programs in Baden-Württemberg. Introduced WS2017/18."
+        },
+        "master": {
+          "amount_eur_per_semester": 1500,
+          "notes": "€1,500/semester applies to consecutive master's programs. Same rate as bachelor's."
+        },
+        "phd": {
+          "amount_eur_per_semester": 0,
+          "notes": "PhD/doctoral candidates are explicitly exempt from the non-EU tuition fee in Baden-Württemberg."
+        }
+      },
+      "waivers": "Exemptions for: EU/EEA citizens, students with German higher education entrance qualification (Abitur), exchange students (Erasmus etc.), refugees, non-EU citizens with 5+ years legal employment in Germany, those who completed prior degree in Germany.",
+      "source_url": "https://www.uni-heidelberg.de/en/study/management-of-studies/semester-fees/tuition-fees-for-international-students",
+      "source_url_2": "https://mwk.baden-wuerttemberg.de/de/hochschulen-studium/studieren-in-bw/studienfinanzierung/gebuehren-fuer-internationale-studierende-und-zweitstudium/tuition-fees-for-international-students"
+    },
+    {
+      "id": 4,
+      "name": "KIT – Karlsruhe Institute of Technology",
+      "tuition_applies_to": "non-EU international students only",
+      "tuition_by_level": {
+        "bachelor": {
+          "amount_eur_per_semester": 1500,
+          "notes": "€1,500/semester — standard Baden-Württemberg non-EU fee."
+        },
+        "master": {
+          "amount_eur_per_semester": 1500,
+          "notes": "€1,500/semester — same rate applies to consecutive master's programs."
+        },
+        "phd": {
+          "amount_eur_per_semester": 0,
+          "notes": "Doctoral candidates exempt from non-EU tuition fee (Baden-Württemberg policy)."
+        }
+      },
+      "waivers": "Same BW-wide exemptions apply (EU/EEA, Abitur holders, exchange students, refugees, prior German degree).",
+      "source_url": "https://mwk.baden-wuerttemberg.de/de/hochschulen-studium/studieren-in-bw/studienfinanzierung/gebuehren-fuer-internationale-studierende-und-zweitstudium/tuition-fees-for-international-students"
+    },
+    {
+      "id": 5,
+      "name": "University of Tübingen",
+      "tuition_applies_to": "non-EU international students only",
+      "tuition_by_level": {
+        "bachelor": {
+          "amount_eur_per_semester": 1500,
+          "notes": "€1,500/semester — standard Baden-Württemberg non-EU fee."
+        },
+        "master": {
+          "amount_eur_per_semester": 1500,
+          "notes": "€1,500/semester for consecutive master's programs."
+        },
+        "phd": {
+          "amount_eur_per_semester": 0,
+          "notes": "Doctoral candidates exempt from non-EU tuition fee (Baden-Württemberg policy)."
+        }
+      },
+      "waivers": "Same BW-wide exemptions apply.",
+      "source_url": "https://mwk.baden-wuerttemberg.de/de/hochschulen-studium/studieren-in-bw/studienfinanzierung/gebuehren-fuer-internationale-studierende-und-zweitstudium/tuition-fees-for-international-students"
+    },
+    {
+      "id": 6,
+      "name": "University of Freiburg",
+      "tuition_applies_to": "non-EU international students only",
+      "tuition_by_level": {
+        "bachelor": {
+          "amount_eur_per_semester": 1500,
+          "notes": "€1,500/semester — standard Baden-Württemberg non-EU fee."
+        },
+        "master": {
+          "amount_eur_per_semester": 1500,
+          "notes": "€1,500/semester for consecutive master's programs."
+        },
+        "phd": {
+          "amount_eur_per_semester": 0,
+          "notes": "Doctoral candidates exempt from non-EU tuition fee (Baden-Württemberg policy)."
+        }
+      },
+      "waivers": "Same BW-wide exemptions apply.",
+      "source_url": "https://mwk.baden-wuerttemberg.de/de/hochschulen-studium/studieren-in-bw/studienfinanzierung/gebuehren-fuer-internationale-studierende-und-zweitstudium/tuition-fees-for-international-students"
+    },
+    {
+      "id": 7,
+      "name": "University of Mannheim",
+      "tuition_applies_to": "non-EU international students only",
+      "tuition_by_level": {
+        "bachelor": {
+          "amount_eur_per_semester": 1500,
+          "notes": "€1,500/semester — standard Baden-Württemberg non-EU fee."
+        },
+        "master": {
+          "amount_eur_per_semester": 1500,
+          "notes": "€1,500/semester for consecutive master's programs."
+        },
+        "phd": {
+          "amount_eur_per_semester": 0,
+          "notes": "Doctoral candidates exempt from non-EU tuition fee (Baden-Württemberg policy)."
+        }
+      },
+      "waivers": "Same BW-wide exemptions apply.",
+      "source_url": "https://mwk.baden-wuerttemberg.de/de/hochschulen-studium/studieren-in-bw/studienfinanzierung/gebuehren-fuer-internationale-studierende-und-zweitstudium/tuition-fees-for-international-students"
+    },
+    {
+      "id": 8,
+      "name": "University of Stuttgart",
+      "tuition_applies_to": "non-EU international students only",
+      "tuition_by_level": {
+        "bachelor": {
+          "amount_eur_per_semester": 1500,
+          "notes": "€1,500/semester — standard Baden-Württemberg non-EU fee."
+        },
+        "master": {
+          "amount_eur_per_semester": 1500,
+          "notes": "€1,500/semester for consecutive master's programs."
+        },
+        "phd": {
+          "amount_eur_per_semester": 0,
+          "notes": "Doctoral candidates exempt from non-EU tuition fee (Baden-Württemberg policy)."
+        }
+      },
+      "waivers": "Same BW-wide exemptions apply.",
+      "source_url": "https://www.student.uni-stuttgart.de/en/organizing-studies/formalities/tuition-and-fees/"
+    },
+    {
+      "id": 41,
+      "name": "Frankfurt School of Finance & Management",
+      "tuition_applies_to": "all students (private university)",
+      "tuition_by_level": {
+        "bachelor": {
+          "amount_eur_per_year": 16400,
+          "amount_eur_per_semester": 8200,
+          "notes": "€8,200/semester. The BSc program runs 7 semesters (3.5 years); total tuition ~€57,400. Programs: BSc Business Administration, BSc Computational Business Analytics."
+        },
+        "master": {
+          "amount_eur_total_program": "35500–42000",
+          "amount_eur_per_year_approx": "17750–21000",
+          "notes": "Varies by program. Master in Management (MSc, 4 semesters): €35,500 total (~€8,875/semester). Master of Finance (MSc, 4 semesters): €42,000 total (~€10,500/semester). Other MSc programs also ~€35,500. Per-year cost approximately €17,750–21,000."
+        },
+        "mba": {
+          "amount_eur_total_program": 42000,
+          "notes": "Full-Time MBA total tuition €42,000 (plus €400 enrollment fee). Early-bird discounts up to €6,000 off. Program is ~1 year."
+        }
+      },
+      "waivers": "Merit-based scholarships: 15%, 25%, 50%, 75%, or 100% tuition reduction. President's Scholarship covers 75% tuition + free accommodation in year 1. Klaus-Peter Müller Scholarship covers full tuition for select Master/MBA students.",
+      "source_url": "https://www.frankfurt-school.de/en/study/bachelor/bachelor-science/bachelor-in-business-administration",
+      "source_url_2": "https://www.frankfurt-school.de/en/study/mba-emba/full-time-mba",
+      "source_url_3": "https://www.frankfurt-school.de/en/study/master/master-in-management"
+    },
+    {
+      "id": 42,
+      "name": "ESMT Berlin",
+      "tuition_applies_to": "all students (private university)",
+      "tuition_by_level": {
+        "master": {
+          "amount_eur_total_program": 36000,
+          "amount_eur_per_year_approx": 18000,
+          "notes": "Total tuition €36,000 for all MSc programs (Global Management, Analytics & AI, Innovation & Entrepreneurship). Paid in 3 installments over the 2-year program. Covers all courses, seminars, teaching materials, orientation, and career support."
+        },
+        "full_time_mba": {
+          "amount_eur_total_program": 50000,
+          "notes": "Full-Time MBA total tuition €50,000. Includes books, study materials, and Smart Certificate. Does not include travel for study trips/exchanges."
+        },
+        "executive_mba": {
+          "amount_eur_total_program": 64800,
+          "notes": "Executive MBA total tuition €64,800. Includes teaching fees, required cases and books, e-learning resources, meals on campus, and Smart Certificate. Paid in 3 equal installments over 3 years."
+        }
+      },
+      "waivers": "Scholarships available; specific details on esmt.berlin/master-programs/scholarships-financing.",
+      "source_url": "https://esmt.berlin/mba-programs/full-time-mba/tuition-financing",
+      "source_url_2": "https://esmt.berlin/mba-programs/executive-mba/tuition-financing",
+      "source_url_3": "https://esmt.berlin/master-programs/scholarships-financing"
+    },
+    {
+      "id": 43,
+      "name": "WHU – Otto Beisheim School of Management",
+      "tuition_applies_to": "all students (private university)",
+      "tuition_by_level": {
+        "bachelor": {
+          "amount_eur_per_semester": 9100,
+          "amount_eur_per_year": 18200,
+          "notes": "€9,100/semester for BSc in International Business Administration. Program is 6 semesters; total tuition ~€54,600."
+        },
+        "master": {
+          "amount_eur_total_program": "33000–40400",
+          "notes": "Master in Management (MSc): €33,000 total for 90 ECTS track (includes Capstone Module abroad); €40,400 for 120 ECTS track (includes semester abroad). Payment schedule: €2,000 deposit + 3 semester installments. ~40% of MSc students receive partial scholarships."
+        },
+        "mba": {
+          "amount_eur_total_program": 49500,
+          "notes": "Full-Time MBA total tuition €49,500. Includes all tuition, study materials (print & digital), accommodation/meals during international modules, German language instruction, and semester transport ticket in NRW. International travel not included. Early-bird discounts: up to €6,000 off."
+        }
+      },
+      "waivers": "~40% of MSc students receive WHU scholarships covering at least 25% of tuition. MBA partial scholarships available for highly talented candidates from all countries.",
+      "source_url": "https://www.whu.edu/en/programs/bachelor-program/fees-financing/",
+      "source_url_2": "https://www.whu.edu/en/programs/master-of-science-programs/fees-financing/",
+      "source_url_3": "https://www.whu.edu/en/programs/mba-program/full-time-mba/fees-financing/"
+    },
+    {
+      "id": 44,
+      "name": "Constructor University Bremen (formerly Jacobs University)",
+      "tuition_applies_to": "all students (private university)",
+      "tuition_by_level": {
+        "bachelor": {
+          "amount_eur_per_semester": 10000,
+          "amount_eur_per_year": 20000,
+          "notes": "€10,000/semester (€20,000/year). 3-year BSc program; total tuition ~€60,000. Additional university/admin fees ~€696/semester. Fact sheet for 2025–26 confirms €20,000/year tuition."
+        },
+        "master": {
+          "amount_eur_per_semester": 10000,
+          "amount_eur_per_year": 20000,
+          "notes": "€10,000/semester (€20,000/year). Additional university fee ~€120 + semester ticket ~€480. Merit-based scholarships up to €10,000 available. Tuition Deferral Program available (pay after graduation)."
+        },
+        "phd": {
+          "amount_eur_per_semester": 0,
+          "notes": "PhD students are NOT charged tuition fees. PhDs are typically fully funded positions. Confirmed on official financing pages."
+        }
+      },
+      "waivers": "Merit-based scholarships (up to €10,000) for bachelor and master students. Tuition Deferral Program allows deferral until after graduation and employment.",
+      "source_url": "https://constructor.university/admission-aid/financing-undergraduate",
+      "source_url_2": "https://constructor.university/admission-aid/financing-graduate",
+      "source_url_3": "https://constructor.university/sites/default/files/2024-12/2025-2026%20CU%20Fact%20Sheet_Bachelor_Cost%20of%20Attendance.pdf"
+    }
+  ]
+}

@@ -1,0 +1,928 @@
+{
+  "metadata": {
+    "research_date": "2026-07-10",
+    "researcher": "Claude Code research agent",
+    "notes": "All data sourced from official university websites. NAWA SYRENA system became mandatory from 1 July 2025 for non-EU/OECD/EFTA secondary school certificates and higher education diplomas. All universities require apostille (Hague Convention) or legalization (non-signatory countries) on foreign educational documents. Language proficiency at B2 minimum is mandated by Polish Ministry of Science and Higher Education Regulation of 30 July 2025 (Journal of Laws item 1045), effective 1 August 2025. Certified/sworn translation into Polish (or English for English-taught programs) is required at all institutions for documents not originally in Polish or English."
+  },
+  "nawa_overview": {
+    "what_it_is": "National Agency for Academic Exchange (Narodowa Agencja Wymiany Akademickiej). From 1 July 2025, NAWA's Director issues Individual Recognition Statements (via the SYRENA online system) confirming that a foreign secondary school certificate or higher education diploma entitles the holder to apply for admission to Polish higher education. This replaced the previous Education Superintendent pathway.",
+    "who_needs_it": "All non-EU/EFTA/OECD applicants whose documents are not covered by bilateral international agreements (currently China and Ukraine have agreements with Poland). IB and EB diploma holders are exempt.",
+    "system": "SYRENA (www.syrena.nawa.gov.pl)",
+    "cost": "Free of charge",
+    "processing_time": "Up to 30-60 days from submission — apply at least 2 months before university deadline",
+    "key_change_2025": "Universities now require the final NAWA statement at enrollment. Proof of submission / conditional acceptance is no longer accepted under 2025 regulations.",
+    "source": "https://nawa.gov.pl/en/recognition/how-to-obtain-a-recognition-statement"
+  },
+  "universities": [
+    {
+      "id": 45,
+      "name": "University of Warsaw",
+      "type": "public",
+      "application_system": "IRK (irk.uw.edu.pl)",
+      "documents": [
+        {
+          "name": "Valid passport",
+          "required": true,
+          "notes": "Photocopy required; original shown at enrollment"
+        },
+        {
+          "name": "Secondary school certificate / higher education diploma",
+          "required": true,
+          "notes": "Original or certified copy; must confirm right to university-level study in issuing country. Verify eligibility via NAWA KWALIFIKATOR."
+        },
+        {
+          "name": "Apostille or legalization",
+          "required": true,
+          "notes": "Apostille for Hague Convention signatories; consular legalization for non-signatories. Not required for EU/EFTA/OECD, IB, or EB documents."
+        },
+        {
+          "name": "NAWA Director Individual Recognition Statement",
+          "required": true,
+          "notes": "Required for all non-EU/EFTA/OECD certificates from 1 July 2025 via SYRENA system. Exempt: EU/OECD/EFTA, IB, EB, China, Ukraine (bilateral agreements), prior Education Superintendent decisions issued before 30 June 2025."
+        },
+        {
+          "name": "Certified/sworn translation into Polish",
+          "required": true,
+          "notes": "Original sworn translations into Polish required. For English-taught programs, English translations acceptable."
+        },
+        {
+          "name": "Language proficiency certificate (B2 minimum)",
+          "required": true,
+          "notes": "B2 in language of instruction. UW's accepted list applies. For English: IELTS, TOEFL, Cambridge, etc. Candidates for 2nd-cycle may alternatively pass UW oral/written exam."
+        },
+        {
+          "name": "Personal questionnaire with photo",
+          "required": true,
+          "notes": "Generated and printed from IRK system, must be signed."
+        },
+        {
+          "name": "Application fee payment confirmation",
+          "required": true,
+          "notes": "85 PLN standard; 100 PLN if written/oral entrance exam required."
+        },
+        {
+          "name": "Health certificate",
+          "required": false,
+          "notes": "Required by some faculties only — check specific program."
+        },
+        {
+          "name": "Parental consent",
+          "required": false,
+          "notes": "Required if applicant is under 18."
+        }
+      ],
+      "application_fee": "85 PLN (100 PLN if entrance exam required)",
+      "language_requirement": "B2 in language of instruction",
+      "apostille_required": true,
+      "nawa_required": true,
+      "special_notes": "Certificates from EU/OECD/EFTA countries do not require NAWA statement. Document stating certificate entitles to higher education from KWALIFIKATOR system required. Student ID fee 22 PLN after qualification.",
+      "source_url": "https://rekrutacja.uw.edu.pl/en/required-documents/",
+      "additional_sources": [
+        "https://rekrutacja.uw.edu.pl/en/recognition-of-foreign-education/",
+        "https://rekrutacja.uw.edu.pl/en/application-and-tuition-fees/"
+      ]
+    },
+    {
+      "id": 46,
+      "name": "Medical University of Warsaw (WUM)",
+      "type": "public",
+      "faculty": "English Division (Faculty of Medicine)",
+      "application_system": "Email to recruitment@wum.edu.pl + online portal",
+      "documents": [
+        {
+          "name": "Valid passport",
+          "required": true,
+          "notes": "Confirming nationality; original for inspection"
+        },
+        {
+          "name": "High school diploma / secondary school certificate",
+          "required": true,
+          "notes": "Must qualify for university-level study in issuing country. Required subjects: Biology (HL written exam), Chemistry (HL written exam), plus Mathematics or Physics."
+        },
+        {
+          "name": "Apostille or consular legalization",
+          "required": true,
+          "notes": "Apostille required for Hague Convention countries. Consular legalization for others. IB/EB diploma holders exempt."
+        },
+        {
+          "name": "Transcript of grades",
+          "required": true,
+          "notes": "Must include grading scale."
+        },
+        {
+          "name": "English translation of diploma/transcript",
+          "required": true,
+          "notes": "Required if originals not in English or Polish; must be by certified translator."
+        },
+        {
+          "name": "English language proficiency certificate",
+          "required": true,
+          "notes": "IELTS minimum 6.0, TOEFL iBT minimum 90, TOEIC minimum 700, or CEFR B2 equivalent."
+        },
+        {
+          "name": "Entrance exam result OR standardized test score",
+          "required": true,
+          "notes": "Options: (1) WUM Competency Test (Biology 30Q, Chemistry 30Q, Decision Making 20Q); (2) BMAT, MCAT, GAMSAT, UKCAT/UCAT score; (3) BSc/MSc degree in life sciences."
+        },
+        {
+          "name": "NAWA/KWALIFIKATOR eligibility statement",
+          "required": true,
+          "notes": "For non-EU/OECD/EFTA certificates: NAWA Director's written individual statement via SYRENA confirming right to apply for Polish higher education."
+        },
+        {
+          "name": "Parental consent with power of attorney",
+          "required": false,
+          "notes": "Required if applicant is under 18."
+        }
+      ],
+      "application_fee": "EUR 24 (competency test route); EUR 20 (standardized test or BSc/MSc route). Non-refundable. Confirmation fee: EUR 1,000 (part of tuition, non-refundable; EUR 500 refunded if withdrawal before July 15, 2026).",
+      "language_requirement": "IELTS 6.0 / TOEFL iBT 90 / CEFR B2 minimum",
+      "apostille_required": true,
+      "nawa_required": true,
+      "special_notes": "English Division only. Medical fitness certificate not listed as admission requirement but Hepatitis B vaccination proof required by start of studies. Application deadline: June 30, 2026 (2026/2027 cycle). Fees paid in EUR by bank transfer.",
+      "source_url": "https://ed.wum.edu.pl/en/admissions-steps",
+      "additional_sources": [
+        "https://wf.wum.edu.pl/en/node/442",
+        "https://ed.wum.edu.pl/pl/node/1043"
+      ]
+    },
+    {
+      "id": 47,
+      "name": "Jagiellonian University (Kraków)",
+      "type": "public",
+      "application_system": "IRK (irk.uj.edu.pl)",
+      "documents": [
+        {
+          "name": "Valid passport",
+          "required": true,
+          "notes": "Required for all applicants; EU citizens may use national ID card."
+        },
+        {
+          "name": "Secondary school certificate",
+          "required": true,
+          "notes": "Must show completion of secondary education and eligibility to continue education at higher level. Original plus copy required."
+        },
+        {
+          "name": "Apostille or legalization",
+          "required": true,
+          "notes": "Official authentication required for all non-Polish certificates. For non-EU/OECD/EFTA documents. EU citizens allowed to submit apostilles by September 25, 2026 if signed declaration at enrollment."
+        },
+        {
+          "name": "NAWA Director Individual Recognition Statement",
+          "required": true,
+          "notes": "Required for non-EU/OECD/EFTA/EFTA/Iceland/Liechtenstein/Norway/Switzerland/UK applicants. Apply via SYRENA system — takes up to 2 months. Exempt: EU/OECD/EFTA, Ukraine/China specific certificates, IB/EB holders."
+        },
+        {
+          "name": "Certified sworn translation",
+          "required": true,
+          "notes": "Into Polish or English (per program language). Required for any document not in Polish or English."
+        },
+        {
+          "name": "Language proficiency certificate (B2 minimum)",
+          "required": true,
+          "notes": "B2 in language of instruction. C1 required for Polish-language Medicine programs. From Ministry-approved list."
+        },
+        {
+          "name": "Personal questionnaire",
+          "required": true,
+          "notes": "Downloaded after 'qualified' status in IRK, must be printed and signed."
+        },
+        {
+          "name": "Health insurance",
+          "required": true,
+          "notes": "Valid for at least the first year, covering EUR 30,000 in treatment costs minimum."
+        },
+        {
+          "name": "Medical occupational health certificate",
+          "required": false,
+          "notes": "Required for specific programs only (e.g., Medicine, dentistry)."
+        },
+        {
+          "name": "Minor protection documents",
+          "required": false,
+          "notes": "Required if program involves work with minors."
+        },
+        {
+          "name": "Statutory representative declaration",
+          "required": false,
+          "notes": "Required if applicant is under 18 at enrollment."
+        }
+      ],
+      "application_fee": "100 PLN (non-refundable, per program applied to). Student ID card: 22 PLN.",
+      "language_requirement": "B2 minimum in language of instruction; C1 for Polish-language Medicine",
+      "apostille_required": true,
+      "nawa_required": true,
+      "special_notes": "Requirements form about citizenship and certificate issuance must be filled in IRK. NAWA process via SYRENA takes up to 2 months — apply early. Medical programs require Biology and Chemistry at higher/extended level.",
+      "source_url": "https://welcome.uj.edu.pl/en_GB/admission/documents/undergraduate",
+      "additional_sources": [
+        "https://welcome.uj.edu.pl/en_GB/admission/admission2025",
+        "https://welcome.uj.edu.pl/en_GB/admission/fees"
+      ]
+    },
+    {
+      "id": 48,
+      "name": "Medical University of Gdańsk (MUG)",
+      "type": "public",
+      "faculty": "English Division",
+      "application_system": "MUG online enrollment system (admission.mug.edu.pl)",
+      "documents": [
+        {
+          "name": "Valid passport photocopy",
+          "required": true,
+          "notes": "Photocopy of valid passport."
+        },
+        {
+          "name": "Application forms (English and Polish versions)",
+          "required": true,
+          "notes": "Generated from MUG online enrollment system; must be completed, printed, and signed by applicant."
+        },
+        {
+          "name": "High school diploma / maturity certificate",
+          "required": true,
+          "notes": "In native language, certified by school or notary. Must include Biology (obligatory) plus Chemistry, Physics, or Mathematics at advanced level."
+        },
+        {
+          "name": "Transcript of grades with grading scale",
+          "required": true,
+          "notes": "Official transcript with grading scale explanation."
+        },
+        {
+          "name": "Apostille or consular legalization",
+          "required": true,
+          "notes": "Apostille for Hague Convention countries; consular legalization for others. Required on original diploma submitted after acceptance."
+        },
+        {
+          "name": "English translation of diploma/transcript",
+          "required": true,
+          "notes": "If not originally in English or Polish, certified translation by school or sworn translator required."
+        },
+        {
+          "name": "English language proficiency certificate",
+          "required": true,
+          "notes": "Minimum B2 level. IELTS minimum 6.5 / TOEFL iBT minimum 87. Scandinavian applicants may use English school-leaving grade. See FAQ for full accepted list."
+        },
+        {
+          "name": "Eligibility statement",
+          "required": true,
+          "notes": "Statement confirming the diploma qualifies for higher education admission in issuing country."
+        },
+        {
+          "name": "NAWA recognition statement",
+          "required": true,
+          "notes": "Required for non-EU/OECD/EFTA certificate holders. Via SYRENA system."
+        },
+        {
+          "name": "State exam results (if applicable)",
+          "required": false,
+          "notes": "Required if mandated by country of issue. Must include certified Polish translation by sworn translator or Polish consul."
+        },
+        {
+          "name": "Parental consent and power of attorney",
+          "required": false,
+          "notes": "Required for applicants under 18."
+        }
+      ],
+      "application_fee": "100 PLN registration fee. Orientation Week fee: 3,100 PLN (2,050 PLN for premedical course graduates). Annual tuition: 64,200 PLN (approx. EUR 15,160/year) for MD program.",
+      "language_requirement": "IELTS minimum 6.5 / TOEFL iBT minimum 87 / B2 CEFR",
+      "apostille_required": true,
+      "nawa_required": true,
+      "special_notes": "Admission based on ranking of high school grades in Biology + Chemistry/Physics/Math. Application open March 18, 2026 – July 15, 2026 for 2026/2027. Incomplete applications are rejected. Medical fitness certificate required at enrollment.",
+      "source_url": "https://admission.mug.edu.pl/61154.html",
+      "additional_sources": [
+        "https://admission.mug.edu.pl/1447.html",
+        "https://admission.mug.edu.pl/1455.html"
+      ]
+    },
+    {
+      "id": 49,
+      "name": "Wrocław Medical University (UMW)",
+      "type": "public",
+      "application_system": "IRK system (rekrutacja.umw.edu.pl)",
+      "documents": [
+        {
+          "name": "Valid passport or ID",
+          "required": true,
+          "notes": "Passport required for non-EU applicants; EU citizens may use national ID."
+        },
+        {
+          "name": "High school diploma and transcript of grades",
+          "required": true,
+          "notes": "Must qualify for higher education in country of issue. Scanned for online application; originals required after acceptance."
+        },
+        {
+          "name": "Apostille or consular legalization",
+          "required": true,
+          "notes": "Apostille (Hague Convention) or Polish consular legalization for others. Required on originals submitted after conditional acceptance."
+        },
+        {
+          "name": "Sworn Polish translation of diploma and transcript",
+          "required": true,
+          "notes": "'Prepared on the basis of the original documents (not scans) by a sworn translator registered with the Polish Ministry of Justice.' Required if originals not in English."
+        },
+        {
+          "name": "English language certificate (B2 minimum)",
+          "required": true,
+          "notes": "B2 CEFR minimum. Exempt: IB or EB diploma holders."
+        },
+        {
+          "name": "NAWA Director recognition statement OR superintendent decision",
+          "required": true,
+          "notes": "For non-EU/EFTA/OECD/Ukraine/China applicants. Either: (1) NAWA Director's written statement via SYRENA confirming certificate entitles to Polish higher education admission, OR (2) administrative decision from Polish school superintendent (issued before 30 June 2025)."
+        },
+        {
+          "name": "Signed application form",
+          "required": true,
+          "notes": "Generated from IRK system after data entry."
+        },
+        {
+          "name": "Subject-specific entrance exam",
+          "required": true,
+          "notes": "Mandatory online entrance exam for non-Polish citizens from outside EU/EFTA/OECD/Ukraine/China who submitted scanned documents during online registration. Conducted online before application proceeds to Admission Board.",
+          "unverified": false
+        },
+        {
+          "name": "Notarized parental consent",
+          "required": false,
+          "notes": "Required if applicant is under 18."
+        }
+      ],
+      "application_fee": "85 PLN (standard); 100 PLN for non-EU/OECD/EFTA/Ukraine/China applicants (covers both application and entrance exam). Applicants may pay in USD or EUR converted to PLN.",
+      "language_requirement": "B2 CEFR minimum in language of instruction",
+      "apostille_required": true,
+      "nawa_required": true,
+      "special_notes": "New requirements from July 2025 specifically for non-EU/OECD/EFTA/Ukraine/China applicants. Hepatitis B vaccination proof required at study start. Medicine program requires Biology and Chemistry.",
+      "source_url": "https://admission.umw.edu.pl/documents/",
+      "additional_sources": [
+        "https://admission.umw.edu.pl/warunki-rekrutacji/",
+        "https://admission.umw.edu.pl/changes-in-admission-requirements-for-non-polish-candidates-with-high-school-diplomas-from-outside-the-eu-oecd-efta-ukraine-and-china/"
+      ]
+    },
+    {
+      "id": 50,
+      "name": "Wrocław University of Science and Technology (PWr / Politechnika Wrocławska)",
+      "type": "public",
+      "application_system": "IRK system (rekrutacja.pwr.edu.pl)",
+      "documents": [
+        {
+          "name": "Valid passport or identity document",
+          "required": true,
+          "notes": "Required for submission and enrollment."
+        },
+        {
+          "name": "Educational documents / secondary school certificate",
+          "required": true,
+          "notes": "Must entitle applicant to apply for bachelor's studies in the issuing country. Verify via NAWA KWALIFIKATOR. Scan uploaded to IRK."
+        },
+        {
+          "name": "Apostille or legalization",
+          "required": true,
+          "notes": "'Apostille or legalization of original educational documents issued outside Poland.' Not required for EU/OECD/EFTA, IB/EB diploma holders."
+        },
+        {
+          "name": "NAWA Director recognition statement",
+          "required": true,
+          "notes": "Required for non-EU/OECD/EFTA applicants without IB/EB diploma or documents recognized under international agreements. Via SYRENA system. 'Submit the application to NAWA before the recruitment starts.'"
+        },
+        {
+          "name": "Certified translation into Polish or English",
+          "required": true,
+          "notes": "For documents not in English, Russian, or Ukrainian. Polish or English translation required."
+        },
+        {
+          "name": "Language proficiency certificate (B2 minimum)",
+          "required": true,
+          "notes": "For English: Cambridge FCE/CAE/CPE, IELTS 5.5+, TOEFL iBT 72+, TOEIC 785+, or completion of 9-month preparatory course. For Polish: State Commission certificate, ECL/TELC, or 9-month preparatory course."
+        },
+        {
+          "name": "Signed application form",
+          "required": true,
+          "notes": "From IRK system."
+        },
+        {
+          "name": "Photo",
+          "required": true,
+          "notes": "Clear, uniform background, 70-80% face visible."
+        },
+        {
+          "name": "Mandatory mathematics entrance exam",
+          "required": true,
+          "notes": "ALL foreign candidates applying for first-cycle (Bachelor's) studies must take written math exam organized by Faculty of Pure and Applied Mathematics. 2026 date: July 2, 2026, 10:00-11:30 CEST. Applies if non-EU/OECD/EFTA without IB/EB or bilateral agreement diploma.",
+          "unverified": false
+        },
+        {
+          "name": "Medical certificate",
+          "required": false,
+          "notes": "Required for Chemistry and Geoengineering applicants only."
+        },
+        {
+          "name": "Parent declaration",
+          "required": false,
+          "notes": "Required if applicant is under 18."
+        }
+      ],
+      "application_fee": "100 PLN per program (most fields); 150 PLN for Architecture. Maximum 6 programs. Non-refundable unless program cancelled.",
+      "language_requirement": "B2 minimum; IELTS 5.5+ / TOEFL iBT 72+ for English programs",
+      "apostille_required": true,
+      "nawa_required": true,
+      "special_notes": "Mandatory math exam for all non-EU foreign Bachelor applicants (July 2, 2026). Architecture applicants also need drawing exam. Application deadline: June 20, 2026. Document submission deadline: July 10, 2026.",
+      "source_url": "https://rekrutacja.pwr.edu.pl/en/for-foreigners/fee-paying-basis-of-studies-and-scholarship-holders/admission/bachelor-studies/",
+      "additional_sources": [
+        "https://rekrutacja.pwr.edu.pl/en/for-foreigners/",
+        "https://rekrutacja.pwr.edu.pl/en/for-foreigners/free-of-charge-studies/required-documents/"
+      ]
+    },
+    {
+      "id": 51,
+      "name": "AGH University of Science and Technology (Kraków)",
+      "type": "public",
+      "application_system": "e-Rekrutacja system (international.agh.edu.pl)",
+      "documents": [
+        {
+          "name": "Valid passport",
+          "required": true,
+          "notes": "Scan required; must remain valid through September 30 of enrollment year."
+        },
+        {
+          "name": "Secondary school-leaving certificate",
+          "required": true,
+          "notes": "Must entitle applicant to apply at universities in the country's education system. Verify eligibility via NAWA KWALIFIKATOR. If grades not included, also upload transcript of records."
+        },
+        {
+          "name": "Apostille or legalization",
+          "required": true,
+          "notes": "'Obtaining apostille/legalization may take time, so start the procedure early enough.' Not required for Polish certificates, IB, EB, or EU/OECD/EFTA documents."
+        },
+        {
+          "name": "NAWA Director Individual Recognition Statement",
+          "required": true,
+          "notes": "Required unless certificate from EU/OECD/EFTA, IB/EB diploma, or Education Superintendent decision exists. 'Submit the application to NAWA before the recruitment starts.' Via SYRENA system."
+        },
+        {
+          "name": "Language proficiency certificate",
+          "required": true,
+          "notes": "For Polish programs: B2 from State Commission or approved programs. For English programs: B2+ from Cambridge, IELTS 5.5+, TOEFL iBT 72+, TOEIC, or equivalent."
+        },
+        {
+          "name": "Translation of documents",
+          "required": true,
+          "notes": "Polish or English translation required unless documents already in English, Russian, or Ukrainian."
+        },
+        {
+          "name": "Scholarship decision letter",
+          "required": false,
+          "notes": "Required if applicable (e.g., Polish government scholarship)."
+        }
+      ],
+      "application_fee": "85 PLN per field of study if not taking AGH math exam; 100 PLN if taking AGH math exam or entrance exam. Student ID card: 22 PLN.",
+      "language_requirement": "B2 minimum; IELTS 5.5+ / TOEFL iBT 72+ for English programs",
+      "apostille_required": true,
+      "nawa_required": true,
+      "special_notes": "Admission calendar for 2026/2027 published around May 2026. Contact: international.students@agh.edu.pl. Department for International Students: al. Mickiewicza 30, building A-3, room 12A.",
+      "source_url": "https://www.international.agh.edu.pl/en/studies/recruitment/required-documents-bachelor",
+      "additional_sources": [
+        "https://www.international.agh.edu.pl/en/studies/recruitment/recruitment-rules-bachelor",
+        "https://www.international.agh.edu.pl/en/studies/fees"
+      ]
+    },
+    {
+      "id": 52,
+      "name": "Poznań University of Technology (PUT / Politechnika Poznańska)",
+      "type": "public",
+      "application_system": "PUT Admissions Portal (rekrutacja.put.poznan.pl)",
+      "documents": [
+        {
+          "name": "Valid identity document",
+          "required": true,
+          "notes": "Passport for non-EU applicants."
+        },
+        {
+          "name": "Secondary school certificate / educational documents",
+          "required": true,
+          "notes": "Must entitle applicant to apply for admission to bachelor's studies in the issuing country."
+        },
+        {
+          "name": "Apostille or legalization",
+          "required": true,
+          "notes": "Required for non-EU/OECD/EFTA documents unless IB/EB diploma or covered by bilateral agreement (Ukraine, China). Apostille for Hague Convention signatories."
+        },
+        {
+          "name": "NAWA Director recognition statement",
+          "required": true,
+          "notes": "Decision on recognition of education obtained abroad issued by Director of NAWA. Not required for EU/OECD/EFTA/EEA, IB/EB diplomas, Ukrainian certificates, or Chinese Gaozhong certificate. Via SYRENA system."
+        },
+        {
+          "name": "Sworn translation into Polish",
+          "required": true,
+          "notes": "Required if document not in English, German, Spanish, Italian, Russian, Ukrainian, or Belarusian."
+        },
+        {
+          "name": "Language proficiency certificate",
+          "required": true,
+          "notes": "English: B2+ per Annex 2 to Regulation of the Minister of Science and Higher Education of 30 July 2025."
+        }
+      ],
+      "application_fee": "Unverified — contact study@put.poznan.pl or +48 61 665 3544 for current fee. Intake period: March–July 2026.",
+      "language_requirement": "B2 minimum per Ministry Regulation of 30 July 2025",
+      "apostille_required": true,
+      "nawa_required": true,
+      "special_notes": "Detailed requirements split between first-cycle and second-cycle study pages. Under 2025 regulations, final nostrification certificate required at enrollment — conditional acceptance no longer possible.",
+      "source_url": "https://put.poznan.pl/en/admission-for-international",
+      "additional_sources": [
+        "https://put.poznan.pl/en/fees-for-international-students"
+      ],
+      "unverified_fields": ["application_fee"]
+    },
+    {
+      "id": 53,
+      "name": "Adam Mickiewicz University (Poznań / AMU)",
+      "type": "public",
+      "application_system": "Online Recruitment System (SIR) at rekrutacja.amu.edu.pl",
+      "documents": [
+        {
+          "name": "Valid identity document",
+          "required": true,
+          "notes": "Confirms tuition-free study eligibility where applicable."
+        },
+        {
+          "name": "Secondary school certificate with apostille/legalization",
+          "required": true,
+          "notes": "'Scan of a foreign document which is legalized or accompanied by an apostille, entitling the candidate to take up higher education studies in the country where the document was issued.' PDF scan required."
+        },
+        {
+          "name": "Apostille or consular legalization",
+          "required": true,
+          "notes": "Apostille (Hague Convention attestation) or consular legalization if non-signatory. IB and EB certificate holders exempt."
+        },
+        {
+          "name": "NAWA Director Individual Recognition Statement OR university diploma NAWA recognition",
+          "required": true,
+          "notes": "Secondary school certificate: NAWA recognition for non-EU/EFTA/OECD. Higher education diploma (for Master's): NAWA recognition statement. Via SYRENA system."
+        },
+        {
+          "name": "Sworn Polish translation",
+          "required": true,
+          "notes": "For documents not in English or Polish, sworn translator required. Each document scanned to separate PDF."
+        },
+        {
+          "name": "Language proficiency certificate",
+          "required": true,
+          "notes": "For Polish-language programs: B2 Polish certificate. For English-language programs: B2 English (TOEFL iBT ≥72, IELTS ≥5.5, Cambridge First/Advanced, TOEIC ≥785) or degree taught in English from 1 August 2025 per Ministry regulation."
+        },
+        {
+          "name": "Personal questionnaire with color photo",
+          "required": true,
+          "notes": "Downloaded from Online Recruitment System."
+        },
+        {
+          "name": "Medical certificate",
+          "required": false,
+          "notes": "Submitted after acceptance, by October 31."
+        },
+        {
+          "name": "Parental statement of consent",
+          "required": false,
+          "notes": "Required for minors."
+        }
+      ],
+      "application_fee": "Unverified — not specified on main required documents page. Check SIR system or contact rekrutacja@amu.edu.pl.",
+      "language_requirement": "B2 from 1 August 2025 per Ministry regulation; IELTS 5.5+ / TOEFL iBT 72+ for English",
+      "apostille_required": true,
+      "nawa_required": true,
+      "special_notes": "From 1 August 2025, all non-EU citizens must provide B2 language document per Ordinance of Minister of Science and Higher Education of 30 July 2025. Each required document scanned to separate PDF file.",
+      "source_url": "https://amu.edu.pl/en/admissions/full-study-programs-online-enrollment-system/required-documents",
+      "unverified_fields": ["application_fee"]
+    },
+    {
+      "id": 54,
+      "name": "University of Gdańsk (UG)",
+      "type": "public",
+      "application_system": "UG online admissions portal",
+      "documents": [
+        {
+          "name": "Valid passport",
+          "required": true,
+          "notes": "Or alternative legal status document for those with Polish permanent residence, Card of Pole, refugee status, etc."
+        },
+        {
+          "name": "Foreign high school diploma",
+          "required": true,
+          "notes": "With apostille or Polish Embassy legalization."
+        },
+        {
+          "name": "Apostille or consular legalization",
+          "required": true,
+          "notes": "'Foreign high school diploma with apostille (if from Hague Convention signatory) or Polish Embassy legalization.'"
+        },
+        {
+          "name": "NAWA recognition of foreign high school diploma",
+          "required": true,
+          "notes": "'RECOGNITION OF FOREIGN HIGH SCHOOL DIPLOMA issued by Polish Education Superintendent' — for Bachelor's. For Master's: 'INDIVIDUAL RECOGNITION STATEMENT ON DIPLOMA issued by NAWA's director' (exempt for EU/OECD/EFTA diplomas). From July 2025 all via SYRENA system."
+        },
+        {
+          "name": "Supplement / transcript of records and subject list",
+          "required": true,
+          "notes": "Must accompany diploma."
+        },
+        {
+          "name": "Certified translation into Polish or English",
+          "required": true,
+          "notes": "'CERTIFIED TRANSLATION of the documents' into Polish or English."
+        },
+        {
+          "name": "Language certificate (Polish or English)",
+          "required": true,
+          "notes": "Depends on language of instruction of chosen program."
+        }
+      ],
+      "application_fee": "Recruitment fee: 85 PLN per course of study. Non-refundable if: resigned after deadline, failed language exam, or not accepted.",
+      "language_requirement": "B2 in language of instruction",
+      "apostille_required": true,
+      "nawa_required": true,
+      "special_notes": "Qualified candidates must submit original documents by October 15, 2025 (2025/2026 cycle), or within 4 days of admission announcement. Non-submission results in non-enrollment.",
+      "source_url": "https://en.ug.edu.pl/incoming-students/candidates/bachelors-and-masters-courses/required-documents/documents-issued-outside-poland",
+      "additional_sources": [
+        "https://en.ug.edu.pl/incoming-students/candidates/bachelors-and-masters-courses/fees/recruitment-fee"
+      ]
+    },
+    {
+      "id": 55,
+      "name": "Nicolaus Copernicus University (Toruń / NCU / UMK)",
+      "type": "public",
+      "application_system": "Online Admissions System (IRK) at irk.umk.pl",
+      "documents": [
+        {
+          "name": "Valid passport or identity document",
+          "required": true,
+          "notes": "Original shown at enrollment."
+        },
+        {
+          "name": "Certificate of completing secondary education (NCU certified copy)",
+          "required": true,
+          "notes": "With apostille or legalization for non-EU documents. Must be recognized as equivalent to Polish credentials."
+        },
+        {
+          "name": "Apostille or legalization",
+          "required": true,
+          "notes": "Documents from non-Hague-Convention countries require legalization via the nearest diplomatic mission. Apostille for Convention signatories."
+        },
+        {
+          "name": "NAWA Director recognition statement",
+          "required": true,
+          "notes": "For secondary school certificates (Bachelor applicants) from non-EU/EFTA/OECD countries without bilateral agreements. For Master's: NAWA statement on higher education diploma. Via SYRENA system. 'NAWA's information is crucial for admission and visa processes.'"
+        },
+        {
+          "name": "Language proficiency certificate",
+          "required": true,
+          "notes": "Polish B1 minimum for Polish-taught programs; English B2 for English-taught programs. From Ministry-approved list."
+        },
+        {
+          "name": "Application fee payment confirmation",
+          "required": true,
+          "notes": "Application fee: 85 PLN, non-refundable."
+        },
+        {
+          "name": "Polish service address or proxy",
+          "required": true,
+          "notes": "Foreign candidates without EU/EEA/EFTA residency must designate a Polish address or appoint proxy for official correspondence."
+        },
+        {
+          "name": "Parental consent",
+          "required": false,
+          "notes": "'Consent of parents/legal guardians to undertake studies by a minor' — required if under 18."
+        }
+      ],
+      "application_fee": "85 PLN, non-refundable. Tuition fees payable in maximum 4 installments per year on written request.",
+      "language_requirement": "Polish B1 (Polish programs) or English B2 (English programs)",
+      "apostille_required": true,
+      "nawa_required": true,
+      "special_notes": "Admission rules based on Resolution No. 46 of 25 June 2024 and Order No. 82 of 26 March 2025. Language certificate list updated per Ministry Order from 1 August 2025. NCU also has a Centre for Medical Education in English (CM) at study.cm.umk.pl.",
+      "source_url": "https://studyintorun.pl/admissions/required-documents/",
+      "additional_sources": [
+        "https://www.umk.pl/en/admissions/fees-and-documents/",
+        "https://www.umk.pl/en/admissions/"
+      ]
+    },
+    {
+      "id": 56,
+      "name": "Andrzej Frycz Modrzewski Kraków University (UAFM / AFM)",
+      "type": "private",
+      "application_system": "Online admission extranet (en.uafm.edu.pl)",
+      "documents": [
+        {
+          "name": "Valid passport",
+          "required": true,
+          "notes": "Required for inspection."
+        },
+        {
+          "name": "Original secondary school certificate / diploma",
+          "required": true,
+          "notes": "Original for inspection at enrollment."
+        },
+        {
+          "name": "Original higher education diploma and supplement",
+          "required": true,
+          "notes": "For Master's applicants."
+        },
+        {
+          "name": "Apostille or legalization",
+          "required": true,
+          "notes": "Verify specific country requirements via NAWA. Required for documents from outside EU/OECD/EFTA."
+        },
+        {
+          "name": "NAWA Director recognition statement",
+          "required": true,
+          "notes": "For Bachelor's: NAWA statement on secondary school certificate via SYRENA system. For Master's: NAWA statement on higher education diploma. Processing 'may take up to 60 days' — apply early. Required from 1 July 2025 for visa-requiring applicants."
+        },
+        {
+          "name": "Certified translation of secondary school certificate",
+          "required": true,
+          "notes": "By sworn/certified translator. Exempt if document in English, Russian, Ukrainian, Turkish, or Azerbaijani."
+        },
+        {
+          "name": "Language proficiency certificate (B2 minimum)",
+          "required": true,
+          "notes": "B2 in language of instruction from officially recognized list. From 1 August 2025 for non-EU diploma holders. University accepts LanguageCert International ESOL qualifications and offers discounted exam registration."
+        },
+        {
+          "name": "Biometric photograph",
+          "required": true,
+          "notes": "35×45mm, taken within last 6 months."
+        },
+        {
+          "name": "Health insurance",
+          "required": true,
+          "notes": "Required for inspection."
+        },
+        {
+          "name": "Residence card or valid visa",
+          "required": false,
+          "notes": "Required for inspection if applicable."
+        },
+        {
+          "name": "Parental consent declaration",
+          "required": false,
+          "notes": "Required if applicant is a minor."
+        },
+        {
+          "name": "Medical and sanitary certificates",
+          "required": false,
+          "notes": "Required for healthcare-related programs only."
+        }
+      ],
+      "application_fee": "Payment via PayU or bank transfer through admission extranet. Specific PLN/EUR amount not listed publicly — consult tuition-and-fees page at en.uafm.edu.pl/tuition-and-fees/",
+      "language_requirement": "B2 minimum from 1 August 2025 per Ministry regulation",
+      "apostille_required": true,
+      "nawa_required": true,
+      "special_notes": "NAWA SYRENA process may take up to 60 days — apply early. University is authorized LanguageCert exam center. Private university — tuition approximately EUR 15,000/year for medical programs. Applications typically May 15 – August 31.",
+      "source_url": "https://en.uafm.edu.pl/recruitment-rules/",
+      "unverified_fields": ["application_fee_exact_amount"]
+    },
+    {
+      "id": 57,
+      "name": "SWPS University (Warsaw, private)",
+      "type": "private",
+      "application_system": "Online application (english.swps.pl)",
+      "documents": [
+        {
+          "name": "Valid passport",
+          "required": true,
+          "notes": "Or national ID."
+        },
+        {
+          "name": "Secondary school diploma",
+          "required": true,
+          "notes": "Including transcript of grades."
+        },
+        {
+          "name": "Translation of diploma/transcript into English or Polish",
+          "required": true,
+          "notes": "Required if diploma not in Polish, English, Russian, or Ukrainian."
+        },
+        {
+          "name": "Apostille",
+          "required": false,
+          "notes": "SWPS does not require apostille to admit a candidate. However, for documents submitted through SYRENA system, apostille is not required either. 'Decision on whether a foreign diploma should be certified with an apostille is made by the institution based on internal regulations.' For Belarusian diplomas: official nostrification must be submitted to Center for Student Affairs before graduation.",
+          "notes_clarification": "This is an exception from most public universities — SWPS policy is more lenient on apostille at admission stage."
+        },
+        {
+          "name": "NAWA recognition statement (Master's applicants from non-EU/EFTA/OECD/UK/China/Ukraine)",
+          "required": true,
+          "notes": "For Master's programs: if diploma issued outside EU, EFTA, OECD, UK, China, or Ukraine per regulations in force from 1 July 2025, NAWA recognition required. For Bachelor's undergraduate admissions to English-taught programs: 'There is no need to have your diploma recognized by NAWA for admission purposes.'"
+        },
+        {
+          "name": "Language proficiency certificate (B2 minimum)",
+          "required": true,
+          "notes": "B2 in language of instruction. English Philology requires C1. Certificate must be from officially recognized list per Ministry regulation from 1 August 2025."
+        },
+        {
+          "name": "Medical insurance",
+          "required": true,
+          "notes": "Policy or declaration of enrollment in Poland's National Health Fund."
+        }
+      ],
+      "application_fee": "Unverified — specific fee amount not found publicly. Contact SWPS International Admissions for current fee.",
+      "language_requirement": "B2 minimum; C1 for English Philology",
+      "apostille_required": false,
+      "nawa_required": "Partial — required for Master's non-EU/EFTA/OECD/UK/China/Ukraine diplomas; not required for Bachelor's English-taught admissions",
+      "special_notes": "SWPS is a private social sciences and humanities university. Less stringent apostille requirement than public universities. Admissions open January 28, 2026 for 2026/2027. Closes September 30, 2026 or when places filled. Some programs require qualifying exam (announced 30 days in advance).",
+      "source_url": "https://english.swps.pl/programs/apply/application-for-international-candidates",
+      "additional_sources": [
+        "https://english.swps.pl/programs/apply/recogntion-of-qualifications",
+        "https://english.swps.pl/programs/apply/admission-requirements-and-documents"
+      ],
+      "unverified_fields": ["application_fee"]
+    },
+    {
+      "id": 58,
+      "name": "Lazarski University (Warsaw, private)",
+      "type": "private",
+      "application_system": "Recruitment portal (recruitment.lazarski.pl / lazarski.pl/admissions)",
+      "documents": [
+        {
+          "name": "Valid passport",
+          "required": true,
+          "notes": "Name, surname, expiration date pages; copy required."
+        },
+        {
+          "name": "Original high school diploma",
+          "required": true,
+          "notes": "For inspection."
+        },
+        {
+          "name": "Original high school transcript of grades",
+          "required": true,
+          "notes": "For inspection."
+        },
+        {
+          "name": "High school diploma with apostille or legalization",
+          "required": true,
+          "notes": "'High School Diploma with apostille or legalization translated into either Polish or English.' Apostille for Hague Convention countries; Polish Consulate legalization for others."
+        },
+        {
+          "name": "Eligibility statement",
+          "required": true,
+          "notes": "'Eligibility statement from your school or Ministry of Education indicating that the diploma enables you to proceed with higher level of education in the country where the diploma was issued.'"
+        },
+        {
+          "name": "NAWA Director recognition statement",
+          "required": true,
+          "notes": "From 1 July 2025, holders of secondary school certificates issued by foreign institutions must submit NAWA Director's statement confirming right to apply for Polish higher education admission. Via SYRENA system."
+        },
+        {
+          "name": "Sworn translation of diploma and transcript",
+          "required": true,
+          "notes": "Into Polish or English by sworn translator."
+        },
+        {
+          "name": "International language certificate or internal language test",
+          "required": true,
+          "notes": "International certificate confirming B2 level of English. Lazarski offers internal language tests that can be taken online as an alternative to international certificates (e.g., IELTS, TOEFL). From 1 August 2025, only officially recognized certificates accepted for non-EU diploma holders."
+        }
+      ],
+      "application_fee": "Unverified — not published publicly. Tuition: 2,280 EUR/semester. Contact admission@lazarski.edu.pl or +48 22 54 35 368/377.",
+      "language_requirement": "B2 English minimum; internal online language test available as alternative",
+      "apostille_required": true,
+      "nawa_required": true,
+      "special_notes": "Private law/economics/medical university. From 2025/2026: selected English programs offer British degree in partnership with University of Westminster. Internal language test available online as alternative to IELTS/TOEFL.",
+      "source_url": "https://study.gov.pl/lazarski-university-3",
+      "additional_sources": [
+        "https://www.lazarski.pl/en/offer/admission/higher-education",
+        "https://www.lazarski.pl/en/offer/admission"
+      ],
+      "unverified_fields": ["application_fee"]
+    }
+  ],
+  "cross_cutting_requirements": {
+    "apostille": {
+      "universal": true,
+      "notes": "All 14 universities require apostille (Hague Convention countries) or Polish consular legalization (non-Hague Convention countries) on foreign educational documents. Exception: SWPS University states it does not require apostille at admission stage (internal policy). Exemptions at all universities: EU/OECD/EFTA documents, IB diplomas, EB diplomas.",
+      "hague_convention_info": "https://nawa.gov.pl/en/apostille-and-legalization"
+    },
+    "nawa_syrena": {
+      "universal": true,
+      "mandatory_from": "1 July 2025",
+      "system": "SYRENA (www.syrena.nawa.gov.pl)",
+      "cost": "Free",
+      "processing_days": "30-60 days",
+      "applies_to": "Non-EU/EFTA/OECD applicants whose certificates are not covered by bilateral international agreements with Poland (currently China and Ukraine have agreements). IB/EB diploma holders exempt.",
+      "notes": "From 1 July 2025, Education Superintendents no longer process recognition for Polish higher education admission; NAWA SYRENA is the only pathway. Universities now require final NAWA statement at enrollment — conditional acceptance no longer accepted."
+    },
+    "language_requirement": {
+      "minimum_level": "B2 CEFR",
+      "mandatory_from": "1 August 2025 for non-EU diploma holders",
+      "regulation": "Regulation of the Minister of Science and Higher Education of 30 July 2025 (Journal of Laws of Republic of Poland, 31 July 2025, item 1045)",
+      "medical_programs_ielts": "IELTS 6.0-6.5 minimum (Medical University of Warsaw: 6.0; Medical University of Gdansk: 6.5)",
+      "general_programs_ielts": "IELTS 5.5 minimum at most public universities; varies by program"
+    },
+    "certified_translation": {
+      "universal": true,
+      "notes": "All documents not in Polish or English must be translated by a sworn/certified translator. For Polish universities, sworn translators must be registered with the Polish Ministry of Justice. Most universities accept English as alternative to Polish for documents."
+    },
+    "medical_programs_specific": {
+      "subjects_required": "Biology and Chemistry grades required on school certificate (Medical University of Warsaw, Medical University of Gdańsk, Wrocław Medical University, Jagiellonian University Medicine)",
+      "entrance_exam": "Medical entrance exam required at WUM (Biology/Chemistry/Decision Making), Wrocław Medical University (online subject exam for non-EU/OECD applicants)",
+      "fitness_certificate": "Medical fitness certificate typically required at enrollment, not at application stage",
+      "hepatitis_b": "Hepatitis B vaccination proof required at study start at several medical universities"
+    }
+  }
+}

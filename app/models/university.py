@@ -63,6 +63,7 @@ class UniversityDocumentItem(Base):
     name: Mapped[str] = mapped_column(String(300), nullable=False)
     is_required: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     order_index: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    degree_level: Mapped[str] = mapped_column(String(20), nullable=False, default="all")  # all | bachelor | master | phd
 
     university: Mapped["University"] = relationship(back_populates="document_items")
 

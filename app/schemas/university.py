@@ -135,6 +135,7 @@ class DocumentItemOut(BaseModel):
     name: str
     is_required: bool
     order_index: int
+    degree_level: str = "all"
 
     model_config = {"from_attributes": True}
 
@@ -143,12 +144,14 @@ class DocumentItemCreate(BaseModel):
     name: str
     is_required: bool = True
     order_index: int = 0
+    degree_level: str = "all"
 
 
 class DocumentItemUpdate(BaseModel):
     name: str | None = None
     is_required: bool | None = None
     order_index: int | None = None
+    degree_level: str | None = None
 
 
 class UniversityDetail(UniversityOut):

@@ -170,20 +170,13 @@ All issues fixed:
 - RTL: `document.dir` set automatically; use `isRTL = i18n.language === "ar"` for layout conditionals
 - Static arrays that need translation must be defined INSIDE components (not at module level)
 
-**Remaining hardcoded strings (not yet translated):**
-- `CoursePage.jsx` — "Course Levels", "Each Course Will Include"
-- `PlacementTestPage.jsx` — "Test Levels", "How the Placement Test Will Work"
-- `Universities.jsx` — `LANG_FILTERS` array, country `<option>` labels
-- `Instructors.jsx` ChatModal — "Retry" button (~line 110)
+All known hardcoded strings have been translated. Both EN and AR locales are complete.
 
 ---
 
 ## Known Bugs
 
-1. `Instructors.jsx` ChatModal "Retry" button hardcoded English (~line 110)
-2. `Universities.jsx` `LANG_FILTERS` — module-level array, labels not translatable
-3. `Universities.jsx` country `<option>` tags — hardcoded English names (~lines 126–131)
-4. `CoursePage.jsx` / `PlacementTestPage.jsx` — section headings still hardcoded English
+None currently tracked.
 
 ---
 
@@ -197,10 +190,34 @@ All issues fixed:
 
 ---
 
+## University Data (completed — July 2026)
+
+All 58 universities have real, verified data from official sources:
+
+### Document Checklists (`university_document_items` table — 637 rows)
+Script: `scripts/update_documents_real.py`
+- Per-university real requirements (not templates)
+- **Egypt removed from APS list** — was never on official list. Real APS countries: China, India, Vietnam (Mongolia at some unis)
+- uni-assist vs. direct portal corrected per university
+- NAWA SYRENA requirement for Poland (mandatory from 1 July 2025, 30–60 day process)
+- Medical university entrance exam requirements (WUM Competency Test, MUG biology/chemistry)
+- TU Darmstadt: must submit BOTH online + printed paper documents
+- TUHH: English proof compulsory for ALL applicants, non-EU deadline Dec–Feb
+
+### Tuition Fees by Degree Level (`university_programs` table — 130 rows)
+Script: `scripts/update_tuition_by_level.py`
+- German public free unis: €0 for all degrees
+- BW unis: €3,000/yr bachelor & master, PhD free
+- TUM: bachelor avg €5,000/yr, master avg €9,000/yr, PhD free
+- German private: real per-program fees (Frankfurt School, ESMT, WHU, Constructor)
+- Polish unis: real fees by field and degree level from official admissions pages
+
+---
+
 ## Alembic Migration Chain
 
 ```
-(base) → 2bf247d09d53 → q8l0m2n4o6p8 (token_version + verification_expiry) → r9m1n3o5p7q9 (IELTS tables)
+(base) → 2bf247d09d53 → q8l0m2n4o6p8 (token_version + verification_expiry) → r9m1n3o5p7q9 (IELTS tables) → f739d93e8523 (university_programs) → b2c3d4e5f6a7 (university_document_items)
 ```
 
 To apply migrations: `alembic upgrade head`
@@ -209,9 +226,7 @@ To apply migrations: `alembic upgrade head`
 
 ## Suggested Next Steps
 
-1. **Fix remaining i18n gaps** — LANG_FILTERS, country options, Retry button, CoursePage/PlacementTestPage headings
-2. **Notification bell with unread badge** — poll `/notifications/unread-count` every 30s, dropdown panel, mark read
-3. **Profile completeness bar** — % complete shown in Dashboard, progress bar + CTA
-4. **IELTS test-taking UI** — full interactive exam experience at `/learning/ielts/:id`
-5. **Document checklist per university** — new migration, checklist UI in UniversityDetail + ApplicationTracker
-6. **Personalized dashboard redesign** — top recommendations widget, saved count, open tickets, deadlines
+1. **Notification bell with unread badge** — poll `/notifications/unread-count` every 30s, dropdown panel, mark read
+2. **Profile completeness bar** — % complete shown in Dashboard, progress bar + CTA
+3. **IELTS test-taking UI** — full interactive exam experience at `/learning/ielts/:id`
+4. **Delete test user** — testclaude@test.com created during testing sessions

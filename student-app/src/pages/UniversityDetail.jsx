@@ -254,9 +254,12 @@ function TrackModal({ uni, onClose, onConfirm }) {
   const [files, setFiles] = useState([]);
   const [submitting, setSubmitting] = useState(false);
 
-  const requiredDocs = (uni.document_items && uni.document_items.length > 0)
-    ? uni.document_items
-    : (uni.required_documents ? uni.required_documents.split(",").map((d, i) => ({ id: i, name: d.trim(), is_required: true })).filter(x => x.name) : []);
+  const requiredDocs = (() => {
+    const all = (uni.document_items && uni.document_items.length > 0)
+      ? uni.document_items
+      : (uni.required_documents ? uni.required_documents.split(",").map((d, i) => ({ id: i, name: d.trim(), is_required: true, degree_level: "all" })).filter(x => x.name) : []);
+    return userDegreeLevel ? all.filter(d => d.degree_level === "all" || d.degree_level === userDegreeLevel) : all;
+  })();
 
   const addFiles = (incoming) => {
     const arr = Array.from(incoming);
@@ -392,17 +395,20 @@ const UniversityDetail = () => {
   const [imgError, setImgError] = useState(false);
   const [inPipeline, setInPipeline] = useState(false);
   const [pipelineLoading, setPipelineLoading] = useState(false);
+  const [userDegreeLevel, setUserDegreeLevel] = useState(null);
   useEffect(() => {
     Promise.all([
       api.get(`/universities/${id}`),
       api.get("/favourites"),
       api.get("/pipeline").catch(() => ({ data: [] })),
-    ]).then(([uRes, fRes, pRes]) => {
+      api.get("/profiles/me").catch(() => ({ data: null })),
+    ]).then(([uRes, fRes, pRes, profileRes]) => {
       setUni(uRes.data);
       const ids = fRes.data.map(f => f.university_id ?? f.id);
       setSaved(ids.includes(parseInt(id)));
       const pipelineIds = (Array.isArray(pRes.data) ? pRes.data : []).map(e => e.university_id);
       setInPipeline(pipelineIds.includes(parseInt(id)));
+      if (profileRes.data?.degree_level) setUserDegreeLevel(profileRes.data.degree_level);
     }).catch(() => {
       api.get(`/universities/${id}`)
         .then(r => setUni(r.data))
@@ -446,8 +452,11 @@ const UniversityDetail = () => {
   // Use structured document_items if available, fall back to legacy text field
   const docItems = (uni.document_items && uni.document_items.length > 0)
     ? uni.document_items
-    : (uni.required_documents ? uni.required_documents.split(",").map((d, i) => ({ id: i, name: d.trim(), is_required: true })) : []);
-  const docs = docItems;
+    : (uni.required_documents ? uni.required_documents.split(",").map((d, i) => ({ id: i, name: d.trim(), is_required: true, degree_level: "all" })) : []);
+  // Filter docs to user's degree level: show 'all' items + items matching their level
+  const docs = userDegreeLevel
+    ? docItems.filter(d => d.degree_level === "all" || d.degree_level === userDegreeLevel)
+    : docItems;
   const score = matchData.score ?? null;
   const reasons = matchData.reasons ?? [];
   const bd = matchData.breakdown ?? null;
@@ -689,22 +698,40 @@ const UniversityDetail = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {groups[level].map((pf, i) => (
-                            <tr key={pf.id}
-                              className={`border-t border-gray-50 ${i % 2 === 0 ? "bg-[oklch(0.17_0.02_285)]" : "bg-gray-50/40"} hover:bg-indigo-50/30 transition`}
-                              title={pf.notes || ""}>
-                              <td className="py-2.5 px-3 font-medium text-white">{pf.field_of_study}</td>
-                              <td className="py-2.5 px-3 text-right">
-                                {pf.tuition_fee_eur === 0 ? (
-                                  <span className="text-green-600 font-bold">{t("university.freeTuitionShort")}</span>
-                                ) : (
-                                  <span className="font-bold" style={{ color: theme.accent }}>
-                                    €{pf.tuition_fee_eur.toLocaleString()}/yr
-                                  </span>
-                                )}
-                              </td>
-                            </tr>
-                          ))}
+                          {groups[level].map((pf, i) => {
+                            const isMyLevel = userDegreeLevel &&
+                              (pf.degree_level === userDegreeLevel || pf.degree_level === "all");
+                            const isOtherLevel = userDegreeLevel && !isMyLevel;
+                            return (
+                              <tr key={pf.id}
+                                className={`border-t border-gray-50 transition ${
+                                  isMyLevel
+                                    ? "bg-indigo-900/30 ring-1 ring-inset ring-indigo-500/30"
+                                    : isOtherLevel
+                                      ? "opacity-40"
+                                      : i % 2 === 0 ? "bg-[oklch(0.17_0.02_285)]" : "bg-gray-50/40"
+                                } hover:opacity-100`}
+                                title={pf.notes || ""}>
+                                <td className="py-2.5 px-3 font-medium text-white">
+                                  {pf.field_of_study}
+                                  {isMyLevel && (
+                                    <span className="ml-2 text-[10px] font-bold uppercase tracking-wide text-indigo-400 bg-indigo-900/40 px-1.5 py-0.5 rounded-full">
+                                      {t("university.yourLevel")}
+                                    </span>
+                                  )}
+                                </td>
+                                <td className="py-2.5 px-3 text-right">
+                                  {pf.tuition_fee_eur === 0 ? (
+                                    <span className="text-green-600 font-bold">{t("university.freeTuitionShort")}</span>
+                                  ) : (
+                                    <span className="font-bold" style={{ color: isMyLevel ? "#818cf8" : theme.accent }}>
+                                      €{pf.tuition_fee_eur.toLocaleString()}/yr
+                                    </span>
+                                  )}
+                                </td>
+                              </tr>
+                            );
+                          })}
                         </tbody>
                       </table>
                     </div>
@@ -735,6 +762,12 @@ const UniversityDetail = () => {
 
           {docs.length > 0 && (
             <Section icon="📄" title={t("university.requiredDocumentsSection")} accentColor={theme.accent}>
+              {userDegreeLevel && (
+                <div className="flex items-center gap-2 mb-3 px-3 py-2 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-xs text-indigo-400 font-medium">
+                  <span>🎓</span>
+                  <span>{t("university.showingDocsFor")} <strong className="text-indigo-300 capitalize">{t(`university.degreeLevel${userDegreeLevel.charAt(0).toUpperCase() + userDegreeLevel.slice(1)}`)}</strong></span>
+                </div>
+              )}
               <ul className="space-y-2">
                 {docs.map((doc) => (
                   <li key={doc.id} className="flex items-center gap-2 text-sm">
