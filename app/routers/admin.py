@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import func
 from sqlalchemy.orm import Session, joinedload
 from pydantic import BaseModel
@@ -59,14 +59,22 @@ def get_stats(
 
 @router.get("/students")
 def get_students(
+    skip: int = Query(0),
+    limit: int = Query(25),
+    search: Optional[str] = Query(None),
     db: Session = Depends(get_db),
     _=Depends(require_admin),
 ):
+    query = db.query(User).filter(User.role == "student")
+    if search:
+        query = query.filter(User.email.ilike(f"%{search}%"))
+    total = query.count()
     students = (
-        db.query(User)
-        .filter(User.role == "student")
+        query
         .options(joinedload(User.profile))
         .order_by(User.id.desc())
+        .offset(skip)
+        .limit(limit)
         .all()
     )
 
@@ -79,20 +87,20 @@ def get_students(
             "is_active": u.is_active,
             "created_at": u.created_at.isoformat() if u.created_at else None,
             "has_profile": p is not None,
-            "nationality": p.nationality if p else None,
-            "degree_level": p.degree_level if p else None,
-            "gpa": p.gpa if p else None,
-            "budget_eur": p.budget_eur if p else None,
-            "english_level": p.english_level if p else None,
-            "preferred_countries": p.preferred_countries if p else None,
-            "field_of_study": p.field_of_study if p else None,
-            "prev_university": p.prev_university if p else None,
-            "prev_country": p.prev_country if p else None,
-            "prev_major": p.prev_major if p else None,
-            "graduation_year": p.graduation_year if p else None,
-            "prev_gpa": p.prev_gpa if p else None,
+            "nationality": getattr(p, "nationality", None),
+            "degree_level": getattr(p, "degree_level", None),
+            "gpa": getattr(p, "gpa", None),
+            "budget_eur": getattr(p, "budget_eur", None),
+            "english_level": getattr(p, "english_level", None),
+            "preferred_countries": getattr(p, "preferred_countries", None),
+            "field_of_study": getattr(p, "field_of_study", None),
+            "prev_university": getattr(p, "prev_university", None),
+            "prev_country": getattr(p, "prev_country", None),
+            "prev_major": getattr(p, "prev_major", None),
+            "graduation_year": getattr(p, "graduation_year", None),
+            "prev_gpa": getattr(p, "prev_gpa", None),
         })
-    return result
+    return {"items": result, "total": total}
 
 
 class StudentProfileUpdatePayload(BaseModel):
@@ -115,18 +123,18 @@ def get_student(user_id: int, db: Session = Depends(get_db), _=Depends(require_a
         "is_active": u.is_active,
         "created_at": u.created_at.isoformat() if u.created_at else None,
         "has_profile": p is not None,
-        "nationality": p.nationality if p else None,
-        "degree_level": p.degree_level if p else None,
-        "gpa": p.gpa if p else None,
-        "budget_eur": p.budget_eur if p else None,
-        "english_level": p.english_level if p else None,
-        "preferred_countries": p.preferred_countries if p else None,
-        "field_of_study": p.field_of_study if p else None,
-        "prev_university": p.prev_university if p else None,
-        "prev_country": p.prev_country if p else None,
-        "prev_major": p.prev_major if p else None,
-        "graduation_year": p.graduation_year if p else None,
-        "prev_gpa": p.prev_gpa if p else None,
+        "nationality": getattr(p, "nationality", None),
+        "degree_level": getattr(p, "degree_level", None),
+        "gpa": getattr(p, "gpa", None),
+        "budget_eur": getattr(p, "budget_eur", None),
+        "english_level": getattr(p, "english_level", None),
+        "preferred_countries": getattr(p, "preferred_countries", None),
+        "field_of_study": getattr(p, "field_of_study", None),
+        "prev_university": getattr(p, "prev_university", None),
+        "prev_country": getattr(p, "prev_country", None),
+        "prev_major": getattr(p, "prev_major", None),
+        "graduation_year": getattr(p, "graduation_year", None),
+        "prev_gpa": getattr(p, "prev_gpa", None),
     }
 
 
