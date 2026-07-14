@@ -174,6 +174,35 @@ All known hardcoded strings have been translated. Both EN and AR locales are com
 
 ---
 
+## Test Simulators (completed — July 2026)
+
+**Models:** `ExamPassage`, `ExamQuestion`, `SimulatorAttempt`, `SimulatorSectionResult` (in `app/models/simulator.py`)
+
+**Backend endpoints** (`/simulators` prefix):
+- `GET /simulators/exams` — list TOEFL and Cambridge metadata
+- `GET /simulators/exams/{exam_type}/content` — full exam content (passages + questions)
+- `POST /simulators/attempts` — start attempt
+- `GET /simulators/attempts` — list user's attempts
+- `GET /simulators/attempts/{id}` — attempt with section results and score report
+- `POST /simulators/attempts/{id}/sections/{section}` — submit section (MCQ auto-scored, writing/speaking Groq AI scored)
+- `POST /simulators/attempts/{id}/complete` — finish exam, calculate final score, generate Groq AI report
+- `POST /simulators/admin/seed` — seed original TOEFL + Cambridge content (idempotent, run once)
+- `GET/POST/PATCH/DELETE /simulators/admin/passages` — passage CRUD (admin)
+- `GET/POST/PATCH/DELETE /simulators/admin/questions` — question CRUD (admin)
+
+**Student app:** `/simulators` hub, `/simulators/exam/:examType` exam session, `/simulators/results/:attemptId` score report
+**IELTS** still accessible at `/simulators/ielts` and original `/learning/ielts` routes
+**Admin panel:** Exam Passages and Exam Questions resources
+**Migration:** `a1b2c3d4e5f6` — adds 4 new tables
+
+**Seed the content** (first deploy after this migration):
+```
+POST /simulators/admin/seed
+```
+Run once with admin token. Adds 50+ original questions for TOEFL + Cambridge.
+
+---
+
 ## Known Bugs
 
 None currently tracked.
