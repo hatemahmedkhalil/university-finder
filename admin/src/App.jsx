@@ -14,6 +14,7 @@ import SupportAgentIcon    from "@mui/icons-material/SupportAgent";
 import NotificationsIcon   from "@mui/icons-material/Notifications";
 import SendIcon            from "@mui/icons-material/Send";
 import SchoolRoundedIcon   from "@mui/icons-material/SchoolRounded";
+import ArticleIcon         from "@mui/icons-material/Article";
 
 import authProvider from "./authProvider";
 import dataProvider from "./dataProvider";
@@ -31,6 +32,7 @@ import { InstructorMessageList, InstructorMessageShow } from "./resources/Instru
 import { PlacementTestList, PlacementTestEdit, PlacementTestCreate, PlacementTestShow, CourseList, CourseEdit, CourseCreate, CourseShow } from "./resources/Learning";
 import { IeltsTestList, IeltsTestCreate, IeltsTestEdit, IeltsTestShow, IeltsSectionList, IeltsSectionCreate, IeltsSectionEdit, IeltsSectionShow, IeltsQuestionList, IeltsQuestionCreate, IeltsQuestionEdit, IeltsQuestionShow } from "./resources/Ielts";
 import { PipelineList } from "./resources/Pipeline";
+import { PassageList, PassageCreate, PassageEdit, PassageShow, QuestionList, QuestionCreate, QuestionEdit, QuestionShow } from "./resources/Simulators";
 import { StudentList, StudentShow, StudentEdit } from "./resources/Students";
 import { NotificationList, SendNotificationPanel } from "./resources/Notifications";
 
@@ -73,6 +75,8 @@ const AppMenu = () => {
       <Menu.Item to="/ielts/manage"              primaryText="IELTS Tests"     leftIcon={<SchoolOutlinedIcon />} />
       <Menu.Item to="/ielts/manage/sections"     primaryText="IELTS Sections"  leftIcon={<SchoolOutlinedIcon />} />
       <Menu.Item to="/ielts/manage/questions"    primaryText="IELTS Questions" leftIcon={<SchoolOutlinedIcon />} />
+      <Menu.Item to="/simulators/admin/passages"  primaryText="Exam Passages"   leftIcon={<ArticleIcon />} />
+      <Menu.Item to="/simulators/admin/questions" primaryText="Exam Questions"  leftIcon={<ArticleIcon />} />
     </Menu>
   );
 };
@@ -116,7 +120,9 @@ const App = () => (
         <Resource key="courses"         name="learning/courses"          list={CourseList}       edit={CourseEdit}       create={CourseCreate}       show={CourseShow}       icon={MenuBookIcon} options={{ label: "Courses" }} />,
         <Resource key="ielts-tests"     name="ielts/manage"              list={IeltsTestList}    edit={IeltsTestEdit}    create={IeltsTestCreate}    show={IeltsTestShow}    icon={SchoolOutlinedIcon} options={{ label: "IELTS Tests" }} />,
         <Resource key="ielts-sections"  name="ielts/manage/sections"     list={IeltsSectionList} edit={IeltsSectionEdit} create={IeltsSectionCreate} show={IeltsSectionShow} icon={SchoolOutlinedIcon} options={{ label: "IELTS Sections" }} />,
-        <Resource key="ielts-questions" name="ielts/manage/questions"    list={IeltsQuestionList} edit={IeltsQuestionEdit} create={IeltsQuestionCreate} show={IeltsQuestionShow} icon={SchoolOutlinedIcon} options={{ label: "IELTS Questions" }} />,
+        <Resource key="ielts-questions"     name="ielts/manage/questions"      list={IeltsQuestionList} edit={IeltsQuestionEdit} create={IeltsQuestionCreate} show={IeltsQuestionShow} icon={SchoolOutlinedIcon} options={{ label: "IELTS Questions" }} />,
+        <Resource key="sim-passages"         name="simulators/admin/passages"   list={PassageList}  create={PassageCreate}  edit={PassageEdit}  show={PassageShow}  icon={ArticleIcon} options={{ label: "Exam Passages" }} />,
+        <Resource key="sim-questions"        name="simulators/admin/questions"  list={QuestionList} create={QuestionCreate} edit={QuestionEdit} show={QuestionShow} icon={ArticleIcon} options={{ label: "Exam Questions" }} />,
 
         <CustomRoutes key="custom">
           <Route path="/support-tickets"    element={<SupportPanel />} />

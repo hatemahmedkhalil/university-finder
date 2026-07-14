@@ -30,6 +30,9 @@ import AiChat from "./pages/AiChat";
 import PlacementTestPage from "./pages/PlacementTestPage";
 import IeltsSimulator from "./pages/IeltsSimulator";
 import IeltsExamPage from "./pages/IeltsExamPage";
+import Simulators from "./pages/Simulators";
+import ExamSession from "./pages/ExamSession";
+import SimulatorResults from "./pages/SimulatorResults";
 import CoursePage from "./pages/CoursePage";
 import ApplicationHub from "./pages/ApplicationHub";
 import Pipeline from "./pages/Pipeline";
@@ -131,6 +134,14 @@ const App = () => (
           <Route path="/email-integration" element={<ProtectedRoute><EmailIntegration /></ProtectedRoute>} />
           <Route path="/calendar"          element={<ProtectedRoute><CalendarPage /></ProtectedRoute>} />
           <Route path="/settings"       element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+
+          {/* Test Simulators */}
+          <Route path="/simulators"             element={<ProtectedRoute><Simulators /></ProtectedRoute>} />
+          <Route path="/simulators/ielts"       element={<ProtectedRoute><IeltsSimulator /></ProtectedRoute>} />
+          <Route path="/simulators/ielts/:id"   element={<ProtectedRoute><IeltsExamPage /></ProtectedRoute>} />
+          <Route path="/simulators/exam/:examType" element={<ProtectedRoute><ExamSession /></ProtectedRoute>} />
+          <Route path="/simulators/results/:attemptId" element={<ProtectedRoute><SimulatorResults /></ProtectedRoute>} />
+          <Route path="/simulators/history"     element={<ProtectedRoute><Simulators /></ProtectedRoute>} />
         </Routes>
       </DashboardLayout>
       <Toaster position="top-right" />

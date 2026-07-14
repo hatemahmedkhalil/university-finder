@@ -74,7 +74,25 @@
     "freePlan": "Free Plan",
     "sectionMain": "Main",
     "sectionCommunity": "Community",
-    "sectionAccount": "Account"
+    "sectionAccount": "Account",
+    "sectionSimulators": "Test Simulators",
+    "simulators": "Test Simulators"
+  },
+  "simulators": {
+    "title": "Test Simulators",
+    "subtitle": "Practice with full-length, timed simulations of real international English exams. Get AI-powered score reports.",
+    "start": "Start Exam",
+    "retake": "Retake Exam",
+    "history": "Recent Attempts",
+    "noHistory": "No attempts yet — start your first simulation above!",
+    "aboutTitle": "About These Simulations",
+    "feature1": "Original questions created to match official exam formats and difficulty levels",
+    "feature2": "AI scoring for Writing and Speaking sections with personalised feedback",
+    "feature3": "Detailed score reports with strengths, weaknesses, and study recommendations",
+    "results": {
+      "title": "Score Report",
+      "sections": "Section Scores"
+    }
   },
   "notifications": {
     "markAllRead": "Mark all read",

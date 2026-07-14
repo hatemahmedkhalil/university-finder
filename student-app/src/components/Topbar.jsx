@@ -35,6 +35,7 @@ const PAGE_META = {
   "/instructor-panel":  { key: "nav.instructorPanel", icon: "🎙️", photo: "https://images.unsplash.com/photo-1544717305-2782549b5136?w=120&q=60" },
   "/calendar":          { key: "nav.calendar",         icon: "📅", photo: "https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=120&q=60" },
   "/email-integration": { key: "nav.emailIntegration",icon: "📧", photo: "https://images.unsplash.com/photo-1526554850534-7c78330d5f90?w=120&q=60" },
+  "/simulators":        { key: "nav.simulators",       icon: "📝", photo: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=120&q=60" },
 };
 
 const usePageMeta = (pathname) => {

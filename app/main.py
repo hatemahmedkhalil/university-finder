@@ -11,7 +11,7 @@ from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 
 from app.config import settings
-from app.routers import admin, ai_chat, ai_recommendations, announcements, application_guides, applications, auth, calendar_events, course_chat, email_integration, favourites, ielts, instructor_messages, instructor_posts, instructors, learning, motivation_letters, notifications, pipeline, recommendations, scholarships, student_documents, student_profiles, subscription_plans, support, universities, user_languages, users
+from app.routers import admin, ai_chat, ai_recommendations, announcements, application_guides, applications, auth, calendar_events, course_chat, email_integration, favourites, ielts, instructor_messages, instructor_posts, instructors, learning, motivation_letters, notifications, pipeline, recommendations, scholarships, simulator, student_documents, student_profiles, subscription_plans, support, universities, user_languages, users
 from app.core.limiter import limiter
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -78,6 +78,7 @@ async def spa_middleware(request: Request, call_next):
             "/favourites", "/learning", "/university/", "/instructors",
             "/login", "/register", "/forgot-password", "/reset-password", "/verify-email",
             "/my-questions", "/instructor-panel", "/pricing", "/support", "/notifications", "/ai-chat", "/apply-hub", "/pipeline", "/email-integration", "/calendar",
+            "/simulators", "/simulators/exam",
         )
         if "text/html" in accept and (path == "/" or any(path.startswith(p) for p in SPA_PREFIXES)):
             return FileResponse(STUDENT_DIST / "index.html")
@@ -128,6 +129,7 @@ app.include_router(application_guides.router)
 app.include_router(course_chat.router)
 app.include_router(email_integration.router)
 app.include_router(calendar_events.router)
+app.include_router(simulator.router)
 
 # Serve only public uploads (instructor photos). Documents require auth — see applications router.
 INSTRUCTORS_UPLOAD_DIR = UPLOADS_DIR / "instructors"

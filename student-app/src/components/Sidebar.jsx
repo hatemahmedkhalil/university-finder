@@ -36,6 +36,7 @@ const ICONS = {
   notifications:   ["M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"],
   questions:       ["M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"],
   pipeline:        ["M12 2L2 7l10 5 10-5-10-5z", "M2 17l10 5 10-5", "M2 12l10 5 10-5"],
+  simulators:      ["M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"],
 };
 
 /* ── Grouped nav sections matching design handoff ── */
@@ -52,6 +53,13 @@ const STUDENT_NAV_SECTIONS = [
       { path: "/pipeline",        i18nKey: "nav.pipeline",        iconKey: "pipeline" },
       { path: "/apply-hub",       i18nKey: "nav.applyHub",        iconKey: "applyhub" },
       { path: "/learning",        i18nKey: "nav.learning",        iconKey: "learning" },
+    ],
+  },
+  {
+    label: "Test Simulators",
+    i18nKey: "nav.sectionSimulators",
+    items: [
+      { path: "/simulators", i18nKey: "nav.simulators", iconKey: "simulators" },
     ],
   },
   {
