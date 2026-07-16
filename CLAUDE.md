@@ -193,7 +193,7 @@ All known hardcoded strings have been translated. Both EN and AR locales are com
 **Student app:** `/simulators` hub, `/simulators/exam/:examType` exam session, `/simulators/results/:attemptId` score report
 **IELTS** still accessible at `/simulators/ielts` and original `/learning/ielts` routes
 **Admin panel:** Exam Passages and Exam Questions resources
-**Migration:** `a1b2c3d4e5f6` — adds 4 new tables
+**Migration:** `c2d3e4f5a6b7` — adds 4 new tables
 
 **Seed the content** (first deploy after this migration):
 ```
@@ -246,7 +246,7 @@ Script: `scripts/update_tuition_by_level.py`
 ## Alembic Migration Chain
 
 ```
-(base) → 2bf247d09d53 → q8l0m2n4o6p8 (token_version + verification_expiry) → r9m1n3o5p7q9 (IELTS tables) → f739d93e8523 (university_programs) → b2c3d4e5f6a7 (university_document_items)
+(base) → 2bf247d09d53 → q8l0m2n4o6p8 (token_version + verification_expiry) → r9m1n3o5p7q9 (IELTS tables) → f739d93e8523 (university_programs) → b2c3d4e5f6a7 (university_document_items) → z1a2b3c4d5e6 (login lockout) → a1b2c3d4e5f6 (audio_url on ielts_sections) → c2d3e4f5a6b7 (simulator tables)
 ```
 
 To apply migrations: `alembic upgrade head`
