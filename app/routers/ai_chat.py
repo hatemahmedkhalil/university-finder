@@ -173,8 +173,17 @@ def _build_app_data(db: Session, current_user: User) -> str:
     return "\n\n".join(sections)
 
 
-def _check_premium(user: User):
-    pass  # temporarily open to all users
+FREE_DAILY_MSG_LIMIT = 10
+
+def _check_free_limit(user: User, db: Session):
+    if user.plan != "free":
+        return
+    count = _count_today_messages(db, user.id)
+    if count >= FREE_DAILY_MSG_LIMIT:
+        raise HTTPException(
+            status_code=403,
+            detail=f"Free plan limit reached: {FREE_DAILY_MSG_LIMIT} messages per day. Upgrade to Pro for unlimited chat.",
+        )
 
 
 def _count_today_messages(db: Session, user_id: int) -> int:
@@ -217,7 +226,6 @@ def get_history(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    _check_premium(current_user)
     try:
         return (
             db.query(AiChatMessage)
@@ -239,7 +247,7 @@ def send_message(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    _check_premium(current_user)
+    _check_free_limit(current_user, db)
 
     if not body.message.strip():
         raise HTTPException(status_code=400, detail="Message cannot be empty")

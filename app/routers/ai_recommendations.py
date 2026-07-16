@@ -78,6 +78,12 @@ def get_ai_recommendations(
     if not settings.GROQ_API_KEY:
         raise HTTPException(status_code=503, detail="AI service not configured.")
 
+    if current_user.plan == "free" and current_user.ai_rec_count >= 3:
+        raise HTTPException(
+            status_code=403,
+            detail="Free plan limit reached: 3 AI recommendations total. Upgrade to Pro for unlimited recommendations.",
+        )
+
     profile = db.query(StudentProfile).filter(StudentProfile.user_id == current_user.id).first()
     if not profile:
         raise HTTPException(status_code=404, detail="Please create your profile first.")
@@ -205,6 +211,10 @@ Return ONLY valid JSON in this exact format (no markdown, no explanation outside
             fit_score=item.get("fit_score", 80),
             tips=item.get("tips", ""),
         ))
+
+    if current_user.plan == "free":
+        current_user.ai_rec_count += 1
+        db.commit()
 
     return AiRecommendationsResponse(
         recommendations=result_items,

@@ -215,6 +215,14 @@ def create_application(
     if body.status not in VALID_STATUSES:
         raise HTTPException(status_code=400, detail=f"Invalid status. Must be one of: {', '.join(VALID_STATUSES)}")
 
+    if current_user.plan == "free":
+        count = db.query(Application).filter(Application.user_id == current_user.id).count()
+        if count >= 2:
+            raise HTTPException(
+                status_code=403,
+                detail="Free plan limit reached: 2 applications total. Upgrade to Pro for unlimited applications.",
+            )
+
     uni = db.query(University).filter(University.id == body.university_id).first()
     if not uni:
         raise HTTPException(status_code=404, detail="University not found")

@@ -29,6 +29,7 @@ class User(Base):
     token_version: Mapped[int] = mapped_column(default=0, nullable=False)
     failed_login_attempts: Mapped[int] = mapped_column(default=0, nullable=False)
     locked_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    ai_rec_count: Mapped[int] = mapped_column(default=0, nullable=False)
 
     __table_args__ = (CheckConstraint("role IN ('student', 'admin')", name="ck_user_role"),)
 
