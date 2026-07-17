@@ -18,6 +18,7 @@ const ICONS = {
   recommendations: ["M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"],
   universities:    ["M22 10v6M2 10l10-5 10 5-10 5z", "M6 12v5c3 3 9 3 12 0v-5"],
   scholarships:    ["M12 15C8.7 15 6 12.3 6 9V4l6-2 6 2v5c0 3.3-2.7 6-6 6z", "M8.8 19.1L12 21l3.2-1.9M12 15v6"],
+  visaguide:       ["M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"],
   learning:        ["M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z", "M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"],
   instructors:     ["M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2", "M23 21v-2a4 4 0 00-3-3.87", "M9 11a4 4 0 100-8 4 4 0 000 8z", "M16 3.13a4 4 0 010 7.75"],
   applications:    ["M9 11l3 3L22 4", "M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"],
@@ -39,39 +40,38 @@ const ICONS = {
   simulators:      ["M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"],
 };
 
-/* ── Grouped nav sections matching design handoff ── */
+/* ── Grouped nav sections — journey-based structure ── */
 const STUDENT_NAV_SECTIONS = [
   {
-    label: "Main",
-    i18nKey: "nav.sectionMain",
+    label: "Discover",
+    i18nKey: "nav.sectionDiscover",
     items: [
       { path: "/dashboard",       i18nKey: "nav.dashboard",       iconKey: "dashboard" },
       { path: "/universities",    i18nKey: "nav.universities",    iconKey: "universities" },
       { path: "/scholarships",    i18nKey: "nav.scholarships",    iconKey: "scholarships" },
+      { path: "/visa-guide",      i18nKey: "nav.visaGuide",       iconKey: "visaguide" },
       { path: "/recommendations", i18nKey: "nav.recommendations", iconKey: "recommendations", badge: "AI" },
-      { path: "/ai-chat",         i18nKey: "nav.aiChat",          iconKey: "aichat", badge: "AI" },
-      { path: "/pipeline",        i18nKey: "nav.pipeline",        iconKey: "pipeline" },
-      { path: "/apply-hub",       i18nKey: "nav.applyHub",        iconKey: "applyhub" },
-      { path: "/learning",        i18nKey: "nav.learning",        iconKey: "learning" },
     ],
   },
   {
-    label: "Test Simulators",
-    i18nKey: "nav.sectionSimulators",
+    label: "Learn & Prepare",
+    i18nKey: "nav.sectionLearn",
     items: [
-      { path: "/simulators", i18nKey: "nav.simulators", iconKey: "simulators" },
+      { path: "/simulators",  i18nKey: "nav.simulators",  iconKey: "simulators" },
+      { path: "/learning",    i18nKey: "nav.learning",    iconKey: "learning" },
+      { path: "/ai-chat",     i18nKey: "nav.aiChat",      iconKey: "aichat", badge: "AI" },
+      { path: "/instructors", i18nKey: "nav.instructors", iconKey: "instructors" },
+      { path: "/my-questions",i18nKey: "nav.myQuestions", iconKey: "questions" },
     ],
   },
   {
-    label: "Community",
-    i18nKey: "nav.sectionCommunity",
+    label: "Apply",
+    i18nKey: "nav.sectionApply",
     items: [
-      { path: "/instructors",       i18nKey: "nav.instructors",     iconKey: "instructors" },
-      { path: "/calendar",          i18nKey: "nav.calendar",        iconKey: "calendar" },
-      { path: "/email-integration", i18nKey: "nav.emailIntegration",iconKey: "email" },
-      { path: "/favourites",        i18nKey: "nav.favourites",      iconKey: "favourites" },
-      { path: "/my-questions",      i18nKey: "nav.myQuestions",     iconKey: "questions" },
-      { path: "/notifications",     i18nKey: "nav.notifications",   iconKey: "notifications" },
+      { path: "/apply-hub",   i18nKey: "nav.applyHub",    iconKey: "applyhub" },
+      { path: "/pipeline",    i18nKey: "nav.pipeline",    iconKey: "pipeline" },
+      { path: "/favourites",  i18nKey: "nav.favourites",  iconKey: "favourites" },
+      { path: "/notifications",i18nKey: "nav.notifications",iconKey: "notifications" },
     ],
   },
   {
@@ -114,6 +114,8 @@ const Sidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }) => {
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === "ar";
   const [profilePct, setProfilePct] = useState(0);
+  const [openSections, setOpenSections] = useState({});
+  const toggleSection = (label) => setOpenSections(prev => ({ ...prev, [label]: !prev[label] }));
 
   const SECTIONS = user?.role === "instructor" ? INSTRUCTOR_NAV_SECTIONS : STUDENT_NAV_SECTIONS;
 
@@ -140,61 +142,73 @@ const Sidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }) => {
   /* ── Nav sections ── */
   const NavSections = () => (
     <nav className="flex-1 overflow-y-auto overflow-x-hidden py-2 px-2">
-      {SECTIONS.map((section) => (
-        <div key={section.label} className="mb-1">
-          {!collapsed && (
-            <div className="px-3 pt-4 pb-1.5 text-[10.5px] font-bold uppercase tracking-widest"
-                 style={{ color: "oklch(0.45 0.02 285)" }}>
-              {t(section.i18nKey, section.label)}
-            </div>
-          )}
-          {collapsed && <div className="my-2 mx-2 h-px" style={{ background: "oklch(1 0 0 / 0.06)" }} />}
-          {section.items.map(({ path, i18nKey, iconKey, badge }) => {
-            const active = isActive(path);
-            const label  = t(i18nKey);
-            return (
-              <Link
-                key={path}
-                to={path}
-                onClick={onMobileClose}
-                title={collapsed ? label : undefined}
-                className="flex items-center gap-3 px-3 py-2.5 rounded-[9px] text-sm font-medium transition-all duration-150 relative group mb-0.5"
-                style={{
-                  background: active ? "linear-gradient(135deg, oklch(0.55 0.22 296), oklch(0.50 0.20 264))" : "transparent",
-                  color: active ? "#fff" : "oklch(0.60 0.02 285)",
-                  fontWeight: active ? 600 : 500,
-                }}
-                onMouseEnter={e => { if (!active) e.currentTarget.style.background = "oklch(0.20 0.024 285)"; if (!active) e.currentTarget.style.color = "#fff"; }}
-                onMouseLeave={e => { if (!active) e.currentTarget.style.background = "transparent"; if (!active) e.currentTarget.style.color = "oklch(0.60 0.02 285)"; }}
+      {SECTIONS.map((section) => {
+        const isOpen = openSections[section.label] === true;
+        return (
+          <div key={section.label} className="mb-1">
+            {!collapsed && (
+              <button
+                onClick={() => toggleSection(section.label)}
+                className="w-full flex items-center justify-between px-3 pt-4 pb-1.5 cursor-pointer select-none"
               >
-                <span className="shrink-0" style={{ width: 20, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <Icon d={ICONS[iconKey]} size={18} />
+                <span className="text-[10.5px] font-bold uppercase tracking-widest"
+                      style={{ color: "oklch(0.45 0.02 285)" }}>
+                  {t(section.i18nKey, section.label)}
                 </span>
-
-                <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${collapsed ? "w-0 opacity-0" : "w-auto opacity-100"}`}>
-                  {label}
-                </span>
-
-                {badge && !collapsed && (
-                  <span className="ms-auto text-[10px] font-bold px-1.5 py-0.5 rounded-md shrink-0"
-                        style={{ background: active ? "oklch(1 0 0 / 0.20)" : "oklch(0.55 0.22 296 / 0.2)", color: active ? "white" : "oklch(0.80 0.14 296)" }}>
-                    {badge}
-                  </span>
-                )}
-
-                {collapsed && (
-                  <div className={`absolute ${tooltipPos} px-2.5 py-1.5 text-white text-xs rounded-lg
-                                  opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-150
-                                  whitespace-nowrap z-50 shadow-lg`}
-                       style={{ background: "oklch(0.22 0.024 285)", border: "1px solid oklch(1 0 0 / 0.08)" }}>
-                    {label}
-                  </div>
-                )}
-              </Link>
-            );
-          })}
-        </div>
-      ))}
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
+                     strokeLinecap="round" strokeLinejoin="round"
+                     style={{ color: "oklch(0.40 0.02 285)", transition: "transform 0.2s", transform: isOpen ? "rotate(0deg)" : "rotate(-90deg)" }}>
+                  <path d="M6 9l6 6 6-6" />
+                </svg>
+              </button>
+            )}
+            {collapsed && <div className="my-2 mx-2 h-px" style={{ background: "oklch(1 0 0 / 0.06)" }} />}
+            <div style={{ overflow: "hidden", maxHeight: (!collapsed && !isOpen) ? "0px" : "500px", transition: "max-height 0.25s ease" }}>
+              {section.items.map(({ path, i18nKey, iconKey, badge }) => {
+                const active = isActive(path);
+                const label  = t(i18nKey);
+                return (
+                  <Link
+                    key={path}
+                    to={path}
+                    onClick={onMobileClose}
+                    title={collapsed ? label : undefined}
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-[9px] text-sm font-medium transition-all duration-150 relative group mb-0.5"
+                    style={{
+                      background: active ? "linear-gradient(135deg, oklch(0.55 0.22 296), oklch(0.50 0.20 264))" : "transparent",
+                      color: active ? "#fff" : "oklch(0.60 0.02 285)",
+                      fontWeight: active ? 600 : 500,
+                    }}
+                    onMouseEnter={e => { if (!active) e.currentTarget.style.background = "oklch(0.20 0.024 285)"; if (!active) e.currentTarget.style.color = "#fff"; }}
+                    onMouseLeave={e => { if (!active) e.currentTarget.style.background = "transparent"; if (!active) e.currentTarget.style.color = "oklch(0.60 0.02 285)"; }}
+                  >
+                    <span className="shrink-0" style={{ width: 20, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <Icon d={ICONS[iconKey]} size={18} />
+                    </span>
+                    <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${collapsed ? "w-0 opacity-0" : "w-auto opacity-100"}`}>
+                      {label}
+                    </span>
+                    {badge && !collapsed && (
+                      <span className="ms-auto text-[10px] font-bold px-1.5 py-0.5 rounded-md shrink-0"
+                            style={{ background: active ? "oklch(1 0 0 / 0.20)" : "oklch(0.55 0.22 296 / 0.2)", color: active ? "white" : "oklch(0.80 0.14 296)" }}>
+                        {badge}
+                      </span>
+                    )}
+                    {collapsed && (
+                      <div className={`absolute ${tooltipPos} px-2.5 py-1.5 text-white text-xs rounded-lg
+                                      opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-150
+                                      whitespace-nowrap z-50 shadow-lg`}
+                           style={{ background: "oklch(0.22 0.024 285)", border: "1px solid oklch(1 0 0 / 0.08)" }}>
+                        {label}
+                      </div>
+                    )}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
     </nav>
   );
 
@@ -333,32 +347,47 @@ const Sidebar = ({ collapsed, onToggle, mobileOpen, onMobileClose }) => {
           </button>
         </div>
         <nav className="flex-1 overflow-y-auto px-2 py-2">
-          {SECTIONS.map((section) => (
-            <div key={section.label} className="mb-1">
-              <div className="px-3 pt-4 pb-1.5 text-[10.5px] font-bold uppercase tracking-widest"
-                   style={{ color: "oklch(0.45 0.02 285)" }}>
-                {t(section.i18nKey, section.label)}
+          {SECTIONS.map((section) => {
+            const isOpen = openSections[section.label] === true;
+            return (
+              <div key={section.label} className="mb-1">
+                <button
+                  onClick={() => toggleSection(section.label)}
+                  className="w-full flex items-center justify-between px-3 pt-4 pb-1.5 cursor-pointer select-none"
+                >
+                  <span className="text-[10.5px] font-bold uppercase tracking-widest"
+                        style={{ color: "oklch(0.45 0.02 285)" }}>
+                    {t(section.i18nKey, section.label)}
+                  </span>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
+                       strokeLinecap="round" strokeLinejoin="round"
+                       style={{ color: "oklch(0.40 0.02 285)", transition: "transform 0.2s", transform: isOpen ? "rotate(0deg)" : "rotate(-90deg)" }}>
+                    <path d="M6 9l6 6 6-6" />
+                  </svg>
+                </button>
+                <div style={{ overflow: "hidden", maxHeight: isOpen ? "500px" : "0px", transition: "max-height 0.25s ease" }}>
+                  {section.items.map(({ path, i18nKey, iconKey, badge }) => {
+                    const active = isActive(path);
+                    const label  = t(i18nKey);
+                    return (
+                      <Link key={path} to={path} onClick={onMobileClose}
+                            className="flex items-center gap-3 px-3 py-2.5 rounded-[9px] text-sm font-medium mb-0.5 transition-all duration-150"
+                            style={{
+                              background: active ? "linear-gradient(135deg, oklch(0.55 0.22 296), oklch(0.50 0.20 264))" : "transparent",
+                              color: active ? "#fff" : "oklch(0.60 0.02 285)",
+                              fontWeight: active ? 600 : 500,
+                            }}>
+                        <span className="shrink-0" style={{ width: 18 }}><Icon d={ICONS[iconKey] ?? ICONS.dashboard} size={16} /></span>
+                        <span>{label}</span>
+                        {badge && <span className="ms-auto text-[10px] font-bold px-1.5 py-0.5 rounded-md"
+                                        style={{ background: "oklch(0.55 0.22 296 / 0.2)", color: "oklch(0.80 0.14 296)" }}>{badge}</span>}
+                      </Link>
+                    );
+                  })}
+                </div>
               </div>
-              {section.items.map(({ path, i18nKey, iconKey, badge }) => {
-                const active = isActive(path);
-                const label  = t(i18nKey);
-                return (
-                  <Link key={path} to={path} onClick={onMobileClose}
-                        className="flex items-center gap-3 px-3 py-2.5 rounded-[9px] text-sm font-medium mb-0.5 transition-all duration-150"
-                        style={{
-                          background: active ? "linear-gradient(135deg, oklch(0.55 0.22 296), oklch(0.50 0.20 264))" : "transparent",
-                          color: active ? "#fff" : "oklch(0.60 0.02 285)",
-                          fontWeight: active ? 600 : 500,
-                        }}>
-                    <span className="shrink-0" style={{ width: 18 }}><Icon d={ICONS[iconKey] ?? ICONS.dashboard} size={16} /></span>
-                    <span>{label}</span>
-                    {badge && <span className="ms-auto text-[10px] font-bold px-1.5 py-0.5 rounded-md"
-                                    style={{ background: "oklch(0.55 0.22 296 / 0.2)", color: "oklch(0.80 0.14 296)" }}>{badge}</span>}
-                  </Link>
-                );
-              })}
-            </div>
-          ))}
+            );
+          })}
         </nav>
         <div className="px-2 pb-3">
           <div className="rounded-xl p-3 mb-1" style={{ background: "oklch(0.17 0.022 285)", border: "1px solid oklch(1 0 0 / 0.07)" }}>

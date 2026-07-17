@@ -379,6 +379,119 @@ function TrackModal({ uni, onClose, onConfirm }) {
   );
 }
 
+/* ── Document checklist with interactive checkboxes ── */
+const DocumentChecklist = ({ docs, userDegreeLevel, theme, uniId, t }) => {
+  const storageKey = `doc_checked_${uniId}`;
+  const [checked, setChecked] = useState(() => {
+    try { return JSON.parse(localStorage.getItem(storageKey) || "{}"); } catch { return {}; }
+  });
+
+  const toggle = (docId) => {
+    const next = { ...checked, [docId]: !checked[docId] };
+    setChecked(next);
+    localStorage.setItem(storageKey, JSON.stringify(next));
+  };
+
+  const required = docs.filter(d => d.is_required);
+  const optional = docs.filter(d => !d.is_required);
+  const checkedCount = required.filter(d => checked[d.id]).length;
+  const pct = required.length ? Math.round((checkedCount / required.length) * 100) : 0;
+
+  return (
+    <div className="rounded-2xl border overflow-hidden" style={{ borderColor: "oklch(1 0 0 / 0.10)", background: "oklch(0.15 0.018 285)" }}>
+      {/* Header */}
+      <div className="px-5 py-4 border-b" style={{ borderColor: "oklch(1 0 0 / 0.08)" }}>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-base font-bold text-white flex items-center gap-2">
+            📄 {t("university.requiredDocumentsSection")}
+          </h3>
+          <span className="text-xs font-bold px-2.5 py-1 rounded-full"
+                style={{ background: pct === 100 ? "oklch(0.55 0.18 158 / 0.2)" : "oklch(0.55 0.22 296 / 0.15)", color: pct === 100 ? "oklch(0.75 0.18 158)" : "oklch(0.80 0.14 296)" }}>
+            {checkedCount}/{required.length} ready
+          </span>
+        </div>
+        {/* Progress bar */}
+        <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "oklch(0.25 0.02 285)" }}>
+          <div className="h-full rounded-full transition-all duration-500"
+               style={{ width: `${pct}%`, background: pct === 100 ? "oklch(0.65 0.18 158)" : `linear-gradient(90deg, ${theme.accent}, oklch(0.55 0.22 296))` }} />
+        </div>
+        {userDegreeLevel && (
+          <p className="text-[11px] mt-2" style={{ color: "oklch(0.50 0.02 285)" }}>
+            🎓 Showing documents for <strong className="capitalize" style={{ color: "oklch(0.65 0.10 296)" }}>{userDegreeLevel}</strong> level
+          </p>
+        )}
+      </div>
+
+      {/* Required docs */}
+      <div className="px-5 py-4">
+        {required.length > 0 && (
+          <>
+            <p className="text-[11px] font-bold uppercase tracking-wider mb-3" style={{ color: "oklch(0.45 0.02 285)" }}>
+              Required ({required.length})
+            </p>
+            <ul className="space-y-2 mb-4">
+              {required.map((doc) => (
+                <li key={doc.id}
+                    onClick={() => toggle(doc.id)}
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-150 select-none"
+                    style={{ background: checked[doc.id] ? "oklch(0.55 0.18 158 / 0.10)" : "oklch(0.18 0.02 285)" }}>
+                  <div className="w-5 h-5 rounded-md border-2 shrink-0 flex items-center justify-center transition-all"
+                       style={{ borderColor: checked[doc.id] ? "oklch(0.65 0.18 158)" : "oklch(0.35 0.02 285)", background: checked[doc.id] ? "oklch(0.55 0.18 158)" : "transparent" }}>
+                    {checked[doc.id] && <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                  </div>
+                  <span className="text-sm flex-1 transition-all" style={{ color: checked[doc.id] ? "oklch(0.50 0.02 285)" : "oklch(0.78 0.02 285)", textDecoration: checked[doc.id] ? "line-through" : "none" }}>
+                    {doc.name}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+
+        {optional.length > 0 && (
+          <>
+            <p className="text-[11px] font-bold uppercase tracking-wider mb-3" style={{ color: "oklch(0.45 0.02 285)" }}>
+              Optional / Recommended ({optional.length})
+            </p>
+            <ul className="space-y-2">
+              {optional.map((doc) => (
+                <li key={doc.id}
+                    onClick={() => toggle(doc.id)}
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-150 select-none"
+                    style={{ background: checked[doc.id] ? "oklch(0.55 0.18 158 / 0.08)" : "oklch(0.16 0.018 285)" }}>
+                  <div className="w-5 h-5 rounded-md border-2 shrink-0 flex items-center justify-center transition-all"
+                       style={{ borderColor: checked[doc.id] ? "oklch(0.65 0.18 158)" : "oklch(0.30 0.02 285)", background: checked[doc.id] ? "oklch(0.55 0.18 158)" : "transparent" }}>
+                    {checked[doc.id] && <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                  </div>
+                  <span className="text-sm flex-1 transition-all" style={{ color: checked[doc.id] ? "oklch(0.45 0.02 285)" : "oklch(0.60 0.02 285)", textDecoration: checked[doc.id] ? "line-through" : "none" }}>
+                    {doc.name}
+                  </span>
+                  <span className="text-[10px] px-2 py-0.5 rounded-full shrink-0" style={{ background: "oklch(0.55 0.18 158 / 0.12)", color: "oklch(0.65 0.18 158)" }}>
+                    optional
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+
+        {docs.length === 0 && (
+          <p className="text-sm text-center py-4" style={{ color: "oklch(0.45 0.02 285)" }}>
+            No documents listed yet.
+          </p>
+        )}
+
+        {pct === 100 && required.length > 0 && (
+          <div className="mt-4 px-4 py-3 rounded-xl text-sm font-medium text-center"
+               style={{ background: "oklch(0.55 0.18 158 / 0.12)", color: "oklch(0.75 0.18 158)", border: "1px solid oklch(0.55 0.18 158 / 0.20)" }}>
+            ✅ All required documents ready — you're set to apply!
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
 /* ── main component ── */
 const UniversityDetail = () => {
   const { t } = useTranslation();
@@ -556,6 +669,16 @@ const UniversityDetail = () => {
 
             {/* Action buttons */}
             <div className="flex flex-col sm:flex-row md:flex-col gap-2 shrink-0 w-full md:w-auto">
+              {/* Primary CTA — most prominent */}
+              <button
+                onClick={() => navigate(`/apply-hub/${uni.id}`)}
+                className="px-5 py-3 rounded-xl text-sm font-bold transition text-center text-white flex items-center justify-center gap-2"
+                style={{ background: "linear-gradient(135deg, oklch(0.55 0.18 150), oklch(0.50 0.16 195))", boxShadow: "0 4px 14px oklch(0.55 0.18 150 / 0.35)" }}>
+                📋 Start Application
+                <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-md" style={{ background: "oklch(1 0 0 / 0.20)" }}>
+                  Track Progress
+                </span>
+              </button>
               <button onClick={toggleSave} disabled={savingLoading}
                 className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition border ${
                   saved
@@ -563,11 +686,6 @@ const UniversityDetail = () => {
                     : `bg-transparent ${theme.btnSave}`
                 }`}>
                 {saved ? `❤️ ${t("university.unsave")}` : `🤍 ${t("university.save")}`}
-              </button>
-              <button
-                onClick={() => navigate(`/apply-hub/${uni.id}`)}
-                className="px-4 py-2.5 rounded-xl text-sm font-semibold transition text-center  bg-emerald-500 hover:bg-emerald-400 text-white">
-                📋 {t("university.startApplying")}
               </button>
               <button
                 onClick={() => navigate("/ai-chat", { state: { prefill: `Tell me about ${uni.name} in ${uni.city}, ${uni.country}. What are my chances of getting admitted, what programs do they offer, and what should I prepare?` } })}
@@ -761,27 +879,13 @@ const UniversityDetail = () => {
           </Section>
 
           {docs.length > 0 && (
-            <Section icon="📄" title={t("university.requiredDocumentsSection")} accentColor={theme.accent}>
-              {userDegreeLevel && (
-                <div className="flex items-center gap-2 mb-3 px-3 py-2 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-xs text-indigo-400 font-medium">
-                  <span>🎓</span>
-                  <span>{t("university.showingDocsFor")} <strong className="text-indigo-300 capitalize">{t(`university.degreeLevel${userDegreeLevel.charAt(0).toUpperCase() + userDegreeLevel.slice(1)}`)}</strong></span>
-                </div>
-              )}
-              <ul className="space-y-2">
-                {docs.map((doc) => (
-                  <li key={doc.id} className="flex items-center gap-2 text-sm">
-                    <span className="font-bold shrink-0" style={{ color: doc.is_required ? theme.accent : "oklch(0.55 0.18 158)" }}>
-                      {doc.is_required ? "⚠️" : "✓"}
-                    </span>
-                    <span className="flex-1 text-[oklch(0.75_0.02_285)]">{doc.name}</span>
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 ${doc.is_required ? "bg-red-500/15 text-red-400" : "bg-green-500/15 text-green-400"}`}>
-                      {doc.is_required ? t("university.docRequired") : t("university.docOptional")}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </Section>
+            <DocumentChecklist
+              docs={docs}
+              userDegreeLevel={userDegreeLevel}
+              theme={theme}
+              uniId={id}
+              t={t}
+            />
           )}
 
           {uni.scholarships?.length > 0 && (

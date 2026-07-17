@@ -21,6 +21,7 @@ import Profile from "./pages/Profile";
 import Recommendations from "./pages/Recommendations";
 import Universities from "./pages/Universities";
 import Scholarships from "./pages/Scholarships";
+import VisaGuide from "./pages/VisaGuide";
 import Favourites from "./pages/Favourites";
 import UniversityDetail from "./pages/UniversityDetail";
 import LearningCenter from "./pages/LearningCenter";
@@ -105,6 +106,8 @@ const App = () => (
           <Route path="/verify-email"    element={<VerifyEmail />} />
           <Route path="/universities"  element={<Universities />} />
           <Route path="/scholarships"  element={<Scholarships />} />
+          <Route path="/visa-guide"    element={<VisaGuide />} />
+          <Route path="/visa-guide/:country" element={<VisaGuide />} />
           <Route path="/pricing"       element={<Pricing />} />
 
           <Route path="/dashboard"      element={<ProtectedRoute><SmartDashboard /></ProtectedRoute>} />
