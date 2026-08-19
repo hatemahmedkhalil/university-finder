@@ -4,7 +4,9 @@ import api from "../api/axios";
 import toast from "react-hot-toast";
 import { useAuth } from "../context/AuthContext";
 import PageHero from "../components/PageHero";
+import Confetti from "../components/Confetti";
 import { useTranslation } from "react-i18next";
+import { Icon, ICONS } from "../components/Sidebar";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -129,37 +131,37 @@ const CountryDropdown = ({ value, onChange }) => {
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className={`w-full border rounded-lg px-4 py-2.5 text-left flex items-center justify-between transition focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-          value ? "border-gray-200 text-white" : "border-gray-200 text-[oklch(0.45_0.02_285)]"
+        className={`w-full border rounded-lg px-4 py-2.5 text-left flex items-center justify-between transition focus:outline-none focus:ring-2 focus:ring-sky-500 ${
+          value ? "border-gray-200 text-[var(--ink)]" : "border-gray-200 text-[var(--ink-dim)]"
         }`}
       >
         <span>{value || t("profile.selectNationality")}</span>
-        <svg className={`w-4 h-4 text-[oklch(0.45_0.02_285)] transition-transform ${open ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg className={`w-4 h-4 text-[var(--ink-dim)] transition-transform ${open ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
       </button>
 
       {open && (
-        <div className="absolute z-50 mt-1 w-full bg-white border border-[oklch(1_0_0/0.08)] rounded-xl overflow-hidden">
-          <div className="p-2 border-b border-[oklch(1_0_0/0.07)]">
+        <div className="absolute z-50 mt-1 w-full bg-[var(--surface)] border border-[var(--border)] rounded-xl overflow-hidden shadow-lg">
+          <div className="p-2 border-b border-[var(--border)]">
             <input
               autoFocus
               type="text"
               placeholder={t("profile.searchNationality")}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full px-3 py-2 text-sm border border-[oklch(1_0_0/0.08)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 text-sm border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500"
             />
           </div>
           <ul className="max-h-52 overflow-y-auto py-1">
             {filtered.length === 0 ? (
-              <li className="px-4 py-2 text-sm text-[oklch(0.45_0.02_285)]">{t("profile.noResults")}</li>
+              <li className="px-4 py-2 text-sm text-[var(--ink-dim)]">{t("profile.noResults")}</li>
             ) : filtered.map((n) => (
               <li
                 key={n}
                 onClick={() => { onChange(n); setOpen(false); setSearch(""); }}
-                className={`px-4 py-2 text-sm cursor-pointer hover:bg-blue-50 hover:text-blue-700 ${
-                  value === n ? "bg-blue-50 text-blue-700 font-medium" : "text-[oklch(0.75_0.02_285)]"
+                className={`px-4 py-2 text-sm cursor-pointer hover:bg-sky-50 hover:text-sky-700 ${
+                  value === n ? "bg-sky-50 text-sky-700 font-medium" : "text-[var(--ink-dim)]"
                 }`}
               >
                 {n}
@@ -208,36 +210,36 @@ const CountryOfStudyDropdown = ({ value, onChange }) => {
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className={`w-full border rounded-lg px-4 py-2.5 text-left flex items-center justify-between transition focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
-          value ? "border-gray-200 text-white" : "border-gray-200 text-[oklch(0.45_0.02_285)]"
+        className={`w-full border rounded-lg px-4 py-2.5 text-left flex items-center justify-between transition focus:outline-none focus:ring-2 focus:ring-sky-500 ${
+          value ? "border-gray-200 text-[var(--ink)]" : "border-gray-200 text-[var(--ink-dim)]"
         }`}
       >
         <span>{value || "Select country…"}</span>
-        <svg className={`w-4 h-4 text-[oklch(0.45_0.02_285)] transition-transform ${open ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg className={`w-4 h-4 text-[var(--ink-dim)] transition-transform ${open ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
       </button>
       {open && (
-        <div className="absolute z-50 mt-1 w-full bg-white border border-[oklch(1_0_0/0.08)] rounded-xl overflow-hidden">
-          <div className="p-2 border-b border-[oklch(1_0_0/0.07)]">
+        <div className="absolute z-50 mt-1 w-full bg-[var(--surface)] border border-[var(--border)] rounded-xl overflow-hidden shadow-lg">
+          <div className="p-2 border-b border-[var(--border)]">
             <input
               autoFocus
               type="text"
               placeholder="Search country…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full px-3 py-2 text-sm border border-[oklch(1_0_0/0.08)] rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-3 py-2 text-sm border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500"
             />
           </div>
           <ul className="max-h-52 overflow-y-auto py-1">
             {filtered.length === 0 ? (
-              <li className="px-4 py-2 text-sm text-[oklch(0.45_0.02_285)]">No results</li>
+              <li className="px-4 py-2 text-sm text-[var(--ink-dim)]">No results</li>
             ) : filtered.map((c) => (
               <li
                 key={c}
                 onClick={() => { onChange(c); setOpen(false); setSearch(""); }}
-                className={`px-4 py-2 text-sm cursor-pointer hover:bg-indigo-50 hover:text-indigo-700 ${
-                  value === c ? "bg-indigo-50 text-indigo-700 font-medium" : "text-[oklch(0.75_0.02_285)]"
+                className={`px-4 py-2 text-sm cursor-pointer hover:bg-sky-50 hover:text-sky-700 ${
+                  value === c ? "bg-sky-50 text-sky-700 font-medium" : "text-[var(--ink-dim)]"
                 }`}
               >
                 {c}
@@ -273,37 +275,37 @@ const FieldOfStudyDropdown = ({ value, onChange }) => {
       <button
         type="button"
         onClick={() => setOpen(o => !o)}
-        className={`w-full border rounded-lg px-4 py-2.5 text-left flex items-center justify-between transition focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-          value ? "border-gray-200 text-white" : "border-gray-200 text-[oklch(0.45_0.02_285)]"
+        className={`w-full border rounded-lg px-4 py-2.5 text-left flex items-center justify-between transition focus:outline-none focus:ring-2 focus:ring-sky-500 ${
+          value ? "border-gray-200 text-[var(--ink)]" : "border-gray-200 text-[var(--ink-dim)]"
         }`}
       >
         <span>{value || "Select your field of study"}</span>
-        <svg className={`w-4 h-4 text-[oklch(0.45_0.02_285)] transition-transform ${open ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg className={`w-4 h-4 text-[var(--ink-dim)] transition-transform ${open ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
       </button>
 
       {open && (
-        <div className="absolute z-50 mt-1 w-full bg-white border border-[oklch(1_0_0/0.08)] rounded-xl overflow-hidden">
+        <div className="absolute z-50 mt-1 w-full bg-[var(--surface)] border border-[var(--border)] rounded-xl overflow-hidden shadow-lg">
           {/* Search */}
-          <div className="p-2 border-b border-[oklch(1_0_0/0.07)]">
+          <div className="p-2 border-b border-[var(--border)]">
             <input
               autoFocus
               type="text"
               placeholder="Search field…"
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="w-full px-3 py-2 text-sm border border-[oklch(1_0_0/0.08)] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 text-sm border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500"
             />
           </div>
 
           <ul className="max-h-64 overflow-y-auto py-1">
             {filtered.length === 0 ? (
-              <li className="px-4 py-2 text-sm text-[oklch(0.45_0.02_285)]">No results</li>
+              <li className="px-4 py-2 text-sm text-[var(--ink-dim)]">No results</li>
             ) : filtered.map(g => (
               <li key={g.category}>
                 {/* Category header */}
-                <div className="px-4 pt-2.5 pb-1 text-[10px] font-bold text-[oklch(0.45_0.02_285)] uppercase tracking-widest bg-gray-50 border-b border-[oklch(1_0_0/0.07)]">
+                <div className="px-4 pt-2.5 pb-1 text-[10px] font-bold text-[var(--ink-dim)] uppercase tracking-widest bg-gray-50 border-b border-[var(--border)]">
                   {g.category}
                 </div>
                 {g.fields.map(f => (
@@ -311,8 +313,8 @@ const FieldOfStudyDropdown = ({ value, onChange }) => {
                     key={f}
                     type="button"
                     onClick={() => { onChange(f); setOpen(false); setSearch(""); }}
-                    className={`w-full text-left px-5 py-2 text-sm transition hover:bg-blue-50 hover:text-blue-700 ${
-                      value === f ? "bg-blue-50 text-blue-700 font-medium" : "text-[oklch(0.75_0.02_285)]"
+                    className={`w-full text-left px-5 py-2 text-sm transition hover:bg-sky-50 hover:text-sky-700 ${
+                      value === f ? "bg-sky-50 text-sky-700 font-medium" : "text-[var(--ink-dim)]"
                     }`}
                   >
                     {f}
@@ -341,7 +343,7 @@ const LANG_OPTIONS = [
 ];
 const CEFR = ["A1", "A2", "B1", "B2", "C1", "C2", "native"];
 const CEFR_LABEL = { A1: "Beginner", A2: "Elementary", B1: "Intermediate", B2: "Upper-Int.", C1: "Advanced", C2: "Mastery", native: "Native" };
-const CEFR_COLOR = { A1: "bg-red-100 text-red-700", A2: "bg-orange-100 text-orange-700", B1: "bg-yellow-100 text-yellow-700", B2: "bg-lime-100 text-lime-700", C1: "bg-green-100 text-green-700", C2: "bg-emerald-100 text-emerald-700", native: "bg-blue-100 text-blue-700" };
+const CEFR_COLOR = { A1: "bg-red-100 text-red-700", A2: "bg-orange-100 text-orange-700", B1: "bg-yellow-100 text-yellow-700", B2: "bg-lime-100 text-lime-700", C1: "bg-green-100 text-green-700", C2: "bg-emerald-100 text-emerald-700", native: "bg-sky-100 text-sky-700" };
 
 const getLangMeta = (lang) => LANG_OPTIONS.find(l => l.value === lang.toLowerCase()) || { flag: "🌍", label: lang };
 
@@ -400,17 +402,17 @@ const LanguageManager = () => {
   };
 
   return (
-    <div className="bg-[oklch(0.17_0.02_285)] rounded-2xl border border-[oklch(1_0_0/0.07)] p-5 space-y-4">
+    <div className="bg-[var(--surface-2)] rounded-2xl border border-[var(--border)] p-5 space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="font-bold text-white flex items-center gap-2">🗣️ {t("profile.languages.title")}</h3>
-          <p className="text-xs text-[oklch(0.45_0.02_285)] mt-0.5">{t("profile.languages.subtitle")}</p>
+          <h3 className="font-bold text-[var(--ink)] flex items-center gap-2"><Icon d={ICONS.mic} size={16} /> {t("profile.languages.title")}</h3>
+          <p className="text-xs text-[var(--ink-dim)] mt-0.5">{t("profile.languages.subtitle")}</p>
         </div>
         {!adding && (
           <button
             type="button"
             onClick={() => setAdding(true)}
-            className="flex items-center gap-1.5 bg-indigo-600 text-white text-xs font-bold px-3.5 py-2 rounded-xl hover:bg-indigo-700 transition"
+            className="flex items-center gap-1.5 bg-sky-600 text-[var(--ink)] text-xs font-bold px-3.5 py-2 rounded-xl hover:bg-sky-700 transition"
           >
             + {t("profile.languages.add")}
           </button>
@@ -419,10 +421,10 @@ const LanguageManager = () => {
 
       {/* Add form */}
       {adding && (
-        <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-4 space-y-3">
-          <p className="text-xs font-bold text-indigo-700 uppercase tracking-wide">{t("profile.languages.addTitle")}</p>
+        <div className="bg-sky-50 border border-sky-100 rounded-xl p-4 space-y-3">
+          <p className="text-xs font-bold text-sky-700 uppercase tracking-wide">{t("profile.languages.addTitle")}</p>
           <div>
-            <p className="text-xs text-[oklch(0.55_0.02_285)] mb-1.5 font-medium">{t("profile.languages.languageLabel")}</p>
+            <p className="text-xs text-[var(--ink-faint)] mb-1.5 font-medium">{t("profile.languages.languageLabel")}</p>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {LANG_OPTIONS.map(({ value, label, flag }) => (
                 <button
@@ -431,8 +433,8 @@ const LanguageManager = () => {
                   onClick={() => setAddForm(f => ({ ...f, language: value }))}
                   className={`py-2 rounded-xl border text-xs font-semibold transition flex flex-col items-center gap-0.5 ${
                     addForm.language === value
-                      ? "bg-indigo-600 text-white border-indigo-600"
-                      : "bg-white text-[oklch(0.65_0.02_285)] border-gray-200 hover:border-indigo-300"
+                      ? "bg-sky-600 text-[var(--ink)] border-sky-600"
+                      : "bg-[var(--surface)] text-[var(--ink-faint)] border-[var(--border)] hover:border-[var(--accent)]"
                   }`}
                 >
                   <span className="text-base">{flag}</span>
@@ -442,7 +444,7 @@ const LanguageManager = () => {
             </div>
           </div>
           <div>
-            <p className="text-xs text-[oklch(0.55_0.02_285)] mb-1.5 font-medium">{t("profile.languages.proficiency")}</p>
+            <p className="text-xs text-[var(--ink-faint)] mb-1.5 font-medium">{t("profile.languages.proficiency")}</p>
             <div className="flex gap-2 flex-wrap">
               {CEFR.map(l => (
                 <button
@@ -451,8 +453,8 @@ const LanguageManager = () => {
                   onClick={() => setAddForm(f => ({ ...f, level: l }))}
                   className={`px-3 py-1.5 rounded-lg border text-xs font-bold transition ${
                     addForm.level === l
-                      ? "bg-indigo-600 text-white border-indigo-600"
-                      : "bg-white text-[oklch(0.65_0.02_285)] border-gray-200 hover:border-indigo-400"
+                      ? "bg-sky-600 text-[var(--ink)] border-sky-600"
+                      : "bg-[var(--surface)] text-[var(--ink-faint)] border-[var(--border)] hover:border-[var(--accent)]"
                   }`}
                 >
                   {l}
@@ -465,14 +467,14 @@ const LanguageManager = () => {
               type="button"
               onClick={handleAdd}
               disabled={saving}
-              className="flex-1 bg-indigo-600 text-white font-bold py-2.5 rounded-xl text-sm hover:bg-indigo-700 disabled:opacity-50 transition"
+              className="flex-1 bg-sky-600 text-[var(--ink)] font-bold py-2.5 rounded-xl text-sm hover:bg-sky-700 disabled:opacity-50 transition"
             >
               {saving ? t("profile.languages.adding") : t("profile.languages.add")}
             </button>
             <button
               type="button"
               onClick={() => setAdding(false)}
-              className="px-4 py-2.5 border border-[oklch(1_0_0/0.08)] rounded-xl text-sm text-[oklch(0.65_0.02_285)] hover:bg-[oklch(0.20_0.024_285)] transition"
+              className="px-4 py-2.5 border border-[var(--border)] rounded-xl text-sm text-[var(--ink-faint)] hover:bg-[var(--surface-hover)] transition"
             >
               {t("common.cancel")}
             </button>
@@ -482,10 +484,10 @@ const LanguageManager = () => {
 
       {/* Language cards */}
       {loading ? (
-        <div className="text-center py-4 text-[oklch(0.45_0.02_285)] text-sm">{t("common.loading")}</div>
+        <div className="text-center py-4 text-[var(--ink-dim)] text-sm">{t("common.loading")}</div>
       ) : langs.length === 0 ? (
-        <div className="text-center py-6 text-[oklch(0.45_0.02_285)]">
-          <div className="text-3xl mb-2">🗣️</div>
+        <div className="text-center py-6 text-[var(--ink-dim)]">
+          <div className="mb-2 flex justify-center"><Icon d={ICONS.mic} size={26} /></div>
           <p className="text-sm">{t("profile.languages.empty")}</p>
           <p className="text-xs mt-1">{t("profile.languages.emptySub")}</p>
         </div>
@@ -495,12 +497,12 @@ const LanguageManager = () => {
             const meta = getLangMeta(l.language);
             const isEditing = editingId === l.id;
             return (
-              <div key={l.id} className="flex items-start gap-3 bg-[oklch(0.17_0.02_285)] rounded-xl p-4 border border-[oklch(1_0_0/0.07)]">
+              <div key={l.id} className="flex items-start gap-3 bg-[var(--surface-2)] rounded-xl p-4 border border-[var(--border)]">
                 <div className="text-2xl shrink-0 mt-0.5">{meta.flag}</div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-bold text-white text-sm">{meta.label}</span>
-                    <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${CEFR_COLOR[l.level] || "bg-gray-100 text-[oklch(0.65_0.02_285)]"}`}>
+                    <span className="font-bold text-[var(--ink)] text-sm">{meta.label}</span>
+                    <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${CEFR_COLOR[l.level] || "bg-gray-100 text-[var(--ink-faint)]"}`}>
                       {l.level} · {CEFR_LABEL[l.level] || l.level}
                     </span>
                   </div>
@@ -515,8 +517,8 @@ const LanguageManager = () => {
                             onClick={() => setEditLevel(lvl)}
                             className={`px-2.5 py-1 rounded-lg border text-xs font-bold transition ${
                               editLevel === lvl
-                                ? "bg-indigo-600 text-white border-indigo-600"
-                                : "bg-white text-[oklch(0.65_0.02_285)] border-gray-200 hover:border-indigo-400"
+                                ? "bg-sky-600 text-[var(--ink)] border-sky-600"
+                                : "bg-[var(--surface)] text-[var(--ink-faint)] border-[var(--border)] hover:border-[var(--accent)]"
                             }`}
                           >
                             {lvl}
@@ -528,14 +530,14 @@ const LanguageManager = () => {
                           type="button"
                           onClick={() => handleEdit(l.id)}
                           disabled={saving}
-                          className="text-xs bg-indigo-600 text-white font-bold px-3 py-1.5 rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition"
+                          className="text-xs bg-sky-600 text-[var(--ink)] font-bold px-3 py-1.5 rounded-lg hover:bg-sky-700 disabled:opacity-50 transition"
                         >
                           {t("common.save")}
                         </button>
                         <button
                           type="button"
                           onClick={() => setEditingId(null)}
-                          className="text-xs text-[oklch(0.55_0.02_285)] border border-[oklch(1_0_0/0.08)] px-3 py-1.5 rounded-lg hover:bg-[oklch(0.20_0.024_285)] transition"
+                          className="text-xs text-[var(--ink-faint)] border border-[var(--border)] px-3 py-1.5 rounded-lg hover:bg-[var(--surface-hover)] transition"
                         >
                           {t("common.cancel")}
                         </button>
@@ -549,7 +551,7 @@ const LanguageManager = () => {
                     <button
                       type="button"
                       onClick={() => { setEditingId(l.id); setEditLevel(l.level); }}
-                      className="text-xs text-indigo-600 border border-indigo-200 px-2.5 py-1.5 rounded-lg hover:bg-indigo-50 font-semibold transition"
+                      className="text-xs text-sky-600 border border-sky-200 px-2.5 py-1.5 rounded-lg hover:bg-sky-50 font-semibold transition"
                     >
                       {t("common.edit")}
                     </button>
@@ -558,7 +560,7 @@ const LanguageManager = () => {
                       onClick={() => handleDelete(l.id)}
                       className="text-xs text-red-500 border border-red-100 px-2.5 py-1.5 rounded-lg hover:bg-red-50 font-semibold transition"
                     >
-                      ✕
+                      <Icon d={ICONS.x} size={11} />
                     </button>
                   </div>
                 )}
@@ -581,6 +583,7 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [errors, setErrors] = useState({});
+  const [celebrate, setCelebrate] = useState(false);
 
   const [rates, setRates] = useState({});
   const [ratesLoading, setRatesLoading] = useState(true);
@@ -595,7 +598,7 @@ const Profile = () => {
     language: "english",
     language_level: "b2",
     field_of_study: "",
-    preferred_country: "both",
+    preferred_countries_list: ["Germany", "Poland"],
     prev_university: "",
     prev_country: "",
     prev_major: "",
@@ -607,7 +610,7 @@ const Profile = () => {
     const fieldOfStudyVal = hasPrev ? form.prev_major : form.field_of_study;
     const fields = [
       form.nationality, form.gpa, form.budget_input > 0 ? form.budget_input : null,
-      form.language_level, fieldOfStudyVal, form.preferred_country,
+      form.language_level, fieldOfStudyVal, form.preferred_countries_list.length > 0 ? "x" : null,
       form.language, form.degree_level,
     ];
     return Math.round(fields.filter(f => f != null && f !== "" && f !== 0).length / fields.length * 100);
@@ -634,10 +637,6 @@ const Profile = () => {
         const p = res.data;
         setProfile(p);
         const countries = p.preferred_countries?.split(",").map((c) => c.trim()).filter(Boolean) || [];
-        const preferredCountry = countries.length >= 2 ? "both"
-          : countries[0]?.toLowerCase() === "germany" ? "germany"
-          : countries[0]?.toLowerCase() === "poland"  ? "poland"
-          : "both";
 
         setForm({
           nationality: p.nationality || "",
@@ -649,7 +648,7 @@ const Profile = () => {
           language: p.language || "english",
           language_level: p.english_level || "b2",
           field_of_study: p.field_of_study || "",
-          preferred_country: preferredCountry,
+          preferred_countries_list: countries.length > 0 ? countries : ["Germany", "Poland"],
           prev_university: p.prev_university || "",
           prev_country: p.prev_country || "",
           prev_major: p.prev_major || "",
@@ -699,9 +698,7 @@ const Profile = () => {
     if (!validate()) return;
 
     const budget_eur = budgetEur ?? form.budget_input;
-    const preferred_countries =
-      form.preferred_country === "both"    ? "Germany,Poland" :
-      form.preferred_country === "germany" ? "Germany" : "Poland";
+    const preferred_countries = form.preferred_countries_list.join(",");
 
     const hasPrevDegree = form.degree_level === "master" || form.degree_level === "phd";
 
@@ -721,6 +718,8 @@ const Profile = () => {
       graduation_year: hasPrevDegree ? parseInt(form.graduation_year) || null : null,
     };
 
+    const isFirstTime = !profile;
+
     setSaving(true);
     try {
       if (profile) {
@@ -730,10 +729,16 @@ const Profile = () => {
       }
       markProfileComplete();
       toast.success(t("profile.success"));
-      navigate("/dashboard");
+      if (isFirstTime) {
+        // First-time completion is the end of onboarding — a brief celebration
+        // moment before landing on the dashboard, rather than an instant jump.
+        setCelebrate(true);
+        setTimeout(() => navigate("/dashboard"), 1100);
+      } else {
+        navigate("/dashboard");
+      }
     } catch (err) {
       toast.error(err.response?.data?.detail || t("profile.saveFailed"));
-    } finally {
       setSaving(false);
     }
   };
@@ -741,7 +746,20 @@ const Profile = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-4 border-sky-600 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (celebrate) {
+    return (
+      <div className="min-h-screen flex items-center justify-center relative" style={{ background: "var(--bg)" }}>
+        <Confetti count={40} />
+        <div className="text-center pop-in px-6">
+          <div className="w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-5" style={{ background: "var(--good-subtle)", color: "var(--good)" }}><Icon d={ICONS.check} size={32} /></div>
+          <h1 className="text-2xl font-extrabold mb-2" style={{ color: "var(--ink)" }}>You're all set!</h1>
+          <p className="text-sm" style={{ color: "var(--ink-faint)" }}>Taking you to your dashboard — your journey to Europe starts now.</p>
+        </div>
       </div>
     );
   }
@@ -758,25 +776,25 @@ const Profile = () => {
       {/* ── Completeness bar ── */}
       {!loading && (
         <div className="max-w-2xl mx-auto px-4 pt-6 pb-0">
-          <div className="rounded-2xl px-5 py-4" style={{ background: "oklch(0.17 0.022 285)", border: "1px solid oklch(1 0 0 / 0.07)" }}>
+          <div className="rounded-2xl px-5 py-4" style={{ background: "var(--surface-2)", border: "1px solid var(--border)" }}>
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-semibold text-white">Profile completeness</span>
-              <span className="text-sm font-bold" style={{ color: barWidth === 100 ? "oklch(0.65 0.18 158)" : "oklch(0.75 0.18 296)" }}>
+              <span className="text-sm font-semibold text-[var(--ink)]">Profile completeness</span>
+              <span className="text-sm font-bold" style={{ color: barWidth === 100 ? "var(--good)" : "var(--accent-light)" }}>
                 {barWidth}%
               </span>
             </div>
-            <div className="h-2 rounded-full overflow-hidden" style={{ background: "oklch(1 0 0 / 0.08)" }}>
+            <div className="h-2 rounded-full overflow-hidden" style={{ background: "var(--border)" }}>
               <div className="h-full rounded-full transition-all duration-700 ease-out"
-                   style={{ width: `${barWidth}%`, background: barWidth === 100 ? "oklch(0.65 0.18 158)" : "linear-gradient(90deg, oklch(0.55 0.22 296), oklch(0.65 0.18 264))" }} />
+                   style={{ width: `${barWidth}%`, background: barWidth === 100 ? "var(--good)" : "linear-gradient(90deg, var(--accent), var(--accent))" }} />
             </div>
             {barWidth < 100 && (
-              <p className="text-xs mt-2" style={{ color: "oklch(0.55 0.02 285)" }}>
+              <p className="text-xs mt-2" style={{ color: "var(--ink-faint)" }}>
                 Fill all fields below to get better AI university matches
               </p>
             )}
             {barWidth === 100 && (
-              <p className="text-xs mt-2" style={{ color: "oklch(0.65 0.18 158)" }}>
-                ✓ Profile complete — your AI recommendations are fully optimized
+              <p className="text-xs mt-2" style={{ color: "var(--good)" }}>
+                Profile complete — your AI recommendations are fully optimized
               </p>
             )}
           </div>
@@ -786,27 +804,27 @@ const Profile = () => {
       <div className="max-w-2xl mx-auto px-4 py-8">
 
       {/* ── Account Section ── */}
-      <div className="bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-100 rounded-2xl p-5 mb-6">
-        <h3 className="text-sm font-bold text-indigo-800 mb-3 flex items-center gap-2">🔐 {t("profile.accountSection")}</h3>
+      <div className="bg-gradient-to-r from-sky-50 to-purple-50 border border-sky-100 rounded-2xl p-5 mb-6">
+        <h3 className="text-sm font-bold text-sky-800 mb-3 flex items-center gap-2"><Icon d={ICONS.lock} size={14} /> {t("profile.accountSection")}</h3>
         <div className="flex items-center justify-between flex-wrap gap-3">
           <div>
-            <p className="text-xs text-[oklch(0.55_0.02_285)] mb-1">{t("profile.emailLabel")}</p>
-            <p className="text-sm font-semibold text-white">{user?.email}</p>
+            <p className="text-xs text-[var(--ink-faint)] mb-1">{t("profile.emailLabel")}</p>
+            <p className="text-sm font-semibold text-[var(--ink)]">{user?.email}</p>
           </div>
           <div>
-            <p className="text-xs text-[oklch(0.55_0.02_285)] mb-1">{t("profile.planLabel")}</p>
+            <p className="text-xs text-[var(--ink-faint)] mb-1">{t("profile.planLabel")}</p>
             {user?.plan === "premium" || user?.plan === "pro" ? (
-              <span className="inline-flex items-center gap-1.5 bg-gradient-to-r from-amber-400 to-yellow-500 text-white text-xs font-bold px-3 py-1.5 rounded-full ">
-                👑 {user.plan.charAt(0).toUpperCase() + user.plan.slice(1)}
+              <span className="inline-flex items-center gap-1.5 bg-gradient-to-r from-amber-400 to-yellow-500 text-[var(--ink)] text-xs font-bold px-3 py-1.5 rounded-full ">
+                {user.plan.charAt(0).toUpperCase() + user.plan.slice(1)}
               </span>
             ) : (
-              <span className="inline-flex items-center gap-1.5 bg-gray-100 text-[oklch(0.65_0.02_285)] text-xs font-bold px-3 py-1.5 rounded-full">
+              <span className="inline-flex items-center gap-1.5 bg-gray-100 text-[var(--ink-faint)] text-xs font-bold px-3 py-1.5 rounded-full">
                 {t("profile.freePlanBadge")}
               </span>
             )}
           </div>
           {(user?.plan === "free" || !user?.plan) && (
-            <a href="/pricing" className="text-xs text-indigo-600 font-semibold hover:underline">
+            <a href="/pricing" className="text-xs text-sky-600 font-semibold hover:underline">
               {t("profile.upgradeLink")} →
             </a>
           )}
@@ -816,9 +834,9 @@ const Profile = () => {
       <form onSubmit={handleSubmit} noValidate className="space-y-7">
 
         {/* ── Contact info ── */}
-        <div className="bg-[oklch(0.17_0.02_285)] rounded-2xl border border-[oklch(1_0_0/0.07)] p-5 space-y-4">
-          <h3 className="text-sm font-semibold text-[oklch(0.75_0.02_285)] flex items-center gap-2">
-            <span>👤</span> {t("profile.contactInfo")}
+        <div className="bg-[var(--surface-2)] rounded-2xl border border-[var(--border)] p-5 space-y-4">
+          <h3 className="text-sm font-semibold text-[var(--ink-dim)] flex items-center gap-2">
+            <Icon d={ICONS.profile} size={14} /> {t("profile.contactInfo")}
           </h3>
 
           <Field label={t("profile.emailLabel")}>
@@ -827,27 +845,27 @@ const Profile = () => {
                 type="email"
                 readOnly
                 value={user?.email || ""}
-                className="w-full border border-[oklch(1_0_0/0.08)] rounded-lg px-4 py-2.5 bg-gray-100 text-[oklch(0.55_0.02_285)] cursor-not-allowed pr-24"
+                className="w-full border border-[var(--border)] rounded-lg px-4 py-2.5 bg-gray-100 text-[var(--ink-faint)] cursor-not-allowed pr-24"
               />
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full font-semibold">
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] bg-sky-100 text-sky-600 px-2 py-0.5 rounded-full font-semibold">
                 {t("profile.accountEmail")}
               </span>
             </div>
-            <p className="mt-1 text-xs text-[oklch(0.45_0.02_285)]">{t("profile.emailReadonly")}</p>
+            <p className="mt-1 text-xs text-[var(--ink-dim)]">{t("profile.emailReadonly")}</p>
           </Field>
 
           <Field label={t("profile.phoneLabel")}>
             <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[oklch(0.45_0.02_285)] text-sm select-none">📞</span>
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--ink-dim)] select-none"><Icon d={ICONS.phone} size={14} /></span>
               <input
                 type="tel"
                 value={form.phone_number}
                 onChange={(e) => set("phone_number", e.target.value)}
                 placeholder="+1 234 567 8900"
-                className="w-full border border-[oklch(1_0_0/0.08)] rounded-lg pl-9 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-[var(--border)] rounded-lg pl-9 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-sky-500"
               />
             </div>
-            <p className="mt-1 text-xs text-[oklch(0.45_0.02_285)]">{t("profile.phoneOptional")}</p>
+            <p className="mt-1 text-xs text-[var(--ink-dim)]">{t("profile.phoneOptional")}</p>
           </Field>
         </div>
 
@@ -869,8 +887,8 @@ const Profile = () => {
                 onClick={() => set("degree_level", value)}
                 className={`flex-1 py-2.5 rounded-xl border text-sm font-medium transition ${
                   form.degree_level === value
-                    ? "bg-blue-600 text-white border-blue-600 "
-                    : "bg-white text-[oklch(0.65_0.02_285)] border-gray-200 hover:border-blue-400"
+                    ? "bg-sky-600 text-[var(--ink)] border-sky-600 "
+                    : "bg-[var(--surface)] text-[var(--ink-faint)] border-[var(--border)] hover:border-[var(--accent)]"
                 }`}
               >
                 {label}
@@ -881,14 +899,14 @@ const Profile = () => {
 
         {/* ── Previous Degree Info (Master / PhD only) ── */}
         {(form.degree_level === "master" || form.degree_level === "phd") && (
-          <div className="bg-[oklch(0.17_0.02_285)] rounded-2xl border border-indigo-500/20 p-5 space-y-4">
+          <div className="bg-[var(--surface-2)] rounded-2xl border border-sky-500/20 p-5 space-y-4">
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-indigo-400">🎓</span>
-              <h3 className="text-sm font-semibold text-indigo-300">
+              <Icon d={ICONS.graduationCap} size={14} className="text-sky-400" />
+              <h3 className="text-sm font-semibold text-sky-300">
                 {form.degree_level === "master" ? t("profile.prevDegree.bachelorTitle") : t("profile.prevDegree.masterTitle")}
               </h3>
             </div>
-            <p className="text-xs text-[oklch(0.45_0.02_285)] -mt-2">{t("profile.prevDegree.subtitle")}</p>
+            <p className="text-xs text-[var(--ink-dim)] -mt-2">{t("profile.prevDegree.subtitle")}</p>
 
             <Field label={t("profile.prevDegree.university")} error={errors.prev_university}>
               <input
@@ -896,7 +914,7 @@ const Profile = () => {
                 value={form.prev_university}
                 onChange={(e) => set("prev_university", e.target.value)}
                 placeholder={t("profile.prevDegree.universityPlaceholder")}
-                className="w-full border border-[oklch(1_0_0/0.08)] rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full border border-[var(--border)] rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-sky-500"
               />
             </Field>
 
@@ -922,7 +940,7 @@ const Profile = () => {
                 value={form.graduation_year}
                 onChange={(e) => set("graduation_year", e.target.value)}
                 placeholder="e.g. 2022"
-                className="w-full border border-[oklch(1_0_0/0.08)] rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full border border-[var(--border)] rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-sky-500"
               />
             </Field>
 
@@ -941,9 +959,9 @@ const Profile = () => {
               value={form.gpa}
               onChange={(e) => set("gpa", e.target.value)}
               placeholder="e.g. 3.5"
-              className="w-full border border-[oklch(1_0_0/0.08)] rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 pr-20"
+              className="w-full border border-[var(--border)] rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-sky-500 pr-20"
             />
-            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-[oklch(0.45_0.02_285)] font-medium">/ 4.0</span>
+            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-[var(--ink-dim)] font-medium">/ 4.0</span>
           </div>
         </Field>
 
@@ -953,7 +971,7 @@ const Profile = () => {
             <select
               value={form.budget_currency}
               onChange={(e) => set("budget_currency", e.target.value)}
-              className="border border-[oklch(1_0_0/0.08)] rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium bg-white"
+              className="border border-[var(--border)] rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-[var(--accent)] text-sm font-medium bg-[var(--surface)]"
             >
               {CURRENCIES.map(({ code, label }) => (
                 <option key={code} value={code}>{label}</option>
@@ -963,7 +981,7 @@ const Profile = () => {
             <button
               type="button"
               onClick={() => adjustBudget(-100)}
-              className="w-10 h-10 flex items-center justify-center rounded-lg border border-[oklch(1_0_0/0.08)] text-[oklch(0.65_0.02_285)] hover:bg-[oklch(0.20_0.024_285)] text-xl font-bold flex-shrink-0"
+              className="w-10 h-10 flex items-center justify-center rounded-lg border border-[var(--border)] text-[var(--ink-faint)] hover:bg-[var(--surface-hover)] text-xl font-bold flex-shrink-0"
             >
               −
             </button>
@@ -974,13 +992,13 @@ const Profile = () => {
               step="100"
               value={form.budget_input}
               onChange={(e) => set("budget_input", parseInt(e.target.value) || 0)}
-              className="flex-1 border border-[oklch(1_0_0/0.08)] rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 text-center font-mono text-base"
+              className="flex-1 border border-[var(--border)] rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-sky-500 text-center font-mono text-base"
             />
 
             <button
               type="button"
               onClick={() => adjustBudget(100)}
-              className="w-10 h-10 flex items-center justify-center rounded-lg border border-[oklch(1_0_0/0.08)] text-[oklch(0.65_0.02_285)] hover:bg-[oklch(0.20_0.024_285)] text-xl font-bold flex-shrink-0"
+              className="w-10 h-10 flex items-center justify-center rounded-lg border border-[var(--border)] text-[var(--ink-faint)] hover:bg-[var(--surface-hover)] text-xl font-bold flex-shrink-0"
             >
               +
             </button>
@@ -989,11 +1007,11 @@ const Profile = () => {
           {form.budget_currency !== "EUR" && (
             <div className="mt-2 flex items-center gap-2">
               {ratesLoading ? (
-                <span className="text-xs text-[oklch(0.45_0.02_285)]">{t("profile.loadingRate")}</span>
+                <span className="text-xs text-[var(--ink-dim)]">{t("profile.loadingRate")}</span>
               ) : budgetEur != null ? (
                 <span className="text-sm text-green-700 bg-green-50 border border-green-200 rounded-lg px-3 py-1.5">
                   ≈ <strong>€{budgetEur.toLocaleString()}</strong> EUR
-                  <span className="text-[oklch(0.45_0.02_285)] ml-1 text-xs">({t("profile.usedForRec")})</span>
+                  <span className="text-[var(--ink-dim)] ml-1 text-xs">({t("profile.usedForRec")})</span>
                 </span>
               ) : (
                 <span className="text-xs text-red-500">{t("profile.rateUnavailable")}</span>
@@ -1015,30 +1033,37 @@ const Profile = () => {
           </Field>
         )}
 
-        {/* ── Preferred Countries ── */}
+        {/* ── Preferred Countries (multi-select) ── */}
         <Field label={t("profile.preferredCountry")}>
-          <div className="flex gap-3">
+          <div className="flex gap-3 flex-wrap">
             {[
-              { value: "germany", label: "🇩🇪 Germany" },
-              { value: "poland",  label: "🇵🇱 Poland"  },
-              { value: "both",    label: "🌍 Both"     },
-            ].map(({ value, label }) => (
-              <button
-                key={value}
-                type="button"
-                onClick={() => set("preferred_country", value)}
-                className={`flex-1 py-2.5 rounded-xl border text-sm font-medium transition ${
-                  form.preferred_country === value
-                    ? "bg-blue-600 text-white border-blue-600 "
-                    : "bg-white text-[oklch(0.65_0.02_285)] border-gray-200 hover:border-blue-400"
-                }`}
-              >
-                {label}
-              </button>
-            ))}
+              { value: "Germany", label: "🇩🇪 Germany" },
+              { value: "Poland",  label: "🇵🇱 Poland"  },
+              { value: "Romania", label: "🇷🇴 Romania" },
+            ].map(({ value, label }) => {
+              const selected = form.preferred_countries_list.includes(value);
+              return (
+                <button
+                  key={value}
+                  type="button"
+                  onClick={() => set("preferred_countries_list",
+                    selected
+                      ? form.preferred_countries_list.filter((c) => c !== value)
+                      : [...form.preferred_countries_list, value]
+                  )}
+                  className={`flex-1 min-w-[100px] py-2.5 rounded-xl border text-sm font-medium transition ${
+                    selected
+                      ? "bg-sky-600 text-[var(--ink)] border-sky-600 "
+                      : "bg-[var(--surface)] text-[var(--ink-faint)] border-[var(--border)] hover:border-[var(--accent)]"
+                  }`}
+                >
+                  {label}
+                </button>
+              );
+            })}
           </div>
-          {form.preferred_country === "both" && (
-            <p className="mt-1.5 text-xs text-[oklch(0.45_0.02_285)]">{t("profile.bothCountriesNote")}</p>
+          {form.preferred_countries_list.length >= 2 && (
+            <p className="mt-1.5 text-xs text-[var(--ink-dim)]">{t("profile.bothCountriesNote")}</p>
           )}
         </Field>
 
@@ -1046,7 +1071,7 @@ const Profile = () => {
         <button
           type="submit"
           disabled={saving}
-          className="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white py-3.5 rounded-xl font-bold transition disabled:opacity-50 text-base mt-2 shadow-indigo-200"
+          className="w-full bg-gradient-to-r from-sky-600 to-violet-600 hover:from-sky-700 hover:to-violet-700 text-[var(--ink)] py-3.5 rounded-xl font-bold transition disabled:opacity-50 text-base mt-2 shadow-sky-200"
         >
           {saving ? (
             <span className="flex items-center justify-center gap-2">
@@ -1057,13 +1082,13 @@ const Profile = () => {
         </button>
 
         {/* Restart onboarding */}
-        <div className="pt-4 border-t border-[oklch(1_0_0/0.07)] mt-4">
+        <div className="pt-4 border-t border-[var(--border)] mt-4">
           <button
             type="button"
             onClick={restartOnboarding}
-            className="w-full text-center text-xs text-[oklch(0.45_0.02_285)] hover:text-indigo-600 transition py-2"
+            className="w-full text-center text-xs text-[var(--ink-dim)] hover:text-sky-600 transition py-2"
           >
-            🎓 {t("profile.restartTour")}
+            {t("profile.restartTour")}
           </button>
         </div>
       </form>
@@ -1076,7 +1101,7 @@ const Profile = () => {
 
 const Field = ({ label, error, required, children }) => (
   <div>
-    <label className="block text-sm font-semibold text-[oklch(0.75_0.02_285)] mb-1.5">
+    <label className="block text-sm font-semibold text-[var(--ink-dim)] mb-1.5">
       {label}{required && <span className="text-red-500 ml-0.5">*</span>}
     </label>
     {children}

@@ -57,5 +57,8 @@ class StudentProfileOut(BaseModel):
     prev_major: str | None = None
     graduation_year: int | None = None
     prev_gpa: float | None = None
+    # Additive — computed live from PROFILE_COMPLETENESS_FIELDS, the same
+    # calculation Apply Hub's Final Submission Check and AI Chat use.
+    completeness: dict | None = None
 
     model_config = {"from_attributes": True}

@@ -6,7 +6,7 @@ from typing import Optional
 
 import httpx
 from fastapi import APIRouter, Depends, HTTPException, Request
-from groq import Groq
+from app.services.ai_client import chat_completion, ai_configured
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
@@ -95,7 +95,7 @@ def _find_application_page(base_url: str) -> str:
 
 def _generate_guide_with_ai(uni: University, website_text: str, app_page_text: str) -> list[dict]:
     """Call Groq to generate structured application guide."""
-    if not settings.GROQ_API_KEY:
+    if not ai_configured():
         raise HTTPException(status_code=503, detail="AI service not configured")
 
     site_context = ""
@@ -148,14 +148,11 @@ Respond ONLY with a JSON array — no markdown, no explanation:
 ]"""
 
     try:
-        client = Groq(api_key=settings.GROQ_API_KEY)
-        resp = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+        raw = chat_completion(
             messages=[{"role": "user", "content": prompt}],
             max_tokens=1200,
             temperature=0.4,
         )
-        raw = resp.choices[0].message.content.strip()
         raw = re.sub(r"^```(?:json)?\s*", "", raw)
         raw = re.sub(r"\s*```$", "", raw)
         parsed = json.loads(raw)

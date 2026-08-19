@@ -57,13 +57,13 @@ const AudioUploadField = () => {
   };
 
   return (
-    <div style={{ marginTop: 16, padding: 16, border: "1px solid #e0e0e0", borderRadius: 8 }}>
+    <div style={{ marginTop: 16, padding: 16, border: "1px solid var(--mui-palette-divider)", borderRadius: 8 }}>
       <p style={{ fontWeight: 600, marginBottom: 8 }}>🎧 Listening Audio</p>
       {record.audio_url ? (
         <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
           <audio controls src={record.audio_url} style={{ flex: 1, minWidth: 200 }} />
           <button onClick={handleDelete}
-            style={{ background: "#ef4444", color: "#fff", border: "none", borderRadius: 6, padding: "6px 14px", cursor: "pointer" }}>
+            style={{ background: "var(--mui-palette-error-main)", color: "var(--mui-palette-error-contrastText)", border: "none", borderRadius: 6, padding: "6px 14px", cursor: "pointer" }}>
             Remove
           </button>
         </div>
@@ -71,7 +71,7 @@ const AudioUploadField = () => {
         <p style={{ color: "#888", fontSize: 13, marginBottom: 8 }}>No audio uploaded yet</p>
       )}
       <label style={{ display: "inline-block", marginTop: 8, cursor: "pointer",
-        background: "#6366f1", color: "#fff", borderRadius: 6, padding: "6px 16px", fontSize: 13 }}>
+        background: "var(--mui-palette-primary-main)", color: "var(--mui-palette-primary-contrastText)", borderRadius: 6, padding: "6px 16px", fontSize: 13 }}>
         {uploading ? "Uploading…" : record.audio_url ? "Replace Audio" : "Upload Audio"}
         <input type="file" accept="audio/*" onChange={handleUpload} style={{ display: "none" }} disabled={uploading} />
       </label>

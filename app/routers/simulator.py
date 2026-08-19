@@ -6,7 +6,7 @@ from datetime import datetime
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query
-from groq import Groq
+from app.services.ai_client import chat_completion, ai_configured
 from pydantic import BaseModel
 from sqlalchemy.orm import Session, joinedload
 
@@ -183,24 +183,21 @@ Generate a personalised, encouraging score report as JSON:
 
 
 def _call_groq(prompt: str) -> Optional[dict]:
-    if not settings.GROQ_API_KEY:
+    if not ai_configured():
         return None
     try:
-        client = Groq(api_key=settings.GROQ_API_KEY)
-        resp = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+        text = chat_completion(
             messages=[{"role": "user", "content": prompt}],
             max_tokens=1000,
             temperature=0.3,
         )
-        text = resp.choices[0].message.content.strip()
         # extract JSON from response
         start = text.find("{")
         end = text.rfind("}") + 1
         if start >= 0 and end > start:
             return json.loads(text[start:end])
     except Exception as e:
-        logger.error("Groq scoring error: %s", e)
+        logger.error("AI scoring error: %s", e)
     return None
 
 
@@ -719,6 +716,16 @@ class PassageIn(BaseModel):
     order_index: int = 0
 
 
+class PassageUpdate(BaseModel):
+    exam_type: Optional[str] = None
+    section: Optional[str] = None
+    title: Optional[str] = None
+    content: Optional[str] = None
+    difficulty: Optional[str] = None
+    order_index: Optional[int] = None
+    is_active: Optional[bool] = None
+
+
 @router.post("/admin/passages", status_code=201)
 def admin_create_passage(body: PassageIn, db: Session = Depends(get_db), _=Depends(require_admin)):
     p = ExamPassage(**body.model_dump())
@@ -729,7 +736,7 @@ def admin_create_passage(body: PassageIn, db: Session = Depends(get_db), _=Depen
 
 
 @router.patch("/admin/passages/{passage_id}")
-def admin_update_passage(passage_id: int, body: PassageIn, db: Session = Depends(get_db), _=Depends(require_admin)):
+def admin_update_passage(passage_id: int, body: PassageUpdate, db: Session = Depends(get_db), _=Depends(require_admin)):
     p = db.get(ExamPassage, passage_id)
     if not p:
         raise HTTPException(404, "Not found")
@@ -792,6 +799,21 @@ class QuestionIn(BaseModel):
     order_index: int = 0
 
 
+class QuestionUpdate(BaseModel):
+    exam_type: Optional[str] = None
+    section: Optional[str] = None
+    subsection: Optional[str] = None
+    question_type: Optional[str] = None
+    passage_id: Optional[int] = None
+    question_text: Optional[str] = None
+    options_json: Optional[str] = None
+    correct_answer: Optional[str] = None
+    explanation: Optional[str] = None
+    points: Optional[float] = None
+    order_index: Optional[int] = None
+    is_active: Optional[bool] = None
+
+
 @router.post("/admin/questions", status_code=201)
 def admin_create_question(body: QuestionIn, db: Session = Depends(get_db), _=Depends(require_admin)):
     q = ExamQuestion(**body.model_dump())
@@ -802,7 +824,7 @@ def admin_create_question(body: QuestionIn, db: Session = Depends(get_db), _=Dep
 
 
 @router.patch("/admin/questions/{question_id}")
-def admin_update_question(question_id: int, body: QuestionIn, db: Session = Depends(get_db), _=Depends(require_admin)):
+def admin_update_question(question_id: int, body: QuestionUpdate, db: Session = Depends(get_db), _=Depends(require_admin)):
     q = db.get(ExamQuestion, question_id)
     if not q:
         raise HTTPException(404, "Not found")

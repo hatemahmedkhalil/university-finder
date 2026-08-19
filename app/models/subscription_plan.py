@@ -12,6 +12,9 @@ class SubscriptionPlan(Base):
     price: Mapped[float | None] = mapped_column(Float, nullable=True)
     description: Mapped[str | None] = mapped_column(String(500), nullable=True)
     features: Mapped[str | None] = mapped_column(Text, nullable=True)   # JSON array stored as text
+    # How long a paid period lasts once a payment for this plan succeeds.
+    # NULL = plan doesn't expire on its own (e.g. the free plan).
+    duration_days: Mapped[int | None] = mapped_column(Integer, nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     is_featured: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)

@@ -1,7 +1,7 @@
 import uuid
 from pathlib import Path
 
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Request
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Request
 from fastapi.responses import Response
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
@@ -56,8 +56,8 @@ def list_documents(db: Session = Depends(get_db), current_user: User = Depends(g
 @limiter.limit("10/minute")
 def upload_document(
     request: Request,
-    name: str = "",
-    doc_type: str = "other",
+    name: str = Form(""),
+    doc_type: str = Form("other"),
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),

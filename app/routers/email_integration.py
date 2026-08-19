@@ -242,7 +242,7 @@ async def receive_inbound_email(
     notif = Notification(
         user_id=linked.user_id,
         title=f"{label} from {uni_name}",
-        body=subject[:200],
+        message=subject[:200],
         type="email",
     )
     db.add(notif)

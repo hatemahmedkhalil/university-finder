@@ -52,6 +52,21 @@ class InstructorIn(BaseModel):
     is_published: bool = True
 
 
+class InstructorUpdate(BaseModel):
+    """Same fields as InstructorIn but all optional — PATCH is a true partial update."""
+    user_id: Optional[int] = None
+    name: Optional[str] = None
+    title: Optional[str] = None
+    language: Optional[str] = None
+    specialty: Optional[str] = None
+    organization: Optional[str] = None
+    bio: Optional[str] = None
+    photo_url: Optional[str] = None
+    email: Optional[str] = None
+    years_experience: Optional[int] = None
+    is_published: Optional[bool] = None
+
+
 @router.get("", response_model=list[InstructorOut])
 def list_instructors(
     language: Optional[str] = Query(default=None),
@@ -87,7 +102,7 @@ def create_instructor(
 @router.patch("/{instructor_id}", response_model=InstructorOut)
 def update_instructor(
     instructor_id: int,
-    body: InstructorIn,
+    body: InstructorUpdate,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):

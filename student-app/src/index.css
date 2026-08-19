@@ -1,5 +1,213 @@
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap");
 @import "tailwindcss";
+
+/* ══════════════════════════════════════════════════════════════════════════
+   UNIPATH DESIGN SYSTEM
+   One token set, two themes (light default / dark via html.dark), used by
+   every page through the .app-shell scope. Sky-blue primary, near-black +
+   white + gray neutrals, Apple/Linear/Stripe-grade restraint.
+════════════════════════════════════════════════════════════════════════════ */
+
+.app-shell {
+  /* ── Color: light (default) ── */
+  --bg:            #ffffff;
+  --bg-subtle:     #f7f9fc;
+  --surface:       #ffffff;
+  --surface-hover: #f7f9fc;
+  --surface-2:     #f0f4f9;   /* nested surface, e.g. code/quote blocks, chips */
+  --border:        #e6ebf2;
+  --border-strong: #d3dbe6;
+  --ink:           #0b1220;
+  --ink-dim:       #4c5a6e;
+  --ink-faint:     #8996a8;
+  --ink-ghost:     #b3bdcb;
+
+  --accent:        #0ea5e9;   /* sky-500 */
+  --accent-hover:  #0284c7;   /* sky-600 */
+  --accent-active: #0369a1;   /* sky-700 */
+  --accent-light:  #38bdf8;   /* sky-400 */
+  --accent-subtle: #e6f6fe;   /* sky-50-ish tint */
+  --accent-ring:   rgba(14,165,233,0.20);
+  --on-accent:     #ffffff;
+
+  --good:          #10b981;
+  --good-subtle:   #ecfdf5;
+  --warn:          #f59e0b;
+  --warn-subtle:   #fffbeb;
+  --danger:        #ef4444;
+  --danger-subtle: #fef2f2;
+
+  /* ── Radius ── */
+  --r-sm:  8px;
+  --r-md:  12px;
+  --r-lg:  16px;
+  --r-xl:  20px;
+  --r-2xl: 28px;
+  --r-full: 999px;
+
+  /* ── Shadow (soft, tinted, never pure black) ── */
+  --shadow-xs: 0 1px 2px rgba(15,23,42,0.04);
+  --shadow-sm: 0 1px 3px rgba(15,23,42,0.05), 0 1px 2px rgba(15,23,42,0.04);
+  --shadow-md: 0 6px 16px rgba(15,23,42,0.07), 0 2px 6px rgba(15,23,42,0.04);
+  --shadow-lg: 0 16px 40px rgba(15,23,42,0.10), 0 4px 10px rgba(15,23,42,0.05);
+  --shadow-glow: 0 0 0 4px var(--accent-ring);
+
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Manrope", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+
+html.dark .app-shell {
+  /* ── Color: dark ── */
+  --bg:            #0a0d12;
+  --bg-subtle:     #0d1117;
+  --surface:       #11151c;
+  --surface-hover: #161b24;
+  --surface-2:     #1a212c;
+  --border:        #1e2531;
+  --border-strong: #2a3342;
+  --ink:           #eef2f7;
+  --ink-dim:       #a3aebd;
+  --ink-faint:     #6b7688;
+  --ink-ghost:     #454f60;
+
+  --accent:        #38bdf8;   /* sky-400, brighter for dark bg */
+  --accent-hover:  #7dd3fc;
+  --accent-active: #0ea5e9;
+  --accent-light:  #7dd3fc;
+  --accent-subtle: rgba(56,189,248,0.12);
+  --accent-ring:   rgba(56,189,248,0.28);
+  --on-accent:     #06222f;
+
+  --good:          #34d399;
+  --good-subtle:   rgba(52,211,153,0.10);
+  --warn:          #fbbf24;
+  --warn-subtle:   rgba(251,191,36,0.10);
+  --danger:        #f87171;
+  --danger-subtle: rgba(248,113,113,0.10);
+
+  --shadow-xs: 0 1px 2px rgba(0,0,0,0.30);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.35), 0 1px 2px rgba(0,0,0,0.25);
+  --shadow-md: 0 6px 16px rgba(0,0,0,0.40), 0 2px 6px rgba(0,0,0,0.25);
+  --shadow-lg: 0 20px 48px rgba(0,0,0,0.50), 0 6px 14px rgba(0,0,0,0.30);
+}
+
+/* ── Typography scale ── */
+.app-shell h1, .text-display  { font-size: 2.25rem; line-height: 1.15; font-weight: 800; letter-spacing: -0.02em; }
+.app-shell h2, .text-h1       { font-size: 1.75rem; line-height: 1.2;  font-weight: 800; letter-spacing: -0.015em; }
+.app-shell h3, .text-h2       { font-size: 1.375rem; line-height: 1.3; font-weight: 700; letter-spacing: -0.01em; }
+.app-shell h4, .text-h3       { font-size: 1.125rem; line-height: 1.4; font-weight: 700; }
+.text-body-lg  { font-size: 1.0625rem; line-height: 1.65; }
+.text-body     { font-size: 0.9375rem; line-height: 1.6; }
+.text-caption  { font-size: 0.8125rem; line-height: 1.5; color: var(--ink-faint); }
+.text-eyebrow  { font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--ink-faint); }
+
+/* ── Buttons ── */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+  font-weight: 600; font-size: 0.875rem; line-height: 1;
+  padding: 0.7rem 1.15rem; border-radius: var(--r-md);
+  border: 1px solid transparent; cursor: pointer; white-space: nowrap;
+  transition: transform 0.15s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.btn:active:not(:disabled) { transform: scale(0.97); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-primary {
+  background: var(--accent); color: var(--on-accent);
+  box-shadow: var(--shadow-sm);
+}
+.btn-primary:hover:not(:disabled) { background: var(--accent-hover); box-shadow: var(--shadow-md), var(--shadow-glow); transform: translateY(-1px); }
+
+.btn-secondary {
+  background: var(--surface); color: var(--ink); border-color: var(--border);
+}
+.btn-secondary:hover:not(:disabled) { background: var(--surface-hover); border-color: var(--border-strong); transform: translateY(-1px); }
+
+.btn-ghost { background: transparent; color: var(--ink-dim); }
+.btn-ghost:hover:not(:disabled) { background: var(--surface-hover); color: var(--ink); }
+
+.btn-danger { background: var(--danger-subtle); color: var(--danger); }
+.btn-danger:hover:not(:disabled) { background: var(--danger); color: #fff; }
+
+.btn-sm { padding: 0.5rem 0.85rem; font-size: 0.8125rem; }
+.btn-lg { padding: 0.875rem 1.5rem; font-size: 0.9375rem; border-radius: var(--r-lg); }
+
+/* ── Inputs ──
+   Wrapped in @layer components so Tailwind utility classes (e.g. pl-11/pr-4
+   on inputs with a leading/trailing icon) can override this padding as
+   authors intend. Unlayered CSS always beats @layer utilities regardless of
+   source order, so without this wrapper every icon-padded input silently
+   lost its extra padding and the icon overlapped the typed text. */
+@layer components {
+  .input, .app-shell input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), .app-shell textarea, .app-shell select {
+    width: 100%; background: var(--surface); color: var(--ink);
+    border: 1px solid var(--border); border-radius: var(--r-md);
+    padding: 0.7rem 0.9rem; font-size: 0.875rem;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+  }
+}
+.app-shell input::placeholder, .app-shell textarea::placeholder { color: var(--ink-ghost); }
+.app-shell input:focus, .app-shell textarea:focus, .app-shell select:focus {
+  outline: none; border-color: var(--accent); box-shadow: 0 0 0 3.5px var(--accent-ring);
+}
+.app-shell input:disabled, .app-shell textarea:disabled { background: var(--bg-subtle); color: var(--ink-faint); cursor: not-allowed; }
+
+/* ── Cards ── */
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-xl); box-shadow: var(--shadow-xs);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+.card-hover:hover { box-shadow: var(--shadow-md); border-color: var(--border-strong); transform: translateY(-2px); }
+
+/* ── Badges ── */
+.badge {
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  font-size: 0.75rem; font-weight: 700; line-height: 1;
+  padding: 0.35rem 0.65rem; border-radius: var(--r-full);
+}
+.badge-accent  { background: var(--accent-subtle); color: var(--accent-active); }
+html.dark .badge-accent { color: var(--accent); }
+.badge-good    { background: var(--good-subtle);   color: var(--good); }
+.badge-warn    { background: var(--warn-subtle);   color: var(--warn); }
+.badge-danger  { background: var(--danger-subtle); color: var(--danger); }
+.badge-neutral { background: var(--surface-2);     color: var(--ink-dim); }
+
+/* ── Modal / dropdown surfaces ── */
+.modal-overlay { position: fixed; inset: 0; background: rgba(8,12,20,0.5); backdrop-filter: blur(6px); }
+.modal-panel, .dropdown-panel {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-2xl); box-shadow: var(--shadow-lg);
+}
+.dropdown-panel { border-radius: var(--r-lg); }
+
+/* ── Table ── */
+.app-shell table { border-collapse: separate; border-spacing: 0; }
+.app-shell th { text-align: start; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-faint); padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); }
+.app-shell td { padding: 0.9rem 1rem; border-bottom: 1px solid var(--border); font-size: 0.875rem; color: var(--ink); }
+.app-shell tr:last-child td { border-bottom: none; }
+.app-shell tbody tr { transition: background-color 0.12s ease; }
+.app-shell tbody tr:hover { background: var(--surface-hover); }
+
+/* ── Skeleton (premium shimmer, token-driven) ── */
+.skeleton-v2 {
+  background: linear-gradient(90deg, var(--surface-2) 25%, var(--surface-hover) 50%, var(--surface-2) 75%);
+  background-size: 1200px 100%;
+  animation: shimmerV2 1.5s ease-in-out infinite;
+  border-radius: var(--r-md);
+}
+@keyframes shimmerV2 { 0% { background-position: -600px 0; } 100% { background-position: 600px 0; } }
+
+/* ── Focus ring (accessibility, matches accent) ── */
+.app-shell a:focus-visible, .app-shell button:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 2px; border-radius: var(--r-sm);
+}
+
+[dir="ltr"] .dark-layout {
+  font-family: "Manrope", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+}
 
 [dir="rtl"] {
   font-family: "Noto Sans Arabic", "Segoe UI", Tahoma, Arial, sans-serif;
@@ -35,6 +243,26 @@
   to   { opacity: 1; transform: translateY(0)  scale(1); }
 }
 .page-enter { animation: pageEnter 0.26s cubic-bezier(0.22,1,0.36,1) both; }
+
+/* ── AI presence: gentle breathing glow for advisor/assistant avatars ── */
+@keyframes aiBreathe {
+  0%, 100% { transform: scale(1);    opacity: 0.9; }
+  50%      { transform: scale(1.08); opacity: 1; }
+}
+
+/* ── Celebration burst (confetti-lite, no external assets) ── */
+@keyframes confettiFall {
+  0%   { transform: translateY(-10px) rotate(0deg);   opacity: 1; }
+  100% { transform: translateY(120px) rotate(540deg); opacity: 0; }
+}
+.confetti-piece { position: absolute; top: 0; animation: confettiFall 1.1s ease-in forwards; }
+
+@keyframes popIn {
+  0%   { transform: scale(0.6); opacity: 0; }
+  60%  { transform: scale(1.06); opacity: 1; }
+  100% { transform: scale(1); }
+}
+.pop-in { animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both; }
 
 /* ── Skeleton shimmer ── */
 :root {
@@ -79,16 +307,16 @@ html.dark {
 .dark-layout input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
 .dark-layout select,
 .dark-layout textarea {
-  background-color: oklch(0.18 0.022 285) !important;
+  background-color: #1c1f2e !important;
   color: white !important;
-  border-color: oklch(1 0 0 / 0.10) !important;
+  border-color: #262a3d !important;
 }
 .dark-layout input::placeholder,
 .dark-layout textarea::placeholder {
-  color: oklch(0.45 0.02 285) !important;
+  color: #6b7089 !important;
 }
 .dark-layout select option {
-  background-color: oklch(0.18 0.022 285);
+  background-color: #1c1f2e;
   color: white;
 }
 /* White cards inside the dark layout keep their own bg */

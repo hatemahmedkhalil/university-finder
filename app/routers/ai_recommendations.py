@@ -3,8 +3,8 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from typing import Optional
-from groq import Groq
 import json
+from app.services.ai_client import chat_completion, ai_configured
 
 logger = logging.getLogger("university_finder")
 
@@ -75,7 +75,7 @@ def get_ai_recommendations(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    if not settings.GROQ_API_KEY:
+    if not ai_configured():
         raise HTTPException(status_code=503, detail="AI service not configured.")
 
     if current_user.plan == "free" and current_user.ai_rec_count >= 3:
@@ -167,14 +167,11 @@ Return ONLY valid JSON in this exact format (no markdown, no explanation outside
 }}"""
 
     try:
-        client = Groq(api_key=settings.GROQ_API_KEY)
-        response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+        raw = chat_completion(
             messages=[{"role": "user", "content": prompt}],
             max_tokens=1200,
             temperature=0.4,
         )
-        raw = response.choices[0].message.content.strip()
 
         # Strip markdown code fences if present
         if raw.startswith("```"):
@@ -260,7 +257,7 @@ def compare_universities(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    if not settings.GROQ_API_KEY:
+    if not ai_configured():
         raise HTTPException(status_code=503, detail="AI service not configured.")
     if len(body.university_ids) < 2:
         raise HTTPException(status_code=400, detail="Select at least 2 universities to compare.")
@@ -329,14 +326,11 @@ Return ONLY valid JSON (no markdown):
 }}"""
 
     try:
-        client = Groq(api_key=settings.GROQ_API_KEY)
-        response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+        raw = chat_completion(
             messages=[{"role": "user", "content": prompt}],
             max_tokens=1500,
             temperature=0.4,
         )
-        raw = response.choices[0].message.content.strip()
         if raw.startswith("```"):
             raw = raw.split("```")[1]
             if raw.startswith("json"):

@@ -1,11 +1,11 @@
 import json
 import logging
 import re
-from datetime import datetime
+from datetime import date, datetime
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Request
-from groq import Groq
+from app.services.ai_client import chat_completion, ai_configured
 from pydantic import BaseModel, Field
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
@@ -13,11 +13,17 @@ from sqlalchemy.orm import Session
 from app.config import settings
 from app.core.limiter import limiter
 from app.dependencies import get_current_user, get_db, require_admin
+from app.models.calendar_event import CalendarEvent
 from app.models.pipeline import PipelineEntry, VALID_STATUSES, VALID_DECISIONS
 from app.models.student_document import StudentDocument
 from app.models.student_profile import StudentProfile
 from app.models.university import University
 from app.models.user import User
+from app.services.application_readiness import (
+    build_requirements, compute_readiness, parse_deadline,
+    compute_deadline_risk, next_best_action,
+    compute_profile_completeness, compute_submission_readiness,
+)
 
 logger = logging.getLogger("university_finder")
 
@@ -55,6 +61,12 @@ class PipelineOut(BaseModel):
     created_at: datetime
     updated_at: datetime
     university: UniSnap
+    # ── Application intelligence (computed live, never stored/stale) ──
+    requirements: Optional[dict] = None
+    readiness: Optional[dict] = None
+    deadline: Optional[dict] = None
+    deadline_risk: Optional[dict] = None
+    next_action: Optional[dict] = None
     model_config = {"from_attributes": True}
 
 
@@ -149,7 +161,7 @@ def _build_uni_summary(uni: University) -> str:
 
 def _run_ai_analysis(profile: Optional[StudentProfile], uni: University) -> dict:
     """Call Groq once and get fit score, gaps, analysis, and motivation letter."""
-    if not settings.GROQ_API_KEY:
+    if not ai_configured():
         return {}
 
     profile_text = _build_profile_summary(profile)
@@ -172,14 +184,11 @@ Respond ONLY with valid JSON — no markdown, no explanation, just the JSON obje
 }}"""
 
     try:
-        client = Groq(api_key=settings.GROQ_API_KEY)
-        resp = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+        raw = chat_completion(
             messages=[{"role": "user", "content": prompt}],
             max_tokens=1400,
             temperature=0.65,
         )
-        raw = resp.choices[0].message.content.strip()
         # Strip markdown code fences if present
         raw = re.sub(r"^```(?:json)?\s*", "", raw)
         raw = re.sub(r"\s*```$", "", raw)
@@ -189,8 +198,19 @@ Respond ONLY with valid JSON — no markdown, no explanation, just the JSON obje
         return {}
 
 
-def _entry_to_out(entry: PipelineEntry) -> dict:
-    """Deserialize JSON fields for the response."""
+def _entry_to_out(
+    entry: PipelineEntry,
+    owned_types: set[str] | None = None,
+    degree_level: str | None = None,
+    profile: "StudentProfile | None" = None,
+) -> dict:
+    """Deserialize JSON fields for the response, and — when document/profile
+    context is supplied — compute live application intelligence (readiness,
+    requirements, deadline risk, next action). owned_types=None skips the
+    intelligence block entirely (used nowhere currently, kept for safety).
+    `profile` lets conditional requirements (e.g. APS — only for certain
+    nationalities) be evaluated against the real student; omitting it just
+    means conditions can't be evaluated, never that one is wrongly hidden."""
     d = {
         "id": entry.id,
         "university_id": entry.university_id,
@@ -207,7 +227,36 @@ def _entry_to_out(entry: PipelineEntry) -> dict:
         "updated_at": entry.updated_at,
         "university": entry.university,
     }
+
+    if owned_types is not None:
+        requirements = build_requirements(
+            entry.university, degree_level, owned_types, bool(entry.motivation_letter), profile,
+        )
+        readiness = compute_readiness(requirements)
+        deadline = parse_deadline(entry.university.application_deadline)
+        deadline_risk = compute_deadline_risk(deadline, readiness)
+        action = next_best_action(requirements, deadline_risk, entry.status)
+
+        d["requirements"] = requirements
+        d["readiness"] = readiness
+        d["deadline"] = deadline
+        d["deadline_risk"] = deadline_risk
+        d["next_action"] = action
+
     return d
+
+
+def _readiness_context(db: Session, user_id: int) -> tuple[set[str], str | None, "StudentProfile | None"]:
+    """owned document types + degree level + profile for the given student —
+    the real signals the readiness/requirements engine is computed from."""
+    owned_types = {
+        d.doc_type for d in db.query(StudentDocument).filter(StudentDocument.user_id == user_id).all()
+    }
+    profile = db.query(StudentProfile).filter(StudentProfile.user_id == user_id).first()
+    degree_level = None
+    if profile and profile.degree_level:
+        degree_level = profile.degree_level.value if hasattr(profile.degree_level, "value") else str(profile.degree_level)
+    return owned_types, degree_level, profile
 
 
 # ── Routes ───────────────────────────────────────────────────────────────────
@@ -220,31 +269,81 @@ def list_pipeline(db: Session = Depends(get_db), current_user: User = Depends(ge
         .order_by(PipelineEntry.created_at.desc())
         .all()
     )
-    return [_entry_to_out(e) for e in entries]
+    owned_types, degree_level, profile = _readiness_context(db, current_user.id)
+    return [_entry_to_out(e, owned_types, degree_level, profile) for e in entries]
 
 
-@router.post("", status_code=201)
-@limiter.limit("20/minute")
-def add_to_pipeline(
-    request: Request,
-    body: PipelineCreate,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
-):
-    uni = db.query(University).filter(University.id == body.university_id).first()
-    if not uni:
-        raise HTTPException(status_code=404, detail="University not found")
-
-    # Check duplicate
-    existing = db.query(PipelineEntry).filter(
+@router.get("/{entry_id}")
+def get_pipeline_entry(entry_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    """Single entry, with the same live intelligence block as the list —
+    this is what Apply Hub uses to know exactly which application it's
+    working on (the entry_id in the URL is the one source of truth, never
+    frontend-only state)."""
+    entry = db.query(PipelineEntry).filter(
+        PipelineEntry.id == entry_id,
         PipelineEntry.user_id == current_user.id,
-        PipelineEntry.university_id == body.university_id,
+    ).first()
+    if not entry:
+        raise HTTPException(status_code=404, detail="Not found")
+    owned_types, degree_level, profile = _readiness_context(db, current_user.id)
+    return _entry_to_out(entry, owned_types, degree_level, profile)
+
+
+@router.get("/{entry_id}/submission-check")
+def get_submission_check(entry_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    """
+    Final Submission Check — answers "is this application actually ready to
+    submit?" using the exact same requirements/readiness/deadline engine as
+    the rest of the Pipeline/Apply Hub (never a second, separate calculation).
+    Scoped strictly to the authenticated user's own entry — a university_id
+    supplied by the frontend is never trusted for this.
+    """
+    entry = db.query(PipelineEntry).filter(
+        PipelineEntry.id == entry_id,
+        PipelineEntry.user_id == current_user.id,
+    ).first()
+    if not entry:
+        raise HTTPException(status_code=404, detail="Not found")
+
+    owned_types, degree_level, profile = _readiness_context(db, current_user.id)
+
+    requirements = build_requirements(entry.university, degree_level, owned_types, bool(entry.motivation_letter), profile)
+    readiness = compute_readiness(requirements)
+    deadline = parse_deadline(entry.university.application_deadline)
+    deadline_risk = compute_deadline_risk(deadline, readiness)
+    personal_info = compute_profile_completeness(profile)
+
+    result = compute_submission_readiness(
+        requirements, readiness, personal_info, bool(entry.motivation_letter), deadline, deadline_risk,
+    )
+    result["entry_id"] = entry.id
+    result["entry_status"] = entry.status
+    return result
+
+
+def create_pipeline_entry(db: Session, user_id: int, university_id: int) -> PipelineEntry:
+    """
+    The ONE place a PipelineEntry gets created — always with a valid status,
+    real AI fit analysis, a real checklist, and calendar sync. Used by both
+    the HTTP route below and the AI Chat "add_pipeline" action, so there is
+    no second, weaker write path that can produce an invalid/bare entry.
+
+    Raises ValueError("not_found") / ValueError("duplicate") for the caller
+    to translate into the right HTTP status.
+    """
+    uni = db.query(University).filter(University.id == university_id).first()
+    if not uni:
+        raise ValueError("not_found")
+
+    existing = db.query(PipelineEntry).filter(
+        PipelineEntry.user_id == user_id,
+        PipelineEntry.university_id == university_id,
     ).first()
     if existing:
-        raise HTTPException(status_code=409, detail="Already in your pipeline")
+        raise ValueError("duplicate")
 
-    profile = db.query(StudentProfile).filter(StudentProfile.user_id == current_user.id).first()
-    owned_docs = db.query(StudentDocument).filter(StudentDocument.user_id == current_user.id).all()
+    profile = db.query(StudentProfile).filter(StudentProfile.user_id == user_id).first()
+    owned_docs = db.query(StudentDocument).filter(StudentDocument.user_id == user_id).all()
     owned_types = {d.doc_type for d in owned_docs}
 
     # Run AI analysis (synchronous — Groq is fast)
@@ -262,7 +361,6 @@ def add_to_pipeline(
             {"item": "CV / Resume", "done": "cv" in owned_types},
         ]
 
-    # Determine deadline from university
     deadline = uni.application_deadline or None
 
     strengths = ai.get("strengths") or []
@@ -272,7 +370,7 @@ def add_to_pipeline(
         fit_gaps_list.append(f"Strengths: {', '.join(str(s) for s in strengths)}")
 
     entry = PipelineEntry(
-        user_id=current_user.id,
+        user_id=user_id,
         university_id=uni.id,
         status="shortlisted",
         fit_score=ai.get("fit_score"),
@@ -288,9 +386,68 @@ def add_to_pipeline(
         db.refresh(entry)
     except IntegrityError:
         db.rollback()
+        raise ValueError("duplicate")
+
+    # Auto-sync deadline to calendar_events — only when we can honestly
+    # resolve it to a real calendar date. Real deadline text is often
+    # freetext with no year or multiple intake dates ("July 15 (winter),
+    # January 15 (summer)"), which is NOT a valid timestamp — inserting it
+    # raw used to 500 the whole pipeline creation and poison the DB session
+    # for the rest of the request (the bare except never rolled back).
+    if deadline:
+        try:
+            from datetime import timezone
+            if hasattr(deadline, "year") and not hasattr(deadline, "hour"):
+                deadline_dt = datetime.combine(deadline, datetime.min.time()).replace(tzinfo=timezone.utc)
+            elif hasattr(deadline, "hour"):
+                deadline_dt = deadline
+            else:
+                parsed = parse_deadline(str(deadline))
+                deadline_dt = (
+                    datetime.combine(date.fromisoformat(parsed["next_date"]), datetime.min.time()).replace(tzinfo=timezone.utc)
+                    if parsed["parseable"] else None
+                )
+
+            if deadline_dt:
+                exists = db.query(CalendarEvent).filter(
+                    CalendarEvent.user_id == user_id,
+                    CalendarEvent.university_name == uni.name,
+                    CalendarEvent.source == "pipeline",
+                ).first()
+                if not exists:
+                    cal = CalendarEvent(
+                        user_id=user_id,
+                        title=f"Application deadline — {uni.name}",
+                        event_date=deadline_dt,
+                        event_type="deadline",
+                        university_name=uni.name,
+                        source="pipeline",
+                    )
+                    db.add(cal)
+                    db.commit()
+        except Exception:
+            db.rollback()  # never leave the session poisoned for the rest of the request
+
+    return entry
+
+
+@router.post("", status_code=201)
+@limiter.limit("20/minute")
+def add_to_pipeline(
+    request: Request,
+    body: PipelineCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    try:
+        entry = create_pipeline_entry(db, current_user.id, body.university_id)
+    except ValueError as e:
+        if str(e) == "not_found":
+            raise HTTPException(status_code=404, detail="University not found")
         raise HTTPException(status_code=409, detail="Already in your pipeline")
 
-    return _entry_to_out(entry)
+    owned_types, degree_level, profile = _readiness_context(db, current_user.id)
+    return _entry_to_out(entry, owned_types, degree_level, profile)
 
 
 @router.patch("/{entry_id}")
@@ -325,7 +482,8 @@ def update_entry(
 
     db.commit()
     db.refresh(entry)
-    return _entry_to_out(entry)
+    owned_types, degree_level, profile = _readiness_context(db, current_user.id)
+    return _entry_to_out(entry, owned_types, degree_level, profile)
 
 
 @router.post("/{entry_id}/regenerate")
@@ -361,7 +519,8 @@ def regenerate_analysis(
     entry.motivation_letter = ai.get("motivation_letter")
     db.commit()
     db.refresh(entry)
-    return _entry_to_out(entry)
+    owned_types, degree_level, profile = _readiness_context(db, current_user.id)
+    return _entry_to_out(entry, owned_types, degree_level, profile)
 
 
 @router.delete("/{entry_id}", status_code=204)

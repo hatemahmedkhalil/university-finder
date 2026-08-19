@@ -2,14 +2,15 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import api from "../api/axios";
 import { useTranslation } from "react-i18next";
+import { Icon, ICONS } from "../components/Sidebar";
 
 /* ── Shared helpers ── */
 const ScoreBar = ({ label, value, max = 30, color }) => (
   <div className="mb-2">
-    <div className="flex justify-between text-xs text-[oklch(0.55_0.02_285)] mb-1">
+    <div className="flex justify-between text-xs text-[var(--ink-faint)] mb-1">
       <span>{label}</span><span>{value}/{max}</span>
     </div>
-    <div className="h-2 bg-[oklch(0.20_0.024_285)] rounded-full">
+    <div className="h-2 bg-[var(--surface-hover)] rounded-full">
       <div className={`h-2 rounded-full ${color}`} style={{ width: `${(value / max) * 100}%` }} />
     </div>
   </div>
@@ -26,13 +27,13 @@ const FitRing = ({ score }) => {
     const t = setTimeout(() => setDisplayed(score), 80);
     return () => clearTimeout(t);
   }, [score]);
-  const color = score >= 80 ? "#22c55e" : score >= 60 ? "#f59e0b" : "#ef4444";
+  const color = score >= 80 ? "var(--good)" : score >= 60 ? "var(--warn)" : "var(--danger)";
   const r = 26, circ = 2 * Math.PI * r;
   const dash = (displayed / 100) * circ;
   return (
     <div className="relative w-16 h-16 shrink-0">
       <svg viewBox="0 0 64 64" className="w-full h-full -rotate-90">
-        <circle cx="32" cy="32" r={r} fill="none" stroke="oklch(0.25 0.02 285)" strokeWidth="5" />
+        <circle cx="32" cy="32" r={r} fill="none" stroke="var(--surface-hover)" strokeWidth="5" />
         <circle cx="32" cy="32" r={r} fill="none" stroke={color} strokeWidth="5"
           strokeDasharray={`${dash} ${circ}`} strokeLinecap="round"
           style={{ transition: "stroke-dasharray 0.9s cubic-bezier(0.22,1,0.36,1)" }} />
@@ -58,16 +59,16 @@ const LevelSelector = ({ lang, value, onChange }) => {
   };
   return (
     <div>
-      <p className="text-sm font-semibold text-[oklch(0.75_0.02_285)] mb-2">
-        {LANG_FLAG[lang] || "🌍"} {t("recommendations.languageLevelTitle")} ({lang.charAt(0).toUpperCase() + lang.slice(1)})
+      <p className="text-sm font-semibold text-[var(--ink-dim)] mb-2">
+        {LANG_FLAG[lang] || <Icon d={ICONS.globe} size={13} />} {t("recommendations.languageLevelTitle")} ({lang.charAt(0).toUpperCase() + lang.slice(1)})
       </p>
       <div className="flex gap-2 flex-wrap">
         {LEVELS.map(l => (
           <button key={l} onClick={() => onChange(l)}
             className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition ${
               value === l
-                ? "bg-indigo-600 text-white border-indigo-600"
-                : "bg-[oklch(0.20_0.024_285)] text-[oklch(0.65_0.02_285)] border-[oklch(1_0_0/0.10)] hover:border-[oklch(0.55_0.22_296/0.50)]"
+                ? "bg-sky-600 text-[var(--ink)] border-sky-600"
+                : "bg-[var(--surface-hover)] text-[var(--ink-faint)] border-[var(--border)] hover:border-[var(--accent)]/50"
             }`}
           >
             {l} <span className="font-normal text-[10px]">· {LEVEL_LABELS[l]}</span>
@@ -163,16 +164,16 @@ const AiTab = ({ profile }) => {
   return (
     <div className="space-y-5">
       {/* Language level card */}
-      <div className="bg-[oklch(0.17_0.02_285)] rounded-2xl border border-[oklch(0.55_0.22_296/0.20)]  p-5">
+      <div className="bg-[var(--surface-2)] rounded-2xl border border-[var(--accent)]/25  p-5">
         <div className="flex items-center justify-between mb-3">
           <div>
-            <h3 className="font-bold text-white">{t("recommendations.languageLevelTitle")}</h3>
-            <p className="text-xs text-[oklch(0.45_0.02_285)] mt-0.5">
+            <h3 className="font-bold text-[var(--ink)]">{t("recommendations.languageLevelTitle")}</h3>
+            <p className="text-xs text-[var(--ink-dim)] mt-0.5">
               {t("recommendations.subtitle")}
             </p>
           </div>
           <button onClick={() => setShowPicker(v => !v)}
-            className="text-xs text-[oklch(0.80_0.14_296)] font-semibold hover:underline">
+            className="text-xs text-[var(--accent)] font-semibold hover:underline">
             {showPicker ? `${t("common.hide")} ▲` : `${t("recommendations.languageLevelTitle")} ▼`}
           </button>
         </div>
@@ -180,7 +181,7 @@ const AiTab = ({ profile }) => {
         {!showPicker && level && (() => {
           const lang = profile?.language?.toLowerCase() || "english";
           return (
-            <span className="inline-flex items-center gap-1.5 bg-[oklch(0.19_0.028_285)] text-[oklch(0.85_0.10_296)] text-sm font-bold px-4 py-2 rounded-xl border border-[oklch(0.55_0.22_296/0.20)]">
+            <span className="inline-flex items-center gap-1.5 bg-[var(--accent-subtle)] text-[var(--accent-light)] text-sm font-bold px-4 py-2 rounded-xl border border-[var(--accent)]/25">
               {LANG_FLAG[lang]} {lang.charAt(0).toUpperCase() + lang.slice(1)}: {level} — {LEVEL_LABELS[level]}
             </span>
           );
@@ -189,8 +190,8 @@ const AiTab = ({ profile }) => {
         {showPicker && (
           <div className="pt-2">
             <LevelSelector lang={profile?.language?.toLowerCase() || "english"} value={level} onChange={setLevel} />
-            <Link to="/learning" className="inline-block mt-3 text-xs text-indigo-500 hover:underline">
-              📝 {t("recommendations.howScores")}
+            <Link to="/learning" className="inline-block mt-3 text-xs text-sky-500 hover:underline">
+              {t("recommendations.howScores")}
             </Link>
           </div>
         )}
@@ -199,10 +200,10 @@ const AiTab = ({ profile }) => {
       {/* Generate button */}
       {!result && (
         <button onClick={run} disabled={loading}
-          className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 disabled:opacity-50 text-white font-bold py-4 rounded-2xl transition flex items-center justify-center gap-3 text-base btn-press">
+          className="w-full bg-gradient-to-r from-sky-600 to-purple-600 hover:from-sky-700 hover:to-purple-700 disabled:opacity-50 text-[var(--ink)] font-bold py-4 rounded-2xl transition flex items-center justify-center gap-3 text-base btn-press">
           {loading
             ? <><span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" /> {t("recommendations.analyzing")}</>
-            : <>✨ {t("recommendations.title")}</>}
+            : <>{t("recommendations.title")}</>}
         </button>
       )}
 
@@ -210,21 +211,21 @@ const AiTab = ({ profile }) => {
 
       {result && (
         <>
-          <div className="rounded-2xl p-5" style={{ background: "oklch(0.19 0.028 285)", border: "1px solid oklch(0.55 0.22 296 / 0.20)" }}>
-            <p className="text-xs font-bold text-indigo-500 uppercase tracking-wide mb-2">✨ AI Overall Advice</p>
-            <p className="text-[oklch(0.75_0.02_285)] text-sm leading-relaxed">{result.summary}</p>
+          <div className="rounded-2xl p-5" style={{ background: "var(--accent-subtle)", border: "1px solid var(--accent)" }}>
+            <p className="text-xs font-bold text-sky-500 uppercase tracking-wide mb-2">AI Overall Advice</p>
+            <p className="text-[var(--ink-dim)] text-sm leading-relaxed">{result.summary}</p>
           </div>
 
           {result.language_advice && (
             <div className="bg-amber-50 border border-amber-100 rounded-2xl p-5">
-              <p className="text-xs font-bold text-amber-600 uppercase tracking-wide mb-2">🗣️ Language Advice</p>
-              <p className="text-[oklch(0.75_0.02_285)] text-sm leading-relaxed">{result.language_advice}</p>
+              <p className="text-xs font-bold text-amber-600 uppercase tracking-wide mb-2">Language Advice</p>
+              <p className="text-[var(--ink-dim)] text-sm leading-relaxed">{result.language_advice}</p>
             </div>
           )}
 
           {/* Compare hint */}
-          <div className="flex items-center gap-2 text-xs text-[oklch(0.45_0.02_285)] px-1">
-            <span>⚖️</span>
+          <div className="flex items-center gap-2 text-xs text-[var(--ink-dim)] px-1">
+            <Icon d={ICONS.scale} size={14} />
             <span>Select 2–4 universities to compare them with AI · <strong>{compareIds.length}/4</strong> selected</span>
           </div>
 
@@ -234,24 +235,24 @@ const AiTab = ({ profile }) => {
               const disabled   = !isSelected && compareIds.length >= 4;
               return (
                 <div key={item.university_id}
-                  className={`bg-[oklch(0.17_0.02_285)] rounded-2xl border  p-5 transition ${
-                    isSelected ? "border-indigo-400 ring-2 ring-indigo-100" : "border-gray-100"
+                  className={`bg-[var(--surface-2)] rounded-2xl border  p-5 transition ${
+                    isSelected ? "border-sky-400 ring-2 ring-sky-100" : "border-gray-100"
                   }`}>
                   <div className="flex items-start gap-4">
                     <FitRing score={item.fit_score} />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-2 flex-wrap">
                         <div>
-                          <span className="text-xs text-indigo-400 font-bold">#{i + 1} AI Pick</span>
-                          <h3 className="font-bold text-white text-base leading-tight">{item.name}</h3>
-                          <p className="text-sm text-[oklch(0.55_0.02_285)] mt-0.5">
-                            📍 {item.city ? `${item.city}, ` : ""}{item.country}
-                            {item.ranking && <span className="ml-3">🏆 #{item.ranking}</span>}
+                          <span className="text-xs text-sky-400 font-bold">#{i + 1} AI Pick</span>
+                          <h3 className="font-bold text-[var(--ink)] text-base leading-tight">{item.name}</h3>
+                          <p className="text-sm text-[var(--ink-faint)] mt-0.5">
+                            <Icon d={ICONS.pin} size={11} className="inline -mt-0.5" /> {item.city ? `${item.city}, ` : ""}{item.country}
+                            {item.ranking && <span className="ml-3 inline-flex items-center gap-1"><Icon d={ICONS.award} size={11} /> #{item.ranking}</span>}
                           </p>
                         </div>
                         <div className="flex items-center gap-2 flex-wrap">
                           {item.tuition_fee_eur === 0 && <span className="bg-green-50 text-green-700 text-xs px-2 py-1 rounded-full font-medium">{t("recommendations.freeTuition")}</span>}
-                          {item.english_programs_available && <span className="bg-blue-50 text-blue-700 text-xs px-2 py-1 rounded-full font-medium">{t("recommendations.englishPrograms")}</span>}
+                          {item.english_programs_available && <span className="bg-sky-50 text-sky-700 text-xs px-2 py-1 rounded-full font-medium">{t("recommendations.englishPrograms")}</span>}
                           {/* Compare toggle */}
                           <button
                             onClick={() => !disabled && toggleCompare(item.university_id)}
@@ -259,27 +260,27 @@ const AiTab = ({ profile }) => {
                             title={disabled ? "Max 4 universities" : isSelected ? "Remove from compare" : "Add to compare"}
                             className={`flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-xl border transition ${
                               isSelected
-                                ? "bg-indigo-600 text-white border-indigo-600"
+                                ? "bg-sky-600 text-[var(--ink)] border-sky-600"
                                 : disabled
-                                  ? "bg-gray-50 text-[oklch(0.35_0.02_285)] border-gray-100 cursor-not-allowed"
-                                  : "bg-white text-[oklch(0.80_0.14_296)] border-indigo-200 hover:bg-[oklch(0.19_0.028_285)]"
+                                  ? "bg-[var(--surface-2)] text-[var(--border)] border-gray-100 cursor-not-allowed"
+                                  : "bg-[var(--surface)] text-[var(--accent)] border-sky-200 hover:bg-[var(--accent-subtle)]"
                             }`}
                           >
                             {isSelected ? "✓ Added" : "⊕ Compare"}
                           </button>
                         </div>
                       </div>
-                      <div className="mt-3 bg-[oklch(0.19_0.028_285)] rounded-xl px-4 py-3 border border-[oklch(0.55_0.22_296/0.20)]">
-                        <p className="text-xs font-bold text-[oklch(0.80_0.14_296)] mb-1">{t("recommendations.whyMatchedYou")}</p>
-                        <p className="text-sm text-[oklch(0.75_0.02_285)] leading-relaxed">{item.match_reason}</p>
+                      <div className="mt-3 bg-[var(--accent-subtle)] rounded-xl px-4 py-3 border border-[var(--accent)]/25">
+                        <p className="text-xs font-bold text-[var(--accent)] mb-1">{t("recommendations.whyMatchedYou")}</p>
+                        <p className="text-sm text-[var(--ink-dim)] leading-relaxed">{item.match_reason}</p>
                       </div>
                       <div className="mt-2 bg-amber-50 rounded-xl px-4 py-3 border border-amber-100">
-                        <p className="text-xs font-bold text-amber-600 mb-1">💡 Tips for you</p>
-                        <p className="text-sm text-[oklch(0.75_0.02_285)] leading-relaxed">{item.tips}</p>
+                        <p className="text-xs font-bold text-amber-600 mb-1">Tips for you</p>
+                        <p className="text-sm text-[var(--ink-dim)] leading-relaxed">{item.tips}</p>
                       </div>
                       <div className="flex items-center justify-between mt-3 flex-wrap gap-2">
-                        <p className="text-sm text-[oklch(0.55_0.02_285)]">
-                          💰 {item.tuition_fee_eur === 0 ? t("recommendations.freeTuition") : `€${item.tuition_fee_eur?.toLocaleString()}/year`}
+                        <p className="text-sm text-[var(--ink-faint)]">
+                          <Icon d={ICONS.wallet} size={11} className="inline -mt-0.5" /> {item.tuition_fee_eur === 0 ? t("recommendations.freeTuition") : `€${item.tuition_fee_eur?.toLocaleString()}/year`}
                         </p>
                         <div className="flex items-center gap-2 flex-wrap">
                           <button
@@ -288,12 +289,12 @@ const AiTab = ({ profile }) => {
                             className={`text-xs font-bold px-3 py-1.5 rounded-lg border transition ${
                               pipelineAdded[item.university_id] === "done"
                                 ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                                : "bg-indigo-600 text-white border-indigo-600 hover:bg-indigo-700"
+                                : "bg-sky-600 text-[var(--ink)] border-sky-600 hover:bg-sky-700"
                             }`}>
-                            {pipelineAdded[item.university_id] === "done" ? "✓ In Pipeline" : pipelineAdded[item.university_id] === "loading" ? "Adding…" : "🚀 Pipeline"}
+                            {pipelineAdded[item.university_id] === "done" ? "✓ In Pipeline" : pipelineAdded[item.university_id] === "loading" ? "Adding…" : "Pipeline"}
                           </button>
                           <Link to={`/university/${item.university_id}`}
-                            className="text-xs text-[oklch(0.80_0.14_296)] font-semibold hover:underline">
+                            className="text-xs text-[var(--accent)] font-semibold hover:underline">
                             View details →
                           </Link>
                         </div>
@@ -309,31 +310,31 @@ const AiTab = ({ profile }) => {
           {compareIds.length >= 2 && !compareResult && (
             <div className="sticky bottom-4 z-10">
               <button onClick={runCompare} disabled={compareLoading}
-                className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 disabled:opacity-60 text-white font-bold py-4 rounded-2xl transition flex items-center justify-center gap-3 text-base">
+                className="w-full bg-gradient-to-r from-sky-600 to-purple-600 hover:from-sky-700 hover:to-purple-700 disabled:opacity-60 text-[var(--ink)] font-bold py-4 rounded-2xl transition flex items-center justify-center gap-3 text-base">
                 {compareLoading
                   ? <><span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" /> Comparing…</>
-                  : <>⚖️ Compare {compareIds.length} AI-Recommended Universities</>}
+                  : <>Compare {compareIds.length} AI-Recommended Universities</>}
               </button>
             </div>
           )}
 
           {compareIds.length === 1 && (
-            <p className="text-center text-xs text-[oklch(0.45_0.02_285)]">Select at least one more university to compare</p>
+            <p className="text-center text-xs text-[var(--ink-dim)]">Select at least one more university to compare</p>
           )}
 
           {compareError && <div className="bg-red-50 border border-red-100 text-red-600 rounded-2xl p-4 text-sm">{compareError}</div>}
 
           {/* Compare results */}
           {compareResult && (
-            <div className="space-y-4 border-t-2 border-[oklch(0.55_0.22_296/0.20)] pt-6 mt-2">
+            <div className="space-y-4 border-t-2 border-[var(--accent)]/25 pt-6 mt-2">
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-lg">⚖️</span>
-                <h3 className="font-extrabold text-white text-lg">AI Comparison Results</h3>
+                <Icon d={ICONS.scale} size={18} />
+                <h3 className="font-extrabold text-[var(--ink)] text-lg">AI Comparison Results</h3>
               </div>
 
               {/* Winner banner */}
-              <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-2xl p-5">
-                <p className="text-xs font-bold uppercase tracking-wide opacity-80 mb-1">🏆 Best Match For You</p>
+              <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-[var(--ink)] rounded-2xl p-5">
+                <p className="text-xs font-bold uppercase tracking-wide opacity-80 mb-1">Best Match For You</p>
                 <p className="text-xl font-extrabold">{compareResult.winner}</p>
                 <p className="text-sm mt-2 opacity-90 leading-relaxed">{compareResult.winner_reason}</p>
               </div>
@@ -344,37 +345,37 @@ const AiTab = ({ profile }) => {
                   const isWinner = u.name === compareResult.winner;
                   return (
                     <div key={u.university_id}
-                      className={`bg-[oklch(0.17_0.02_285)] rounded-2xl border  p-5 flex flex-col gap-3 ${isWinner ? "border-green-300 ring-2 ring-green-200" : "border-gray-100"}`}>
+                      className={`bg-[var(--surface-2)] rounded-2xl border  p-5 flex flex-col gap-3 ${isWinner ? "border-green-300 ring-2 ring-green-200" : "border-gray-100"}`}>
                       {isWinner && (
-                        <span className="text-xs bg-green-100 text-green-700 font-bold px-2.5 py-1 rounded-full self-start">🏆 Best for you</span>
+                        <span className="text-xs bg-green-100 text-green-700 font-bold px-2.5 py-1 rounded-full self-start">Best for you</span>
                       )}
                       <div>
-                        <h3 className="font-bold text-white text-sm">{u.name}</h3>
-                        <p className="text-xs text-[oklch(0.45_0.02_285)] mt-0.5">📍 {u.city ? `${u.city}, ` : ""}{u.country}{u.ranking ? ` · #${u.ranking}` : ""}</p>
-                        <p className="text-xs text-[oklch(0.55_0.02_285)] mt-1">💰 {u.tuition_fee_eur === 0 ? t("recommendations.freeTuition") : `€${u.tuition_fee_eur?.toLocaleString()}/yr`}</p>
+                        <h3 className="font-bold text-[var(--ink)] text-sm">{u.name}</h3>
+                        <p className="text-xs text-[var(--ink-dim)] mt-0.5"><Icon d={ICONS.pin} size={11} className="inline -mt-0.5" /> {u.city ? `${u.city}, ` : ""}{u.country}{u.ranking ? ` · #${u.ranking}` : ""}</p>
+                        <p className="text-xs text-[var(--ink-faint)] mt-1"><Icon d={ICONS.wallet} size={11} className="inline -mt-0.5" /> {u.tuition_fee_eur === 0 ? t("recommendations.freeTuition") : `€${u.tuition_fee_eur?.toLocaleString()}/yr`}</p>
                       </div>
 
                       <FitRing score={u.fit_score} />
 
-                      <p className="text-xs text-[oklch(0.65_0.02_285)] italic border-l-2 border-indigo-300 pl-3">{u.verdict}</p>
+                      <p className="text-xs text-[var(--ink-faint)] italic border-l-2 border-sky-300 pl-3">{u.verdict}</p>
 
                       <div>
-                        <p className="text-xs font-bold text-green-600 mb-1.5">✅ Pros for you</p>
+                        <p className="text-xs font-bold text-green-600 mb-1.5">Pros for you</p>
                         <ul className="space-y-1">
-                          {u.pros.map((p, i) => <li key={i} className="text-xs text-[oklch(0.75_0.02_285)] flex gap-1.5"><span className="text-green-400 shrink-0">•</span>{p}</li>)}
+                          {u.pros.map((p, i) => <li key={i} className="text-xs text-[var(--ink-dim)] flex gap-1.5"><span className="text-green-400 shrink-0">•</span>{p}</li>)}
                         </ul>
                       </div>
 
                       <div>
-                        <p className="text-xs font-bold text-red-500 mb-1.5">⚠️ Cons for you</p>
+                        <p className="text-xs font-bold text-red-500 mb-1.5">Cons for you</p>
                         <ul className="space-y-1">
-                          {u.cons.map((c, i) => <li key={i} className="text-xs text-[oklch(0.75_0.02_285)] flex gap-1.5"><span className="text-red-300 shrink-0">•</span>{c}</li>)}
+                          {u.cons.map((c, i) => <li key={i} className="text-xs text-[var(--ink-dim)] flex gap-1.5"><span className="text-red-300 shrink-0">•</span>{c}</li>)}
                         </ul>
                       </div>
 
                       {u.website && (
                         <a href={u.website} target="_blank" rel="noreferrer"
-                          className="text-xs text-blue-600 hover:underline font-medium mt-auto">
+                          className="text-xs text-sky-600 hover:underline font-medium mt-auto">
                           {t("recommendations.visitLink")} →
                         </a>
                       )}
@@ -385,20 +386,20 @@ const AiTab = ({ profile }) => {
 
               {/* Overall advice */}
               <div className="bg-amber-50 border border-amber-100 rounded-2xl p-5">
-                <p className="text-xs font-bold text-amber-600 uppercase tracking-wide mb-2">💡 Overall Advice</p>
-                <p className="text-[oklch(0.75_0.02_285)] text-sm leading-relaxed">{compareResult.overall_advice}</p>
+                <p className="text-xs font-bold text-amber-600 uppercase tracking-wide mb-2">Overall Advice</p>
+                <p className="text-[var(--ink-dim)] text-sm leading-relaxed">{compareResult.overall_advice}</p>
               </div>
 
               <button onClick={() => { setCompareResult(null); setCompareIds([]); }}
-                className="w-full border-2 border-indigo-200 text-[oklch(0.80_0.14_296)] font-semibold py-3 rounded-2xl hover:bg-[oklch(0.19_0.028_285)] transition text-sm">
-                🔄 Clear comparison & reselect
+                className="w-full border-2 border-sky-200 text-[var(--accent)] font-semibold py-3 rounded-2xl hover:bg-[var(--accent-subtle)] transition text-sm">
+                Clear comparison & reselect
               </button>
             </div>
           )}
 
           <button onClick={() => { setResult(null); setShowPicker(true); setCompareIds([]); setCompareResult(null); }}
-            className="w-full border-2 border-indigo-200 text-[oklch(0.80_0.14_296)] font-semibold py-3 rounded-2xl hover:bg-[oklch(0.19_0.028_285)] transition text-sm">
-            🔄 Change level & regenerate
+            className="w-full border-2 border-sky-200 text-[var(--accent)] font-semibold py-3 rounded-2xl hover:bg-[var(--accent-subtle)] transition text-sm">
+            Change level & regenerate
           </button>
         </>
       )}
@@ -462,12 +463,12 @@ const CompareTab = ({ profile }) => {
   return (
     <div className="space-y-5">
       {/* Language level */}
-      <div className="bg-[oklch(0.17_0.02_285)] rounded-2xl border border-[oklch(0.55_0.22_296/0.20)]  p-5">
+      <div className="bg-[var(--surface-2)] rounded-2xl border border-[var(--accent)]/25  p-5">
         {(() => {
           const lang = profile?.language?.toLowerCase() || "english";
           return (
             <>
-              <h3 className="font-bold text-white mb-3">{t("recommendations.languageLevelTitle")} ({lang.charAt(0).toUpperCase() + lang.slice(1)})</h3>
+              <h3 className="font-bold text-[var(--ink)] mb-3">{t("recommendations.languageLevelTitle")} ({lang.charAt(0).toUpperCase() + lang.slice(1)})</h3>
               <LevelSelector lang={lang} value={level} onChange={v => { setLevel(v); setResult(null); }} />
             </>
           );
@@ -475,14 +476,14 @@ const CompareTab = ({ profile }) => {
       </div>
 
       {/* University selector */}
-      <div className="bg-[oklch(0.17_0.02_285)] rounded-2xl border border-[oklch(1_0_0/0.07)] p-5">
+      <div className="bg-[var(--surface-2)] rounded-2xl border border-[var(--border)] p-5">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="font-bold text-white">{t("recommendations.compareTitle")}</h3>
-          <span className="text-xs text-[oklch(0.45_0.02_285)]">{selected.length}/4 selected</span>
+          <h3 className="font-bold text-[var(--ink)]">{t("recommendations.compareTitle")}</h3>
+          <span className="text-xs text-[var(--ink-dim)]">{selected.length}/4 selected</span>
         </div>
 
         {loadingUnis ? (
-          <div className="text-center py-8 text-[oklch(0.45_0.02_285)] text-sm">{t("recommendations.loadingUni")}</div>
+          <div className="text-center py-8 text-[var(--ink-dim)] text-sm">{t("recommendations.loadingUni")}</div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-72 overflow-y-auto pr-1">
             {universities.map(u => {
@@ -493,14 +494,14 @@ const CompareTab = ({ profile }) => {
                   disabled={disabled}
                   className={`text-left px-4 py-3 rounded-xl border text-sm transition ${
                     isSelected
-                      ? "bg-indigo-600 text-white border-indigo-600"
+                      ? "bg-sky-600 text-[var(--ink)] border-sky-600"
                       : disabled
-                        ? "bg-gray-50 text-[oklch(0.35_0.02_285)] border-gray-100 cursor-not-allowed"
-                        : "bg-white text-[oklch(0.75_0.02_285)] border-gray-200 hover:border-indigo-300 hover:bg-[oklch(0.19_0.028_285)]"
+                        ? "bg-[var(--surface-2)] text-[var(--border)] border-gray-100 cursor-not-allowed"
+                        : "bg-[var(--surface)] text-[var(--ink-dim)] border-[var(--border)] hover:border-sky-300 hover:bg-[var(--accent-subtle)]"
                   }`}
                 >
                   <p className="font-semibold truncate">{u.name}</p>
-                  <p className={`text-xs mt-0.5 ${isSelected ? "text-indigo-200" : "text-[oklch(0.45_0.02_285)]"}`}>
+                  <p className={`text-xs mt-0.5 ${isSelected ? "text-sky-200" : "text-[var(--ink-dim)]"}`}>
                     {u.country} · {u.tuition_fee_eur === 0 ? t("common.free") : `€${u.tuition_fee_eur?.toLocaleString()}/yr`}
                     {u.ranking ? ` · #${u.ranking}` : ""}
                   </p>
@@ -512,14 +513,14 @@ const CompareTab = ({ profile }) => {
 
         {selected.length >= 2 && (
           <button onClick={compare} disabled={loading}
-            className="mt-4 w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 disabled:opacity-50 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2">
+            className="mt-4 w-full bg-gradient-to-r from-sky-600 to-purple-600 hover:from-sky-700 hover:to-purple-700 disabled:opacity-50 text-[var(--ink)] font-bold py-3 rounded-xl transition flex items-center justify-center gap-2">
             {loading
               ? <><span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> {t("recommendations.comparing")}</>
-              : <>⚖️ Compare {selected.length} Universities</>}
+              : <>Compare {selected.length} Universities</>}
           </button>
         )}
         {selected.length < 2 && (
-          <p className="text-center text-xs text-[oklch(0.45_0.02_285)] mt-3">{t("recommendations.compareMin")}</p>
+          <p className="text-center text-xs text-[var(--ink-dim)] mt-3">{t("recommendations.compareMin")}</p>
         )}
       </div>
 
@@ -528,8 +529,8 @@ const CompareTab = ({ profile }) => {
       {result && (
         <>
           {/* Winner banner */}
-          <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-2xl p-5">
-            <p className="text-xs font-bold uppercase tracking-wide opacity-80 mb-1">🏆 Best Match For You</p>
+          <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-[var(--ink)] rounded-2xl p-5">
+            <p className="text-xs font-bold uppercase tracking-wide opacity-80 mb-1">Best Match For You</p>
             <p className="text-xl font-extrabold">{result.winner}</p>
             <p className="text-sm mt-2 opacity-90 leading-relaxed">{result.winner_reason}</p>
           </div>
@@ -540,37 +541,37 @@ const CompareTab = ({ profile }) => {
               const isWinner = u.name === result.winner;
               return (
                 <div key={u.university_id}
-                  className={`bg-[oklch(0.17_0.02_285)] rounded-2xl border  p-5 flex flex-col gap-3 ${isWinner ? "border-green-300 ring-2 ring-green-200" : "border-gray-100"}`}>
+                  className={`bg-[var(--surface-2)] rounded-2xl border  p-5 flex flex-col gap-3 ${isWinner ? "border-green-300 ring-2 ring-green-200" : "border-gray-100"}`}>
                   {isWinner && (
-                    <span className="text-xs bg-green-100 text-green-700 font-bold px-2.5 py-1 rounded-full self-start">🏆 Best for you</span>
+                    <span className="text-xs bg-green-100 text-green-700 font-bold px-2.5 py-1 rounded-full self-start">Best for you</span>
                   )}
                   <div>
-                    <h3 className="font-bold text-white text-sm">{u.name}</h3>
-                    <p className="text-xs text-[oklch(0.45_0.02_285)] mt-0.5">📍 {u.city ? `${u.city}, ` : ""}{u.country}{u.ranking ? ` · #${u.ranking}` : ""}</p>
-                    <p className="text-xs text-[oklch(0.55_0.02_285)] mt-1">💰 {u.tuition_fee_eur === 0 ? t("recommendations.freeTuition") : `€${u.tuition_fee_eur?.toLocaleString()}/yr`}</p>
+                    <h3 className="font-bold text-[var(--ink)] text-sm">{u.name}</h3>
+                    <p className="text-xs text-[var(--ink-dim)] mt-0.5"><Icon d={ICONS.pin} size={11} className="inline -mt-0.5" /> {u.city ? `${u.city}, ` : ""}{u.country}{u.ranking ? ` · #${u.ranking}` : ""}</p>
+                    <p className="text-xs text-[var(--ink-faint)] mt-1"><Icon d={ICONS.wallet} size={11} className="inline -mt-0.5" /> {u.tuition_fee_eur === 0 ? t("recommendations.freeTuition") : `€${u.tuition_fee_eur?.toLocaleString()}/yr`}</p>
                   </div>
 
                   <FitRing score={u.fit_score} />
 
-                  <p className="text-xs text-[oklch(0.65_0.02_285)] italic border-l-2 border-indigo-300 pl-3">{u.verdict}</p>
+                  <p className="text-xs text-[var(--ink-faint)] italic border-l-2 border-sky-300 pl-3">{u.verdict}</p>
 
                   <div>
-                    <p className="text-xs font-bold text-green-600 mb-1.5">✅ Pros for you</p>
+                    <p className="text-xs font-bold text-green-600 mb-1.5">Pros for you</p>
                     <ul className="space-y-1">
-                      {u.pros.map((p, i) => <li key={i} className="text-xs text-[oklch(0.75_0.02_285)] flex gap-1.5"><span className="text-green-400 shrink-0">•</span>{p}</li>)}
+                      {u.pros.map((p, i) => <li key={i} className="text-xs text-[var(--ink-dim)] flex gap-1.5"><span className="text-green-400 shrink-0">•</span>{p}</li>)}
                     </ul>
                   </div>
 
                   <div>
-                    <p className="text-xs font-bold text-red-500 mb-1.5">⚠️ Cons for you</p>
+                    <p className="text-xs font-bold text-red-500 mb-1.5">Cons for you</p>
                     <ul className="space-y-1">
-                      {u.cons.map((c, i) => <li key={i} className="text-xs text-[oklch(0.75_0.02_285)] flex gap-1.5"><span className="text-red-300 shrink-0">•</span>{c}</li>)}
+                      {u.cons.map((c, i) => <li key={i} className="text-xs text-[var(--ink-dim)] flex gap-1.5"><span className="text-red-300 shrink-0">•</span>{c}</li>)}
                     </ul>
                   </div>
 
                   {u.website && (
                     <a href={u.website} target="_blank" rel="noreferrer"
-                      className="text-xs text-blue-600 hover:underline font-medium mt-auto">
+                      className="text-xs text-sky-600 hover:underline font-medium mt-auto">
                       {t("recommendations.visitLink")} →
                     </a>
                   )}
@@ -581,13 +582,14 @@ const CompareTab = ({ profile }) => {
 
           {/* Overall advice */}
           <div className="bg-amber-50 border border-amber-100 rounded-2xl p-5">
-            <p className="text-xs font-bold text-amber-600 uppercase tracking-wide mb-2">💡 Overall Advice</p>
-            <p className="text-[oklch(0.75_0.02_285)] text-sm leading-relaxed">{result.overall_advice}</p>
+            <p className="text-xs font-bold text-amber-600 uppercase tracking-wide mb-2">Overall Advice</p>
+            <p className="text-[var(--ink-dim)] text-sm leading-relaxed">{result.overall_advice}</p>
           </div>
 
           <button onClick={() => { setResult(null); setSelected([]); }}
-            className="w-full border-2 border-indigo-200 text-[oklch(0.80_0.14_296)] font-semibold py-3 rounded-2xl hover:bg-[oklch(0.19_0.028_285)] transition text-sm">
-            🔄 Start a new comparison
+            className="w-full inline-flex items-center justify-center gap-1.5 border-2 text-[var(--accent)] font-semibold py-3 rounded-2xl hover:bg-[var(--accent-subtle)] transition text-sm"
+            style={{ borderColor: "rgba(14,165,233,0.3)" }}>
+            <Icon d={ICONS.refresh} size={14} /> Start a new comparison
           </button>
         </>
       )}
@@ -600,46 +602,80 @@ const CompareTab = ({ profile }) => {
 ══════════════════════════════════════════════════════ */
 
 const FACTORS = [
-  { key: "country_match", label: "Country Match", max: 30, color: "bg-blue-500",    icon: "🌍", tip: "How well this country matches your preferred destinations" },
-  { key: "budget_fit",    label: "Budget Fit",    max: 30, color: "bg-emerald-500", icon: "💰", tip: "How well the estimated total annual cost (tuition + fees + living) fits your budget"    },
-  { key: "english_fit",   label: "Language Fit",  max: 20, color: "bg-violet-500",  icon: "🗣️", tip: "Whether programs are taught in your target language at your level" },
-  { key: "gpa_fit",       label: "GPA Fit",       max: 20, color: "bg-orange-500",  icon: "🎓", tip: "How your GPA compares to the estimated entry requirement"   },
+  { key: "country_match", label: "Country Match", max: 30, color: "bg-sky-500",    icon: "globe", tip: "How well this country matches your preferred destinations" },
+  { key: "budget_fit",    label: "Budget Fit",    max: 30, color: "bg-emerald-500", icon: "wallet", tip: "How well the estimated total annual cost (tuition + fees + living) fits your budget"    },
+  { key: "english_fit",   label: "Language Fit",  max: 20, color: "bg-violet-500",  icon: "mic", tip: "Whether programs are taught in your target language at your level" },
+  { key: "gpa_fit",       label: "GPA Fit",       max: 20, color: "bg-orange-500",  icon: "graduationCap", tip: "How your GPA compares to the estimated entry requirement"   },
 ];
 
-const BreakdownPanel = ({ breakdown, reasons }) => {
+/* ── "Why this university?" — premium checklist cards derived from the
+   real per-factor breakdown score (>=60% of a factor's max = criterion met),
+   plus the backend's free-text reasons for nuance. No new data invented. ── */
+const WhyThisUni = ({ breakdown, reasons }) => {
   const { t } = useTranslation();
   return (
-    <div className="mt-4 border border-[oklch(0.55_0.22_296/0.20)] rounded-2xl overflow-hidden">
-      <div className="bg-[oklch(0.19_0.028_285)] px-4 py-2.5 border-b border-[oklch(0.55_0.22_296/0.20)]">
-        <p className="text-xs font-bold text-[oklch(0.85_0.10_296)] uppercase tracking-wide">{t("recommendations.scoreBreakdown")}</p>
+    <div className="mt-4 rounded-2xl overflow-hidden" style={{ border: "1px solid var(--accent)", borderOpacity: 0.25, borderColor: "rgba(14,165,233,0.25)" }}>
+      <div className="px-4 py-2.5" style={{ background: "var(--accent-subtle)", borderBottom: "1px solid rgba(14,165,233,0.25)" }}>
+        <p className="text-xs font-bold uppercase tracking-wide" style={{ color: "var(--accent-active)" }}>
+          {t("recommendations.whyMatchedYou", "Why this university?")}
+        </p>
       </div>
-      <div className="px-4 py-3 space-y-3">
+
+      {/* Checklist grid — one card per factor, pass/fail visual */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 p-3">
+        {FACTORS.map(f => {
+          const val = breakdown[f.key] ?? 0;
+          const pct = val / f.max;
+          const met = pct >= 0.6;
+          return (
+            <div key={f.key} className="flex items-center gap-2.5 rounded-xl px-3 py-2.5" style={{ background: "var(--surface-hover)" }}>
+              <span
+                className="w-6 h-6 rounded-full flex items-center justify-center text-[11px] shrink-0"
+                style={met ? { background: "var(--good)", color: "var(--on-accent)" } : { background: "var(--surface-2)", color: "var(--ink-faint)", border: "1px solid var(--border)" }}
+              >
+                {met ? "✓" : "–"}
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="text-xs font-semibold truncate" style={{ color: met ? "var(--ink)" : "var(--ink-faint)" }}>
+                  <Icon d={ICONS[f.icon]} size={11} className="inline me-1 -mt-0.5" />{f.label}
+                </p>
+              </div>
+              <span className="text-[11px] font-bold shrink-0" style={{ color: met ? "var(--good)" : "var(--ink-faint)" }}>
+                {Math.round(pct * 100)}%
+              </span>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Score bars — precise breakdown for students who want the detail */}
+      <div className="px-4 pb-3 space-y-3">
         {FACTORS.map(f => {
           const val = breakdown[f.key] ?? 0;
           const pct = Math.round((val / f.max) * 100);
           return (
             <div key={f.key}>
               <div className="flex items-center justify-between text-xs mb-1">
-                <span className="flex items-center gap-1.5 text-[oklch(0.65_0.02_285)] font-semibold">
-                  <span>{f.icon}</span>{f.label}
-                  <span className="text-[oklch(0.45_0.02_285)] font-normal hidden sm:inline">— {f.tip}</span>
+                <span className="flex items-center gap-1.5 font-medium" style={{ color: "var(--ink-faint)" }}>
+                  {f.label} <span className="hidden sm:inline" style={{ color: "var(--ink-dim)" }}>— {f.tip}</span>
                 </span>
-                <span className="font-bold text-[oklch(0.75_0.02_285)]">{val.toFixed(1)}<span className="text-[oklch(0.45_0.02_285)] font-normal">/{f.max}</span></span>
+                <span className="font-bold" style={{ color: "var(--ink-dim)" }}>{val.toFixed(1)}/{f.max}</span>
               </div>
-              <div className="h-2 bg-[oklch(0.20_0.024_285)] rounded-full overflow-hidden">
+              <div className="h-2 rounded-full overflow-hidden" style={{ background: "var(--surface-hover)" }}>
                 <div className={`h-2 rounded-full ${f.color} transition-all duration-700`} style={{ width: `${pct}%` }} />
               </div>
             </div>
           );
         })}
       </div>
+
       {reasons.length > 0 && (
-        <div className="px-4 pb-4 pt-1 border-t border-[oklch(0.55_0.22_296/0.20)]">
-          <p className="text-xs font-bold text-[oklch(0.55_0.02_285)] uppercase tracking-wide mb-2">{t("recommendations.whyMatchedYou")}</p>
+        <div className="px-4 pb-4 pt-1" style={{ borderTop: "1px solid rgba(14,165,233,0.25)" }}>
+          <p className="text-xs font-bold uppercase tracking-wide mb-2" style={{ color: "var(--ink-faint)" }}>{t("recommendations.inYourOwnData", "In detail")}</p>
           <ul className="space-y-1.5">
             {reasons.map((r, i) => (
-              <li key={i} className="flex items-start gap-2 text-xs text-[oklch(0.65_0.02_285)]">
-                <span className="text-indigo-400 shrink-0 mt-0.5">✓</span>{r}
+              <li key={i} className="flex items-start gap-2 text-xs" style={{ color: "var(--ink-faint)" }}>
+                <span className="shrink-0 mt-0.5" style={{ color: "var(--accent)" }}>✓</span>{r}
               </li>
             ))}
           </ul>
@@ -676,13 +712,13 @@ const MatchCard = ({ match, index }) => {
     : "from-rose-400 to-red-500";
 
   const rankBadge =
-    index === 0 ? "bg-gradient-to-r from-amber-400 to-yellow-500 text-white" :
-    index === 1 ? "bg-gradient-to-r from-slate-300 to-slate-400 text-white"  :
-    index === 2 ? "bg-gradient-to-r from-orange-400 to-amber-600 text-white" :
-    "bg-gray-100 text-[oklch(0.55_0.02_285)]";
+    index === 0 ? "bg-gradient-to-r from-amber-400 to-yellow-500 text-[var(--ink)]" :
+    index === 1 ? "bg-gradient-to-r from-slate-300 to-slate-400 text-[var(--ink)]"  :
+    index === 2 ? "bg-gradient-to-r from-orange-400 to-amber-600 text-[var(--ink)]" :
+    "bg-[var(--surface-2)] text-[var(--ink-faint)]";
 
   return (
-    <div className="bg-[oklch(0.17_0.02_285)] rounded-2xl border border-[oklch(1_0_0/0.07)] overflow-hidden card-lift">
+    <div className="bg-[var(--surface-2)] rounded-2xl border border-[var(--border)] overflow-hidden card-lift">
       <div className={`h-1.5 bg-gradient-to-r ${topBar}`} />
       <div className="p-4 sm:p-6">
         <div className="flex items-start gap-4">
@@ -694,58 +730,57 @@ const MatchCard = ({ match, index }) => {
             <div className="flex items-start justify-between flex-wrap gap-2">
               <div>
                 <div className="flex items-center gap-2 mb-0.5">
-                  <span className={`text-xs font-extrabold px-2.5 py-1 rounded-full ${rankBadge}`}>#{index + 1}</span>
+                  <span className={`text-xs font-extrabold px-2.5 py-1 rounded-full ${rankBadge}`} style={index > 2 ? {} : { color: "#3b2a06" }}>#{index + 1}</span>
                 </div>
                 <Link to={`/university/${uni.id}`}
                   state={{ score: match.score, reasons: match.reasons, breakdown: match.breakdown }}
-                  className="text-lg font-bold text-white hover:text-[oklch(0.85_0.10_296)] transition">
+                  className="text-lg font-bold text-[var(--ink)] hover:text-[var(--accent-light)] transition">
                   {uni.name}
                 </Link>
-                <p className="text-[oklch(0.55_0.02_285)] text-sm mt-0.5">
-                  📍 {uni.city}, {uni.country}
-                  {uni.ranking && <span className="ml-3">🏆 #{uni.ranking}</span>}
+                <p className="text-[var(--ink-faint)] text-sm mt-0.5">
+                  <Icon d={ICONS.pin} size={11} className="inline -mt-0.5" /> {uni.city}, {uni.country}
+                  {uni.ranking && <span className="ml-3 inline-flex items-center gap-1"><Icon d={ICONS.award} size={11} /> #{uni.ranking}</span>}
                 </p>
               </div>
               <div className="flex gap-2 flex-wrap">
-                {uni.tuition_fee_eur === 0 && <span className="bg-emerald-50 text-emerald-700 border border-emerald-100 text-[11px] px-2.5 py-1 rounded-full font-semibold">✨ {t("recommendations.freeTuition")}</span>}
-                {uni.english_programs_available && <span className="bg-blue-50 text-blue-700 border border-blue-100 text-[11px] px-2.5 py-1 rounded-full font-semibold">🇬🇧 {t("recommendations.englishPrograms")}</span>}
-                {uni.is_public && <span className="bg-gray-50 text-[oklch(0.65_0.02_285)] border border-[oklch(1_0_0/0.07)] text-[11px] px-2.5 py-1 rounded-full font-semibold">{t("recommendations.publicUni")}</span>}
+                {uni.tuition_fee_eur === 0 && <span className="text-[11px] px-2.5 py-1 rounded-full font-semibold" style={{ background: "var(--good-subtle)", color: "var(--good)" }}>{t("recommendations.freeTuition")}</span>}
+                {uni.english_programs_available && <span className="text-[11px] px-2.5 py-1 rounded-full font-semibold" style={{ background: "var(--accent-subtle)", color: "var(--accent-active)" }}>🇬🇧 {t("recommendations.englishPrograms")}</span>}
+                {uni.is_public && <span className="bg-[var(--surface-2)] text-[var(--ink-faint)] border border-[var(--border)] text-[11px] px-2.5 py-1 rounded-full font-semibold">{t("recommendations.publicUni")}</span>}
               </div>
             </div>
 
             {match.reasons.length > 0 && (
               <div className="mt-3 flex flex-wrap gap-2">
                 {match.reasons.slice(0, 2).map((r, i) => (
-                  <span key={i} className="text-xs text-[oklch(0.55_0.02_285)] bg-gray-50 border border-[oklch(1_0_0/0.07)] px-3 py-1 rounded-full">{r}</span>
+                  <span key={i} className="text-xs text-[var(--ink-faint)] bg-[var(--surface-2)] border border-[var(--border)] px-3 py-1 rounded-full">{r}</span>
                 ))}
                 {match.reasons.length > 2 && !expanded && (
-                  <span className="text-xs text-indigo-500 bg-[oklch(0.19_0.028_285)] border border-[oklch(0.55_0.22_296/0.20)] px-3 py-1 rounded-full">
+                  <span className="text-xs text-sky-500 bg-[var(--accent-subtle)] border border-[var(--accent)]/25 px-3 py-1 rounded-full">
                     +{match.reasons.length - 2} more
                   </span>
                 )}
               </div>
             )}
 
-            {expanded && <BreakdownPanel breakdown={bd} reasons={match.reasons} />}
+            {expanded && <WhyThisUni breakdown={bd} reasons={match.reasons} />}
 
             <div className="mt-3 flex items-center justify-between flex-wrap gap-2">
-              <span className="text-sm text-[oklch(0.55_0.02_285)]">
-                💰 {uni.tuition_fee_eur === 0 ? t("recommendations.freeTuition") : `€${uni.tuition_fee_eur?.toLocaleString()}/year`}
+              <span className="text-sm text-[var(--ink-faint)]">
+                <Icon d={ICONS.wallet} size={11} className="inline -mt-0.5" /> {uni.tuition_fee_eur === 0 ? t("recommendations.freeTuition") : `€${uni.tuition_fee_eur?.toLocaleString()}/year`}
               </span>
               <div className="flex items-center gap-2 flex-wrap">
                 <button
                   onClick={addToPipeline}
                   disabled={adding || added}
-                  className={`text-xs font-bold px-3 py-1.5 rounded-lg border transition ${
-                    added
-                      ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                      : "bg-indigo-600 text-white border-indigo-600 hover:bg-indigo-700"
-                  }`}>
-                  {added ? "✓ In Pipeline" : adding ? "Adding…" : "🚀 Add to Pipeline"}
+                  className="text-xs font-bold px-3 py-1.5 rounded-lg border transition"
+                  style={added
+                    ? { background: "var(--good-subtle)", color: "var(--good)", borderColor: "var(--good)" }
+                    : { background: "var(--accent)", color: "var(--on-accent)", borderColor: "var(--accent)" }}>
+                  {added ? "✓ In Pipeline" : adding ? "Adding…" : "Add to Pipeline"}
                 </button>
                 <button
                   onClick={() => setExpanded(v => !v)}
-                  className="text-xs font-bold text-[oklch(0.80_0.14_296)] bg-[oklch(0.19_0.028_285)] hover:bg-indigo-100 border border-[oklch(0.55_0.22_296/0.20)] px-3 py-1.5 rounded-lg transition"
+                  className="text-xs font-bold text-[var(--accent)] bg-[var(--accent-subtle)] hover:opacity-80 border px-3 py-1.5 rounded-lg transition" style={{ borderColor: "rgba(14,165,233,0.3)" }}
                 >
                   {expanded ? `▲ ${t("common.hide")}` : `▼ ${t("recommendations.scoreBreakdown")}`}
                 </button>
@@ -772,13 +807,13 @@ const RuleBasedTab = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <div className="text-center py-16 text-[oklch(0.45_0.02_285)]">{t("recommendations.findingBest")}</div>;
+  if (loading) return <div className="text-center py-16 text-[var(--ink-dim)]">{t("recommendations.findingBest")}</div>;
   if (!hasProfile) return (
     <div className="text-center py-20">
-      <div className="text-5xl mb-4">📋</div>
-      <h2 className="text-xl font-bold text-white mb-3">{t("recommendations.setupFirst")}</h2>
-      <p className="text-[oklch(0.55_0.02_285)] mb-6">{t("recommendations.setupFirstSub")}</p>
-      <Link to="/profile" className="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition">{t("recommendations.createProfile")}</Link>
+      <div className="mb-4 flex justify-center"><Icon d={ICONS.applications} size={40} /></div>
+      <h2 className="text-xl font-bold text-[var(--ink)] mb-3">{t("recommendations.setupFirst")}</h2>
+      <p className="text-[var(--ink-faint)] mb-6">{t("recommendations.setupFirstSub")}</p>
+      <Link to="/profile" className="bg-sky-600 text-[var(--ink)] px-6 py-3 rounded-xl font-semibold hover:bg-sky-700 transition">{t("recommendations.createProfile")}</Link>
     </div>
   );
 
@@ -786,7 +821,7 @@ const RuleBasedTab = () => {
 
   return (
     <div className="space-y-4 stagger">
-      <div className="bg-[oklch(0.19_0.028_285)] border border-[oklch(0.55_0.22_296/0.20)] rounded-2xl px-5 py-3 text-sm text-[oklch(0.85_0.10_296)]">
+      <div className="bg-[var(--accent-subtle)] border border-[var(--accent)]/25 rounded-2xl px-5 py-3 text-sm text-[var(--accent-light)]">
         {t("recommendations.howScores")}
       </div>
       {visible.map((match, index) => (
@@ -795,7 +830,7 @@ const RuleBasedTab = () => {
       {results.length > 5 && (
         <button
           onClick={() => setShowAll(v => !v)}
-          className="w-full py-3 border-2 border-indigo-200 text-[oklch(0.80_0.14_296)] font-semibold rounded-2xl hover:bg-[oklch(0.19_0.028_285)] transition text-sm">
+          className="w-full py-3 border-2 border-sky-200 text-[var(--accent)] font-semibold rounded-2xl hover:bg-[var(--accent-subtle)] transition text-sm">
           {showAll ? "▲ Show less" : `▼ Show ${results.length - 5} more universities`}
         </button>
       )}
@@ -816,38 +851,38 @@ const Recommendations = () => {
   }, []);
 
   const TABS = [
-    { id: "rule",    label: "Smart Match", icon: "🔢" },
-    { id: "ai",      label: "AI Picks",    icon: "✨" },
-    { id: "compare", label: "AI Compare",  icon: "⚖️" },
+    { id: "rule",    label: "Smart Match", icon: "grid" },
+    { id: "ai",      label: "AI Picks",    icon: "sparkle" },
+    { id: "compare", label: "AI Compare",  icon: "scale" },
   ];
 
   return (
     <div className="min-h-screen">
 
       {/* Hero */}
-      <div className="relative overflow-hidden text-white" style={{ background: "oklch(0.15 0.020 285)" }}>
+      <div className="relative overflow-hidden text-[var(--ink)]" style={{ background: "var(--bg)" }}>
         <div className="absolute -top-24 -start-8 w-72 h-72 rounded-full blur-[100px] pointer-events-none"
-             style={{ background: "oklch(0.55 0.22 296 / 0.15)" }} />
+             style={{ background: "rgba(14,165,233,0.15)" }} />
         <div className="absolute -bottom-16 end-16 w-60 h-60 rounded-full blur-[80px] pointer-events-none"
-             style={{ background: "oklch(0.50 0.20 264 / 0.12)" }} />
+             style={{ background: "rgba(56,189,248,0.12)" }} />
         <div className="relative max-w-4xl mx-auto px-6 py-10">
           <div className="flex items-center justify-between flex-wrap gap-3">
             <div>
               <div className="inline-flex items-center gap-2 rounded-full text-xs font-bold px-4 py-1.5 mb-4"
-                   style={{ background: "oklch(0.55 0.22 296 / 0.12)", border: "1px solid oklch(0.55 0.22 296 / 0.28)", color: "oklch(0.88 0.08 296)" }}>
-                🤖 AI-Powered Matching
+                   style={{ background: "var(--accent-subtle)", border: "1px solid var(--accent)", color: "var(--accent)" }}>
+                AI-Powered Matching
               </div>
-              <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-2 text-white">
+              <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-2 text-[var(--ink)]">
                 {t("recommendations.title")}
               </h1>
-              <p className="text-base max-w-md" style={{ color: "oklch(0.65 0.04 296)" }}>{t("recommendations.subtitle2")}</p>
+              <p className="text-base max-w-md" style={{ color: "var(--ink-faint)" }}>{t("recommendations.subtitle2")}</p>
             </div>
             <Link to="/profile"
-              className="inline-flex items-center gap-2 text-white text-sm font-bold px-5 py-2.5 rounded-xl transition"
-              style={{ background: "oklch(1 0 0 / 0.08)", border: "1px solid oklch(1 0 0 / 0.15)" }}
-              onMouseEnter={e => e.currentTarget.style.background = "oklch(1 0 0 / 0.13)"}
-              onMouseLeave={e => e.currentTarget.style.background = "oklch(1 0 0 / 0.08)"}>
-              ⚙️ {t("profile.title")}
+              className="inline-flex items-center gap-2 text-[var(--ink)] text-sm font-bold px-5 py-2.5 rounded-xl transition"
+              style={{ background: "var(--surface-2)", border: "1px solid var(--border)" }}
+              onMouseEnter={e => e.currentTarget.style.background = "var(--surface-hover)"}
+              onMouseLeave={e => e.currentTarget.style.background = "var(--surface-2)"}>
+              {t("profile.title")}
             </Link>
           </div>
         </div>
@@ -856,15 +891,15 @@ const Recommendations = () => {
       <div className="max-w-4xl mx-auto px-6 py-7">
         {/* Tabs */}
         <div className="flex gap-1 mb-6 p-1 rounded-2xl w-fit flex-wrap"
-             style={{ background: "oklch(0.17 0.02 285)", border: "1px solid oklch(1 0 0 / 0.07)" }}>
+             style={{ background: "var(--surface-2)", border: "1px solid var(--border)" }}>
           {TABS.map(tb => (
             <button key={tb.id} onClick={() => setTab(tb.id)}
               className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-bold transition"
               style={{
-                background: tab === tb.id ? "linear-gradient(135deg, oklch(0.55 0.22 296), oklch(0.50 0.20 264))" : "transparent",
-                color: tab === tb.id ? "#fff" : "oklch(0.55 0.02 285)",
+                background: tab === tb.id ? "linear-gradient(135deg, var(--accent), var(--accent))" : "transparent",
+                color: tab === tb.id ? "#fff" : "var(--ink-faint)",
               }}>
-              <span>{tb.icon}</span> {tb.label}
+              <Icon d={ICONS[tb.icon]} size={14} /> {tb.label}
             </button>
           ))}
         </div>

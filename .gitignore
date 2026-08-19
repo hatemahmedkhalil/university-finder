@@ -10,6 +10,7 @@ build/
 
 # Env
 .env
+.env.*
 
 # Node
 node_modules/
@@ -26,3 +27,19 @@ Thumbs.db
 .pytest_cache/
 htmlcov/
 .coverage
+
+# Logs
+logs/
+*.log
+uvicorn.err
+uvicorn_err.txt
+
+# User-uploaded content (never version-controlled)
+uploads/
+
+# Scratch/research files from data-verification work (not part of the app)
+remaining*.txt
+scripts/verify_batch*_live.py
+scripts/audit_reports/
+scripts/deprecated/
+research/

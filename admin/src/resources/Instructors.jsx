@@ -65,7 +65,7 @@ const PhotoUpload = () => {
 
   return (
     <div style={{ marginBottom: 16 }}>
-      <p style={{ fontSize: 12, color: "#6b7280", marginBottom: 8, fontWeight: 600 }}>
+      <p style={{ fontSize: 12, color: "var(--mui-palette-text-secondary)", marginBottom: 8, fontWeight: 600 }}>
         INSTRUCTOR PHOTO
       </p>
 
@@ -75,13 +75,13 @@ const PhotoUpload = () => {
           <img
             src={photoSrc}
             alt="Instructor"
-            style={{ width: 80, height: 80, borderRadius: "50%", objectFit: "cover", border: "2px solid #e5e7eb" }}
+            style={{ width: 80, height: 80, borderRadius: "50%", objectFit: "cover", border: "2px solid var(--mui-palette-divider)" }}
           />
         ) : (
           <div style={{
-            width: 80, height: 80, borderRadius: "50%", background: "#e0e7ff",
+            width: 80, height: 80, borderRadius: "50%", background: "var(--mui-palette-primary-light)",
             display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: 28, color: "#6366f1", border: "2px solid #e5e7eb",
+            fontSize: 28, color: "var(--mui-palette-primary-main)", border: "2px solid var(--mui-palette-divider)",
           }}>
             👤
           </div>
@@ -90,8 +90,8 @@ const PhotoUpload = () => {
         <div>
           <label style={{
             display: "inline-block", cursor: "pointer",
-            background: uploading ? "#a5b4fc" : "#4f46e5",
-            color: "#fff", padding: "8px 16px", borderRadius: 8,
+            background: uploading ? "var(--mui-palette-primary-light)" : "var(--mui-palette-primary-main)",
+            color: "var(--mui-palette-primary-contrastText)", padding: "8px 16px", borderRadius: 8,
             fontSize: 13, fontWeight: 600,
           }}>
             {uploading ? "Uploading…" : "📷 Upload Photo"}
@@ -103,7 +103,7 @@ const PhotoUpload = () => {
               style={{ display: "none" }}
             />
           </label>
-          <p style={{ fontSize: 11, color: "#9ca3af", marginTop: 4 }}>
+          <p style={{ fontSize: 11, color: "var(--mui-palette-text-disabled)", marginTop: 4 }}>
             JPG, PNG, WebP or GIF · Max 5MB
           </p>
         </div>
@@ -122,7 +122,7 @@ const PhotoField = () => {
   return src ? (
     <img src={src} alt={record.name} style={{ width: 36, height: 36, borderRadius: "50%", objectFit: "cover" }} />
   ) : (
-    <div style={{ width: 36, height: 36, borderRadius: "50%", background: "#e0e7ff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16 }}>👤</div>
+    <div style={{ width: 36, height: 36, borderRadius: "50%", background: "var(--mui-palette-primary-light)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16 }}>👤</div>
   );
 };
 PhotoField.defaultProps = { label: "Photo" };
@@ -173,7 +173,7 @@ export const InstructorCreate = () => (
       <TextInput    source="email"            label="Contact Email" fullWidth />
       <TextInput    source="bio"              multiline rows={4} fullWidth />
       <BooleanInput source="is_published"     label="Published (visible to students)" defaultValue={true} />
-      <p style={{ fontSize: 12, color: "#6b7280" }}>
+      <p style={{ fontSize: 12, color: "var(--mui-palette-text-secondary)" }}>
         💡 After creating the instructor, open it to upload a photo.
       </p>
     </SimpleForm>

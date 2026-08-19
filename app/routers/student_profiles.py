@@ -5,8 +5,16 @@ from app.dependencies import get_current_user, get_db
 from app.models.student_profile import StudentProfile
 from app.models.user import User
 from app.schemas.student_profile import StudentProfileCreate, StudentProfileOut, StudentProfileUpdate
+from app.services.application_readiness import compute_profile_completeness
 
 router = APIRouter(prefix="/profiles", tags=["Student Profiles"])
+
+
+def _with_completeness(profile: StudentProfile) -> StudentProfile:
+    # Not persisted — attached only so response_model (from_attributes) can
+    # read it, same one function Apply Hub / AI Chat use for this student.
+    profile.completeness = compute_profile_completeness(profile)
+    return profile
 
 
 @router.post("", response_model=StudentProfileOut, status_code=status.HTTP_201_CREATED)
@@ -21,7 +29,7 @@ def create_profile(
     db.add(profile)
     db.commit()
     db.refresh(profile)
-    return profile
+    return _with_completeness(profile)
 
 
 @router.get("/me", response_model=StudentProfileOut)
@@ -32,7 +40,7 @@ def get_my_profile(
     profile = db.query(StudentProfile).filter(StudentProfile.user_id == current_user.id).first()
     if not profile:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Profile not found")
-    return profile
+    return _with_completeness(profile)
 
 
 @router.patch("/me", response_model=StudentProfileOut)
@@ -48,7 +56,7 @@ def update_my_profile(
         setattr(profile, field, value)
     db.commit()
     db.refresh(profile)
-    return profile
+    return _with_completeness(profile)
 
 
 @router.delete("/me", status_code=status.HTTP_204_NO_CONTENT)

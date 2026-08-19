@@ -11,7 +11,7 @@ from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 
 from app.config import settings
-from app.routers import admin, ai_chat, ai_recommendations, announcements, application_guides, applications, auth, calendar_events, course_chat, email_integration, favourites, ielts, instructor_messages, instructor_posts, instructors, learning, motivation_letters, notifications, pipeline, recommendations, scholarships, simulator, student_documents, student_profiles, subscription_plans, support, universities, user_languages, users
+from app.routers import admin, ai_chat, ai_recommendations, announcements, application_guides, applications, auth, calendar_events, community, cost_of_living, course_chat, email_integration, favourites, ielts, instructor_messages, instructor_posts, instructors, learning, motivation_letters, notifications, payments, pipeline, recommendations, scholarships, simulator, student_documents, student_profiles, subscription_plans, support, universities, user_languages, users
 from app.core.limiter import limiter
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -19,12 +19,49 @@ STUDENT_DIST = BASE_DIR / "student-app" / "dist"
 ADMIN_DIST = BASE_DIR / "admin" / "dist"
 UPLOADS_DIR = BASE_DIR / "uploads"
 UPLOADS_DIR.mkdir(exist_ok=True)
+LOGS_DIR = BASE_DIR / "logs"
+LOGS_DIR.mkdir(exist_ok=True)
+
+_log_format = "%(asctime)s | %(levelname)s | %(name)s | %(message)s"
+_log_handlers = [logging.StreamHandler()]
+try:
+    from logging.handlers import RotatingFileHandler
+
+    _file_handler = RotatingFileHandler(
+        LOGS_DIR / "app.log", maxBytes=10 * 1024 * 1024, backupCount=5, encoding="utf-8"
+    )
+    _log_handlers.append(_file_handler)
+except OSError:
+    # Read-only filesystem (some PaaS platforms) — stdout capture still works, just skip the file.
+    pass
 
 logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
+    level=logging.DEBUG if settings.DEBUG else logging.INFO,
+    format=_log_format,
+    handlers=_log_handlers,
 )
 logger = logging.getLogger("university_finder")
+
+if settings.SENTRY_DSN:
+    import sentry_sdk
+    from sentry_sdk.integrations.fastapi import FastApiIntegration
+    from sentry_sdk.integrations.starlette import StarletteIntegration
+    from sentry_sdk.integrations.logging import LoggingIntegration
+
+    sentry_sdk.init(
+        dsn=settings.SENTRY_DSN,
+        environment=settings.ENVIRONMENT,
+        integrations=[
+            StarletteIntegration(),
+            FastApiIntegration(),
+            LoggingIntegration(level=logging.INFO, event_level=logging.ERROR),
+        ],
+        traces_sample_rate=0.1,  # 10% of requests get perf tracing — keep low, it's not free
+        send_default_pii=False,  # don't leak student emails/names into Sentry
+    )
+    logger.info("Sentry error tracking initialized (env=%s)", settings.ENVIRONMENT)
+else:
+    logger.warning("SENTRY_DSN not set — errors will only be visible in server logs, not aggregated anywhere")
 
 
 def _warn_missing_secrets() -> None:
@@ -54,6 +91,21 @@ app = FastAPI(
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
+
+@app.on_event("startup")
+def _start_daily_insights_scheduler() -> None:
+    from apscheduler.schedulers.background import BackgroundScheduler
+    from app.services.daily_insights import run_daily_insights
+    from app.services.plan_expiry import run_plan_expiry
+
+    scheduler = BackgroundScheduler(timezone="UTC")
+    scheduler.add_job(run_daily_insights, "cron", hour=6, minute=0, id="daily_ai_insights")
+    scheduler.add_job(run_plan_expiry, "cron", hour=0, minute=5, id="daily_plan_expiry")
+    scheduler.start()
+    app.state.scheduler = scheduler
+    logger.info("Daily AI insights scheduler started (runs daily at 06:00 UTC)")
+    logger.info("Daily plan-expiry scheduler started (runs daily at 00:05 UTC)")
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.ALLOWED_ORIGINS,
@@ -69,6 +121,12 @@ async def spa_middleware(request: Request, call_next):
     Browser navigations (Accept: text/html) to SPA routes must receive index.html,
     not the JSON from the matching API router. API calls from axios use
     Accept: application/json and are NOT affected.
+
+    Several SPA client routes share an exact URL string with an API route
+    (e.g. "/instructors", "/universities", "/announcements") — without
+    Cache-Control: no-store + Vary: Accept, a browser can cache this HTML
+    response under that URL and later serve it back for the app's own
+    same-URL JSON fetch, silently breaking the page with a JSON-parse error.
     """
     if STUDENT_DIST.exists():
         accept = request.headers.get("accept", "")
@@ -78,10 +136,13 @@ async def spa_middleware(request: Request, call_next):
             "/favourites", "/learning", "/university/", "/instructors",
             "/login", "/register", "/forgot-password", "/reset-password", "/verify-email",
             "/my-questions", "/instructor-panel", "/pricing", "/support", "/notifications", "/ai-chat", "/apply-hub", "/pipeline", "/email-integration", "/calendar",
-            "/simulators", "/simulators/exam",
+            "/simulators", "/simulators/exam", "/cost-of-living", "/visa-guide", "/community",
         )
         if "text/html" in accept and (path == "/" or any(path.startswith(p) for p in SPA_PREFIXES)):
-            return FileResponse(STUDENT_DIST / "index.html")
+            return FileResponse(
+                STUDENT_DIST / "index.html",
+                headers={"Cache-Control": "no-store, must-revalidate", "Vary": "Accept"},
+            )
 
     return await call_next(request)
 
@@ -130,6 +191,9 @@ app.include_router(course_chat.router)
 app.include_router(email_integration.router)
 app.include_router(calendar_events.router)
 app.include_router(simulator.router)
+app.include_router(cost_of_living.router)
+app.include_router(community.router)
+app.include_router(payments.router)
 
 # Serve only public uploads (instructor photos). Documents require auth — see applications router.
 INSTRUCTORS_UPLOAD_DIR = UPLOADS_DIR / "instructors"
@@ -152,16 +216,18 @@ if ADMIN_DIST.exists():
     if (ADMIN_DIST / "assets").exists():
         app.mount("/admin/assets", StaticFiles(directory=ADMIN_DIST / "assets"), name="admin-assets")
 
+    _INDEX_HEADERS = {"Cache-Control": "no-store, must-revalidate", "Vary": "Accept"}
+
     @app.get("/admin", include_in_schema=False)
     def serve_admin_root():
-        return FileResponse(ADMIN_DIST / "index.html")
+        return FileResponse(ADMIN_DIST / "index.html", headers=_INDEX_HEADERS)
 
     @app.get("/admin/{path:path}", include_in_schema=False)
     def serve_admin(path: str):
         file = (ADMIN_DIST / path).resolve()
         if file.is_file() and ADMIN_DIST.resolve() in file.parents:
             return FileResponse(file)
-        return FileResponse(ADMIN_DIST / "index.html")
+        return FileResponse(ADMIN_DIST / "index.html", headers=_INDEX_HEADERS)
 
 if STUDENT_DIST.exists():
     @app.get("/{path:path}", include_in_schema=False)
@@ -169,4 +235,4 @@ if STUDENT_DIST.exists():
         file = (STUDENT_DIST / path).resolve()
         if file.is_file() and STUDENT_DIST.resolve() in file.parents:
             return FileResponse(file)
-        return FileResponse(STUDENT_DIST / "index.html")
+        return FileResponse(STUDENT_DIST / "index.html", headers={"Cache-Control": "no-store, must-revalidate", "Vary": "Accept"})

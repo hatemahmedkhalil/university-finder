@@ -187,8 +187,13 @@ def update_email(
     if db.query(User).filter(User.email == new_email, User.id != current_user.id).first():
         raise HTTPException(status_code=409, detail="Email already in use")
     current_user.email = new_email
+    current_user.is_verified = False
+    token = secrets.token_urlsafe(32)
+    current_user.verification_token = token
+    current_user.verification_token_expires = datetime.now(timezone.utc) + timedelta(hours=24)
     db.commit()
     db.refresh(current_user)
+    send_verification_email(current_user.email, token)
     return current_user
 
 

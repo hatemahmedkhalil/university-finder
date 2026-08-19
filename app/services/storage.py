@@ -34,9 +34,9 @@ def upload(bucket: str, path: str, data: bytes, content_type: str) -> str:
         )
         logger.info("[STORAGE] Uploaded to Supabase: %s/%s", bucket, path)
         return path
-    local_dir = _LOCAL_ROOT / bucket
-    local_dir.mkdir(parents=True, exist_ok=True)
-    (local_dir / path).write_bytes(data)
+    dest = _LOCAL_ROOT / bucket / path
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    dest.write_bytes(data)
     logger.info("[STORAGE] Saved locally: %s/%s", bucket, path)
     return path
 

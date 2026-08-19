@@ -25,6 +25,7 @@ import app.models.subscription_plan  # noqa: F401
 import app.models.ai_chat_message  # noqa: F401
 import app.models.user_language  # noqa: F401
 import app.models.ielts  # noqa: F401
+import app.models.payment  # noqa: F401
 
 config = context.config
 

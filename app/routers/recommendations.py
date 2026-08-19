@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from sqlalchemy.orm import Session
 
+from app.core.limiter import limiter
 from app.dependencies import get_current_user, get_db
 from app.models.student_profile import StudentProfile
 from app.models.university import University
@@ -12,7 +13,9 @@ router = APIRouter(prefix="/recommendations", tags=["Recommendations"])
 
 
 @router.post("", response_model=RecommendationResponse)
+@limiter.limit("30/minute")
 def get_recommendations(
+    request: Request,
     payload: RecommendationRequest,
     top_n: int = Query(default=3, ge=1, le=50, description="Max results to return"),
     db: Session = Depends(get_db),

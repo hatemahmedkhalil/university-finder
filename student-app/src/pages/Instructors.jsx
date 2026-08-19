@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import { useTranslation } from "react-i18next";
+import { Icon, ICONS } from "../components/Sidebar";
 
 const LANG_CONFIG = {
   english: {
@@ -21,7 +22,7 @@ const LANG_CONFIG = {
   },
 };
 const DEFAULT_LANG = {
-  label: "Instructor", flag: "👤", flagUrl: null,
+  label: "Instructor", flag: null, flagUrl: null,
   grad: "from-indigo-500 to-violet-600",
   light: "bg-indigo-50", text: "text-indigo-700", border: "border-indigo-200", glow: "shadow-indigo-100",
 };
@@ -36,7 +37,7 @@ const Avatar = ({ name, photoUrl, size = "md", grad = "from-sky-500 to-indigo-60
     return <img src={src} alt={name} onError={() => setErr(true)} className={`${cls} rounded-2xl object-cover ring-2 ring-white`} />;
   }
   return (
-    <div className={`${cls} rounded-2xl bg-gradient-to-br ${grad} flex items-center justify-center text-white font-bold ring-2 ring-white`}>
+    <div className={`${cls} rounded-2xl bg-gradient-to-br ${grad} flex items-center justify-center text-[var(--ink)] font-bold ring-2 ring-white`}>
       {initials}
     </div>
   );
@@ -80,24 +81,24 @@ const ChatModal = ({ inst, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={onClose}>
-      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg flex flex-col max-h-[85vh] overflow-hidden" onClick={e => e.stopPropagation()}>
+      <div className="rounded-3xl shadow-2xl w-full max-w-lg flex flex-col max-h-[85vh] overflow-hidden" style={{ background: "var(--surface)" }} onClick={e => e.stopPropagation()}>
 
         {/* Header */}
         <div className={`bg-gradient-to-r ${langCfg.grad} px-5 py-4 flex items-center gap-3`}>
           <Avatar name={inst.name} photoUrl={inst.photo_url} size="sm" grad={langCfg.grad} />
           <div className="flex-1 min-w-0">
-            <p className="font-bold text-white text-sm truncate">{inst.title ? `${inst.title} ` : ""}{inst.name}</p>
-            <p className="text-white/70 text-xs">{inst.organization ?? t("instructors.languageInstructor")}</p>
+            <p className="font-bold text-[var(--ink)] text-sm truncate">{inst.title ? `${inst.title} ` : ""}{inst.name}</p>
+            <p className="text-[var(--ink)]/70 text-xs">{inst.organization ?? t("instructors.languageInstructor")}</p>
           </div>
-          <button onClick={onClose} className="w-8 h-8 rounded-xl bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition">
+          <button onClick={onClose} className="w-8 h-8 rounded-xl bg-white/20 hover:bg-white/30 flex items-center justify-center text-[var(--ink)] transition">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
           </button>
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4 min-h-[200px] bg-gray-50">
+        <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4 min-h-[200px]" style={{ background: "var(--bg-subtle)" }}>
           {loadingMsgs ? (
-            <p className="text-center text-[oklch(0.45_0.02_285)] text-sm py-8">Loading messages…</p>
+            <p className="text-center text-[var(--ink-dim)] text-sm py-8">Loading messages…</p>
           ) : fetchError ? (
             <div className="text-center py-8">
               <p className="text-red-500 text-sm">{fetchError}</p>
@@ -105,28 +106,28 @@ const ChatModal = ({ inst, onClose }) => {
             </div>
           ) : messages.length === 0 ? (
             <div className="text-center py-8">
-              <div className="text-4xl mb-3">💬</div>
-              <p className="text-[oklch(0.55_0.02_285)] text-sm">{t("instructors.noMessagesYet")}</p>
+              <div className="mb-3 flex justify-center"><Icon d={ICONS.questions} size={28} /></div>
+              <p className="text-[var(--ink-faint)] text-sm">{t("instructors.noMessagesYet")}</p>
             </div>
           ) : (
             messages.map(msg => (
               <div key={msg.id} className="space-y-2">
                 <div className="flex justify-end">
-                  <div className={`bg-gradient-to-r ${langCfg.grad} text-white text-sm rounded-2xl rounded-br-sm px-4 py-2.5 max-w-[85%] `}>
+                  <div className={`bg-gradient-to-r ${langCfg.grad} text-[var(--ink)] text-sm rounded-2xl rounded-br-sm px-4 py-2.5 max-w-[85%] `}>
                     <p>{msg.question}</p>
-                    <p className="text-[10px] text-white/60 mt-1 text-right">{new Date(msg.created_at).toLocaleString()}</p>
+                    <p className="text-[10px] text-[var(--ink)]/60 mt-1 text-right">{new Date(msg.created_at).toLocaleString()}</p>
                   </div>
                 </div>
                 {msg.reply ? (
                   <div className="flex justify-start gap-2">
                     <Avatar name={inst.name} photoUrl={inst.photo_url} size="sm" grad={langCfg.grad} />
-                    <div className="bg-white text-white text-sm rounded-2xl rounded-bl-sm px-4 py-2.5 max-w-[85%]  border border-[oklch(1_0_0/0.07)]">
+                    <div className="text-sm rounded-2xl rounded-bl-sm px-4 py-2.5 max-w-[85%] border" style={{ background: "var(--surface-2)", color: "var(--ink)", borderColor: "var(--border)" }}>
                       <p>{msg.reply}</p>
-                      <p className="text-[10px] text-[oklch(0.45_0.02_285)] mt-1">{new Date(msg.replied_at).toLocaleString()}</p>
+                      <p className="text-[10px] text-[var(--ink-dim)] mt-1">{new Date(msg.replied_at).toLocaleString()}</p>
                     </div>
                   </div>
                 ) : (
-                  <div className="pl-12"><span className="text-xs text-[oklch(0.45_0.02_285)] italic">{t("instructors.waitingReply")}</span></div>
+                  <div className="pl-12"><span className="text-xs text-[var(--ink-dim)] italic">{t("instructors.waitingReply")}</span></div>
                 )}
               </div>
             ))
@@ -135,7 +136,7 @@ const ChatModal = ({ inst, onClose }) => {
         </div>
 
         {/* Input */}
-        <div className="px-4 py-3 border-t border-[oklch(1_0_0/0.07)] bg-white flex flex-col gap-1">
+        <div className="px-4 py-3 border-t flex flex-col gap-1" style={{ borderColor: "var(--border)", background: "var(--surface)" }}>
           {sendError && <p className="text-red-500 text-xs px-1">{sendError}</p>}
           <div className="flex gap-2">
             <textarea
@@ -144,12 +145,12 @@ const ChatModal = ({ inst, onClose }) => {
               onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
               rows={1}
               placeholder={t("instructors.questionPlaceholder")}
-              className="flex-1 resize-none border border-[oklch(1_0_0/0.08)] rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400"
+              className="flex-1 resize-none border border-[rgba(255,255,255,0.08)] rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400"
             />
             <button
               onClick={send}
               disabled={sending || !text.trim()}
-              className={`bg-gradient-to-r ${langCfg.grad} text-white px-4 py-2 rounded-xl text-sm font-bold disabled:opacity-40 transition shrink-0  hover:opacity-90`}
+              className={`bg-gradient-to-r ${langCfg.grad} text-[var(--ink)] px-4 py-2 rounded-xl text-sm font-bold disabled:opacity-40 transition shrink-0  hover:opacity-90`}
             >
               {sending ? "…" : t("aichat.send")}
             </button>
@@ -166,9 +167,9 @@ const InstructorCard = ({ inst, onChat }) => {
   const navigate = useNavigate();
   const langCfg = LANG_CONFIG[inst.language?.toLowerCase()] || DEFAULT_LANG;
 
-  const SURF   = "oklch(0.17 0.022 285)";
-  const BORDER = "oklch(1 0 0 / 0.08)";
-  const DIM    = "oklch(0.55 0.02 285)";
+  const SURF   = "var(--surface-2)";
+  const BORDER = "rgba(255,255,255,0.08)";
+  const DIM    = "var(--ink-faint)";
 
   return (
     <div className="rounded-2xl overflow-hidden flex flex-col cursor-pointer transition hover:opacity-90"
@@ -180,12 +181,12 @@ const InstructorCard = ({ inst, onChat }) => {
 
         {/* Circular avatar */}
         <div className="w-20 h-20 rounded-full overflow-hidden shrink-0"
-             style={{ border: "3px solid oklch(1 0 0 / 0.1)" }}>
+             style={{ border: "3px solid rgba(255,255,255,0.1)" }}>
           <Avatar name={inst.name} photoUrl={inst.photo_url} size="lg" grad={langCfg.grad} />
         </div>
 
         {/* Name */}
-        <h3 className="font-bold text-white text-base leading-tight">
+        <h3 className="font-bold text-[var(--ink)] text-base leading-tight">
           {inst.title ? `${inst.title} ` : ""}{inst.name}
         </h3>
 
@@ -197,8 +198,8 @@ const InstructorCard = ({ inst, onChat }) => {
           <span style={{ color: DIM }}>{langCfg.label}</span>
           {inst.rating && (
             <>
-              <span style={{ color: "oklch(0.75 0.18 75)" }}>{"★".repeat(Math.round(inst.rating))}</span>
-              <span className="font-bold text-white text-sm">{inst.rating}</span>
+              <span style={{ color: "#ef9900" }}>{"★".repeat(Math.round(inst.rating))}</span>
+              <span className="font-bold text-[var(--ink)] text-sm">{inst.rating}</span>
             </>
           )}
         </div>
@@ -216,8 +217,8 @@ const InstructorCard = ({ inst, onChat }) => {
       <div className="px-5 pb-5">
         <button
           onClick={e => { e.stopPropagation(); onChat(inst); }}
-          className="w-full py-2.5 rounded-xl text-sm font-bold text-white transition hover:opacity-80"
-          style={{ background: "oklch(0.22 0.025 285)", border: `1px solid ${BORDER}` }}>
+          className="w-full py-2.5 rounded-xl text-sm font-bold text-[var(--ink)] transition hover:opacity-80"
+          style={{ background: "var(--surface-2)", border: `1px solid ${BORDER}` }}>
           Message
         </button>
       </div>
@@ -227,16 +228,16 @@ const InstructorCard = ({ inst, onChat }) => {
 
 /* ── Skeleton Card ──────────────────────────────────────────────────────── */
 const SkeletonInstructor = () => (
-  <div className="bg-[oklch(0.17_0.02_285)] rounded-3xl border-2 border-[oklch(1_0_0/0.08)]  overflow-hidden animate-pulse">
+  <div className="bg-[var(--surface-2)] rounded-3xl border-2 border-[rgba(255,255,255,0.08)]  overflow-hidden animate-pulse">
     <div className="bg-gray-100 h-28" />
     <div className="p-5 space-y-3">
       <div className="flex gap-2">
-        <div className="h-5 bg-[oklch(0.20_0.024_285)] rounded-lg w-16" />
-        <div className="h-5 bg-[oklch(0.20_0.024_285)] rounded-lg w-20" />
+        <div className="h-5 bg-[var(--surface-hover)] rounded-lg w-16" />
+        <div className="h-5 bg-[var(--surface-hover)] rounded-lg w-20" />
       </div>
-      <div className="h-3 bg-[oklch(0.20_0.024_285)] rounded w-full" />
-      <div className="h-3 bg-[oklch(0.20_0.024_285)] rounded w-3/4" />
-      <div className="h-10 bg-[oklch(0.20_0.024_285)] rounded-xl mt-4" />
+      <div className="h-3 bg-[var(--surface-hover)] rounded w-full" />
+      <div className="h-3 bg-[var(--surface-hover)] rounded w-3/4" />
+      <div className="h-10 bg-[var(--surface-hover)] rounded-xl mt-4" />
     </div>
   </div>
 );
@@ -245,7 +246,7 @@ const SkeletonInstructor = () => (
 const Instructors = () => {
   const { t } = useTranslation();
   const LANG_FILTERS = [
-    { value: "",        label: t("universities.filterLanguage"), icon: "🌍" },
+    { value: "",        label: t("universities.filterLanguage"), icon: null },
     { value: "english", label: t("learning.english"),            icon: "🇬🇧" },
     { value: "german",  label: t("learning.german"),             icon: "🇩🇪" },
     { value: "polish",  label: t("learning.polish"),             icon: "🇵🇱" },
@@ -264,8 +265,8 @@ const Instructors = () => {
       .finally(() => setLoading(false));
   }, [filter]);
 
-  const BG   = "oklch(0.13 0.018 285)";
-  const GRAD = "linear-gradient(135deg, oklch(0.55 0.22 296), oklch(0.50 0.20 264))";
+  const BG   = "var(--bg)";
+  const GRAD = "linear-gradient(135deg, var(--accent), var(--accent))";
 
   return (
     <div className="min-h-screen" style={{ background: BG, color: "#fff" }}>
@@ -275,27 +276,27 @@ const Instructors = () => {
       <div style={{ position: "relative", height: 240, overflow: "hidden" }}>
         <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1600&q=70"
              alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 40%", filter: "brightness(0.45)" }} />
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, oklch(0.13 0.018 285 / 0.3), oklch(0.13 0.018 285) 95%)" }} />
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(7,6,14,0.3), var(--bg) 95%)" }} />
         <div style={{ position: "relative", height: "100%", display: "flex", flexDirection: "column", justifyContent: "center", padding: "0 48px" }}>
           <h1 style={{ fontSize: 32, fontWeight: 800, color: "#fff", marginBottom: 8 }}>
             {t("instructors.heroTitle")}
           </h1>
-          <p style={{ fontSize: 15, color: "oklch(0.72 0.02 285)", maxWidth: 480 }}>
+          <p style={{ fontSize: 15, color: "var(--ink-dim)", maxWidth: 480 }}>
             {t("instructors.heroSubtitle")}
           </p>
         </div>
       </div>
 
       {/* ── Filter pills ── */}
-      <div className="px-8 py-5" style={{ borderBottom: "1px solid oklch(1 0 0 / 0.07)" }}>
+      <div className="px-8 py-5" style={{ borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
         <div className="flex flex-wrap gap-2">
           {LANG_FILTERS.map(f => (
             <button key={f.value} onClick={() => setFilter(f.value)}
               className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition"
               style={{
-                background: filter === f.value ? GRAD : "oklch(0.20 0.024 285)",
-                color: filter === f.value ? "#fff" : "oklch(0.65 0.02 285)",
-                border: `1px solid ${filter === f.value ? "transparent" : "oklch(1 0 0 / 0.08)"}`,
+                background: filter === f.value ? GRAD : "var(--surface-hover)",
+                color: filter === f.value ? "#fff" : "var(--ink-faint)",
+                border: `1px solid ${filter === f.value ? "transparent" : "rgba(255,255,255,0.08)"}`,
               }}>
               <span>{f.icon}</span> {f.label}
             </button>
@@ -310,10 +311,10 @@ const Instructors = () => {
             {[0,1,2,3,4,5].map(i => <SkeletonInstructor key={i} />)}
           </div>
         ) : instructors.length === 0 ? (
-          <div className="text-center py-24 rounded-2xl" style={{ background: "oklch(0.17 0.022 285)", border: "1px solid oklch(1 0 0 / 0.07)" }}>
-            <div className="text-5xl mb-4">🎓</div>
-            <p className="text-white font-bold text-xl mb-2">{t("instructors.noFound")}</p>
-            <p className="text-sm" style={{ color: "oklch(0.45 0.02 285)" }}>{t("instructors.tryFilter")}</p>
+          <div className="text-center py-24 rounded-2xl" style={{ background: "var(--surface-2)", border: "1px solid var(--border)" }}>
+            <div className="mb-4 flex justify-center"><Icon d={ICONS.instructors} size={40} /></div>
+            <p className="text-[var(--ink)] font-bold text-xl mb-2">{t("instructors.noFound")}</p>
+            <p className="text-sm" style={{ color: "var(--ink-dim)" }}>{t("instructors.tryFilter")}</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">

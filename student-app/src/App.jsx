@@ -18,6 +18,7 @@ import Announcements from "./pages/Announcements";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Profile from "./pages/Profile";
+import AccountProfile from "./pages/AccountProfile";
 import Recommendations from "./pages/Recommendations";
 import Universities from "./pages/Universities";
 import Scholarships from "./pages/Scholarships";
@@ -40,11 +41,14 @@ import Pipeline from "./pages/Pipeline";
 import MyQuestions from "./pages/MyQuestions";
 import InstructorPanel from "./pages/InstructorPanel";
 import Pricing from "./pages/Pricing";
+import PaymentReturn from "./pages/PaymentReturn";
 import Support from "./pages/Support";
 import Notifications from "./pages/Notifications";
 import EmailIntegration from "./pages/EmailIntegration";
 import CalendarPage from "./pages/Calendar";
 import Settings from "./pages/Settings";
+import CostOfLiving from "./pages/CostOfLiving";
+import Community from "./pages/Community";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import VerifyEmail from "./pages/VerifyEmail";
@@ -106,13 +110,17 @@ const App = () => (
           <Route path="/verify-email"    element={<VerifyEmail />} />
           <Route path="/universities"  element={<Universities />} />
           <Route path="/scholarships"  element={<Scholarships />} />
-          <Route path="/visa-guide"    element={<VisaGuide />} />
+          <Route path="/visa-guide"      element={<VisaGuide />} />
+          <Route path="/cost-of-living"  element={<CostOfLiving />} />
+          <Route path="/community"       element={<Community />} />
           <Route path="/visa-guide/:country" element={<VisaGuide />} />
           <Route path="/pricing"       element={<Pricing />} />
+          <Route path="/payments/return" element={<ProtectedRoute><PaymentReturn /></ProtectedRoute>} />
 
           <Route path="/dashboard"      element={<ProtectedRoute><SmartDashboard /></ProtectedRoute>} />
           <Route path="/announcements"  element={<ProtectedRoute><Announcements /></ProtectedRoute>} />
           <Route path="/profile"        element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+          <Route path="/account"        element={<ProtectedRoute><AccountProfile /></ProtectedRoute>} />
           <Route path="/recommendations" element={<ProtectedRoute><Recommendations /></ProtectedRoute>} />
           <Route path="/favourites"     element={<ProtectedRoute><Favourites /></ProtectedRoute>} />
           <Route path="/university/:id" element={<ProtectedRoute><UniversityDetail /></ProtectedRoute>} />
@@ -125,7 +133,7 @@ const App = () => (
           <Route path="/learning/courses/:language"   element={<ProtectedRoute><CoursePage /></ProtectedRoute>} />
           <Route path="/pipeline"       element={<ProtectedRoute><Pipeline /></ProtectedRoute>} />
           <Route path="/apply-hub"       element={<ProtectedRoute><ApplicationHub /></ProtectedRoute>} />
-          <Route path="/apply-hub/:universityId" element={<ProtectedRoute><ApplicationHub /></ProtectedRoute>} />
+          <Route path="/apply-hub/:entryId" element={<ProtectedRoute><ApplicationHub /></ProtectedRoute>} />
           <Route path="/my-questions"   element={<ProtectedRoute><MyQuestions /></ProtectedRoute>} />
           <Route path="/instructor-panel" element={<ProtectedRoute><InstructorPanel /></ProtectedRoute>} />
           <Route path="/course-chat/:id"      element={<ProtectedRoute><CourseChat /></ProtectedRoute>} />

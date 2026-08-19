@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import api from "../api/axios";
 import toast from "react-hot-toast";
+import { Icon, ICONS } from "../components/Sidebar";
 
 const LANG_GRAD = {
   english: "from-rose-500 via-pink-500 to-fuchsia-600",
@@ -19,7 +20,7 @@ const Avatar = ({ name, photoUrl, grad }) => {
     );
   }
   return (
-    <div className={`w-24 h-24 rounded-2xl bg-gradient-to-br ${grad} flex items-center justify-center text-white text-3xl font-bold ring-4 ring-white`}>
+    <div className={`w-24 h-24 rounded-2xl bg-gradient-to-br ${grad} flex items-center justify-center text-[var(--ink)] text-3xl font-bold ring-4 ring-white`}>
       {initials}
     </div>
   );
@@ -27,14 +28,14 @@ const Avatar = ({ name, photoUrl, grad }) => {
 
 const Field = ({ label, value, onChange, type = "text", rows, placeholder }) => (
   <div className="space-y-1.5">
-    <label className="block text-sm font-semibold text-[oklch(0.75_0.02_285)]">{label}</label>
+    <label className="block text-sm font-semibold text-[var(--ink-dim)]">{label}</label>
     {rows ? (
       <textarea
         value={value || ""}
         onChange={e => onChange(e.target.value)}
         rows={rows}
         placeholder={placeholder}
-        className="w-full border border-[oklch(1_0_0/0.08)] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none"
+        className="w-full border border-[rgba(255,255,255,0.08)] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none"
       />
     ) : (
       <input
@@ -42,7 +43,7 @@ const Field = ({ label, value, onChange, type = "text", rows, placeholder }) => 
         value={value || ""}
         onChange={e => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full border border-[oklch(1_0_0/0.08)] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+        className="w-full border border-[rgba(255,255,255,0.08)] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
       />
     )}
   </div>
@@ -120,9 +121,9 @@ const InstructorMyProfile = () => {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="text-5xl mb-4">👤</div>
-          <p className="text-[oklch(0.65_0.02_285)] font-semibold">No instructor profile linked to your account.</p>
-          <p className="text-[oklch(0.45_0.02_285)] text-sm mt-1">Contact an admin to set up your profile.</p>
+          <div className="mb-4 flex justify-center"><Icon d={ICONS.profile} size={40} /></div>
+          <p className="text-[var(--ink-faint)] font-semibold">No instructor profile linked to your account.</p>
+          <p className="text-[var(--ink-dim)] text-sm mt-1">Contact an admin to set up your profile.</p>
         </div>
       </div>
     );
@@ -132,15 +133,15 @@ const InstructorMyProfile = () => {
     <div className="min-h-screen">
 
       {/* Hero */}
-      <div className={`relative overflow-hidden bg-gradient-to-br ${grad} text-white`}>
+      <div className={`relative overflow-hidden bg-gradient-to-br ${grad} text-[var(--ink)]`}>
         <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/3 blur-3xl" />
         <div className="relative max-w-3xl mx-auto px-6 py-10">
           <div className="flex items-end gap-5">
             <Avatar name={form.name} photoUrl={form.photo_url} grad={grad} />
             <div className="pb-1">
-              <p className="text-white/70 text-sm capitalize">{profile.language} Instructor</p>
+              <p className="text-[var(--ink)]/70 text-sm capitalize">{profile.language} Instructor</p>
               <h1 className="text-3xl font-extrabold">{form.name || "Your Name"}</h1>
-              {form.organization && <p className="text-white/70 text-sm mt-0.5">🏛️ {form.organization}</p>}
+              {form.organization && <p className="text-[var(--ink)]/70 text-sm mt-0.5 inline-flex items-center gap-1.5"><Icon d={ICONS.building} size={12} /> {form.organization}</p>}
             </div>
           </div>
         </div>
@@ -149,20 +150,20 @@ const InstructorMyProfile = () => {
       <div className="max-w-3xl mx-auto px-6 py-8 space-y-6">
 
         {/* Photo upload */}
-        <div className="bg-[oklch(0.17_0.02_285)] rounded-2xl border border-[oklch(1_0_0/0.07)] p-6 flex items-center gap-4">
+        <div className="bg-[var(--surface-2)] rounded-2xl border border-[rgba(255,255,255,0.07)] p-6 flex items-center gap-4">
           <Avatar name={form.name} photoUrl={form.photo_url} grad={grad} />
           <div className="flex-1">
-            <p className="font-semibold text-[oklch(0.75_0.02_285)] text-sm mb-2">Profile Photo</p>
+            <p className="font-semibold text-[var(--ink-dim)] text-sm mb-2">Profile Photo</p>
             <input
               type="file" accept="image/jpeg,image/png,image/webp"
               onChange={e => setPhotoFile(e.target.files[0])}
-              className="text-sm text-[oklch(0.55_0.02_285)] file:mr-3 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
+              className="text-sm text-[var(--ink-faint)] file:mr-3 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
             />
             {photoFile && (
               <button
                 onClick={uploadPhoto}
                 disabled={uploading}
-                className={`mt-2 text-xs font-bold px-4 py-1.5 rounded-lg bg-gradient-to-r ${grad} text-white disabled:opacity-50 transition`}
+                className={`mt-2 text-xs font-bold px-4 py-1.5 rounded-lg bg-gradient-to-r ${grad} text-[var(--ink)] disabled:opacity-50 transition`}
               >
                 {uploading ? "Uploading…" : "Upload Photo"}
               </button>
@@ -171,8 +172,8 @@ const InstructorMyProfile = () => {
         </div>
 
         {/* Info fields */}
-        <div className="bg-[oklch(0.17_0.02_285)] rounded-2xl border border-[oklch(1_0_0/0.07)] p-6 space-y-5">
-          <h2 className="font-bold text-white text-base">Basic Information</h2>
+        <div className="bg-[var(--surface-2)] rounded-2xl border border-[rgba(255,255,255,0.07)] p-6 space-y-5">
+          <h2 className="font-bold text-[var(--ink)] text-base">Basic Information</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Field label="Full Name"     value={form.name}         onChange={v => set("name", v)}         placeholder="Dr. Mohamed Arafa" />
             <Field label="Title / Prefix" value={form.title}        onChange={v => set("title", v)}        placeholder="Mr. / Dr. / Prof." />
@@ -200,9 +201,9 @@ const InstructorMyProfile = () => {
           <button
             onClick={save}
             disabled={saving}
-            className={`px-8 py-3 rounded-xl font-bold text-white bg-gradient-to-r ${grad} hover:opacity-90 disabled:opacity-50 transition`}
+            className={`px-8 py-3 rounded-xl font-bold text-[var(--ink)] bg-gradient-to-r ${grad} hover:opacity-90 disabled:opacity-50 transition`}
           >
-            {saving ? "Saving…" : "💾 Save Changes"}
+            {saving ? "Saving…" : "Save Changes"}
           </button>
         </div>
       </div>

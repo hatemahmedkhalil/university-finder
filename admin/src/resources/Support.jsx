@@ -1,59 +1,59 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
+import {
+  Box, Paper, Typography, TextField, Button, Chip, Stack, Avatar,
+  Skeleton, Tabs, Tab,
+} from "@mui/material";
+import SupportAgentIcon from "@mui/icons-material/SupportAgent";
+import InboxIcon from "@mui/icons-material/Inbox";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
 const authHeaders = () => ({ Authorization: `Bearer ${localStorage.getItem("access_token")}` });
-const api    = (url, opts = {}) => axios.get(url, { headers: authHeaders(), ...opts });
-const postApi  = (url, data)    => axios.post(url, data, { headers: authHeaders() });
-const patchApi = (url, data)    => axios.patch(url, data, { headers: authHeaders() });
-const deleteApi = (url)         => axios.delete(url, { headers: authHeaders() });
+const api      = (url, opts = {}) => axios.get(url, { headers: authHeaders(), ...opts });
+const postApi  = (url, data)      => axios.post(url, data, { headers: authHeaders() });
+const patchApi = (url, data)      => axios.patch(url, data, { headers: authHeaders() });
+const deleteApi = (url)           => axios.delete(url, { headers: authHeaders() });
 
 const VALID_STATUSES = ["waiting_admin", "waiting_student", "in_progress", "resolved", "closed"];
 
 const STATUS_META = {
-  open:            { bg: "#fef9c3", color: "#854d0e", border: "#fde68a", label: "Open",              dot: "#f59e0b" },
-  waiting_admin:   { bg: "#fff7ed", color: "#9a3412", border: "#fed7aa", label: "Waiting for Admin", dot: "#f97316" },
-  waiting_student: { bg: "#dbeafe", color: "#1e40af", border: "#bfdbfe", label: "Support Replied",   dot: "#3b82f6" },
-  in_progress:     { bg: "#f3e8ff", color: "#6b21a8", border: "#e9d5ff", label: "In Progress",       dot: "#a855f7" },
-  resolved:        { bg: "#dcfce7", color: "#166534", border: "#bbf7d0", label: "Resolved",          dot: "#22c55e" },
-  closed:          { bg: "#f3f4f6", color: "#4b5563", border: "#e5e7eb", label: "Closed",            dot: "#9ca3af" },
+  open:            { color: "warning", label: "Open" },
+  waiting_admin:   { color: "warning", label: "Waiting for Admin" },
+  waiting_student: { color: "primary", label: "Support Replied" },
+  in_progress:     { color: "secondary", label: "In Progress" },
+  resolved:        { color: "success", label: "Resolved" },
+  closed:          { color: "default", label: "Closed" },
 };
 
 const StatusBadge = ({ status }) => {
   const s = STATUS_META[status] ?? STATUS_META.open;
-  return (
-    <span style={{
-      background: s.bg, color: s.color, border: `1px solid ${s.border}`,
-      borderRadius: 20, padding: "3px 10px", fontSize: 11, fontWeight: 700,
-      display: "inline-flex", alignItems: "center", gap: 5,
-    }}>
-      <span style={{ width: 6, height: 6, borderRadius: "50%", background: s.dot, display: "inline-block" }} />
-      {s.label}
-    </span>
-  );
+  return <Chip size="small" label={s.label} color={s.color === "default" ? "default" : s.color} variant="outlined" />;
 };
 
-/* ── Chat bubble ── */
+/* ── chat bubble ── */
 const Bubble = ({ msg }) => {
   const isAdmin = msg.sender_role === "admin";
   return (
-    <div style={{ display: "flex", justifyContent: isAdmin ? "flex-end" : "flex-start", marginBottom: 8 }}>
-      <div style={{
-        maxWidth: "75%", padding: "10px 14px", borderRadius: isAdmin ? "16px 16px 4px 16px" : "16px 16px 16px 4px",
-        background: isAdmin ? "#4f46e5" : "#f9fafb",
-        color: isAdmin ? "#fff" : "#374151",
-        border: isAdmin ? "none" : "1px solid #e5e7eb",
+    <Box sx={{ display: "flex", justifyContent: isAdmin ? "flex-end" : "flex-start", mb: 1 }}>
+      <Box sx={{
+        maxWidth: "75%", px: 1.75, py: 1.25,
+        borderRadius: isAdmin ? "16px 16px 4px 16px" : "16px 16px 16px 4px",
+        bgcolor: isAdmin ? "primary.main" : "action.hover",
+        color: isAdmin ? "primary.contrastText" : "text.primary",
         fontSize: 14, lineHeight: 1.6, whiteSpace: "pre-wrap",
       }}>
-        <p style={{ margin: 0 }}>{msg.message}</p>
-        <p style={{ margin: "4px 0 0", fontSize: 10, opacity: 0.6, textAlign: isAdmin ? "right" : "left" }}>
+        <Typography variant="body2" sx={{ color: "inherit" }}>{msg.message}</Typography>
+        <Typography variant="caption" sx={{ display: "block", opacity: 0.65, mt: 0.5, textAlign: isAdmin ? "right" : "left", color: "inherit" }}>
           {isAdmin ? "You (Admin)" : "Student"} · {new Date(msg.created_at).toLocaleString()}
-        </p>
-      </div>
-    </div>
+        </Typography>
+      </Box>
+    </Box>
   );
 };
 
-/* ── Ticket thread ── */
+/* ── ticket thread ── */
 const TicketCard = ({ ticket, onUpdated, onDeleted }) => {
   const [expanded, setExpanded] = useState(ticket.status === "waiting_admin");
   const [replyText, setReplyText] = useState("");
@@ -83,137 +83,120 @@ const TicketCard = ({ ticket, onUpdated, onDeleted }) => {
     try {
       const res = await patchApi(`/support/${ticket.id}/status`, { status: newStatus });
       onUpdated(res.data);
-    } catch {}
+    } catch { /* noop */ }
   };
 
   const handleDelete = async () => {
     if (!window.confirm("Delete this ticket?")) return;
     setDeleting(true);
-    try { await deleteApi(`/support/${ticket.id}`); onDeleted(ticket.id); } catch {}
+    try { await deleteApi(`/support/${ticket.id}`); onDeleted(ticket.id); } catch { /* noop */ }
     setDeleting(false);
   };
 
   const isUrgent = ticket.status === "waiting_admin";
 
   return (
-    <div style={{
-      background: "#fff", borderRadius: 12, marginBottom: 12, overflow: "hidden",
-      border: `1px solid ${isUrgent ? "#fed7aa" : STATUS_META[ticket.status]?.border ?? "#e5e7eb"}`,
-      boxShadow: isUrgent ? "0 0 0 2px #fed7aa" : "0 1px 4px rgba(0,0,0,0.05)",
-    }}>
-      {/* Header */}
-      <div
+    <Paper
+      elevation={0}
+      sx={{
+        borderRadius: 3, mb: 1.5, overflow: "hidden",
+        borderColor: isUrgent ? "warning.main" : "divider",
+        boxShadow: isUrgent ? "0 0 0 2px var(--mui-palette-warning-light)" : "none",
+      }}
+    >
+      <Box
         onClick={() => setExpanded(e => !e)}
-        style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 18px", cursor: "pointer", background: expanded ? "#fafafa" : "#fff" }}
+        sx={{ display: "flex", alignItems: "center", gap: 1.5, px: 2.25, py: 1.75, cursor: "pointer", bgcolor: expanded ? "action.hover" : "transparent" }}
       >
-        <div style={{
-          width: 36, height: 36, borderRadius: "50%", background: "#e0e7ff", color: "#4f46e5",
-          display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 14, flexShrink: 0,
-        }}>
+        <Avatar sx={{ bgcolor: "primary.light", color: "primary.contrastText", fontWeight: 700, width: 36, height: 36, fontSize: 14 }}>
           {ticket.user.email[0].toUpperCase()}
-        </div>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: "#111", display: "flex", alignItems: "center", gap: 8 }}>
-            {ticket.subject}
-            {isUrgent && <span style={{ fontSize: 10, background: "#fed7aa", color: "#9a3412", padding: "2px 8px", borderRadius: 10, fontWeight: 700 }}>Needs Reply</span>}
-          </div>
-          <div style={{ fontSize: 12, color: "#888", marginTop: 2 }}>
+        </Avatar>
+        <Box sx={{ flex: 1, minWidth: 0 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Typography variant="body2" fontWeight={700}>{ticket.subject}</Typography>
+            {isUrgent && <Chip size="small" label="Needs Reply" color="warning" />}
+          </Box>
+          <Typography variant="caption" color="text.disabled">
             {ticket.user.email} · #{ticket.id} · {(ticket.conversation ?? []).length} msg · {new Date(ticket.created_at).toLocaleDateString()}
-          </div>
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+          </Typography>
+        </Box>
+        <Stack direction="row" alignItems="center" spacing={1.25} flexShrink={0}>
           <StatusBadge status={ticket.status} />
-          <span style={{ color: "#aaa", fontSize: 16 }}>{expanded ? "▲" : "▼"}</span>
-        </div>
-      </div>
+          {expanded ? <ExpandLessIcon fontSize="small" color="disabled" /> : <ExpandMoreIcon fontSize="small" color="disabled" />}
+        </Stack>
+      </Box>
 
       {expanded && (
-        <div style={{ borderTop: "1px solid #f0f0f0" }}>
-          {/* Status bar */}
-          <div style={{ display: "flex", gap: 6, padding: "10px 18px", background: "#fafafa", borderBottom: "1px solid #f0f0f0", flexWrap: "wrap", alignItems: "center" }}>
-            <span style={{ fontSize: 12, color: "#888", marginRight: 4 }}>Status:</span>
+        <Box sx={{ borderTop: 1, borderColor: "divider" }}>
+          {/* Status switcher */}
+          <Stack direction="row" spacing={0.75} alignItems="center" flexWrap="wrap" useFlexGap sx={{ px: 2.25, py: 1.25, bgcolor: "action.hover", borderBottom: 1, borderColor: "divider" }}>
+            <Typography variant="caption" color="text.disabled" sx={{ mr: 0.5 }}>Status:</Typography>
             {VALID_STATUSES.map(s => (
-              <button
+              <Chip
                 key={s}
+                size="small"
+                label={STATUS_META[s]?.label ?? s}
                 onClick={() => changeStatus(s)}
-                style={{
-                  padding: "3px 10px", borderRadius: 8, fontSize: 11, fontWeight: 600, cursor: "pointer",
-                  background: ticket.status === s ? "#4f46e5" : "#f3f4f6",
-                  color: ticket.status === s ? "#fff" : "#6b7280",
-                  border: "none",
-                }}
-              >
-                {STATUS_META[s]?.label ?? s}
-              </button>
+                color={ticket.status === s ? "primary" : "default"}
+                variant={ticket.status === s ? "filled" : "outlined"}
+                sx={{ cursor: "pointer" }}
+              />
             ))}
-          </div>
+          </Stack>
 
-          {/* Chat area */}
-          <div style={{ padding: "16px 18px", background: "#f9fafb", maxHeight: 360, overflowY: "auto" }}>
+          {/* Chat */}
+          <Box sx={{ px: 2.25, py: 2, bgcolor: "background.default", maxHeight: 360, overflowY: "auto" }}>
             {(ticket.conversation ?? []).length === 0 ? (
-              <p style={{ textAlign: "center", color: "#aaa", fontSize: 13 }}>No messages yet.</p>
+              <Typography variant="body2" color="text.disabled" align="center">No messages yet.</Typography>
             ) : (
               (ticket.conversation ?? []).map(m => <Bubble key={m.id} msg={m} />)
             )}
             <div ref={bottomRef} />
-          </div>
+          </Box>
 
-          {/* Reply input */}
+          {/* Reply */}
           {!["resolved", "closed"].includes(ticket.status) && (
-            <div style={{ padding: "12px 18px", background: "#fff", borderTop: "1px solid #f0f0f0" }}>
-              <div style={{ display: "flex", gap: 10, alignItems: "flex-end" }}>
-                <textarea
+            <Box sx={{ px: 2.25, py: 1.5, borderTop: 1, borderColor: "divider" }}>
+              <Stack direction="row" spacing={1.25} alignItems="flex-end">
+                <TextField
                   value={replyText}
                   onChange={e => setReplyText(e.target.value)}
-                  rows={2}
+                  multiline rows={2} fullWidth size="small"
                   placeholder="Type your reply…  (Enter to send, Shift+Enter for new line)"
                   onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendReply(); } }}
-                  style={{
-                    flex: 1, border: "1px solid #d1d5db", borderRadius: 10,
-                    padding: "10px 12px", fontSize: 14, resize: "none",
-                    fontFamily: "inherit", boxSizing: "border-box",
-                  }}
                 />
-                <button
-                  onClick={sendReply}
-                  disabled={saving || !replyText.trim()}
-                  style={{
-                    background: saving || !replyText.trim() ? "#a5b4fc" : "#4f46e5",
-                    color: "#fff", border: "none", borderRadius: 10,
-                    padding: "10px 18px", fontWeight: 600, fontSize: 13,
-                    cursor: saving || !replyText.trim() ? "not-allowed" : "pointer", flexShrink: 0,
-                  }}
-                >
+                <Button variant="contained" onClick={sendReply} disabled={saving || !replyText.trim()} sx={{ flexShrink: 0 }}>
                   {saving ? "…" : "Reply"}
-                </button>
-              </div>
-              {error && <p style={{ color: "#ef4444", fontSize: 12, marginTop: 4 }}>{error}</p>}
-            </div>
+                </Button>
+              </Stack>
+              {error && <Typography variant="caption" color="error" sx={{ display: "block", mt: 0.5 }}>{error}</Typography>}
+            </Box>
           )}
 
           {["resolved", "closed"].includes(ticket.status) && (
-            <div style={{ padding: "10px 18px", background: "#f0fdf4", borderTop: "1px solid #bbf7d0", fontSize: 12, color: "#15803d", textAlign: "center" }}>
-              ✅ Ticket is {ticket.status}. Change status above to re-open.
-            </div>
+            <Box sx={{ px: 2.25, py: 1.25, bgcolor: "success.light", opacity: 0.85, borderTop: 1, borderColor: "divider" }}>
+              <Typography variant="caption" align="center" sx={{ display: "block", color: "success.contrastText" }}>
+                ✅ Ticket is {ticket.status}. Change status above to re-open.
+              </Typography>
+            </Box>
           )}
 
-          {/* Delete */}
-          <div style={{ padding: "8px 18px 14px", display: "flex", justifyContent: "flex-end" }}>
-            <button
-              onClick={handleDelete}
-              disabled={deleting}
-              style={{ background: "none", border: "1px solid #fca5a5", color: "#ef4444", borderRadius: 8, padding: "6px 14px", fontSize: 12, cursor: "pointer" }}
+          <Box sx={{ px: 2.25, pb: 1.75, pt: 1, display: "flex", justifyContent: "flex-end" }}>
+            <Button
+              size="small" color="error" variant="outlined"
+              startIcon={<DeleteOutlineIcon fontSize="small" />}
+              onClick={handleDelete} disabled={deleting}
             >
-              {deleting ? "Deleting…" : "🗑 Delete Ticket"}
-            </button>
-          </div>
-        </div>
+              {deleting ? "Deleting…" : "Delete Ticket"}
+            </Button>
+          </Box>
+        </Box>
       )}
-    </div>
+    </Paper>
   );
 };
 
-/* ── Main Support Panel ── */
+/* ── main panel ── */
 export default function SupportPanel() {
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -223,7 +206,7 @@ export default function SupportPanel() {
   const loadAll = () => {
     Promise.all([api("/support"), api("/support/stats")])
       .then(([tRes, sRes]) => { setTickets(tRes.data); setStats(sRes.data); })
-      .catch(() => {})
+      .catch(() => { /* noop */ })
       .finally(() => setLoading(false));
   };
 
@@ -231,83 +214,83 @@ export default function SupportPanel() {
 
   const handleUpdated = (updated) => {
     setTickets(prev => prev.map(t => t.id === updated.id ? updated : t));
-    api("/support/stats").then(r => setStats(r.data)).catch(() => {});
+    api("/support/stats").then(r => setStats(r.data)).catch(() => { /* noop */ });
   };
   const handleDeleted = (id) => {
     setTickets(prev => prev.filter(t => t.id !== id));
-    api("/support/stats").then(r => setStats(r.data)).catch(() => {});
+    api("/support/stats").then(r => setStats(r.data)).catch(() => { /* noop */ });
   };
 
+  const statTiles = stats ? [
+    { key: "total",           label: "Total",           value: stats.total,           color: "primary" },
+    { key: "waiting_admin",   label: "Needs Reply",     value: stats.waiting_admin,   color: "warning" },
+    { key: "waiting_student", label: "Support Replied", value: stats.waiting_student, color: "primary" },
+    { key: "in_progress",     label: "In Progress",     value: stats.in_progress,     color: "secondary" },
+    { key: "resolved",        label: "Resolved",        value: stats.resolved,        color: "success" },
+    { key: "closed",          label: "Closed",          value: stats.closed,          color: "default" },
+  ] : [];
+
   const TABS = [
-    { key: "waiting_admin",   label: `⏳ Needs Reply (${tickets.filter(t => t.status === "waiting_admin").length})` },
-    { key: "waiting_student", label: `💬 Replied (${tickets.filter(t => t.status === "waiting_student").length})` },
-    { key: "in_progress",     label: `🔄 In Progress (${tickets.filter(t => t.status === "in_progress").length})` },
-    { key: "resolved",        label: `✅ Resolved (${tickets.filter(t => t.status === "resolved").length})` },
-    { key: "closed",          label: `🔒 Closed (${tickets.filter(t => t.status === "closed").length})` },
+    { key: "waiting_admin",   label: `Needs Reply (${tickets.filter(t => t.status === "waiting_admin").length})` },
+    { key: "waiting_student", label: `Replied (${tickets.filter(t => t.status === "waiting_student").length})` },
+    { key: "in_progress",     label: `In Progress (${tickets.filter(t => t.status === "in_progress").length})` },
+    { key: "resolved",        label: `Resolved (${tickets.filter(t => t.status === "resolved").length})` },
+    { key: "closed",          label: `Closed (${tickets.filter(t => t.status === "closed").length})` },
     { key: "all",             label: `All (${tickets.length})` },
   ];
 
   const shown = tab === "all" ? tickets : tickets.filter(t => t.status === tab);
 
   return (
-    <div style={{ padding: "32px 32px 48px", maxWidth: 920, margin: "0 auto" }}>
-      <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 700, color: "#111", margin: 0 }}>🎧 Support Tickets</h1>
-        <p style={{ color: "#6b7280", fontSize: 13, marginTop: 4 }}>Manage and reply to student support messages.</p>
-      </div>
+    <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 960, mx: "auto" }}>
+      <Box sx={{ mb: 3 }}>
+        <Typography variant="h6" fontWeight={800} sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <SupportAgentIcon color="primary" /> Support Tickets
+        </Typography>
+        <Typography variant="body2" color="text.secondary">Manage and reply to student support messages.</Typography>
+      </Box>
 
-      {/* Stats */}
       {stats && (
-        <div style={{ display: "flex", gap: 10, marginBottom: 24, flexWrap: "wrap" }}>
-          {[
-            { label: "Total",           value: stats.total,           color: "#6366f1" },
-            { label: "Needs Reply",     value: stats.waiting_admin,   color: "#f97316" },
-            { label: "Support Replied", value: stats.waiting_student, color: "#3b82f6" },
-            { label: "In Progress",     value: stats.in_progress,     color: "#a855f7" },
-            { label: "Resolved",        value: stats.resolved,        color: "#22c55e" },
-            { label: "Closed",          value: stats.closed,          color: "#9ca3af" },
-          ].map(s => (
-            <div key={s.label} style={{
-              background: s.color + "15", border: `1px solid ${s.color}30`,
-              borderRadius: 12, padding: "10px 16px", textAlign: "center", minWidth: 80,
+        <Stack direction="row" spacing={1.25} flexWrap="wrap" useFlexGap sx={{ mb: 3 }}>
+          {statTiles.map(s => (
+            <Paper key={s.key} elevation={0} sx={{
+              borderRadius: 3, px: 2, py: 1.25, textAlign: "center", minWidth: 88,
+              bgcolor: s.color === "default" ? "action.hover" : `${s.color}.light`,
+              opacity: s.color === "default" ? 1 : 0.9,
             }}>
-              <div style={{ fontSize: 22, fontWeight: 700, color: s.color }}>{s.value ?? 0}</div>
-              <div style={{ fontSize: 10, color: "#888", marginTop: 1 }}>{s.label}</div>
-            </div>
+              <Typography variant="h6" fontWeight={800} sx={{ color: s.color === "default" ? "text.primary" : `${s.color}.contrastText` }}>
+                {s.value ?? 0}
+              </Typography>
+              <Typography variant="caption" sx={{ color: s.color === "default" ? "text.disabled" : `${s.color}.contrastText`, opacity: s.color === "default" ? 1 : 0.8 }}>
+                {s.label}
+              </Typography>
+            </Paper>
           ))}
-        </div>
+        </Stack>
       )}
 
-      {/* Tabs */}
-      <div style={{ display: "flex", gap: 6, marginBottom: 18, flexWrap: "wrap" }}>
-        {TABS.map(t => (
-          <button
-            key={t.key}
-            onClick={() => setTab(t.key)}
-            style={{
-              padding: "7px 14px", borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: "pointer",
-              background: tab === t.key ? "#4f46e5" : "#fff",
-              color: tab === t.key ? "#fff" : "#6b7280",
-              border: tab === t.key ? "1px solid #4f46e5" : "1px solid #e5e7eb",
-            }}
-          >
-            {t.label}
-          </button>
-        ))}
-      </div>
+      <Tabs
+        value={tab}
+        onChange={(_, v) => setTab(v)}
+        variant="scrollable"
+        scrollButtons="auto"
+        sx={{ mb: 2.5, minHeight: 40, "& .MuiTab-root": { minHeight: 40, textTransform: "none", fontWeight: 600 } }}
+      >
+        {TABS.map(t => <Tab key={t.key} value={t.key} label={t.label} />)}
+      </Tabs>
 
       {loading ? (
-        <div style={{ textAlign: "center", padding: 60, color: "#aaa" }}>Loading tickets…</div>
+        <Stack spacing={1.5}>{[0, 1, 2].map(i => <Skeleton key={i} variant="rounded" height={70} />)}</Stack>
       ) : shown.length === 0 ? (
-        <div style={{ textAlign: "center", padding: 60, color: "#aaa" }}>
-          <div style={{ fontSize: 48, marginBottom: 12 }}>📭</div>
-          <p style={{ fontSize: 15, fontWeight: 500 }}>No tickets here</p>
-        </div>
+        <Box sx={{ textAlign: "center", py: 8, color: "text.disabled" }}>
+          <InboxIcon sx={{ fontSize: 48, mb: 1.5, opacity: 0.5 }} />
+          <Typography variant="body1" fontWeight={600}>No tickets here</Typography>
+        </Box>
       ) : (
         shown.map(ticket => (
           <TicketCard key={ticket.id} ticket={ticket} onUpdated={handleUpdated} onDeleted={handleDeleted} />
         ))
       )}
-    </div>
+    </Box>
   );
 }

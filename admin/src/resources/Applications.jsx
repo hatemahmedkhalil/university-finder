@@ -5,6 +5,13 @@ import {
   Create, Edit, SimpleForm, NumberInput, SelectInput, TextInput,
 } from "react-admin";
 import axios from "axios";
+import {
+  Box, Paper, Typography, Button, Chip, Stack, Skeleton, IconButton,
+} from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
+import FolderOpenIcon from "@mui/icons-material/FolderOpen";
+import PlaceIcon from "@mui/icons-material/Place";
 
 /* ── shared axios instance ── */
 const api = axios.create({ baseURL: "" });
@@ -23,23 +30,15 @@ const STATUS_CHOICES = [
 ];
 
 const STATUS_META = {
-  under_review:    { color: "#f59e0b", bg: "#fffbeb", label: "Under Review" },
-  waiting_college: { color: "#8b5cf6", bg: "#f5f3ff", label: "Waiting College Answer" },
-  accepted:        { color: "#10b981", bg: "#ecfdf5", label: "Accepted" },
-  rejected:        { color: "#ef4444", bg: "#fef2f2", label: "Rejected" },
+  under_review:    { color: "warning",   label: "Under Review" },
+  waiting_college: { color: "secondary", label: "Waiting College Answer" },
+  accepted:        { color: "success",   label: "Accepted" },
+  rejected:        { color: "error",     label: "Rejected" },
 };
 
 const StatusBadge = ({ status }) => {
-  const m = STATUS_META[status] ?? { color: "#6b7280", bg: "#f9fafb", label: status };
-  return (
-    <span style={{
-      background: m.bg, color: m.color, border: `1px solid ${m.color}40`,
-      padding: "3px 12px", borderRadius: 20, fontWeight: 700, fontSize: 12,
-      display: "inline-block",
-    }}>
-      {m.label}
-    </span>
-  );
+  const m = STATUS_META[status] ?? { color: "default", label: status };
+  return <Chip size="small" label={m.label} color={m.color} variant="outlined" sx={{ fontWeight: 700 }} />;
 };
 
 /* ────────────────────────────────────────────────────────
@@ -146,98 +145,94 @@ function DocReviewPanel({ appId, currentStatus }) {
     return "📎";
   };
 
-  if (loading) return <p style={{ color: "#888" }}>Loading documents…</p>;
+  if (loading) return <Stack spacing={1}><Skeleton variant="rounded" height={52} /><Skeleton variant="rounded" height={52} /></Stack>;
 
   return (
-    <div style={{ marginTop: 24 }}>
-      <h3 style={{ margin: "0 0 12px", fontSize: 15, fontWeight: 700, color: "#1e293b" }}>
-        📁 Uploaded Documents ({docs.length})
-      </h3>
+    <Box sx={{ mt: 3 }}>
+      <Typography variant="subtitle1" fontWeight={800} sx={{ mb: 1.5, display: "flex", alignItems: "center", gap: 1 }}>
+        <FolderOpenIcon fontSize="small" color="primary" /> Uploaded Documents ({docs.length})
+      </Typography>
 
       {docs.length === 0 ? (
-        <p style={{ color: "#94a3b8", fontSize: 13 }}>No documents uploaded yet.</p>
+        <Typography variant="body2" color="text.disabled">No documents uploaded yet.</Typography>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        <Stack spacing={1}>
           {docs.map(doc => (
-            <div key={doc.id} style={{
-              display: "flex", alignItems: "center", gap: 12,
-              padding: "10px 14px", borderRadius: 10,
-              border: `2px solid ${doc.is_approved ? "#bbf7d0" : "#e2e8f0"}`,
-              background: doc.is_approved ? "#f0fdf4" : "#f8fafc",
-            }}>
-              <span style={{ fontSize: 20 }}>{fileIcon(doc.file_type)}</span>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <a href={doc.url} target="_blank" rel="noreferrer"
-                  style={{ fontWeight: 600, fontSize: 13, color: "#3b82f6", textDecoration: "none" }}>
+            <Paper
+              key={doc.id}
+              elevation={0}
+              sx={{
+                display: "flex", alignItems: "center", gap: 1.5, px: 1.75, py: 1.25, borderRadius: 2.5,
+                borderWidth: 2,
+                borderColor: doc.is_approved ? "success.main" : "divider",
+                bgcolor: doc.is_approved ? "success.light" : "background.paper",
+                ...(doc.is_approved && { "& > *": { color: "success.contrastText" } }),
+              }}
+            >
+              <Typography sx={{ fontSize: 20 }}>{fileIcon(doc.file_type)}</Typography>
+              <Box sx={{ flex: 1, minWidth: 0 }}>
+                <Typography
+                  component="a" href={doc.url} target="_blank" rel="noreferrer"
+                  variant="body2" fontWeight={700}
+                  sx={{ color: doc.is_approved ? "inherit" : "primary.main", textDecoration: "none" }}
+                >
                   {doc.original_name}
-                </a>
-                <p style={{ margin: "2px 0 0", fontSize: 11, color: "#94a3b8" }}>
+                </Typography>
+                <Typography variant="caption" sx={{ display: "block", opacity: doc.is_approved ? 0.75 : 1, color: doc.is_approved ? "inherit" : "text.disabled" }}>
                   {fmt(doc.file_size)} · {new Date(doc.uploaded_at).toLocaleString()}
-                </p>
-              </div>
-              <button
+                </Typography>
+              </Box>
+              <Chip
+                size="small"
                 disabled={busy[doc.id]}
                 onClick={() => toggleApprove(doc)}
-                style={{
-                  padding: "5px 14px", borderRadius: 20, border: "none",
-                  cursor: busy[doc.id] ? "not-allowed" : "pointer",
-                  fontWeight: 700, fontSize: 12,
-                  background: doc.is_approved ? "#dcfce7" : "#fee2e2",
-                  color:      doc.is_approved ? "#16a34a" : "#dc2626",
-                  opacity: busy[doc.id] ? 0.5 : 1,
-                }}
-              >
-                {busy[doc.id] ? "…" : doc.is_approved ? "✅ Approved" : "❌ Not Approved"}
-              </button>
-            </div>
+                label={busy[doc.id] ? "…" : doc.is_approved ? "Approved" : "Not Approved"}
+                color={doc.is_approved ? "success" : "error"}
+                variant={doc.is_approved ? "filled" : "outlined"}
+                sx={{ cursor: "pointer", fontWeight: 700 }}
+              />
+            </Paper>
           ))}
-        </div>
+        </Stack>
       )}
 
-      {/* Submit button */}
       {!alreadySubmitted && (
-        <div style={{ marginTop: 20, display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
-          <button
+        <Stack direction="row" alignItems="center" spacing={1.75} flexWrap="wrap" useFlexGap sx={{ mt: 2.5 }}>
+          <Button
+            variant="contained"
+            startIcon={<RocketLaunchIcon fontSize="small" />}
             onClick={submitToCollege}
             disabled={submitting || !allApproved || docs.length === 0}
-            style={{
-              padding: "10px 24px", borderRadius: 10, border: "none",
-              cursor: (allApproved && !submitting && docs.length > 0) ? "pointer" : "not-allowed",
-              fontWeight: 700, fontSize: 13,
-              background: (allApproved && docs.length > 0) ? "#2563eb" : "#e2e8f0",
-              color:      (allApproved && docs.length > 0) ? "#fff"    : "#94a3b8",
-            }}
           >
-            {submitting ? "Submitting…" : "🚀 Submit Application to College"}
-          </button>
+            {submitting ? "Submitting…" : "Submit Application to College"}
+          </Button>
           {!allApproved && docs.length > 0 && (
-            <span style={{ fontSize: 12, color: "#f59e0b", fontWeight: 600 }}>
+            <Typography variant="caption" color="warning.main" fontWeight={700}>
               ⚠️ Approve all {docs.length} document{docs.length !== 1 ? "s" : ""} first
-            </span>
+            </Typography>
           )}
           {allApproved && docs.length > 0 && !submitting && !msg && (
-            <span style={{ fontSize: 12, color: "#16a34a", fontWeight: 600 }}>
+            <Typography variant="caption" color="success.main" fontWeight={700}>
               ✅ All documents approved — ready to submit
-            </span>
+            </Typography>
           )}
-        </div>
+        </Stack>
       )}
 
       {alreadySubmitted && (
-        <div style={{ marginTop: 16, padding: "10px 16px", background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: 10 }}>
-          <span style={{ fontSize: 13, color: "#16a34a", fontWeight: 600 }}>
+        <Paper elevation={0} sx={{ mt: 2, px: 2, py: 1.25, bgcolor: "success.light", borderRadius: 2.5 }}>
+          <Typography variant="body2" fontWeight={700} sx={{ color: "success.contrastText", display: "flex", alignItems: "center", gap: 1, flexWrap: "wrap" }}>
             ✅ Application has been submitted to college — current status: <StatusBadge status={status} />
-          </span>
-        </div>
+          </Typography>
+        </Paper>
       )}
 
       {msg && (
-        <p style={{ marginTop: 12, fontSize: 13, fontWeight: 600,
-          color: msg.startsWith("✅") ? "#16a34a" : "#dc2626" }}>
+        <Typography variant="body2" fontWeight={700} sx={{ mt: 1.5, color: msg.startsWith("✅") ? "success.main" : "error.main" }}>
           {msg}
-        </p>
+        </Typography>
       )}
-    </div>
+    </Box>
   );
 }
 
@@ -256,39 +251,30 @@ function ApplicationShowPage() {
       .finally(() => setLoading(false));
   }, [id]);
 
-  const label = { fontSize: 11, fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.05em" };
-  const value = { fontSize: 14, color: "#1e293b", marginTop: 2, marginBottom: 0 };
-
-  if (loading) return <div style={{ padding: 40, color: "#888" }}>Loading…</div>;
-  if (error || !app) return <div style={{ padding: 40, color: "#ef4444" }}>{error || "Not found"}</div>;
+  if (loading) return <Box sx={{ p: 5 }}><Skeleton variant="rounded" height={200} /></Box>;
+  if (error || !app) return <Box sx={{ p: 5 }}><Typography color="error">{error || "Not found"}</Typography></Box>;
 
   return (
-    <div style={{ padding: 32, maxWidth: 860, margin: "0 auto" }}>
-      {/* Back button */}
-      <button onClick={() => navigate("/applications")}
-        style={{ marginBottom: 24, background: "none", border: "1px solid #e2e8f0",
-          borderRadius: 8, padding: "6px 16px", cursor: "pointer", fontSize: 13, color: "#64748b" }}>
-        ← Back to Applications
-      </button>
+    <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 860, mx: "auto" }}>
+      <IconButton onClick={() => navigate("/applications")} size="small" sx={{ mb: 3 }} title="Back to Applications">
+        <ArrowBackIcon fontSize="small" />
+      </IconButton>
 
-      {/* Header */}
-      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between",
-        gap: 16, marginBottom: 24, flexWrap: "wrap" }}>
-        <div>
-          <p style={label}>University</p>
-          <h2 style={{ margin: "4px 0 0", fontSize: 22, fontWeight: 800, color: "#0f172a" }}>
-            {app.university?.name ?? "—"}
-          </h2>
-          <p style={{ margin: "2px 0 0", fontSize: 13, color: "#64748b" }}>
-            📍 {app.university?.city}, {app.university?.country}
-          </p>
-        </div>
+      <Box sx={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 2, mb: 3, flexWrap: "wrap" }}>
+        <Box>
+          <Typography variant="overline" color="text.disabled" fontWeight={700}>University</Typography>
+          <Typography variant="h5" fontWeight={800}>{app.university?.name ?? "—"}</Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ display: "flex", alignItems: "center", gap: 0.5, mt: 0.25 }}>
+            <PlaceIcon fontSize="inherit" /> {app.university?.city}, {app.university?.country}
+          </Typography>
+        </Box>
         <StatusBadge status={app.status} />
-      </div>
+      </Box>
 
-      {/* Info grid */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(170px, 1fr))",
-        gap: "12px 24px", background: "#f8fafc", borderRadius: 12, padding: "16px 20px", marginBottom: 24 }}>
+      <Paper elevation={0} sx={{
+        display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(170px, 1fr))",
+        gap: 2, bgcolor: "action.hover", borderRadius: 3, p: 2.5, mb: 3,
+      }}>
         {[
           ["Application ID", `#${app.id}`],
           ["Student ID",     app.user_id],
@@ -296,18 +282,15 @@ function ApplicationShowPage() {
           ["Added",          new Date(app.created_at).toLocaleDateString()],
           ["Last Updated",   new Date(app.updated_at).toLocaleDateString()],
         ].map(([k, v]) => (
-          <div key={k}>
-            <p style={label}>{k}</p>
-            <p style={value}>{v}</p>
-          </div>
+          <Box key={k}>
+            <Typography variant="overline" color="text.disabled" fontWeight={700} sx={{ lineHeight: 1.4 }}>{k}</Typography>
+            <Typography variant="body2" sx={{ mt: 0.25 }}>{v}</Typography>
+          </Box>
         ))}
-      </div>
+      </Paper>
 
-      <hr style={{ border: "none", borderTop: "1px solid #e2e8f0", margin: "0 0 8px" }} />
-
-      {/* Document review */}
       <DocReviewPanel appId={app.id} currentStatus={app.status} />
-    </div>
+    </Box>
   );
 }
 

@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Request
-from groq import Groq
+from app.services.ai_client import chat_completion, ai_configured
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
@@ -99,7 +99,7 @@ def generate_letter(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    if not settings.GROQ_API_KEY:
+    if not ai_configured():
         raise HTTPException(status_code=503, detail="AI service not configured")
 
     profile = db.query(StudentProfile).filter(StudentProfile.user_id == current_user.id).first()
@@ -153,14 +153,11 @@ Write a motivation letter of approximately 400-500 words. Structure it with:
 Write in formal English. Do NOT use generic phrases like "I have always been passionate about". Be specific and genuine. Return only the letter text, no headers or meta-commentary."""
 
     try:
-        client = Groq(api_key=settings.GROQ_API_KEY)
-        resp = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+        content = chat_completion(
             messages=[{"role": "user", "content": prompt}],
             max_tokens=800,
             temperature=0.7,
         )
-        content = resp.choices[0].message.content.strip()
         return {"content": content}
     except Exception as e:
         logger.error("Groq motivation letter error: %s", e)

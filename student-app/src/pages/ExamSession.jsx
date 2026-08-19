@@ -1,3 +1,4 @@
+import { Icon, ICONS } from "../components/Sidebar";
 /**
  * Full-screen exam taking UI for TOEFL iBT and Cambridge B2 First.
  * Renders a dedicated layout (no sidebar/topbar) with:
@@ -31,11 +32,11 @@ const wordCount = (text) => text.trim().split(/\s+/).filter(Boolean).length;
 const Timer = ({ secondsLeft, totalSeconds }) => {
   const pct = totalSeconds > 0 ? secondsLeft / totalSeconds : 1;
   const color =
-    pct > 0.4 ? "oklch(0.55 0.22 145)" : pct > 0.15 ? "oklch(0.70 0.20 50)" : "oklch(0.60 0.25 25)";
+    pct > 0.4 ? "var(--good)" : pct > 0.15 ? "var(--warn)" : "var(--danger)";
   return (
     <div className="flex items-center gap-2">
       <svg width="28" height="28" viewBox="0 0 28 28">
-        <circle cx="14" cy="14" r="11" fill="none" stroke="oklch(1 0 0 / 0.08)" strokeWidth="2.5" />
+        <circle cx="14" cy="14" r="11" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="2.5" />
         <circle
           cx="14" cy="14" r="11" fill="none"
           stroke={color} strokeWidth="2.5"
@@ -67,10 +68,10 @@ const ProgressDots = ({ sections, currentIndex, completedSections }) => (
             width: active ? 20 : 8,
             height: 8,
             background: done
-              ? "oklch(0.55 0.22 145)"
+              ? "var(--good)"
               : active
-              ? "oklch(0.65 0.20 296)"
-              : "oklch(1 0 0 / 0.15)",
+              ? "var(--accent-light)"
+              : "rgba(255,255,255,0.15)",
           }}
         />
       );
@@ -105,14 +106,14 @@ const ReadingSection = ({ sectionData, answers, onAnswer }) => {
       {currentPassage && (
         <div
           className="w-1/2 overflow-y-auto p-6 border-r"
-          style={{ borderColor: "oklch(1 0 0 / 0.08)" }}
+          style={{ borderColor: "rgba(255,255,255,0.08)" }}
         >
           {currentQ?.passageTitle && (
-            <h2 className="text-base font-bold mb-4" style={{ color: "oklch(0.90 0.01 285)" }}>
+            <h2 className="text-base font-bold mb-4" style={{ color: "var(--ink-dim)" }}>
               {currentQ.passageTitle}
             </h2>
           )}
-          <div className="text-sm leading-relaxed whitespace-pre-line" style={{ color: "oklch(0.78 0.015 285)" }}>
+          <div className="text-sm leading-relaxed whitespace-pre-line" style={{ color: "var(--ink-dim)" }}>
             {currentPassage}
           </div>
         </div>
@@ -121,7 +122,7 @@ const ReadingSection = ({ sectionData, answers, onAnswer }) => {
       {/* Questions panel */}
       <div className={`${currentPassage ? "w-1/2" : "w-full"} overflow-y-auto p-6 flex flex-col gap-6`}>
         {/* Progress */}
-        <div className="flex items-center justify-between text-xs" style={{ color: "oklch(0.55 0.02 285)" }}>
+        <div className="flex items-center justify-between text-xs" style={{ color: "var(--ink-faint)" }}>
           <span>Question {activeQ + 1} of {total}</span>
           <span>{answered} answered</span>
         </div>
@@ -135,11 +136,11 @@ const ReadingSection = ({ sectionData, answers, onAnswer }) => {
               className="w-7 h-7 rounded-lg text-xs font-medium transition-all"
               style={{
                 background: i === activeQ
-                  ? "oklch(0.55 0.22 296)"
+                  ? "var(--accent)"
                   : answers[q.id]
-                  ? "oklch(0.35 0.12 145)"
-                  : "oklch(0.22 0.025 285)",
-                color: i === activeQ || answers[q.id] ? "#fff" : "oklch(0.60 0.02 285)",
+                  ? "var(--good)"
+                  : "var(--surface-2)",
+                color: i === activeQ || answers[q.id] ? "#fff" : "var(--ink-faint)",
               }}
             >
               {i + 1}
@@ -150,7 +151,7 @@ const ReadingSection = ({ sectionData, answers, onAnswer }) => {
         {/* Current question */}
         {currentQ && (
           <div className="space-y-4">
-            <p className="text-sm font-medium leading-relaxed" style={{ color: "oklch(0.90 0.01 285)" }}>
+            <p className="text-sm font-medium leading-relaxed" style={{ color: "var(--ink-dim)" }}>
               {currentQ.question_text}
             </p>
             {currentQ.question_type === "mcq" && currentQ.options && (
@@ -164,9 +165,9 @@ const ReadingSection = ({ sectionData, answers, onAnswer }) => {
                       onClick={() => onAnswer(currentQ.id, letter)}
                       className="w-full text-left px-4 py-3 rounded-xl border text-sm transition-all duration-150"
                       style={{
-                        background: selected ? "oklch(0.30 0.12 296)" : "oklch(0.20 0.02 285)",
-                        borderColor: selected ? "oklch(0.55 0.22 296)" : "oklch(1 0 0 / 0.10)",
-                        color: selected ? "#fff" : "oklch(0.80 0.015 285)",
+                        background: selected ? "var(--accent-active)" : "var(--surface-2)",
+                        borderColor: selected ? "var(--accent)" : "rgba(255,255,255,0.10)",
+                        color: selected ? "#fff" : "var(--ink-dim)",
                       }}
                     >
                       {opt}
@@ -181,7 +182,7 @@ const ReadingSection = ({ sectionData, answers, onAnswer }) => {
                 onClick={() => setActiveQ(i => Math.max(0, i - 1))}
                 disabled={activeQ === 0}
                 className="flex-1 py-2 rounded-xl text-xs font-medium border transition-colors disabled:opacity-40"
-                style={{ borderColor: "oklch(1 0 0 / 0.12)", color: "oklch(0.65 0.02 285)" }}
+                style={{ borderColor: "rgba(255,255,255,0.12)", color: "var(--ink-faint)" }}
               >
                 ← Previous
               </button>
@@ -189,7 +190,7 @@ const ReadingSection = ({ sectionData, answers, onAnswer }) => {
                 onClick={() => setActiveQ(i => Math.min(total - 1, i + 1))}
                 disabled={activeQ === total - 1}
                 className="flex-1 py-2 rounded-xl text-xs font-medium border transition-colors disabled:opacity-40"
-                style={{ borderColor: "oklch(1 0 0 / 0.12)", color: "oklch(0.65 0.02 285)" }}
+                style={{ borderColor: "rgba(255,255,255,0.12)", color: "var(--ink-faint)" }}
               >
                 Next →
               </button>
@@ -237,24 +238,24 @@ const ListeningSection = ({ sectionData, answers, onAnswer }) => {
   if (phase === "intro") {
     return (
       <div className="flex flex-col items-center justify-center h-full gap-6 p-8">
-        <div className="text-5xl">🎧</div>
+        <div className="flex justify-center"><Icon d={ICONS.headphones} size={40} /></div>
         <div className="text-center">
-          <h2 className="text-xl font-bold mb-2" style={{ color: "oklch(0.92 0.01 285)" }}>
+          <h2 className="text-xl font-bold mb-2" style={{ color: "var(--ink-dim)" }}>
             Listening Section
           </h2>
-          <p className="text-sm max-w-md" style={{ color: "oklch(0.60 0.02 285)" }}>
+          <p className="text-sm max-w-md" style={{ color: "var(--ink-faint)" }}>
             You will hear {passages.length} audio recording{passages.length > 1 ? "s" : ""}.
             The audio will be read aloud using your browser's text-to-speech.
             Make sure your volume is on. Listen carefully — you can only play each recording once.
           </p>
-          <p className="text-xs mt-3" style={{ color: "oklch(0.50 0.02 285)" }}>
+          <p className="text-xs mt-3" style={{ color: "var(--ink-faint)" }}>
             Tip: Use headphones for the best experience.
           </p>
         </div>
         <button
           onClick={() => setPhase("playing")}
           className="px-8 py-3 rounded-xl font-semibold text-sm"
-          style={{ background: "linear-gradient(135deg, oklch(0.55 0.22 296), oklch(0.50 0.20 264))", color: "#fff" }}
+          style={{ background: "linear-gradient(135deg, var(--accent), var(--accent))", color: "#fff" }}
         >
           Begin Listening
         </button>
@@ -265,9 +266,9 @@ const ListeningSection = ({ sectionData, answers, onAnswer }) => {
   if (phase === "playing") {
     return (
       <div className="flex flex-col items-center justify-center h-full gap-6 p-8">
-        <div className="text-5xl">{ttsActive ? "🔊" : "🎙️"}</div>
+        <div className="flex justify-center"><Icon d={ttsActive ? ICONS.headphones : ICONS.mic} size={40} /></div>
         <div className="text-center">
-          <h2 className="text-xl font-bold mb-2" style={{ color: "oklch(0.92 0.01 285)" }}>
+          <h2 className="text-xl font-bold mb-2" style={{ color: "var(--ink-dim)" }}>
             {currentPassage?.title || `Recording ${passageIndex + 1} of ${passages.length}`}
           </h2>
           {ttsActive ? (
@@ -278,7 +279,7 @@ const ListeningSection = ({ sectionData, answers, onAnswer }) => {
                   className="w-1.5 rounded-full"
                   style={{
                     height: 16 + Math.random() * 20,
-                    background: "oklch(0.65 0.20 296)",
+                    background: "var(--accent-light)",
                     animation: `pulse ${0.4 + i * 0.1}s ease-in-out infinite alternate`,
                   }}
                 />
@@ -286,7 +287,7 @@ const ListeningSection = ({ sectionData, answers, onAnswer }) => {
               <style>{`@keyframes pulse { from { transform: scaleY(0.5); } to { transform: scaleY(1.2); } }`}</style>
             </div>
           ) : (
-            <p className="text-sm mt-2" style={{ color: "oklch(0.60 0.02 285)" }}>
+            <p className="text-sm mt-2" style={{ color: "var(--ink-faint)" }}>
               Press play to hear the recording.
             </p>
           )}
@@ -295,7 +296,7 @@ const ListeningSection = ({ sectionData, answers, onAnswer }) => {
           <button
             onClick={speakPassage}
             className="px-8 py-3 rounded-xl font-semibold text-sm flex items-center gap-2"
-            style={{ background: "linear-gradient(135deg, oklch(0.55 0.22 296), oklch(0.50 0.20 264))", color: "#fff" }}
+            style={{ background: "linear-gradient(135deg, var(--accent), var(--accent))", color: "#fff" }}
           >
             ▶ Play Recording
           </button>
@@ -304,7 +305,7 @@ const ListeningSection = ({ sectionData, answers, onAnswer }) => {
           <button
             onClick={() => { window.speechSynthesis.cancel(); setTtsActive(false); setPhase("questions"); }}
             className="px-6 py-2 rounded-xl text-xs border"
-            style={{ borderColor: "oklch(1 0 0 / 0.15)", color: "oklch(0.60 0.02 285)" }}
+            style={{ borderColor: "rgba(255,255,255,0.15)", color: "var(--ink-faint)" }}
           >
             Skip to Questions
           </button>
@@ -317,7 +318,7 @@ const ListeningSection = ({ sectionData, answers, onAnswer }) => {
   const currentQ = questions[activeQ];
   return (
     <div className="flex flex-col h-full overflow-y-auto p-6 gap-5">
-      <div className="flex items-center justify-between text-xs" style={{ color: "oklch(0.55 0.02 285)" }}>
+      <div className="flex items-center justify-between text-xs" style={{ color: "var(--ink-faint)" }}>
         <span>{currentPassage?.title}</span>
         <span>{Object.keys(answers).length}/{total} answered</span>
       </div>
@@ -328,8 +329,8 @@ const ListeningSection = ({ sectionData, answers, onAnswer }) => {
             onClick={() => setActiveQ(i)}
             className="w-7 h-7 rounded-lg text-xs font-medium"
             style={{
-              background: i === activeQ ? "oklch(0.55 0.22 296)" : answers[q.id] ? "oklch(0.35 0.12 145)" : "oklch(0.22 0.025 285)",
-              color: i === activeQ || answers[q.id] ? "#fff" : "oklch(0.60 0.02 285)",
+              background: i === activeQ ? "var(--accent)" : answers[q.id] ? "var(--good)" : "var(--surface-2)",
+              color: i === activeQ || answers[q.id] ? "#fff" : "var(--ink-faint)",
             }}
           >
             {i + 1}
@@ -338,7 +339,7 @@ const ListeningSection = ({ sectionData, answers, onAnswer }) => {
       </div>
       {currentQ && (
         <div className="space-y-4">
-          <p className="text-sm font-medium leading-relaxed" style={{ color: "oklch(0.90 0.01 285)" }}>
+          <p className="text-sm font-medium leading-relaxed" style={{ color: "var(--ink-dim)" }}>
             {currentQ.question_text}
           </p>
           {currentQ.options && (
@@ -352,9 +353,9 @@ const ListeningSection = ({ sectionData, answers, onAnswer }) => {
                     onClick={() => onAnswer(currentQ.id, letter)}
                     className="w-full text-left px-4 py-3 rounded-xl border text-sm transition-all"
                     style={{
-                      background: selected ? "oklch(0.30 0.12 296)" : "oklch(0.20 0.02 285)",
-                      borderColor: selected ? "oklch(0.55 0.22 296)" : "oklch(1 0 0 / 0.10)",
-                      color: selected ? "#fff" : "oklch(0.80 0.015 285)",
+                      background: selected ? "var(--accent-active)" : "var(--surface-2)",
+                      borderColor: selected ? "var(--accent)" : "rgba(255,255,255,0.10)",
+                      color: selected ? "#fff" : "var(--ink-dim)",
                     }}
                   >
                     {opt}
@@ -368,19 +369,19 @@ const ListeningSection = ({ sectionData, answers, onAnswer }) => {
               onClick={() => setActiveQ(i => Math.max(0, i - 1))}
               disabled={activeQ === 0}
               className="flex-1 py-2 rounded-xl text-xs font-medium border disabled:opacity-40"
-              style={{ borderColor: "oklch(1 0 0 / 0.12)", color: "oklch(0.65 0.02 285)" }}
+              style={{ borderColor: "rgba(255,255,255,0.12)", color: "var(--ink-faint)" }}
             >← Prev</button>
             {activeQ < questions.length - 1 ? (
               <button
                 onClick={() => setActiveQ(i => i + 1)}
                 className="flex-1 py-2 rounded-xl text-xs font-medium border"
-                style={{ borderColor: "oklch(1 0 0 / 0.12)", color: "oklch(0.65 0.02 285)" }}
+                style={{ borderColor: "rgba(255,255,255,0.12)", color: "var(--ink-faint)" }}
               >Next →</button>
             ) : passageIndex < passages.length - 1 ? (
               <button
                 onClick={() => { setPassageIndex(i => i + 1); setActiveQ(0); setPhase("playing"); }}
                 className="flex-1 py-2 rounded-xl text-xs font-semibold"
-                style={{ background: "oklch(0.45 0.20 264)", color: "#fff" }}
+                style={{ background: "var(--accent-active)", color: "#fff" }}
               >Next Recording →</button>
             ) : null}
           </div>
@@ -412,8 +413,8 @@ const WritingSection = ({ sectionData, answers, onAnswer }) => {
             onClick={() => setActiveTask(i)}
             className="px-4 py-1.5 rounded-lg text-xs font-medium transition-all"
             style={{
-              background: i === activeTask ? "oklch(0.55 0.22 296)" : "oklch(0.22 0.025 285)",
-              color: i === activeTask ? "#fff" : "oklch(0.65 0.02 285)",
+              background: i === activeTask ? "var(--accent)" : "var(--surface-2)",
+              color: i === activeTask ? "#fff" : "var(--ink-faint)",
             }}
           >
             Task {i + 1}
@@ -431,9 +432,9 @@ const WritingSection = ({ sectionData, answers, onAnswer }) => {
             <div
               className="w-2/5 overflow-y-auto p-4 rounded-xl border text-xs leading-relaxed shrink-0"
               style={{
-                background: "oklch(0.19 0.022 285)",
-                borderColor: "oklch(1 0 0 / 0.08)",
-                color: "oklch(0.75 0.015 285)",
+                background: "var(--surface-2)",
+                borderColor: "rgba(255,255,255,0.08)",
+                color: "var(--ink-dim)",
                 whiteSpace: "pre-line",
               }}
             >
@@ -448,15 +449,15 @@ const WritingSection = ({ sectionData, answers, onAnswer }) => {
                 placeholder="Write your response here…"
                 className="flex-1 resize-none rounded-xl border p-4 text-sm leading-relaxed outline-none transition-colors"
                 style={{
-                  background: "oklch(0.19 0.022 285)",
-                  borderColor: "oklch(1 0 0 / 0.10)",
-                  color: "oklch(0.88 0.01 285)",
+                  background: "var(--surface-2)",
+                  borderColor: "rgba(255,255,255,0.10)",
+                  color: "var(--ink-dim)",
                 }}
                 spellCheck
               />
               <div
                 className="text-xs mt-2 text-right"
-                style={{ color: wordCount(answers[currentQ.id] || "") < 100 ? "oklch(0.60 0.18 25)" : "oklch(0.55 0.02 285)" }}
+                style={{ color: wordCount(answers[currentQ.id] || "") < 100 ? "var(--danger)" : "var(--ink-faint)" }}
               >
                 {wordCount(answers[currentQ.id] || "")} words
               </div>
@@ -516,8 +517,8 @@ const SpeakingSection = ({ sectionData, answers, onAnswer }) => {
             onClick={() => setActiveTask(i)}
             className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all"
             style={{
-              background: i === activeTask ? "oklch(0.55 0.22 296)" : "oklch(0.22 0.025 285)",
-              color: i === activeTask ? "#fff" : "oklch(0.65 0.02 285)",
+              background: i === activeTask ? "var(--accent)" : "var(--surface-2)",
+              color: i === activeTask ? "#fff" : "var(--ink-faint)",
             }}
           >
             Task {i + 1}
@@ -530,7 +531,7 @@ const SpeakingSection = ({ sectionData, answers, onAnswer }) => {
           {/* Prompt */}
           <div
             className="p-4 rounded-xl border text-sm leading-relaxed whitespace-pre-line"
-            style={{ background: "oklch(0.19 0.022 285)", borderColor: "oklch(1 0 0 / 0.08)", color: "oklch(0.78 0.015 285)" }}
+            style={{ background: "var(--surface-2)", borderColor: "rgba(255,255,255,0.08)", color: "var(--ink-dim)" }}
           >
             {currentQ.question_text}
           </div>
@@ -538,24 +539,24 @@ const SpeakingSection = ({ sectionData, answers, onAnswer }) => {
           {/* Prep / response state */}
           {prepPhase ? (
             <div className="flex flex-col items-center gap-3 py-4">
-              <div className="text-4xl font-bold font-mono" style={{ color: "oklch(0.70 0.20 50)" }}>
+              <div className="text-4xl font-bold font-mono" style={{ color: "var(--warn)" }}>
                 {prepTime}s
               </div>
-              <div className="text-xs" style={{ color: "oklch(0.55 0.02 285)" }}>
+              <div className="text-xs" style={{ color: "var(--ink-faint)" }}>
                 Preparation time — organise your ideas
               </div>
               <button
                 onClick={startResponse}
                 className="px-6 py-2 rounded-xl text-xs font-medium border"
-                style={{ borderColor: "oklch(1 0 0 / 0.15)", color: "oklch(0.65 0.02 285)" }}
+                style={{ borderColor: "rgba(255,255,255,0.15)", color: "var(--ink-faint)" }}
               >
                 Skip prep — start responding
               </button>
             </div>
           ) : (
             <div className="space-y-3">
-              <div className="text-xs font-medium" style={{ color: "oklch(0.65 0.22 145)" }}>
-                ✍️ Write your spoken response below (or speak your answer aloud while typing key points)
+              <div className="text-xs font-medium" style={{ color: "var(--good)" }}>
+                Write your spoken response below (or speak your answer aloud while typing key points)
               </div>
               <textarea
                 value={answers[currentQ.id] || ""}
@@ -564,18 +565,18 @@ const SpeakingSection = ({ sectionData, answers, onAnswer }) => {
                 rows={6}
                 className="w-full resize-none rounded-xl border p-4 text-sm leading-relaxed outline-none"
                 style={{
-                  background: "oklch(0.19 0.022 285)",
-                  borderColor: "oklch(1 0 0 / 0.10)",
-                  color: "oklch(0.88 0.01 285)",
+                  background: "var(--surface-2)",
+                  borderColor: "rgba(255,255,255,0.10)",
+                  color: "var(--ink-dim)",
                 }}
               />
-              <div className="flex justify-between text-xs" style={{ color: "oklch(0.55 0.02 285)" }}>
+              <div className="flex justify-between text-xs" style={{ color: "var(--ink-faint)" }}>
                 <span>{wordCount(answers[currentQ.id] || "")} words</span>
                 {activeTask < questions.length - 1 && (
                   <button
                     onClick={() => setActiveTask(i => i + 1)}
                     className="font-medium"
-                    style={{ color: "oklch(0.65 0.20 296)" }}
+                    style={{ color: "var(--accent-light)" }}
                   >
                     Next task →
                   </button>
@@ -596,11 +597,11 @@ const SpeakingSection = ({ sectionData, answers, onAnswer }) => {
 const IntroScreen = ({ examMeta, onStart }) => (
   <div className="flex flex-col items-center justify-center h-full gap-8 p-8 max-w-2xl mx-auto text-center">
     <div>
-      <div className="text-5xl mb-4">📝</div>
-      <h1 className="text-2xl font-bold mb-2" style={{ color: "oklch(0.92 0.01 285)" }}>
+      <div className="mb-4 flex justify-center"><Icon d={ICONS.applications} size={40} /></div>
+      <h1 className="text-2xl font-bold mb-2" style={{ color: "var(--ink-dim)" }}>
         {examMeta.name}
       </h1>
-      <p className="text-sm" style={{ color: "oklch(0.60 0.02 285)" }}>
+      <p className="text-sm" style={{ color: "var(--ink-faint)" }}>
         {examMeta.description}
       </p>
     </div>
@@ -609,22 +610,22 @@ const IntroScreen = ({ examMeta, onStart }) => (
         <div
           key={s.id}
           className="p-4 rounded-xl border text-left"
-          style={{ background: "oklch(0.19 0.022 285)", borderColor: "oklch(1 0 0 / 0.08)" }}
+          style={{ background: "var(--surface-2)", borderColor: "rgba(255,255,255,0.08)" }}
         >
-          <div className="font-semibold mb-1" style={{ color: "oklch(0.88 0.01 285)" }}>{s.label}</div>
-          <div className="text-xs" style={{ color: "oklch(0.55 0.02 285)" }}>{s.duration} minutes</div>
+          <div className="font-semibold mb-1" style={{ color: "var(--ink-dim)" }}>{s.label}</div>
+          <div className="text-xs" style={{ color: "var(--ink-faint)" }}>{s.duration} minutes</div>
         </div>
       ))}
     </div>
-    <div className="text-xs space-y-1.5 text-left w-full" style={{ color: "oklch(0.55 0.02 285)" }}>
+    <div className="text-xs space-y-1.5 text-left w-full" style={{ color: "var(--ink-faint)" }}>
       <div>⏱ Each section is independently timed — it will auto-submit when time expires.</div>
-      <div>🔇 You cannot return to a previous section once submitted.</div>
-      <div>📶 Ensure you have a stable internet connection before starting.</div>
+      <div className="flex items-center gap-1.5"><Icon d={ICONS.x} size={12} /> You cannot return to a previous section once submitted.</div>
+      <div className="flex items-center gap-1.5"><Icon d={ICONS.globe} size={12} /> Ensure you have a stable internet connection before starting.</div>
     </div>
     <button
       onClick={onStart}
       className="px-10 py-3.5 rounded-xl font-bold text-base"
-      style={{ background: "linear-gradient(135deg, oklch(0.55 0.22 296), oklch(0.50 0.20 264))", color: "#fff" }}
+      style={{ background: "linear-gradient(135deg, var(--accent), var(--accent))", color: "#fff" }}
     >
       Begin Exam →
     </button>
@@ -637,16 +638,16 @@ const IntroScreen = ({ examMeta, onStart }) => (
 
 const BetweenSections = ({ nextSection, onContinue }) => (
   <div className="flex flex-col items-center justify-center h-full gap-6 p-8 text-center">
-    <div className="text-4xl">✅</div>
+    <div className="flex justify-center"><Icon d={ICONS.check} size={32} /></div>
     <div>
-      <h2 className="text-xl font-bold mb-2" style={{ color: "oklch(0.92 0.01 285)" }}>
+      <h2 className="text-xl font-bold mb-2" style={{ color: "var(--ink-dim)" }}>
         Section Complete
       </h2>
-      <p className="text-sm" style={{ color: "oklch(0.60 0.02 285)" }}>
+      <p className="text-sm" style={{ color: "var(--ink-faint)" }}>
         Take a short break if needed. When you're ready, proceed to the next section.
       </p>
       {nextSection && (
-        <p className="text-sm mt-3 font-medium" style={{ color: "oklch(0.75 0.02 285)" }}>
+        <p className="text-sm mt-3 font-medium" style={{ color: "var(--ink-dim)" }}>
           Next: {nextSection.label} ({nextSection.duration} min)
         </p>
       )}
@@ -654,7 +655,7 @@ const BetweenSections = ({ nextSection, onContinue }) => (
     <button
       onClick={onContinue}
       className="px-8 py-3 rounded-xl font-semibold text-sm"
-      style={{ background: "linear-gradient(135deg, oklch(0.55 0.22 296), oklch(0.50 0.20 264))", color: "#fff" }}
+      style={{ background: "linear-gradient(135deg, var(--accent), var(--accent))", color: "#fff" }}
     >
       Continue →
     </button>
@@ -774,10 +775,10 @@ export default function ExamSession() {
 
   if (phase === "loading") {
     return (
-      <div className="flex items-center justify-center h-screen" style={{ background: "oklch(0.13 0.018 285)" }}>
+      <div className="flex items-center justify-center h-screen" style={{ background: "var(--bg)" }}>
         <div className="text-center space-y-3">
-          <div className="w-8 h-8 border-2 rounded-full mx-auto animate-spin" style={{ borderColor: "oklch(0.55 0.22 296)", borderTopColor: "transparent" }} />
-          <p className="text-sm" style={{ color: "oklch(0.60 0.02 285)" }}>Loading exam…</p>
+          <div className="w-8 h-8 border-2 rounded-full mx-auto animate-spin" style={{ borderColor: "var(--accent)", borderTopColor: "transparent" }} />
+          <p className="text-sm" style={{ color: "var(--ink-faint)" }}>Loading exam…</p>
         </div>
       </div>
     );
@@ -785,11 +786,11 @@ export default function ExamSession() {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-screen" style={{ background: "oklch(0.13 0.018 285)" }}>
+      <div className="flex items-center justify-center h-screen" style={{ background: "var(--bg)" }}>
         <div className="text-center space-y-4">
-          <div className="text-4xl">⚠️</div>
-          <p className="text-sm" style={{ color: "oklch(0.70 0.02 285)" }}>{error}</p>
-          <button onClick={() => navigate(-1)} className="px-6 py-2 rounded-xl text-sm" style={{ background: "oklch(0.25 0.04 285)", color: "oklch(0.80 0.02 285)" }}>
+          <div className="flex justify-center"><Icon d={ICONS.alertTriangle} size={32} /></div>
+          <p className="text-sm" style={{ color: "var(--ink-dim)" }}>{error}</p>
+          <button onClick={() => navigate(-1)} className="px-6 py-2 rounded-xl text-sm" style={{ background: "var(--surface-2)", color: "var(--ink-dim)" }}>
             Go Back
           </button>
         </div>
@@ -799,12 +800,12 @@ export default function ExamSession() {
 
   if (phase === "finishing") {
     return (
-      <div className="flex items-center justify-center h-screen" style={{ background: "oklch(0.13 0.018 285)" }}>
+      <div className="flex items-center justify-center h-screen" style={{ background: "var(--bg)" }}>
         <div className="text-center space-y-4">
-          <div className="text-5xl">🎉</div>
-          <h2 className="text-xl font-bold" style={{ color: "oklch(0.92 0.01 285)" }}>Exam Complete!</h2>
-          <p className="text-sm" style={{ color: "oklch(0.60 0.02 285)" }}>Generating your score report…</p>
-          <div className="w-8 h-8 border-2 rounded-full mx-auto animate-spin" style={{ borderColor: "oklch(0.55 0.22 296)", borderTopColor: "transparent" }} />
+          <div className="flex justify-center"><Icon d={ICONS.award} size={40} /></div>
+          <h2 className="text-xl font-bold" style={{ color: "var(--ink-dim)" }}>Exam Complete!</h2>
+          <p className="text-sm" style={{ color: "var(--ink-faint)" }}>Generating your score report…</p>
+          <div className="w-8 h-8 border-2 rounded-full mx-auto animate-spin" style={{ borderColor: "var(--accent)", borderTopColor: "transparent" }} />
         </div>
       </div>
     );
@@ -815,22 +816,22 @@ export default function ExamSession() {
   return (
     <div
       className="flex flex-col h-screen overflow-hidden"
-      style={{ background: "oklch(0.13 0.018 285)" }}
+      style={{ background: "var(--bg)" }}
     >
       {/* Top bar */}
       <div
         className="shrink-0 flex items-center justify-between px-6 h-14 border-b"
-        style={{ background: "oklch(0.15 0.02 285)", borderColor: "oklch(1 0 0 / 0.08)" }}
+        style={{ background: "var(--bg)", borderColor: "rgba(255,255,255,0.08)" }}
       >
         <div className="flex items-center gap-4">
           <button
             onClick={() => navigate("/simulators")}
             className="text-xs px-3 py-1.5 rounded-lg border"
-            style={{ borderColor: "oklch(1 0 0 / 0.12)", color: "oklch(0.60 0.02 285)" }}
+            style={{ borderColor: "rgba(255,255,255,0.12)", color: "var(--ink-faint)" }}
           >
-            ✕ Exit
+            Exit
           </button>
-          <span className="text-sm font-bold" style={{ color: "oklch(0.90 0.01 285)" }}>
+          <span className="text-sm font-bold" style={{ color: "var(--ink-dim)" }}>
             {examContent?.meta?.name}
           </span>
         </div>
@@ -838,7 +839,7 @@ export default function ExamSession() {
         {phase === "section" && (
           <div className="flex items-center gap-6">
             <ProgressDots sections={sections} currentIndex={sectionIndex} completedSections={completedSections} />
-            <div className="text-xs" style={{ color: "oklch(0.55 0.02 285)" }}>
+            <div className="text-xs" style={{ color: "var(--ink-faint)" }}>
               {currentSection?.label}
             </div>
             <Timer secondsLeft={timeLeft} totalSeconds={totalTime} />
@@ -850,7 +851,7 @@ export default function ExamSession() {
             onClick={() => handleSubmitSection(false)}
             disabled={submittingSection}
             className="text-xs px-4 py-1.5 rounded-lg font-medium disabled:opacity-50"
-            style={{ background: "oklch(0.45 0.20 264)", color: "#fff" }}
+            style={{ background: "var(--accent-active)", color: "#fff" }}
           >
             {submittingSection ? "Saving…" : sectionIndex < sections.length - 1 ? "Submit & Next →" : "Submit & Finish"}
           </button>
@@ -861,7 +862,7 @@ export default function ExamSession() {
       {phase === "section" && (
         <div
           className="shrink-0 px-6 py-2 border-b text-xs font-medium"
-          style={{ background: "oklch(0.16 0.02 285)", borderColor: "oklch(1 0 0 / 0.06)", color: "oklch(0.65 0.18 296)" }}
+          style={{ background: "var(--surface-2)", borderColor: "rgba(255,255,255,0.06)", color: "var(--accent)" }}
         >
           Section {sectionIndex + 1} of {sections.length}: {currentSection?.label}
         </div>

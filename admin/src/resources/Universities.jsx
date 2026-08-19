@@ -65,6 +65,41 @@ const universityFilters = [
   />,
 ];
 
+/* ── Verification status chip (Phase 3 production-readiness audit) ──
+   Same semantics as the student-app badge — admin operators need the same
+   honest signal, plus this is where "operational visibility" (finding rows
+   that need attention) actually matters most. */
+const VERIFICATION_CHIP = {
+  verified: { label: "Verified", color: "success" },
+  partially_verified: { label: "Partially verified", color: "info" },
+  unverified: { label: "Unconfirmed", color: "default" },
+  unknown: { label: "Not verified", color: "default" },
+  conflicting: { label: "Sources disagree", color: "warning" },
+  needs_manual_verification: { label: "Manual verification required", color: "warning" },
+};
+
+const VerificationChip = ({ status, sourceUrl, verifiedAt }) => {
+  const cfg = VERIFICATION_CHIP[status] || VERIFICATION_CHIP.unknown;
+  return (
+    <Box sx={{ display: "flex", alignItems: "center", gap: 1, flexWrap: "wrap" }}>
+      <Chip label={cfg.label} color={cfg.color} size="small" variant={cfg.color === "default" ? "outlined" : "filled"} />
+      {verifiedAt && ["verified", "partially_verified", "conflicting", "needs_manual_verification"].includes(status) && (
+        <Typography variant="caption" color="text.secondary">as of {verifiedAt}</Typography>
+      )}
+      {sourceUrl && (
+        <Typography
+          component="a" href={sourceUrl} target="_blank" rel="noopener noreferrer"
+          variant="caption" sx={{ color: "primary.main", textDecoration: "underline" }}
+        >
+          View source
+        </Typography>
+      )}
+    </Box>
+  );
+};
+
+const NEEDS_ATTENTION = new Set(["conflicting", "needs_manual_verification"]);
+
 /* ── Document Checklist Manager (used inside Edit form) ── */
 const DocumentChecklistField = () => {
   const record = useRecordContext();
@@ -74,6 +109,7 @@ const DocumentChecklistField = () => {
   const [newName, setNewName] = useState("");
   const [newRequired, setNewRequired] = useState(true);
   const [adding, setAdding] = useState(false);
+  const [issuesOnly, setIssuesOnly] = useState(false);
 
   const token = () => localStorage.getItem("auth_token");
 
@@ -142,10 +178,18 @@ const DocumentChecklistField = () => {
   if (!record?.id) return null;
 
   return (
-    <Box sx={{ mt: 3, mb: 2, p: 2, border: "1px solid #e0e0e0", borderRadius: 2 }}>
-      <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 2 }}>
-        📋 Document Checklist
-      </Typography>
+    <Box sx={{ mt: 3, mb: 2, p: 2, border: "1px solid var(--mui-palette-divider)", borderRadius: 2 }}>
+      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 2 }}>
+        <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+          📋 Document Checklist
+        </Typography>
+        {items.some(i => NEEDS_ATTENTION.has(i.verification_status)) && (
+          <FormControlLabel
+            control={<Switch checked={issuesOnly} onChange={e => setIssuesOnly(e.target.checked)} size="small" color="warning" />}
+            label={<Typography variant="caption">Needs attention only</Typography>}
+          />
+        )}
+      </Box>
 
       {loading ? (
         <CircularProgress size={20} />
@@ -156,21 +200,24 @@ const DocumentChecklistField = () => {
               No documents added yet.
             </Typography>
           )}
-          {items.map((item, idx) => (
-            <Box key={item.id} sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1, p: 1, bgcolor: "#f9f9f9", borderRadius: 1 }}>
-              <Typography sx={{ flex: 1, fontSize: 14 }}>
-                {idx + 1}. {item.name}
-              </Typography>
-              <Chip
-                label={item.is_required ? "Required" : "Optional"}
-                color={item.is_required ? "error" : "default"}
-                size="small"
-                onClick={() => handleToggleRequired(item)}
-                sx={{ cursor: "pointer" }}
-              />
-              <IconButton size="small" color="error" onClick={() => handleDelete(item.id)}>
-                <DeleteIcon fontSize="small" />
-              </IconButton>
+          {items.filter(i => !issuesOnly || NEEDS_ATTENTION.has(i.verification_status)).map((item, idx) => (
+            <Box key={item.id} sx={{ display: "flex", flexDirection: "column", gap: 0.5, mb: 1, p: 1, bgcolor: "var(--mui-palette-action-hover)", borderRadius: 1 }}>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <Typography sx={{ flex: 1, fontSize: 14 }}>
+                  {idx + 1}. {item.name}
+                </Typography>
+                <Chip
+                  label={item.is_required ? "Required" : "Optional"}
+                  color={item.is_required ? "error" : "default"}
+                  size="small"
+                  onClick={() => handleToggleRequired(item)}
+                  sx={{ cursor: "pointer" }}
+                />
+                <IconButton size="small" color="error" onClick={() => handleDelete(item.id)}>
+                  <DeleteIcon fontSize="small" />
+                </IconButton>
+              </Box>
+              <VerificationChip status={item.verification_status} sourceUrl={item.source_url} verifiedAt={item.verified_at} />
             </Box>
           ))}
 
@@ -200,6 +247,68 @@ const DocumentChecklistField = () => {
             </Button>
           </Box>
         </>
+      )}
+    </Box>
+  );
+};
+
+/* ── Deadlines verification panel (Phase 3 production-readiness audit) ──
+   Read-only: deadlines are currently populated by the verification
+   research scripts (scripts/verify_batchN_live.py), not created through
+   the admin UI — this panel exists purely for OPERATIONAL VISIBILITY, so
+   an operator can see verification status/evidence/source per deadline
+   without querying the database directly. Full CRUD for deadlines is not
+   part of the two blocking issues this pass fixes. */
+const DeadlinesVerificationField = () => {
+  const record = useRecordContext();
+  const notify = useNotify();
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [issuesOnly, setIssuesOnly] = useState(false);
+
+  const token = () => localStorage.getItem("auth_token");
+
+  useEffect(() => {
+    if (!record?.id) return;
+    setLoading(true);
+    fetch(`/universities/${record.id}/deadlines`, {
+      headers: { Authorization: `Bearer ${token()}` },
+    })
+      .then(r => r.json())
+      .then(data => setItems(Array.isArray(data) ? data : []))
+      .catch(() => notify("Failed to load deadlines", { type: "error" }))
+      .finally(() => setLoading(false));
+  }, [record?.id]);
+
+  if (!record?.id) return null;
+  if (!loading && items.length === 0) return null;
+
+  return (
+    <Box sx={{ mt: 3, mb: 2, p: 2, border: "1px solid var(--mui-palette-divider)", borderRadius: 2 }}>
+      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 2 }}>
+        <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+          🗓️ Deadlines — verification status
+        </Typography>
+        {items.some(i => NEEDS_ATTENTION.has(i.verification_status)) && (
+          <FormControlLabel
+            control={<Switch checked={issuesOnly} onChange={e => setIssuesOnly(e.target.checked)} size="small" color="warning" />}
+            label={<Typography variant="caption">Needs attention only</Typography>}
+          />
+        )}
+      </Box>
+
+      {loading ? (
+        <CircularProgress size={20} />
+      ) : (
+        items.filter(i => !issuesOnly || NEEDS_ATTENTION.has(i.verification_status)).map((item) => (
+          <Box key={item.id} sx={{ display: "flex", flexDirection: "column", gap: 0.5, mb: 1, p: 1, bgcolor: "var(--mui-palette-action-hover)", borderRadius: 1 }}>
+            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <Typography sx={{ fontSize: 14, fontWeight: 600 }}>{item.label}</Typography>
+              <Typography sx={{ fontSize: 14 }} color="primary">{item.deadline_text}</Typography>
+            </Box>
+            <VerificationChip status={item.verification_status} sourceUrl={item.source_url} verifiedAt={item.verified_at} />
+          </Box>
+        ))
       )}
     </Box>
   );
@@ -285,7 +394,7 @@ const GuideStepsPreview = () => {
         Current Guide Preview ({steps.length} steps):
       </Typography>
       {steps.map((s) => (
-        <Box key={s.step} sx={{ display: "flex", gap: 1.5, mb: 1, p: 1.5, border: "1px solid #e0e0e0", borderRadius: 1 }}>
+        <Box key={s.step} sx={{ display: "flex", gap: 1.5, mb: 1, p: 1.5, border: "1px solid var(--mui-palette-divider)", borderRadius: 1 }}>
           <Box sx={{
             minWidth: 28, height: 28, borderRadius: "50%",
             background: typeColors[s.action_type] || "#666",
@@ -412,6 +521,7 @@ const UniversityFormFields = ({ isEdit = false }) => (
           Document Checklist
         </Typography>
         <DocumentChecklistField />
+        <DeadlinesVerificationField />
       </>
     )}
 

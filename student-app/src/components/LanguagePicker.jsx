@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { changeLanguage } from "../i18n";
+import { Icon, ICONS } from "./Sidebar";
 
 const LANGUAGES = [
   { code: "en", label: "English", native: "English", flag: "🇺🇸", dir: "ltr" },
@@ -19,7 +20,7 @@ const LanguagePicker = ({ onDone }) => {
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4">
       <div className="bg-white rounded-3xl shadow-2xl p-10 w-full max-w-sm text-center">
-        <div className="text-5xl mb-4">🎓</div>
+        <div className="flex justify-center mb-4 text-blue-600"><Icon d={ICONS.graduationCap} size={44} /></div>
         <h1 className="text-2xl font-extrabold text-gray-900 mb-2">
           {t("langPicker.title")}
         </h1>

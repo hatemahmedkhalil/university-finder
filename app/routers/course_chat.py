@@ -1,11 +1,11 @@
 """Course community chat — any authenticated user can read/post in a course's chat."""
 
 from datetime import datetime
-from typing import Optional
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
+from app.core.limiter import limiter
 from app.dependencies import get_db, get_current_user
 from app.models.course_chat import CourseChatMessage
 from app.models.learning import Course
@@ -75,7 +75,9 @@ def get_chat(
 
 
 @router.post("/{course_id}", response_model=ChatMessageOut, status_code=201)
+@limiter.limit("30/hour")
 def post_message(
+    request: Request,
     course_id: int,
     body: ChatMessageIn,
     db: Session = Depends(get_db),

@@ -3,13 +3,15 @@ from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
 from app.dependencies import get_current_user, get_db, require_admin
-from app.models.university import University, UniversityDocumentItem
+from app.models.university import University, UniversityDocumentItem, UniversityDeadline
 from app.models.user import User
 from app.schemas.common import PaginatedResponse
 from app.schemas.university import (
     DocumentItemCreate, DocumentItemOut, DocumentItemUpdate,
+    DeadlineCreate, DeadlineOut, DeadlineUpdate,
     UniversityCreate, UniversityDetail, UniversityOut, UniversityUpdate,
 )
+from app.services.verification_audit import audit_verification_fields
 
 router = APIRouter(prefix="/universities", tags=["Universities"])
 
@@ -144,6 +146,17 @@ def update_document(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Document item not found")
     for field, value in payload.model_dump(exclude_unset=True).items():
         setattr(item, field, value)
+
+    # NO CLAIM WITHOUT PROOF: a PATCH only touches the fields it sends, so
+    # the invariant must be checked against the item's FINAL merged state —
+    # e.g. flipping verification_status to 'verified' in a call that doesn't
+    # also send source_url/evidence_text must still be rejected if the item
+    # doesn't already have them from a prior save.
+    problems = audit_verification_fields(item.verification_status, item.source_url, item.evidence_text, item.verified_at)
+    if problems:
+        db.rollback()
+        raise HTTPException(status_code=422, detail="; ".join(problems))
+
     db.commit()
     db.refresh(item)
     return item
@@ -159,5 +172,74 @@ def delete_document(
     item = db.query(UniversityDocumentItem).filter_by(id=doc_id, university_id=university_id).first()
     if not item:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Document item not found")
+    db.delete(item)
+    db.commit()
+
+
+# ── Deadline endpoints (Phase 3.5 — auditable deadline evidence) ─────────────
+
+@router.get("/{university_id}/deadlines", response_model=list[DeadlineOut])
+def list_deadlines(
+    university_id: int,
+    db: Session = Depends(get_db),
+    _: User = Depends(get_current_user),
+):
+    university = db.get(University, university_id)
+    if not university:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="University not found")
+    return university.deadlines
+
+
+@router.post("/{university_id}/deadlines", response_model=DeadlineOut, status_code=status.HTTP_201_CREATED)
+def create_deadline(
+    university_id: int,
+    payload: DeadlineCreate,
+    db: Session = Depends(get_db),
+    _: User = Depends(require_admin),
+):
+    university = db.get(University, university_id)
+    if not university:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="University not found")
+    item = UniversityDeadline(university_id=university_id, **payload.model_dump())
+    db.add(item)
+    db.commit()
+    db.refresh(item)
+    return item
+
+
+@router.patch("/{university_id}/deadlines/{deadline_id}", response_model=DeadlineOut)
+def update_deadline(
+    university_id: int,
+    deadline_id: int,
+    payload: DeadlineUpdate,
+    db: Session = Depends(get_db),
+    _: User = Depends(require_admin),
+):
+    item = db.query(UniversityDeadline).filter_by(id=deadline_id, university_id=university_id).first()
+    if not item:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Deadline not found")
+    for field, value in payload.model_dump(exclude_unset=True).items():
+        setattr(item, field, value)
+
+    problems = audit_verification_fields(item.verification_status, item.source_url, item.evidence_text, item.verified_at)
+    if problems:
+        db.rollback()
+        raise HTTPException(status_code=422, detail="; ".join(problems))
+
+    db.commit()
+    db.refresh(item)
+    return item
+
+
+@router.delete("/{university_id}/deadlines/{deadline_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_deadline(
+    university_id: int,
+    deadline_id: int,
+    db: Session = Depends(get_db),
+    _: User = Depends(require_admin),
+):
+    item = db.query(UniversityDeadline).filter_by(id=deadline_id, university_id=university_id).first()
+    if not item:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Deadline not found")
     db.delete(item)
     db.commit()

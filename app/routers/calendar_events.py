@@ -1,8 +1,7 @@
-from datetime import datetime, timezone
-
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 
+from app.core.limiter import limiter
 from app.dependencies import get_current_user, get_db
 from app.models.calendar_event import CalendarEvent
 from app.models.user import User
@@ -25,7 +24,9 @@ def list_events(
 
 
 @router.post("", response_model=CalendarEventOut, status_code=201)
+@limiter.limit("60/minute")
 def create_event(
+    request: Request,
     body: CalendarEventCreate,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),

@@ -50,15 +50,15 @@ export const SendNotificationPanel = () => {
   };
 
   const card = {
-    background: "#fff", borderRadius: 12, padding: 24,
+    background: "var(--mui-palette-background-paper)", borderRadius: 12, padding: 24,
     boxShadow: "0 1px 4px rgba(0,0,0,.12)", maxWidth: 600,
   };
   const inp = {
-    width: "100%", padding: "10px 12px", border: "1px solid #d1d5db",
+    width: "100%", padding: "10px 12px", border: "1px solid var(--mui-palette-divider)",
     borderRadius: 8, fontSize: 14, marginBottom: 14, boxSizing: "border-box",
   };
   const btn = {
-    background: sending ? "#a5b4fc" : "#4f46e5", color: "#fff",
+    background: sending ? "var(--mui-palette-primary-light)" : "var(--mui-palette-primary-main)", color: "var(--mui-palette-primary-contrastText)",
     border: "none", borderRadius: 8, padding: "10px 24px",
     fontSize: 14, fontWeight: 600, cursor: sending ? "not-allowed" : "pointer",
   };
@@ -67,13 +67,13 @@ export const SendNotificationPanel = () => {
     <div style={{ padding: 24 }}>
       <h2 style={{ marginBottom: 20 }}>📣 Send Notification to Students</h2>
       <div style={card}>
-        <label style={{ fontSize: 12, fontWeight: 600, color: "#6b7280", display: "block", marginBottom: 4 }}>TITLE</label>
+        <label style={{ fontSize: 12, fontWeight: 600, color: "var(--mui-palette-text-secondary)", display: "block", marginBottom: 4 }}>TITLE</label>
         <input style={inp} value={title} onChange={e => setTitle(e.target.value)} placeholder="e.g. New Scholarship Available" />
 
-        <label style={{ fontSize: 12, fontWeight: 600, color: "#6b7280", display: "block", marginBottom: 4 }}>MESSAGE</label>
+        <label style={{ fontSize: 12, fontWeight: 600, color: "var(--mui-palette-text-secondary)", display: "block", marginBottom: 4 }}>MESSAGE</label>
         <textarea style={{ ...inp, height: 90, resize: "vertical" }} value={message} onChange={e => setMessage(e.target.value)} placeholder="Notification body text…" />
 
-        <label style={{ fontSize: 12, fontWeight: 600, color: "#6b7280", display: "block", marginBottom: 4 }}>TYPE</label>
+        <label style={{ fontSize: 12, fontWeight: 600, color: "var(--mui-palette-text-secondary)", display: "block", marginBottom: 4 }}>TYPE</label>
         <select style={{ ...inp, marginBottom: 14 }} value={type} onChange={e => setType(e.target.value)}>
           <option value="system">System</option>
           <option value="scholarship_update">Scholarship Update</option>
@@ -81,7 +81,7 @@ export const SendNotificationPanel = () => {
           <option value="support_reply">Support Reply</option>
         </select>
 
-        <label style={{ fontSize: 12, fontWeight: 600, color: "#6b7280", display: "block", marginBottom: 4 }}>SEND TO</label>
+        <label style={{ fontSize: 12, fontWeight: 600, color: "var(--mui-palette-text-secondary)", display: "block", marginBottom: 4 }}>SEND TO</label>
         <select style={{ ...inp }} value={target} onChange={e => setTarget(e.target.value)}>
           <option value="all">All Students</option>
           <option value="specific">Specific User IDs</option>
@@ -89,7 +89,7 @@ export const SendNotificationPanel = () => {
 
         {target === "specific" && (
           <>
-            <label style={{ fontSize: 12, fontWeight: 600, color: "#6b7280", display: "block", marginBottom: 4 }}>USER IDs (comma-separated)</label>
+            <label style={{ fontSize: 12, fontWeight: 600, color: "var(--mui-palette-text-secondary)", display: "block", marginBottom: 4 }}>USER IDs (comma-separated)</label>
             <input style={inp} value={userIds} onChange={e => setUserIds(e.target.value)} placeholder="1, 4, 12" />
           </>
         )}
@@ -99,7 +99,7 @@ export const SendNotificationPanel = () => {
         </button>
 
         {result && (
-          <div style={{ marginTop: 14, padding: "10px 14px", borderRadius: 8, background: result.ok ? "#dcfce7" : "#fee2e2", color: result.ok ? "#166534" : "#991b1b", fontSize: 14 }}>
+          <div style={{ marginTop: 14, padding: "10px 14px", borderRadius: 8, background: result.ok ? "var(--mui-palette-success-light)" : "var(--mui-palette-error-light)", color: result.ok ? "var(--mui-palette-success-contrastText)" : "var(--mui-palette-error-contrastText)", fontSize: 14 }}>
             {result.ok ? `✅ Sent to ${result.sent} student${result.sent !== 1 ? "s" : ""}` : `❌ ${result.error}`}
           </div>
         )}

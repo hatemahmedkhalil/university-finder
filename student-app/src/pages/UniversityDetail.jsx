@@ -3,6 +3,7 @@ import { useParams, useNavigate, useLocation, Link } from "react-router-dom";
 import api from "../api/axios";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
+import { Icon, ICONS } from "../components/Sidebar";
 
 /* ── Country theme map (flag colors + real flag image) ── */
 const COUNTRY_THEME = {
@@ -32,7 +33,7 @@ const COUNTRY_THEME = {
     cardBorder: "#fda4af",
     tagBg: "#ffe4e6",
     tagText: "#9f1239",
-    btnPrimary: "bg-white hover:bg-[oklch(0.22_0.026_285)] text-[#DC143C]",
+    btnPrimary: "bg-white hover:bg-[var(--surface-2)] text-[#DC143C]",
     btnSave: "border-white text-white hover:bg-white/10",
     sectionAccent: "#ffffff",
   },
@@ -47,7 +48,7 @@ const COUNTRY_THEME = {
     cardBorder: "#fca5a5",
     tagBg: "#fee2e2",
     tagText: "#991b1b",
-    btnPrimary: "bg-white hover:bg-[oklch(0.22_0.026_285)] text-[#ED2939]",
+    btnPrimary: "bg-white hover:bg-[var(--surface-2)] text-[#ED2939]",
     btnSave: "border-white text-white hover:bg-white/10",
     sectionAccent: "#ffffff",
   },
@@ -126,6 +127,21 @@ const COUNTRY_THEME = {
     btnSave: "border-[#F1BF00] text-[#F1BF00] hover:bg-[#F1BF00]/10",
     sectionAccent: "#F1BF00",
   },
+  Romania: {
+    flagSrc: "https://flagcdn.com/w80/ro.png",
+    stripeColors: ["#002B7F", "#FCD116", "#CE1126"],
+    heroBg: "#002B7F",
+    accent: "#FCD116",
+    accentGold: "#FCD116",
+    badgeBg: "#002B7F",
+    badgeText: "#FCD116",
+    cardBorder: "#fde68a",
+    tagBg: "#fef9c3",
+    tagText: "#854d0e",
+    btnPrimary: "bg-[#FCD116] hover:bg-[#e0ba00] text-[#002B7F]",
+    btnSave: "border-[#FCD116] text-[#FCD116] hover:bg-[#FCD116]/10",
+    sectionAccent: "#FCD116",
+  },
 };
 
 const DEFAULT_THEME = {
@@ -147,7 +163,7 @@ const DEFAULT_THEME = {
 /* ── small reusable pieces ── */
 const Badge = ({ children, color = "gray" }) => {
   const colors = {
-    gray:   "bg-gray-100 text-[oklch(0.65_0.02_285)]",
+    gray:   "bg-gray-100 text-[var(--ink-faint)]",
     blue:   "bg-blue-50 text-blue-700",
     green:  "bg-green-50 text-green-700",
     yellow: "bg-yellow-50 text-yellow-700",
@@ -163,11 +179,11 @@ const Badge = ({ children, color = "gray" }) => {
 };
 
 const Section = ({ icon, title, children, className = "", accentColor, id }) => (
-  <div id={id} className={`bg-[oklch(0.17_0.02_285)] rounded-2xl border border-[oklch(1_0_0/0.07)] p-6 ${className}`}>
-    <h2 className="text-base font-bold text-white mb-4 flex items-center gap-2">
+  <div id={id} className={`bg-[var(--surface-2)] rounded-2xl border border-[var(--border)] p-6 ${className}`}>
+    <h2 className="text-base font-bold text-[var(--ink)] mb-4 flex items-center gap-2">
       <span
         className="w-7 h-7 rounded-lg flex items-center justify-center text-base"
-        style={{ backgroundColor: accentColor ? accentColor + "22" : "#f3f4f6" }}
+        style={{ backgroundColor: accentColor ? accentColor + "22" : "var(--bg-subtle)" }}
       >
         {icon}
       </span>
@@ -180,21 +196,21 @@ const Section = ({ icon, title, children, className = "", accentColor, id }) => 
 const InfoRow = ({ label, value }) => {
   if (!value && value !== 0) return null;
   return (
-    <div className="flex flex-col sm:flex-row sm:items-start gap-1 py-2.5 border-b border-gray-50 last:border-0">
-      <span className="text-xs font-semibold text-[oklch(0.45_0.02_285)] uppercase tracking-wide sm:w-44 shrink-0 pt-0.5">{label}</span>
-      <span className="text-sm text-white leading-relaxed">{value}</span>
+    <div className="flex flex-col sm:flex-row sm:items-start gap-1 py-2.5 border-b last:border-0" style={{ borderColor: "var(--border)" }}>
+      <span className="text-xs font-semibold text-[var(--ink-dim)] uppercase tracking-wide sm:w-44 shrink-0 pt-0.5">{label}</span>
+      <span className="text-sm text-[var(--ink)] leading-relaxed">{value}</span>
     </div>
   );
 };
 
 const ScoreArc = ({ score, t }) => {
-  const color = score >= 75 ? "#16a34a" : score >= 50 ? "#d97706" : "#dc2626";
+  const color = score >= 75 ? "var(--good)" : score >= 50 ? "var(--warn)" : "var(--danger)";
   const label = score >= 75 ? t("university.matchExcellent") : score >= 50 ? t("university.matchGood") : t("university.matchPartial");
   return (
     <div className="flex flex-col items-center">
       <div className="relative w-24 h-24">
         <svg viewBox="0 0 36 36" className="w-full h-full -rotate-90">
-          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#f3f4f6" strokeWidth="3" />
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--bg-subtle)" strokeWidth="3" />
           <circle cx="18" cy="18" r="15.9" fill="none" stroke={color} strokeWidth="3"
             strokeDasharray={`${score} 100`} strokeLinecap="round" />
         </svg>
@@ -209,10 +225,10 @@ const ScoreArc = ({ score, t }) => {
 
 const ScoreBar = ({ label, value, max, color }) => (
   <div>
-    <div className="flex justify-between text-xs text-[oklch(0.55_0.02_285)] mb-1">
+    <div className="flex justify-between text-xs text-[var(--ink-faint)] mb-1">
       <span>{label}</span><span className="font-medium">{value}/{max}</span>
     </div>
-    <div className="h-1.5 bg-[oklch(0.20_0.024_285)] rounded-full">
+    <div className="h-1.5 bg-[var(--surface-hover)] rounded-full">
       <div className={`h-1.5 rounded-full ${color}`} style={{ width: `${(value / max) * 100}%` }} />
     </div>
   </div>
@@ -221,11 +237,11 @@ const ScoreBar = ({ label, value, max, color }) => (
 const ScholarshipCard = ({ s }) => {
   const { t } = useTranslation();
   return (
-    <div className="border border-[oklch(1_0_0/0.07)] rounded-xl p-4 hover:border-green-200 hover:bg-green-50/30 transition">
+    <div className="border border-[rgba(255,255,255,0.07)] rounded-xl p-4 hover:border-green-200 hover:bg-green-50/30 transition">
       <div className="flex items-start justify-between gap-2 flex-wrap">
         <div>
-          <p className="font-semibold text-white text-sm">{s.name}</p>
-          <p className="text-xs text-[oklch(0.55_0.02_285)]">{s.provider}</p>
+          <p className="font-semibold text-[var(--ink)] text-sm">{s.name}</p>
+          <p className="text-xs text-[var(--ink-faint)]">{s.provider}</p>
         </div>
         <div className="flex flex-col items-end gap-1">
           {s.amount_eur && <Badge color="green">€{s.amount_eur.toLocaleString()}/yr</Badge>}
@@ -234,10 +250,10 @@ const ScholarshipCard = ({ s }) => {
           </Badge>
         </div>
       </div>
-      {s.description && <p className="text-xs text-[oklch(0.65_0.02_285)] mt-2 leading-relaxed">{s.description}</p>}
-      {s.eligibility && <p className="text-xs text-[oklch(0.45_0.02_285)] mt-1 italic">{t("university.eligibilityLabel")} {s.eligibility}</p>}
+      {s.description && <p className="text-xs text-[var(--ink-faint)] mt-2 leading-relaxed">{s.description}</p>}
+      {s.eligibility && <p className="text-xs text-[var(--ink-dim)] mt-1 italic">{t("university.eligibilityLabel")} {s.eligibility}</p>}
       <div className="flex items-center gap-3 mt-3 flex-wrap">
-        {s.deadline && <span className="text-xs text-[oklch(0.55_0.02_285)]">📅 {s.deadline}</span>}
+        {s.deadline && <span className="text-xs text-[var(--ink-faint)]">{s.deadline}</span>}
         {s.link && (
           <a href={s.link} target="_blank" rel="noreferrer" onClick={e => e.stopPropagation()}
             className="text-xs text-blue-600 hover:underline font-semibold">{t("university.applyLink")} →</a>
@@ -300,15 +316,15 @@ function TrackModal({ uni, onClose, onConfirm }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={onClose}>
-      <div className="bg-[oklch(0.17_0.02_285)] rounded-2xl-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+      <div className="bg-[var(--surface-2)] rounded-2xl-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
 
         {/* Header */}
-        <div className="flex items-start justify-between p-6 border-b border-[oklch(1_0_0/0.07)]">
+        <div className="flex items-start justify-between p-6 border-b border-[rgba(255,255,255,0.07)]">
           <div>
-            <h2 className="text-lg font-extrabold text-white">📋 {t("university.apply")}</h2>
-            <p className="text-sm text-[oklch(0.55_0.02_285)] mt-0.5">{uni.name}</p>
+            <h2 className="text-lg font-extrabold text-[var(--ink)]">{t("university.apply")}</h2>
+            <p className="text-sm text-[var(--ink-faint)] mt-0.5">{uni.name}</p>
           </div>
-          <button onClick={onClose} className="text-[oklch(0.45_0.02_285)] hover:text-[oklch(0.75_0.02_285)] text-xl leading-none">✕</button>
+          <button onClick={onClose} className="text-[var(--ink-dim)] hover:text-[var(--ink-dim)] text-xl leading-none"><Icon d={ICONS.x} size={16} /></button>
         </div>
 
         <div className="p-6 space-y-5">
@@ -316,11 +332,11 @@ function TrackModal({ uni, onClose, onConfirm }) {
           {/* Required docs checklist */}
           {requiredDocs.length > 0 && (
             <div>
-              <p className="text-sm font-bold text-[oklch(0.75_0.02_285)] mb-2">📄 {t("university.requiredDocuments")}</p>
+              <p className="text-sm font-bold text-[var(--ink-dim)] mb-2">{t("university.requiredDocuments")}</p>
               <ul className="space-y-1.5">
                 {requiredDocs.map((doc) => (
-                  <li key={doc.id} className="flex items-center gap-2 text-sm text-[oklch(0.65_0.02_285)] bg-[oklch(0.17_0.02_285)] rounded-lg px-3 py-2">
-                    <span>{doc.is_required ? "⚠️" : "✓"}</span>
+                  <li key={doc.id} className="flex items-center gap-2 text-sm text-[var(--ink-faint)] bg-[var(--surface-2)] rounded-lg px-3 py-2">
+                    <span>{doc.is_required ? "Required" : "Optional"}</span>
                     <span className="flex-1">{doc.name}</span>
                     {!doc.is_required && <span className="text-[10px] text-green-400 font-bold">Optional</span>}
                   </li>
@@ -331,29 +347,29 @@ function TrackModal({ uni, onClose, onConfirm }) {
 
           {/* Upload area */}
           <div>
-            <p className="text-sm font-bold text-[oklch(0.75_0.02_285)] mb-2">⬆️ {t("applications.uploadFile")}</p>
+            <p className="text-sm font-bold text-[var(--ink-dim)] mb-2">⬆️ {t("applications.uploadFile")}</p>
             <div
               onDrop={handleDrop}
               onDragOver={e => e.preventDefault()}
               onClick={() => fileRef.current?.click()}
-              className="border-2 border-dashed border-gray-200 hover:border-blue-400 rounded-xl p-6 text-center cursor-pointer transition group"
+              className="border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition group" style={{ borderColor: "var(--border)" }}
             >
-              <div className="text-3xl mb-2">📁</div>
-              <p className="text-sm text-[oklch(0.55_0.02_285)] group-hover:text-blue-600 transition">
+              <div className="mb-2 flex justify-center"><Icon d={ICONS.applyhub} size={28} /></div>
+              <p className="text-sm text-[var(--ink-faint)] group-hover:text-[var(--accent)] transition">
                 {t("university.dropFiles")}
               </p>
-              <p className="text-xs text-[oklch(0.45_0.02_285)] mt-1">{t("university.maxFileSize")}</p>
+              <p className="text-xs text-[var(--ink-dim)] mt-1">{t("university.maxFileSize")}</p>
               <input ref={fileRef} type="file" multiple className="hidden" onChange={e => addFiles(e.target.files)} />
             </div>
 
             {files.length > 0 && (
               <ul className="mt-3 space-y-1.5">
                 {files.map(f => (
-                  <li key={f.name} className="flex items-center gap-2 bg-blue-50 rounded-lg px-3 py-2 text-xs">
-                    <span>📎</span>
-                    <span className="flex-1 truncate text-blue-800 font-medium">{f.name}</span>
-                    <span className="text-[oklch(0.45_0.02_285)] shrink-0">{fmt(f.size)}</span>
-                    <button onClick={() => removeFile(f.name)} className="text-[oklch(0.35_0.02_285)] hover:text-red-500 transition">✕</button>
+                  <li key={f.name} className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs" style={{ background: "var(--accent-subtle)" }}>
+                    <Icon d={ICONS.email} size={14} />
+                    <span className="flex-1 truncate font-medium" style={{ color: "var(--accent)" }}>{f.name}</span>
+                    <span className="text-[var(--ink-dim)] shrink-0">{fmt(f.size)}</span>
+                    <button onClick={() => removeFile(f.name)} className="text-[var(--border-strong)] hover:text-red-500 transition"><Icon d={ICONS.x} size={16} /></button>
                   </li>
                 ))}
               </ul>
@@ -363,21 +379,107 @@ function TrackModal({ uni, onClose, onConfirm }) {
 
         {/* Footer */}
         <div className="flex gap-3 p-6 pt-0">
-          <button onClick={onClose} className="flex-1 py-3 rounded-xl text-sm font-semibold border border-[oklch(1_0_0/0.08)] text-[oklch(0.65_0.02_285)] hover:bg-[oklch(0.20_0.024_285)] transition">
+          <button onClick={onClose} className="flex-1 py-3 rounded-xl text-sm font-semibold border border-[rgba(255,255,255,0.08)] text-[var(--ink-faint)] hover:bg-[var(--surface-hover)] transition">
             {t("common.cancel")}
           </button>
           <button
             onClick={handleSubmit}
             disabled={submitting}
-            className="flex-1 py-3 rounded-xl text-sm font-bold bg-blue-600 hover:bg-blue-700 text-white transition disabled:opacity-50"
+            className="btn btn-primary flex-1 py-3 rounded-xl text-sm font-bold transition disabled:opacity-50"
           >
-            {submitting ? "⏳ " + t("common.loading") : `✅ ${t("university.confirmTrack")}`}
+            {submitting ? t("common.loading") : t("university.confirmTrack")}
           </button>
         </div>
       </div>
     </div>
   );
 }
+
+/* ── Verification badge (Phase 3 production-readiness audit) ──
+   Communicates verification_status honestly — never lets an unconfirmed
+   claim visually read the same as a verified one. `unverified`/`unknown`
+   get a neutral/muted treatment on purpose (not alarming — most claims
+   are simply not yet checked, not wrong), while `conflicting` and
+   `needs_manual_verification` get a warning treatment since those mean a
+   human should not just trust the number shown. */
+const VERIFICATION_BADGE_STYLE = {
+  verified: { bg: "rgba(0,142,69,0.14)", fg: "var(--good)", icon: "✓" },
+  partially_verified: { bg: "rgba(129,70,224,0.14)", fg: "var(--accent-light)", icon: "◐" },
+  unverified: { bg: "var(--surface-2)", fg: "var(--ink-dim)", icon: "?" },
+  unknown: { bg: "var(--surface-2)", fg: "var(--ink-dim)", icon: "?" },
+  conflicting: { bg: "rgba(230,126,34,0.16)", fg: "#e67e22", icon: "!" },
+  needs_manual_verification: { bg: "rgba(230,126,34,0.16)", fg: "#e67e22", icon: "!" },
+};
+
+const VerificationBadge = ({ status, sourceUrl, verifiedAt, t }) => {
+  const key = status || "unknown";
+  const style = VERIFICATION_BADGE_STYLE[key] || VERIFICATION_BADGE_STYLE.unknown;
+  const labelKey = {
+    verified: "university.verifiedStatus",
+    partially_verified: "university.partiallyVerifiedStatus",
+    unverified: "university.unverifiedStatus",
+    conflicting: "university.conflictingStatus",
+    needs_manual_verification: "university.needsManualVerificationStatus",
+    unknown: "university.unknownStatus",
+  }[key] || "university.unknownStatus";
+  const showTimestamp = verifiedAt && ["verified", "partially_verified", "conflicting", "needs_manual_verification"].includes(key);
+
+  return (
+    <div className="flex items-center gap-2 flex-wrap mt-1">
+      <span
+        className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0"
+        style={{ background: style.bg, color: style.fg }}
+        title={t(labelKey)}
+      >
+        <span aria-hidden="true">{style.icon}</span>
+        {t(labelKey)}
+      </span>
+      {showTimestamp && (
+        <span className="text-[10px]" style={{ color: "var(--ink-dim)" }}>
+          {t("university.verifiedOn", { date: verifiedAt })}
+        </span>
+      )}
+      {sourceUrl && (
+        <a
+          href={sourceUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={(e) => e.stopPropagation()}
+          className="text-[10px] font-semibold underline underline-offset-2"
+          style={{ color: "var(--accent)" }}
+        >
+          {t("university.viewOfficialSource")}
+        </a>
+      )}
+    </div>
+  );
+};
+
+/* ── Deadlines card (Phase 3 production-readiness audit) ──
+   `deadlines` was already returned by the API but never rendered anywhere
+   in the student app — every deadline claim now visibly carries its
+   verification status, same as documents. */
+const DeadlinesCard = ({ deadlines, t }) => {
+  if (!deadlines || deadlines.length === 0) return null;
+  return (
+    <div className="rounded-2xl border overflow-hidden" style={{ borderColor: "rgba(255,255,255,0.10)", background: "var(--bg)" }}>
+      <div className="px-5 py-4 border-b" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
+        <h3 className="text-base font-bold text-[var(--ink)]">{t("university.deadlinesSection")}</h3>
+      </div>
+      <ul className="px-5 py-4 space-y-3">
+        {deadlines.map((d) => (
+          <li key={d.id} className="rounded-xl px-3 py-2.5" style={{ background: "var(--surface-2)" }}>
+            <div className="flex items-start justify-between gap-3">
+              <span className="text-sm font-semibold text-[var(--ink)]">{d.label}</span>
+              <span className="text-sm font-bold shrink-0" style={{ color: "var(--accent)" }}>{d.deadline_text}</span>
+            </div>
+            <VerificationBadge status={d.verification_status} sourceUrl={d.source_url} verifiedAt={d.verified_at} t={t} />
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
 
 /* ── Document checklist with interactive checkboxes ── */
 const DocumentChecklist = ({ docs, userDegreeLevel, theme, uniId, t }) => {
@@ -398,26 +500,26 @@ const DocumentChecklist = ({ docs, userDegreeLevel, theme, uniId, t }) => {
   const pct = required.length ? Math.round((checkedCount / required.length) * 100) : 0;
 
   return (
-    <div className="rounded-2xl border overflow-hidden" style={{ borderColor: "oklch(1 0 0 / 0.10)", background: "oklch(0.15 0.018 285)" }}>
+    <div className="rounded-2xl border overflow-hidden" style={{ borderColor: "rgba(255,255,255,0.10)", background: "var(--bg)" }}>
       {/* Header */}
-      <div className="px-5 py-4 border-b" style={{ borderColor: "oklch(1 0 0 / 0.08)" }}>
+      <div className="px-5 py-4 border-b" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-base font-bold text-white flex items-center gap-2">
-            📄 {t("university.requiredDocumentsSection")}
+          <h3 className="text-base font-bold text-[var(--ink)] flex items-center gap-2">
+            {t("university.requiredDocumentsSection")}
           </h3>
           <span className="text-xs font-bold px-2.5 py-1 rounded-full"
-                style={{ background: pct === 100 ? "oklch(0.55 0.18 158 / 0.2)" : "oklch(0.55 0.22 296 / 0.15)", color: pct === 100 ? "oklch(0.75 0.18 158)" : "oklch(0.80 0.14 296)" }}>
+                style={{ background: pct === 100 ? "rgba(0,142,69,0.2)" : "rgba(129,70,224,0.15)", color: pct === 100 ? "var(--good)" : "var(--accent-light)" }}>
             {checkedCount}/{required.length} ready
           </span>
         </div>
         {/* Progress bar */}
-        <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "oklch(0.25 0.02 285)" }}>
+        <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "var(--surface-2)" }}>
           <div className="h-full rounded-full transition-all duration-500"
-               style={{ width: `${pct}%`, background: pct === 100 ? "oklch(0.65 0.18 158)" : `linear-gradient(90deg, ${theme.accent}, oklch(0.55 0.22 296))` }} />
+               style={{ width: `${pct}%`, background: pct === 100 ? "var(--good)" : `linear-gradient(90deg, ${theme.accent}, var(--accent))` }} />
         </div>
         {userDegreeLevel && (
-          <p className="text-[11px] mt-2" style={{ color: "oklch(0.50 0.02 285)" }}>
-            🎓 Showing documents for <strong className="capitalize" style={{ color: "oklch(0.65 0.10 296)" }}>{userDegreeLevel}</strong> level
+          <p className="text-[11px] mt-2" style={{ color: "var(--ink-faint)" }}>
+            Showing documents for <strong className="capitalize" style={{ color: "var(--accent)" }}>{userDegreeLevel}</strong> level
           </p>
         )}
       </div>
@@ -426,7 +528,7 @@ const DocumentChecklist = ({ docs, userDegreeLevel, theme, uniId, t }) => {
       <div className="px-5 py-4">
         {required.length > 0 && (
           <>
-            <p className="text-[11px] font-bold uppercase tracking-wider mb-3" style={{ color: "oklch(0.45 0.02 285)" }}>
+            <p className="text-[11px] font-bold uppercase tracking-wider mb-3" style={{ color: "var(--ink-dim)" }}>
               Required ({required.length})
             </p>
             <ul className="space-y-2 mb-4">
@@ -434,14 +536,17 @@ const DocumentChecklist = ({ docs, userDegreeLevel, theme, uniId, t }) => {
                 <li key={doc.id}
                     onClick={() => toggle(doc.id)}
                     className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-150 select-none"
-                    style={{ background: checked[doc.id] ? "oklch(0.55 0.18 158 / 0.10)" : "oklch(0.18 0.02 285)" }}>
+                    style={{ background: checked[doc.id] ? "rgba(0,142,69,0.10)" : "var(--bg)" }}>
                   <div className="w-5 h-5 rounded-md border-2 shrink-0 flex items-center justify-center transition-all"
-                       style={{ borderColor: checked[doc.id] ? "oklch(0.65 0.18 158)" : "oklch(0.35 0.02 285)", background: checked[doc.id] ? "oklch(0.55 0.18 158)" : "transparent" }}>
+                       style={{ borderColor: checked[doc.id] ? "var(--good)" : "var(--border-strong)", background: checked[doc.id] ? "var(--good)" : "transparent" }}>
                     {checked[doc.id] && <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>}
                   </div>
-                  <span className="text-sm flex-1 transition-all" style={{ color: checked[doc.id] ? "oklch(0.50 0.02 285)" : "oklch(0.78 0.02 285)", textDecoration: checked[doc.id] ? "line-through" : "none" }}>
-                    {doc.name}
-                  </span>
+                  <div className="flex-1 min-w-0">
+                    <span className="text-sm transition-all block" style={{ color: checked[doc.id] ? "var(--ink-faint)" : "var(--ink-dim)", textDecoration: checked[doc.id] ? "line-through" : "none" }}>
+                      {doc.name}
+                    </span>
+                    <VerificationBadge status={doc.verification_status} sourceUrl={doc.source_url} verifiedAt={doc.verified_at} t={t} />
+                  </div>
                 </li>
               ))}
             </ul>
@@ -450,7 +555,7 @@ const DocumentChecklist = ({ docs, userDegreeLevel, theme, uniId, t }) => {
 
         {optional.length > 0 && (
           <>
-            <p className="text-[11px] font-bold uppercase tracking-wider mb-3" style={{ color: "oklch(0.45 0.02 285)" }}>
+            <p className="text-[11px] font-bold uppercase tracking-wider mb-3" style={{ color: "var(--ink-dim)" }}>
               Optional / Recommended ({optional.length})
             </p>
             <ul className="space-y-2">
@@ -458,15 +563,18 @@ const DocumentChecklist = ({ docs, userDegreeLevel, theme, uniId, t }) => {
                 <li key={doc.id}
                     onClick={() => toggle(doc.id)}
                     className="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-150 select-none"
-                    style={{ background: checked[doc.id] ? "oklch(0.55 0.18 158 / 0.08)" : "oklch(0.16 0.018 285)" }}>
+                    style={{ background: checked[doc.id] ? "rgba(0,142,69,0.08)" : "var(--bg)" }}>
                   <div className="w-5 h-5 rounded-md border-2 shrink-0 flex items-center justify-center transition-all"
-                       style={{ borderColor: checked[doc.id] ? "oklch(0.65 0.18 158)" : "oklch(0.30 0.02 285)", background: checked[doc.id] ? "oklch(0.55 0.18 158)" : "transparent" }}>
+                       style={{ borderColor: checked[doc.id] ? "var(--good)" : "var(--surface-hover)", background: checked[doc.id] ? "var(--good)" : "transparent" }}>
                     {checked[doc.id] && <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>}
                   </div>
-                  <span className="text-sm flex-1 transition-all" style={{ color: checked[doc.id] ? "oklch(0.45 0.02 285)" : "oklch(0.60 0.02 285)", textDecoration: checked[doc.id] ? "line-through" : "none" }}>
-                    {doc.name}
-                  </span>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full shrink-0" style={{ background: "oklch(0.55 0.18 158 / 0.12)", color: "oklch(0.65 0.18 158)" }}>
+                  <div className="flex-1 min-w-0">
+                    <span className="text-sm transition-all block" style={{ color: checked[doc.id] ? "var(--ink-dim)" : "var(--ink-faint)", textDecoration: checked[doc.id] ? "line-through" : "none" }}>
+                      {doc.name}
+                    </span>
+                    <VerificationBadge status={doc.verification_status} sourceUrl={doc.source_url} verifiedAt={doc.verified_at} t={t} />
+                  </div>
+                  <span className="text-[10px] px-2 py-0.5 rounded-full shrink-0" style={{ background: "rgba(0,142,69,0.12)", color: "var(--good)" }}>
                     optional
                   </span>
                 </li>
@@ -476,15 +584,15 @@ const DocumentChecklist = ({ docs, userDegreeLevel, theme, uniId, t }) => {
         )}
 
         {docs.length === 0 && (
-          <p className="text-sm text-center py-4" style={{ color: "oklch(0.45 0.02 285)" }}>
+          <p className="text-sm text-center py-4" style={{ color: "var(--ink-dim)" }}>
             No documents listed yet.
           </p>
         )}
 
         {pct === 100 && required.length > 0 && (
           <div className="mt-4 px-4 py-3 rounded-xl text-sm font-medium text-center"
-               style={{ background: "oklch(0.55 0.18 158 / 0.12)", color: "oklch(0.75 0.18 158)", border: "1px solid oklch(0.55 0.18 158 / 0.20)" }}>
-            ✅ All required documents ready — you're set to apply!
+               style={{ background: "rgba(0,142,69,0.12)", color: "var(--good)", border: "1px solid rgba(0,142,69,0.20)" }}>
+            All required documents ready — you're set to apply!
           </div>
         )}
       </div>
@@ -554,7 +662,7 @@ const UniversityDetail = () => {
   };
 
   if (loading) return (
-    <div className="flex items-center justify-center h-screen text-[oklch(0.45_0.02_285)] text-sm">
+    <div className="flex items-center justify-center h-screen text-[var(--ink-dim)] text-sm">
       {t("university.loading")}
     </div>
   );
@@ -611,13 +719,13 @@ const UniversityDetail = () => {
             <div className="shrink-0 flex flex-col items-center gap-3">
               {/* University logo */}
               {uni.logo_url && !imgError ? (
-                <div className="w-20 h-20 bg-[oklch(0.17_0.02_285)] rounded-2xl flex items-center justify-center p-2">
+                <div className="w-20 h-20 bg-[var(--surface-2)] rounded-2xl flex items-center justify-center p-2">
                   <img src={uni.logo_url} alt={uni.name} className="w-full h-full object-contain"
                     onError={() => setImgError(true)} />
                 </div>
               ) : (
-                <div className="w-20 h-20 bg-white/15 rounded-2xl flex items-center justify-center text-4xl backdrop-blur-sm">
-                  🎓
+                <div className="w-20 h-20 bg-white/15 rounded-2xl flex items-center justify-center backdrop-blur-sm">
+                  <Icon d={ICONS.graduationCap} size={32} />
                 </div>
               )}
 
@@ -649,13 +757,13 @@ const UniversityDetail = () => {
 
               {uni.ranking && (
                 <p className="mt-1 text-sm font-semibold" style={{ color: theme.accentGold }}>
-                  🏆 {t("university.worldRank")} #{uni.ranking}
+                  {t("university.worldRank")} #{uni.ranking}
                 </p>
               )}
 
               <div className="flex flex-wrap gap-2 mt-3">
                 {uni.is_public ? <Badge color="blue">{t("university.publicUniversity")}</Badge> : <Badge color="orange">{t("university.privateUniversity")}</Badge>}
-                {uni.english_programs_available && <Badge color="green">🌐 {t("university.englishPrograms")}</Badge>}
+                {uni.english_programs_available && <Badge color="green">{t("university.englishPrograms")}</Badge>}
                 {uni.tuition_fee_eur === 0 && <Badge color="green">{t("university.freeTuition")}</Badge>}
                 {uni.acceptance_rate && (
                   <Badge color="purple">{t("university.acceptance")} {(uni.acceptance_rate * 100).toFixed(0)}%</Badge>
@@ -673,9 +781,9 @@ const UniversityDetail = () => {
               <button
                 onClick={() => navigate(`/apply-hub/${uni.id}`)}
                 className="px-5 py-3 rounded-xl text-sm font-bold transition text-center text-white flex items-center justify-center gap-2"
-                style={{ background: "linear-gradient(135deg, oklch(0.55 0.18 150), oklch(0.50 0.16 195))", boxShadow: "0 4px 14px oklch(0.55 0.18 150 / 0.35)" }}>
-                📋 Start Application
-                <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-md" style={{ background: "oklch(1 0 0 / 0.20)" }}>
+                style={{ background: "linear-gradient(135deg, var(--good), #007c7f)", boxShadow: "0 4px 14px rgba(0,140,47,0.35)" }}>
+                Start Application
+                <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-md" style={{ background: "rgba(255,255,255,0.20)" }}>
                   Track Progress
                 </span>
               </button>
@@ -685,18 +793,18 @@ const UniversityDetail = () => {
                     ? "bg-white text-red-600 border-white hover:bg-red-50"
                     : `bg-transparent ${theme.btnSave}`
                 }`}>
-                {saved ? `❤️ ${t("university.unsave")}` : `🤍 ${t("university.save")}`}
+                {saved ? t("university.unsave") : t("university.save")}
               </button>
               <button
                 onClick={() => navigate("/ai-chat", { state: { prefill: `Tell me about ${uni.name} in ${uni.city}, ${uni.country}. What are my chances of getting admitted, what programs do they offer, and what should I prepare?` } })}
                 className="px-4 py-2.5 rounded-xl text-sm font-semibold transition text-center  bg-violet-600 hover:bg-violet-500 text-white">
-                🤖 {t("university.askAI")}
+                {t("university.askAI")}
               </button>
               <button
                 onClick={addToPipeline}
                 disabled={pipelineLoading}
                 className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition text-center  ${inPipeline ? "bg-indigo-500 text-white hover:bg-indigo-400" : "bg-white text-indigo-700 hover:bg-indigo-50"}`}>
-                {pipelineLoading ? t("common.adding") : inPipeline ? t("university.inPipelineBtn") : `🚀 ${t("university.addPipeline")}`}
+                {pipelineLoading ? t("common.adding") : inPipeline ? t("university.inPipelineBtn") : t("university.addPipeline")}
               </button>
             </div>
           </div>
@@ -711,7 +819,7 @@ const UniversityDetail = () => {
       </div>
 
       {/* ── Sticky section nav ── */}
-      <div className="sticky top-[60px] z-10 bg-white border-b border-[oklch(1_0_0/0.07)] ">
+      <div className="sticky top-[68px] z-10 border-b" style={{ background: "var(--surface)", borderColor: "var(--border)" }}>
         <div className="max-w-5xl mx-auto px-4 flex gap-1 overflow-x-auto scrollbar-hide py-1">
           {[
             { id: "overview",      label: t("university.matchScoreSection") },
@@ -724,7 +832,10 @@ const UniversityDetail = () => {
             <button
               key={id}
               onClick={() => document.getElementById(`section-${id}`)?.scrollIntoView({ behavior: "smooth", block: "start" })}
-              className="shrink-0 px-2.5 py-1.5 text-[11px] font-semibold text-[oklch(0.55_0.02_285)] hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition whitespace-nowrap"
+              className="shrink-0 px-2.5 py-1.5 text-[11px] font-semibold rounded-lg transition whitespace-nowrap"
+              style={{ color: "var(--ink-faint)" }}
+              onMouseEnter={e => { e.currentTarget.style.color = "var(--accent)"; e.currentTarget.style.background = "var(--accent-subtle)"; }}
+              onMouseLeave={e => { e.currentTarget.style.color = "var(--ink-faint)"; e.currentTarget.style.background = "transparent"; }}
             >
               {label}
             </button>
@@ -739,7 +850,7 @@ const UniversityDetail = () => {
         <div className="lg:col-span-2 flex flex-col gap-6">
 
           {score !== null && (
-            <Section icon="🎯" title={t("university.matchScoreSection")} accentColor={theme.accent}>
+            <Section icon={<Icon d={ICONS.target} size={15} />} title={t("university.matchScoreSection")} accentColor={theme.accent}>
               <div className="flex items-center gap-6 flex-wrap">
                 <ScoreArc score={score} t={t} />
                 <div className="flex-1 space-y-3">
@@ -767,7 +878,7 @@ const UniversityDetail = () => {
           )}
 
           {programs.length > 0 && (
-            <Section icon="🎓" title={t("university.programs")} accentColor={theme.accent} id="section-programs">
+            <Section icon={<Icon d={ICONS.graduationCap} size={15} />} title={t("university.programs")} accentColor={theme.accent} id="section-programs">
               <div className="flex flex-wrap gap-2">
                 {programs.map((p, i) => (
                   <span key={i} className="text-xs px-3 py-1.5 rounded-full font-medium"
@@ -781,8 +892,8 @@ const UniversityDetail = () => {
 
           {/* ── Program-specific tuition fees ── */}
           {uni.program_fees?.length > 0 && (
-            <Section icon="💰" title={t("university.programFeesTitle")} accentColor={theme.accent} id="section-program-fees">
-              <p className="text-xs text-[oklch(0.45_0.02_285)] mb-4">
+            <Section icon={<Icon d={ICONS.wallet} size={15} />} title={t("university.programFeesTitle")} accentColor={theme.accent} id="section-program-fees">
+              <p className="text-xs text-[var(--ink-dim)] mb-4">
                 {t("university.programFeesNote")}
               </p>
 
@@ -807,12 +918,12 @@ const UniversityDetail = () => {
                         <div className="flex-1 h-px bg-gray-100" />
                       </div>
                     )}
-                    <div className="overflow-hidden rounded-xl border border-[oklch(1_0_0/0.07)]">
+                    <div className="overflow-hidden rounded-xl border border-[rgba(255,255,255,0.07)]">
                       <table className="w-full text-sm">
                         <thead>
-                          <tr className="bg-[oklch(0.17_0.02_285)]">
-                            <th className="text-left py-2 px-3 text-xs font-semibold text-[oklch(0.55_0.02_285)] uppercase tracking-wide">{t("university.fieldOfStudyHeader")}</th>
-                            <th className="text-right py-2 px-3 text-xs font-semibold text-[oklch(0.55_0.02_285)] uppercase tracking-wide">{t("university.annualFeeHeader")}</th>
+                          <tr className="bg-[var(--surface-2)]">
+                            <th className="text-left py-2 px-3 text-xs font-semibold text-[var(--ink-faint)] uppercase tracking-wide">{t("university.fieldOfStudyHeader")}</th>
+                            <th className="text-right py-2 px-3 text-xs font-semibold text-[var(--ink-faint)] uppercase tracking-wide">{t("university.annualFeeHeader")}</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -827,10 +938,10 @@ const UniversityDetail = () => {
                                     ? "bg-indigo-900/30 ring-1 ring-inset ring-indigo-500/30"
                                     : isOtherLevel
                                       ? "opacity-40"
-                                      : i % 2 === 0 ? "bg-[oklch(0.17_0.02_285)]" : "bg-gray-50/40"
+                                      : i % 2 === 0 ? "bg-[var(--surface-2)]" : "bg-gray-50/40"
                                 } hover:opacity-100`}
                                 title={pf.notes || ""}>
-                                <td className="py-2.5 px-3 font-medium text-white">
+                                <td className="py-2.5 px-3 font-medium text-[var(--ink)]">
                                   {pf.field_of_study}
                                   {isMyLevel && (
                                     <span className="ml-2 text-[10px] font-bold uppercase tracking-wide text-indigo-400 bg-indigo-900/40 px-1.5 py-0.5 rounded-full">
@@ -842,7 +953,7 @@ const UniversityDetail = () => {
                                   {pf.tuition_fee_eur === 0 ? (
                                     <span className="text-green-600 font-bold">{t("university.freeTuitionShort")}</span>
                                   ) : (
-                                    <span className="font-bold" style={{ color: isMyLevel ? "#818cf8" : theme.accent }}>
+                                    <span className="font-bold" style={{ color: isMyLevel ? "var(--accent-light)" : theme.accent }}>
                                       €{pf.tuition_fee_eur.toLocaleString()}/yr
                                     </span>
                                   )}
@@ -858,7 +969,7 @@ const UniversityDetail = () => {
               })()}
 
               <div className="mt-3 flex items-start gap-2 bg-amber-50 border border-amber-100 rounded-xl p-3">
-                <span className="text-amber-500 mt-0.5 shrink-0">⚠️</span>
+                <Icon d={ICONS.x} size={14} />
                 <p className="text-xs text-amber-800 leading-relaxed">
                   {t("university.programFeesDisclaimer")}{" "}
                   {uni.website ? (
@@ -872,7 +983,7 @@ const UniversityDetail = () => {
             </Section>
           )}
 
-          <Section icon="✅" title={t("university.admissionReqSection")} accentColor={theme.accent} id="section-admission">
+          <Section icon={<Icon d={ICONS.check} size={15} />} title={t("university.admissionReqSection")} accentColor={theme.accent} id="section-admission">
             <InfoRow label={t("university.minGpaLabel")}    value={uni.min_gpa ? `${uni.min_gpa} / 4.0` : null} />
             <InfoRow label={t("university.admissionReqRow")} value={uni.admission_requirements} />
             <InfoRow label={t("university.languageReq")}    value={uni.language_requirements} />
@@ -888,8 +999,10 @@ const UniversityDetail = () => {
             />
           )}
 
+          <DeadlinesCard deadlines={uni.deadlines} t={t} />
+
           {uni.scholarships?.length > 0 && (
-            <Section icon="💰" title={t("university.scholarshipsTitle")} accentColor={theme.accent}>
+            <Section icon={<Icon d={ICONS.scholarships} size={15} />} title={t("university.scholarshipsTitle")} accentColor={theme.accent}>
               <div className="grid sm:grid-cols-2 gap-4">
                 {uni.scholarships.map(s => <ScholarshipCard key={s.id} s={s} />)}
               </div>
@@ -900,7 +1013,7 @@ const UniversityDetail = () => {
         {/* RIGHT COLUMN */}
         <div className="flex flex-col gap-6">
 
-          <Section icon="📋" title={t("university.keyFacts")} accentColor={theme.accent} id="section-overview">
+          <Section icon={<Icon d={ICONS.applications} size={15} />} title={t("university.keyFacts")} accentColor={theme.accent} id="section-overview">
             <InfoRow label={t("university.annualTuition")}
               value={uni.tuition_fee_eur === 0 ? t("university.tuitionFreeLabel") : uni.tuition_fee_eur ? `€${uni.tuition_fee_eur.toLocaleString()}/year` : null} />
             <InfoRow label={t("university.semesterFee")}
@@ -933,46 +1046,46 @@ const UniversityDetail = () => {
 
           {/* Cost breakdown */}
           {(uni.tuition_fee_eur !== null || uni.semester_fee_eur || uni.dormitory_cost_eur) && (
-            <Section icon="💶" title={t("university.costBreakdown")} accentColor={theme.accent} id="section-costs">
+            <Section icon={<Icon d={ICONS.wallet} size={15} />} title={t("university.costBreakdown")} accentColor={theme.accent} id="section-costs">
               <div className="space-y-2">
                 <div className="flex justify-between items-center py-2 border-b border-gray-50">
-                  <span className="text-sm text-[oklch(0.65_0.02_285)]">{t("university.tuitionRowLabel")}</span>
-                  <span className={`text-sm font-bold ${uni.tuition_fee_eur === 0 ? "text-green-600" : "text-white"}`}>
+                  <span className="text-sm text-[var(--ink-faint)]">{t("university.tuitionRowLabel")}</span>
+                  <span className={`text-sm font-bold ${uni.tuition_fee_eur === 0 ? "text-green-600" : "text-[var(--ink)]"}`}>
                     {uni.tuition_fee_eur === 0 ? t("university.tuitionFreeLabel") : uni.tuition_fee_eur ? `€${uni.tuition_fee_eur.toLocaleString()}` : "—"}
                   </span>
                 </div>
                 {uni.semester_fee_eur && (
                   <div className="flex justify-between items-center py-2 border-b border-gray-50">
                     <div>
-                      <span className="text-sm text-[oklch(0.65_0.02_285)]">{t("university.semesterContrib")}</span>
-                      <p className="text-xs text-[oklch(0.45_0.02_285)]">{t("university.semesterContribDesc")}</p>
+                      <span className="text-sm text-[var(--ink-faint)]">{t("university.semesterContrib")}</span>
+                      <p className="text-xs text-[var(--ink-dim)]">{t("university.semesterContribDesc")}</p>
                     </div>
-                    <span className="text-sm font-bold text-white">
+                    <span className="text-sm font-bold text-[var(--ink)]">
                       €{(uni.semester_fee_eur * 2).toLocaleString()}/yr
                     </span>
                   </div>
                 )}
                 {uni.dormitory_cost_eur && (
                   <div className="flex justify-between items-center py-2 border-b border-gray-50">
-                    <span className="text-sm text-[oklch(0.65_0.02_285)]">{t("university.dormitory12")}</span>
-                    <span className="text-sm font-bold text-white">
+                    <span className="text-sm text-[var(--ink-faint)]">{t("university.dormitory12")}</span>
+                    <span className="text-sm font-bold text-[var(--ink)]">
                       ~€{(uni.dormitory_cost_eur * 12).toLocaleString()}/yr
                     </span>
                   </div>
                 )}
                 <div className="flex justify-between items-center py-2 border-b border-gray-50">
                   <div>
-                    <span className="text-sm text-[oklch(0.65_0.02_285)]">{t("university.foodGroceries")}</span>
-                    <p className="text-xs text-[oklch(0.45_0.02_285)]">{t("university.foodEstimate")}</p>
+                    <span className="text-sm text-[var(--ink-faint)]">{t("university.foodGroceries")}</span>
+                    <p className="text-xs text-[var(--ink-dim)]">{t("university.foodEstimate")}</p>
                   </div>
-                  <span className="text-sm font-bold text-[oklch(0.45_0.02_285)]">~€2,400/yr</span>
+                  <span className="text-sm font-bold text-[var(--ink-dim)]">~€2,400/yr</span>
                 </div>
                 <div className="flex justify-between items-center py-2 border-b border-gray-50">
                   <div>
-                    <span className="text-sm text-[oklch(0.65_0.02_285)]">{t("university.healthInsurance")}</span>
-                    <p className="text-xs text-[oklch(0.45_0.02_285)]">{t("university.healthInsuranceDesc")}</p>
+                    <span className="text-sm text-[var(--ink-faint)]">{t("university.healthInsurance")}</span>
+                    <p className="text-xs text-[var(--ink-dim)]">{t("university.healthInsuranceDesc")}</p>
                   </div>
-                  <span className="text-sm font-bold text-[oklch(0.45_0.02_285)]">~€1,200/yr</span>
+                  <span className="text-sm font-bold text-[var(--ink-dim)]">~€1,200/yr</span>
                 </div>
                 {(() => {
                   const tuition = uni.tuition_fee_eur ?? 0;
@@ -982,26 +1095,26 @@ const UniversityDetail = () => {
                   const total   = tuition + semFee + dorm + fixed;
                   return (
                     <div className="flex justify-between items-center pt-3 mt-1">
-                      <span className="text-sm font-extrabold text-white">{t("university.estimatedTotal")}</span>
+                      <span className="text-sm font-extrabold text-[var(--ink)]">{t("university.estimatedTotal")}</span>
                       <span className="text-base font-extrabold" style={{ color: theme.accent }}>
                         ~€{total.toLocaleString()}
                       </span>
                     </div>
                   );
                 })()}
-                <p className="text-xs text-[oklch(0.45_0.02_285)] mt-1 leading-relaxed">{t("university.costDisclaimer")}</p>
+                <p className="text-xs text-[var(--ink-dim)] mt-1 leading-relaxed">{t("university.costDisclaimer")}</p>
               </div>
             </Section>
           )}
 
-          <Section icon="🏠" title={t("university.accommodationTitle")} accentColor={theme.accent} id="section-accommodation">
+          <Section icon={<Icon d={ICONS.costofLiving} size={15} />} title={t("university.accommodationTitle")} accentColor={theme.accent} id="section-accommodation">
             <InfoRow label={t("university.dormitoryCostLabel")} value={uni.dormitory_cost_eur ? `~€${uni.dormitory_cost_eur}/month` : null} />
             {uni.accommodation_info
-              ? <p className="text-sm text-[oklch(0.75_0.02_285)] leading-relaxed mt-2">{uni.accommodation_info}</p>
-              : <p className="text-sm text-[oklch(0.45_0.02_285)]">{t("university.accommodation")}</p>}
+              ? <p className="text-sm text-[var(--ink-dim)] leading-relaxed mt-2">{uni.accommodation_info}</p>
+              : <p className="text-sm text-[var(--ink-dim)]">{t("university.accommodation")}</p>}
           </Section>
 
-          <Section icon="🗺️" title={t("university.locationContact")} accentColor={theme.accent} id="section-location">
+          <Section icon={<Icon d={ICONS.visaguide} size={15} />} title={t("university.locationContact")} accentColor={theme.accent} id="section-location">
             <InfoRow label={t("university.cityLabel")}    value={uni.city} />
             <InfoRow label={t("university.countryLabel")} value={uni.country} />
             <InfoRow label={t("university.emailLabel")}   value={uni.contact_email} />
@@ -1020,7 +1133,7 @@ const UniversityDetail = () => {
           <button
             onClick={addToPipeline}
             disabled={pipelineLoading}
-            className={`block w-full text-center font-bold py-3 rounded-2xl transition  ${inPipeline ? "bg-emerald-600 hover:bg-emerald-500" : "bg-indigo-600 hover:bg-indigo-500"} text-white`}>
+            className={`block w-full text-center font-bold py-3 rounded-2xl transition  ${inPipeline ? "bg-emerald-600 hover:bg-emerald-500" : "bg-indigo-600 hover:bg-indigo-500"} text-[var(--ink)]`}>
             {pipelineLoading ? t("university.analyzingFit") : inPipeline ? t("university.viewInPipeline") : t("university.addPipelineBottom")}
           </button>
         </div>
@@ -1032,9 +1145,10 @@ const UniversityDetail = () => {
     <div className="fixed bottom-6 right-6 z-30">
       <button
         onClick={() => navigate("/ai-chat")}
-        className="flex items-center gap-2 bg-violet-600 hover:bg-violet-500 text-white text-sm font-bold px-4 py-3 rounded-2xl shadow-violet-900/30 transition-all hover:scale-105 active:scale-95"
+        className="flex items-center gap-2 text-white text-sm font-bold px-4 py-3 rounded-2xl transition-all hover:scale-105 active:scale-95"
+        style={{ background: "linear-gradient(135deg, var(--accent), var(--accent-active))", boxShadow: "var(--shadow-md)" }}
       >
-        <span className="text-base">🤖</span>
+        <Icon d={ICONS.aichat} size={16} />
         {t("university.askAI")}
       </button>
     </div>

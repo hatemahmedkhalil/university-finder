@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
-from sqlalchemy import Table, Column, Integer, DateTime, ForeignKey, func, text
+from sqlalchemy import Table, Column, Integer, DateTime, ForeignKey, func
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional
 
-from app.database import Base, engine
+from app.database import Base
 from app.dependencies import get_db, get_current_user, require_admin
 from app.core.limiter import limiter
 from app.models.announcement import Announcement
@@ -39,6 +39,15 @@ class AnnouncementIn(BaseModel):
     body: str
     type: str = "info"
     is_published: bool = True
+    target_user_id: Optional[int] = None
+
+
+class AnnouncementUpdate(BaseModel):
+    """Same fields as AnnouncementIn but all optional — PATCH is a true partial update."""
+    title: Optional[str] = None
+    body: Optional[str] = None
+    type: Optional[str] = None
+    is_published: Optional[bool] = None
     target_user_id: Optional[int] = None
 
 
@@ -166,7 +175,7 @@ def create_announcement(
 @router.patch("/{ann_id}", response_model=AnnouncementOut)
 def update_announcement(
     ann_id: int,
-    body: AnnouncementIn,
+    body: AnnouncementUpdate,
     db: Session = Depends(get_db),
     _: User = Depends(require_admin),
 ):

@@ -40,6 +40,8 @@
     "emailIntegration": "Email Sync",
     "calendar": "Calendar",
     "myProfile": "My Profile",
+    "myData": "My Data",
+    "accountProfile": "Profile",
     "dashboard": "Dashboard",
     "recommendations": "Recommendations",
     "universities": "Universities",
@@ -76,11 +78,19 @@
     "sectionMain": "Main",
     "sectionDiscover": "Discover",
     "sectionLearn": "Learn & Prepare",
+    "sectionPrepare": "Prepare",
     "sectionApply": "Apply",
     "sectionCommunity": "Community",
     "sectionAccount": "Account",
     "sectionSimulators": "Test Simulators",
-    "simulators": "Test Simulators"
+    "simulators": "Test Simulators",
+    "costOfLiving": "Cost of Living",
+    "sectionResources": "Resources",
+    "community": "Community",
+    "subgroupFindUniversities": "Find Universities",
+    "subgroupLearning": "Learning",
+    "subgroupGuidance": "Guidance",
+    "subgroupMyApplications": "My Applications"
   },
   "simulators": {
     "title": "Test Simulators",
@@ -97,6 +107,21 @@
       "title": "Score Report",
       "sections": "Section Scores"
     }
+  },
+  "account": {
+    "subtitle": "Your account details",
+    "email": "Email",
+    "emailSubtitle": "Used to sign in and receive updates",
+    "emailChanged": "Email updated. Please check your inbox to verify it.",
+    "emailChangeFailed": "Could not update email.",
+    "verified": "Verified",
+    "notVerified": "Not Verified",
+    "reverifyNote": "Changing your email will require re-verifying it.",
+    "phone": "Phone Number",
+    "phoneSubtitle": "Used for important account notifications",
+    "phoneChanged": "Phone number updated.",
+    "phoneChangeFailed": "Could not update phone number.",
+    "noPhone": "No phone number added"
   },
   "notifications": {
     "markAllRead": "Mark all read",
@@ -117,8 +142,8 @@
     "upgradeHint": "Contact admin to activate your plan",
     "upgradeBtn": "Upgrade to Premium",
     "leftToday": "left today",
-    "askAnything": "Ask me anything!",
-    "helpText": "I can help with university choices, scholarships, visa requirements, and more.",
+    "askAnything": "Hey, I'm your study abroad advisor",
+    "helpText": "Ask me about universities, scholarships, visas, or your applications — I know your whole journey.",
     "q1": "What universities in Germany offer English programs?",
     "q2": "What is the DAAD scholarship?",
     "q3": "What documents do I need to apply?",
@@ -248,9 +273,18 @@
       "tag": "Why UniPath?",
       "title": "Everything you need in one place",
       "subtitle": "No more jumping between websites. Find, compare, and apply — all here.",
-      "matching": { "title": "Smart Matching", "desc": "Get universities matched to your GPA, budget, English level, and preferred countries." },
-      "scholarships": { "title": "Find Scholarships", "desc": "Discover scholarships from DAAD, Erasmus+, government grants, and universities." },
-      "score": { "title": "Compatibility Score", "desc": "See a detailed score breakdown showing exactly why each university fits you." }
+      "matching": {
+        "title": "Smart Matching",
+        "desc": "Get universities matched to your GPA, budget, English level, and preferred countries."
+      },
+      "scholarships": {
+        "title": "Find Scholarships",
+        "desc": "Discover scholarships from DAAD, Erasmus+, government grants, and universities."
+      },
+      "score": {
+        "title": "Compatibility Score",
+        "desc": "See a detailed score breakdown showing exactly why each university fits you."
+      }
     },
     "countries": {
       "tag": "Destinations",
@@ -260,9 +294,18 @@
     "steps": {
       "tag": "Process",
       "title": "Get matched in 3 steps",
-      "s1": { "title": "Build your profile", "desc": "Add your GPA, budget, field of study, and language level." },
-      "s2": { "title": "AI finds matches", "desc": "Our engine scores every university against your profile." },
-      "s3": { "title": "Apply with confidence", "desc": "Track applications, find scholarships, and get support." }
+      "s1": {
+        "title": "Build your profile",
+        "desc": "Add your GPA, budget, field of study, and language level."
+      },
+      "s2": {
+        "title": "AI finds matches",
+        "desc": "Our engine scores every university against your profile."
+      },
+      "s3": {
+        "title": "Apply with confidence",
+        "desc": "Track applications, find scholarships, and get support."
+      }
     },
     "stats": {
       "universities": "Universities",
@@ -552,6 +595,7 @@
     "poland": "Poland",
     "austria": "Austria",
     "netherlands": "Netherlands",
+    "romania": "Romania",
     "hintEnglish": "✅ English-taught programs",
     "hintGerman": "✅ German-speaking countries",
     "hintPolish": "✅ Universities in Poland",
@@ -653,9 +697,6 @@
     "freeTuitionShort": "Free ✓",
     "yourLevel": "Your level",
     "showingDocsFor": "Showing documents for:",
-    "degreeLevelBachelor": "Bachelor's",
-    "degreeLevelMaster": "Master's",
-    "degreeLevelPhd": "PhD",
     "programFeesDisclaimer": "Fees may vary by specific program and are updated annually. Always verify on the",
     "officialWebsiteLink": "official university website",
     "programFeesDisclaimerEnd": "before applying.",
@@ -664,7 +705,17 @@
     "eligibilityLabel": "Eligibility:",
     "germanTuitionTitle": "ℹ️ What does €0 tuition mean?",
     "germanTuitionDesc": "Germany abolished tuition fees — you pay nothing for the degree itself. However, every semester you pay a Semesterbeitrag (semester contribution)",
-    "germanTuitionAnnual": "Annual semester contribution:"
+    "germanTuitionAnnual": "Annual semester contribution:",
+    "verifiedStatus": "Verified",
+    "partiallyVerifiedStatus": "Partially verified",
+    "unverifiedStatus": "Unconfirmed",
+    "conflictingStatus": "Sources disagree",
+    "needsManualVerificationStatus": "Manual verification required",
+    "unknownStatus": "Not verified",
+    "viewOfficialSource": "View official source",
+    "verifiedOn": "Verified on {{date}}",
+    "deadlinesSection": "Deadlines",
+    "noDeadlinesListed": "No deadlines listed yet."
   },
   "applyHub": {
     "title": "Application Hub",
@@ -953,20 +1004,44 @@
   },
   "course": {
     "levels": {
-      "A1": { "label": "Beginner",           "desc": "Absolute basics — greetings, numbers, simple phrases." },
-      "A2": { "label": "Elementary",         "desc": "Everyday expressions and familiar topics." },
-      "B1": { "label": "Intermediate",       "desc": "Handle most travel situations and simple texts." },
-      "B2": { "label": "Upper-Intermediate", "desc": "Interact fluently with native speakers on familiar topics." },
-      "C1": { "label": "Advanced",           "desc": "Complex texts, professional and academic language." },
-      "C2": { "label": "Proficiency",        "desc": "Near-native mastery — understand virtually everything." }
+      "A1": {
+        "label": "Beginner",
+        "desc": "Absolute basics — greetings, numbers, simple phrases."
+      },
+      "A2": {
+        "label": "Elementary",
+        "desc": "Everyday expressions and familiar topics."
+      },
+      "B1": {
+        "label": "Intermediate",
+        "desc": "Handle most travel situations and simple texts."
+      },
+      "B2": {
+        "label": "Upper-Intermediate",
+        "desc": "Interact fluently with native speakers on familiar topics."
+      },
+      "C1": {
+        "label": "Advanced",
+        "desc": "Complex texts, professional and academic language."
+      },
+      "C2": {
+        "label": "Proficiency",
+        "desc": "Near-native mastery — understand virtually everything."
+      }
     },
     "features": {
-      "video": "Video Lessons",    "videoDesc": "Structured video content per topic",
-      "pdf": "PDF Materials",      "pdfDesc": "Downloadable grammar & vocabulary sheets",
-      "quiz": "Quizzes",           "quizDesc": "Practice exercises after each lesson",
-      "progress": "Progress",      "progressDesc": "Track your completion rate",
-      "cert": "Certificates",      "certDesc": "Earn a level certificate on completion",
-      "exercises": "Exercises",    "exercisesDesc": "Speaking & writing practice prompts"
+      "video": "Video Lessons",
+      "videoDesc": "Structured video content per topic",
+      "pdf": "PDF Materials",
+      "pdfDesc": "Downloadable grammar & vocabulary sheets",
+      "quiz": "Quizzes",
+      "quizDesc": "Practice exercises after each lesson",
+      "progress": "Progress",
+      "progressDesc": "Track your completion rate",
+      "cert": "Certificates",
+      "certDesc": "Earn a level certificate on completion",
+      "exercises": "Exercises",
+      "exercisesDesc": "Speaking & writing practice prompts"
     },
     "noCourses": "No courses yet",
     "courseCount_one": "{{count}} course",
@@ -977,10 +1052,10 @@
     "languageInstructor": "Language Instructor",
     "subtitle": "Meet our certified language instructors. Click \"Ask a Question\" to start a conversation.",
     "myQuestions": "My Questions",
-    "askQuestion": "Ask a Question",
+    "askQuestion": "Ask {{name}} a Question",
     "viewPosts": "View posts",
     "email": "Email instructor",
-    "postsFrom": "Posts from",
+    "postsFrom": "Posts from {{name}}",
     "noPosts": "No posts yet.",
     "loadingInstructors": "Loading instructors…",
     "noInstructors": "No instructors added yet",
@@ -999,7 +1074,6 @@
     "waitingReply": "Waiting for reply…",
     "failedSend": "Failed to send.",
     "failedLoad": "Failed to load messages.",
-    "askQuestion": "Ask {{name}} a Question",
     "askQuestionBtn": "Ask a Question",
     "questionPlaceholder": "Type your question… (Enter to send)",
     "backToInstructors": "← Back to Instructors",
@@ -1017,7 +1091,6 @@
     "noFound": "No instructors found",
     "tryFilter": "Try a different language filter.",
     "foundCount": "{{count}} instructor(s) found",
-    "postsFrom": "Posts from {{name}}",
     "chat": {
       "loading": "Loading messages…",
       "empty": "Start the conversation by asking a question below.",
@@ -1120,10 +1193,22 @@
     },
     "why": {
       "title": "Why Students Choose UniPath",
-      "matching": { "title": "Smart Matching", "desc": "AI-powered university matching based on your profile, GPA, and budget." },
-      "europe":   { "title": "Europe Focused", "desc": "Covering top universities across Germany, Poland, Austria, and more." },
-      "chat":     { "title": "Expert Instructors", "desc": "Chat directly with certified language instructors for guidance." },
-      "tracker":  { "title": "Application Tracker", "desc": "Keep all your university applications organized in one place." }
+      "matching": {
+        "title": "Smart Matching",
+        "desc": "AI-powered university matching based on your profile, GPA, and budget."
+      },
+      "europe": {
+        "title": "Europe Focused",
+        "desc": "Covering top universities across Germany, Poland, Austria, and more."
+      },
+      "chat": {
+        "title": "Expert Instructors",
+        "desc": "Chat directly with certified language instructors for guidance."
+      },
+      "tracker": {
+        "title": "Application Tracker",
+        "desc": "Keep all your university applications organized in one place."
+      }
     },
     "faq": {
       "title": "Frequently Asked Questions",
@@ -1239,20 +1324,62 @@
   },
   "onboarding": {
     "steps": {
-      "welcome": { "title": "Welcome to UniPath", "desc": "UniPath helps you find the best universities, scholarships, language resources, and study opportunities based on your profile and goals." },
-      "profile": { "title": "My Profile", "desc": "Fill in your information such as your academic grade, budget, preferred country, and language level so we can recommend the best universities for your situation." },
-      "dashboard": { "title": "Dashboard", "desc": "This is your main dashboard where you'll find everything related to your activity and progress inside UniPath." },
-      "recommendations": { "title": "Recommendations", "desc": "This is where we recommend the best universities based on your profile, budget, academic performance, and preferences." },
-      "universities": { "title": "Universities", "desc": "Browse all available universities in your preferred country if you'd like to explore more options beyond our recommendations." },
-      "scholarships": { "title": "Scholarships", "desc": "If there are scholarships that match your profile, we will recommend them here to help reduce your study costs." },
-      "pipeline": { "title": "Application Pipeline", "desc": "Add universities to your pipeline and let AI instantly analyze your fit, identify profile gaps, and write a personalized motivation letter — all automatically." },
-      "applyHub": { "title": "Application Hub", "desc": "Store your documents in the Document Locker, generate AI-powered motivation letters for any university, and get a step-by-step application guide tailored to each university's portal." },
-      "aiChat": { "title": "AI Assistant", "desc": "Ask our AI anything about universities, scholarships, visa requirements, or study abroad tips. Available 24/7 to guide you through your journey." },
-      "learning": { "title": "Learning Center", "desc": "Take a placement test to discover your language level, then follow structured A1–C2 courses with video lessons, PDF materials, and quizzes." },
-      "instructors": { "title": "Instructors", "desc": "Browse available instructors and send them direct messages if you need additional support or private guidance on your application." },
-      "favourites": { "title": "Favorites", "desc": "Save universities you're interested in and access them later from your Favorites list." },
-      "pricing": { "title": "Pricing", "desc": "Compare available plans and discover the features included in each subscription." },
-      "ready": { "title": "You're All Set!", "desc": "You're now ready to explore UniPath and start your study abroad journey. Good luck! 🎉" }
+      "welcome": {
+        "title": "Welcome to UniPath",
+        "desc": "UniPath helps you find the best universities, scholarships, language resources, and study opportunities based on your profile and goals."
+      },
+      "profile": {
+        "title": "My Profile",
+        "desc": "Fill in your information such as your academic grade, budget, preferred country, and language level so we can recommend the best universities for your situation."
+      },
+      "dashboard": {
+        "title": "Dashboard",
+        "desc": "This is your main dashboard where you'll find everything related to your activity and progress inside UniPath."
+      },
+      "recommendations": {
+        "title": "Recommendations",
+        "desc": "This is where we recommend the best universities based on your profile, budget, academic performance, and preferences."
+      },
+      "universities": {
+        "title": "Universities",
+        "desc": "Browse all available universities in your preferred country if you'd like to explore more options beyond our recommendations."
+      },
+      "scholarships": {
+        "title": "Scholarships",
+        "desc": "If there are scholarships that match your profile, we will recommend them here to help reduce your study costs."
+      },
+      "pipeline": {
+        "title": "Application Pipeline",
+        "desc": "Add universities to your pipeline and let AI instantly analyze your fit, identify profile gaps, and write a personalized motivation letter — all automatically."
+      },
+      "applyHub": {
+        "title": "Application Hub",
+        "desc": "Store your documents in the Document Locker, generate AI-powered motivation letters for any university, and get a step-by-step application guide tailored to each university's portal."
+      },
+      "aiChat": {
+        "title": "AI Assistant",
+        "desc": "Ask our AI anything about universities, scholarships, visa requirements, or study abroad tips. Available 24/7 to guide you through your journey."
+      },
+      "learning": {
+        "title": "Learning Center",
+        "desc": "Take a placement test to discover your language level, then follow structured A1–C2 courses with video lessons, PDF materials, and quizzes."
+      },
+      "instructors": {
+        "title": "Instructors",
+        "desc": "Browse available instructors and send them direct messages if you need additional support or private guidance on your application."
+      },
+      "favourites": {
+        "title": "Favorites",
+        "desc": "Save universities you're interested in and access them later from your Favorites list."
+      },
+      "pricing": {
+        "title": "Pricing",
+        "desc": "Compare available plans and discover the features included in each subscription."
+      },
+      "ready": {
+        "title": "You're All Set!",
+        "desc": "You're now ready to explore UniPath and start your study abroad journey. Good luck! 🎉"
+      }
     },
     "step": "Step",
     "of": "of",
@@ -1364,12 +1491,29 @@
     "title": "Getting Started",
     "subtitle": "Complete these steps to unlock your full experience",
     "completed": "steps done",
+    "allDoneTitle": "You're fully set up!",
+    "allDoneSub": "Profile, matches, favourites, pipeline, and language — all ready. Your journey to Europe is officially underway.",
     "steps": {
-      "profile":   { "title": "Complete your profile",             "desc": "Add your GPA, budget, and country preferences to get accurate matches" },
-      "recommend": { "title": "Get AI recommendations",           "desc": "Run the AI to see which universities fit you best" },
-      "favourite": { "title": "Save a university",                "desc": "Bookmark universities you're interested in" },
-      "pipeline":  { "title": "Add a university to your pipeline","desc": "Track your applications and let AI write your motivation letter" },
-      "language":  { "title": "Set your language level",          "desc": "Tell us your English or German level to get better program matches" }
+      "profile": {
+        "title": "Complete your profile",
+        "desc": "Add your GPA, budget, and country preferences to get accurate matches"
+      },
+      "recommend": {
+        "title": "Get AI recommendations",
+        "desc": "Run the AI to see which universities fit you best"
+      },
+      "favourite": {
+        "title": "Save a university",
+        "desc": "Bookmark universities you're interested in"
+      },
+      "pipeline": {
+        "title": "Add a university to your pipeline",
+        "desc": "Track your applications and let AI write your motivation letter"
+      },
+      "language": {
+        "title": "Set your language level",
+        "desc": "Tell us your English or German level to get better program matches"
+      }
     }
   },
   "email": {
@@ -1505,7 +1649,45 @@
     "typeDeadlineOption": "📎 Deadline",
     "typeAcceptanceOption": "🎉 Acceptance",
     "typeRejectionOption": "❌ Rejection",
-    "days": ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],
-    "months": ["January","February","March","April","May","June","July","August","September","October","November","December"]
+    "days": [
+      "Sun",
+      "Mon",
+      "Tue",
+      "Wed",
+      "Thu",
+      "Fri",
+      "Sat"
+    ],
+    "months": [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ]
+  },
+  "costOfLiving": {
+    "title": "Cost of Living Calculator",
+    "subtitle": "Monthly expense estimates per city — Germany, Poland & Romania",
+    "searchCity": "Search city…",
+    "citiesFound": "cities found",
+    "estimatedBudget": "Estimated monthly budget",
+    "details": "View details →"
+  },
+  "community": {
+    "title": "Student Community",
+    "subtitle": "Questions, tips & experiences from students in Germany, Poland & Romania",
+    "newPost": "New Post",
+    "search": "Search posts…",
+    "posts": "posts",
+    "empty": "No posts yet",
+    "emptyHint": "Be the first to share your experience!"
   }
 }

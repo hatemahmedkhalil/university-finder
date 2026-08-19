@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import api from "../api/axios";
 import { useTranslation } from "react-i18next";
+import { Icon, ICONS } from "../components/Sidebar";
 
 const TYPE_STYLE = {
-  info:    { bg: "bg-blue-50",   border: "border-blue-200",   icon: "📢", text: "text-blue-800",   badge: "bg-blue-100 text-blue-700"   },
-  success: { bg: "bg-green-50",  border: "border-green-200",  icon: "✅", text: "text-green-800",  badge: "bg-green-100 text-green-700"  },
-  warning: { bg: "bg-yellow-50", border: "border-yellow-200", icon: "⚠️", text: "text-yellow-800", badge: "bg-yellow-100 text-yellow-700" },
+  info:    { bg: "bg-blue-50",   border: "border-blue-200",   icon: "megaphone", text: "text-blue-800",   badge: "bg-blue-100 text-blue-700"   },
+  success: { bg: "bg-green-50",  border: "border-green-200",  icon: "check", text: "text-green-800",  badge: "bg-green-100 text-green-700"  },
+  warning: { bg: "bg-yellow-50", border: "border-yellow-200", icon: "alertTriangle", text: "text-yellow-800", badge: "bg-yellow-100 text-yellow-700" },
 };
 
 const fmt = (iso) => new Date(iso).toLocaleDateString("en-GB", {
@@ -38,14 +39,14 @@ const Announcements = () => {
   return (
     <div className="min-h-screen">
       {/* Hero */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-violet-700 via-purple-700 to-indigo-700 text-white">
+      <div className="relative overflow-hidden bg-gradient-to-br from-violet-700 via-purple-700 to-indigo-700 text-[var(--ink)]">
         <div className="absolute inset-0">
           <div className="absolute top-6 left-1/4 w-64 h-64 bg-violet-400/20 rounded-full blur-3xl" />
           <div className="absolute bottom-0 right-1/4 w-72 h-72 bg-indigo-400/20 rounded-full blur-3xl" />
         </div>
         <div className="relative max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-14 text-center">
           <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-violet-200 text-xs font-bold px-4 py-1.5 rounded-full mb-5">
-            🔔 What's new
+            What's new
           </div>
           <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-2">
             <span className="bg-gradient-to-r from-violet-200 to-fuchsia-200 bg-clip-text text-transparent">{t("announcements.title")}</span>
@@ -62,12 +63,12 @@ const Announcements = () => {
 
       <div className="max-w-3xl mx-auto px-4 py-10">
         {loading ? (
-          <div className="text-center py-16 text-[oklch(0.45_0.02_285)]">{t("announcements.loading")}</div>
+          <div className="text-center py-16 text-[var(--ink-dim)]">{t("announcements.loading")}</div>
         ) : items.length === 0 ? (
           <div className="text-center py-16">
-            <p className="text-5xl mb-4">📭</p>
-            <p className="text-[oklch(0.55_0.02_285)] font-semibold text-lg">{t("announcements.empty")}</p>
-            <p className="text-[oklch(0.45_0.02_285)] text-sm mt-1">{t("announcements.emptySub")}</p>
+            <div className="mb-4 flex justify-center"><Icon d={ICONS.notifications} size={40} /></div>
+            <p className="text-[var(--ink-faint)] font-semibold text-lg">{t("announcements.empty")}</p>
+            <p className="text-[var(--ink-dim)] text-sm mt-1">{t("announcements.emptySub")}</p>
           </div>
         ) : (
           <div className="space-y-4 stagger">
@@ -80,10 +81,11 @@ const Announcements = () => {
                   className={`
                     relative rounded-2xl p-6 border transition cursor-pointer card-lift
                     ${ann.is_read
-                      ? "bg-white border-gray-100 opacity-70"
+                      ? "border-[var(--border)] opacity-70"
                       : `${s.bg} ${s.border}  hover:shadow-md`
                     }
                   `}
+                  style={ann.is_read ? { background: "var(--surface-2)" } : undefined}
                 >
                   {/* Unread dot */}
                   {!ann.is_read && (
@@ -91,10 +93,10 @@ const Announcements = () => {
                   )}
 
                   <div className="flex items-start gap-4">
-                    <div className="text-2xl mt-0.5 shrink-0">{s.icon}</div>
+                    <div className="mt-0.5 shrink-0"><Icon d={ICONS[s.icon]} size={19} /></div>
                     <div className="flex-1 min-w-0 pr-4">
                       <div className="flex items-center gap-2 flex-wrap mb-1">
-                        <h3 className={`font-bold text-base ${ann.is_read ? "text-[oklch(0.65_0.02_285)]" : s.text}`}>
+                        <h3 className={`font-bold text-base ${ann.is_read ? "text-[var(--ink-faint)]" : s.text}`}>
                           {ann.title}
                         </h3>
                         {!ann.is_read && (
@@ -106,13 +108,13 @@ const Announcements = () => {
                           {ann.type}
                         </span>
                       </div>
-                      <p className={`text-sm leading-relaxed ${ann.is_read ? "text-[oklch(0.45_0.02_285)]" : "text-[oklch(0.75_0.02_285)]"}`}>
+                      <p className={`text-sm leading-relaxed ${ann.is_read ? "text-[var(--ink-dim)]" : "text-[var(--ink-dim)]"}`}>
                         {ann.body}
                       </p>
                       <div className="flex items-center justify-between mt-3">
-                        <p className="text-[oklch(0.45_0.02_285)] text-xs">📅 {fmt(ann.created_at)}</p>
+                        <p className="text-[var(--ink-dim)] text-xs">{fmt(ann.created_at)}</p>
                         {ann.is_read
-                          ? <span className="text-xs text-[oklch(0.35_0.02_285)] flex items-center gap-1">✓ {t("announcements.seen")}</span>
+                          ? <span className="text-xs text-[var(--border-strong)] flex items-center gap-1"><Icon d={ICONS.check} size={11} /> {t("announcements.seen")}</span>
                           : <span className="text-xs text-indigo-500 font-medium">{t("announcements.markRead")}</span>
                         }
                       </div>

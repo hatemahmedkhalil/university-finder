@@ -1,0 +1,801 @@
+"""
+Add missing German universities with verified tuition fees.
+
+Sources:
+- Tuition fees: official university websites (confirmed via web search 2025)
+- BW non-EU fee: €1,500/semester = €3,000/year (confirmed for Ulm, Konstanz, Hohenheim)
+- All other German states: tuition-free for non-EU (only semester fee)
+- QS rankings: topuniversities.com 2025/2026
+"""
+
+import sys
+import os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from app.database import SessionLocal
+import sqlalchemy as sa
+
+db = SessionLocal()
+
+# ── Helpers ──────────────────────────────────────────────────────────────────
+
+def get_existing_names():
+    rows = db.execute(sa.text("SELECT name FROM universities WHERE country='Germany'")).fetchall()
+    return {r[0] for r in rows}
+
+def insert_university(u):
+    result = db.execute(sa.text("""
+        INSERT INTO universities (
+            name, country, city, website, description, ranking,
+            tuition_fee_eur, acceptance_rate, is_public, english_programs_available,
+            programs, admission_requirements, required_documents, application_deadline,
+            language_requirements, study_duration, accommodation_info,
+            application_fee_eur, living_cost_eur, min_gpa, study_language,
+            semester_fee_eur, notes, application_method, application_portal_url
+        ) VALUES (
+            :name, :country, :city, :website, :description, :ranking,
+            :tuition_fee_eur, :acceptance_rate, :is_public, :english_programs_available,
+            :programs, :admission_requirements, :required_documents, :application_deadline,
+            :language_requirements, :study_duration, :accommodation_info,
+            :application_fee_eur, :living_cost_eur, :min_gpa, :study_language,
+            :semester_fee_eur, :notes, :application_method, :application_portal_url
+        ) RETURNING id
+    """), u)
+    return result.scalar()
+
+def insert_programs(uni_id, programs):
+    for p in programs:
+        db.execute(sa.text("""
+            INSERT INTO university_programs (university_id, field_of_study, degree_level, tuition_fee_eur, notes)
+            VALUES (:uni_id, :field_of_study, :degree_level, :tuition_fee_eur, :notes)
+        """), {**p, "uni_id": uni_id})
+
+# ── BW standard programs (€3,000/year non-EU) ────────────────────────────────
+BW_PROGRAMS = [
+    {
+        "field_of_study": "All programs",
+        "degree_level": "bachelor",
+        "tuition_fee_eur": 3000,
+        "notes": "€1,500/semester = €3,000/year. Baden-Württemberg non-EU tuition fee. Exempt: EU/EEA, German Abitur holders, exchange students, refugees, prior German degree."
+    },
+    {
+        "field_of_study": "All programs",
+        "degree_level": "master",
+        "tuition_fee_eur": 3000,
+        "notes": "€1,500/semester = €3,000/year for consecutive Master's. Same BW non-EU policy. Exemptions apply."
+    },
+    {
+        "field_of_study": "All programs",
+        "degree_level": "phd",
+        "tuition_fee_eur": 0,
+        "notes": "Doctoral candidates are exempt from the BW non-EU tuition fee."
+    },
+]
+
+# ── Free-state standard programs ─────────────────────────────────────────────
+FREE_PROGRAMS = [
+    {
+        "field_of_study": "All programs",
+        "degree_level": "all",
+        "tuition_fee_eur": 0,
+        "notes": "Tuition-free for all students including non-EU. Only semester fee applies (~€200–400/semester depending on university)."
+    },
+]
+
+# ── University data ───────────────────────────────────────────────────────────
+
+UNIVERSITIES = [
+
+    # ── Baden-Württemberg (non-EU: €1,500/sem = €3,000/year) ─────────────────
+
+    {
+        "u": {
+            "name": "Ulm University",
+            "country": "Germany",
+            "city": "Ulm",
+            "website": "https://www.uni-ulm.de/en/",
+            "description": "Ulm University is a public research university in Baden-Württemberg, founded in 1967. It is particularly strong in medicine, natural sciences, mathematics, computer science, and engineering. The university has close ties with industry and research institutes in the Ulm region.",
+            "ranking": 546,
+            "tuition_fee_eur": 3000,
+            "acceptance_rate": 0.60,
+            "is_public": True,
+            "english_programs_available": True,
+            "programs": "Medicine, Engineering, Natural Sciences, Mathematics, Computer Science, Chemistry, Physics, Biology",
+            "admission_requirements": "Recognized bachelor's degree for master's programs. Sufficient subject-specific background. German or English language proficiency depending on program.",
+            "required_documents": "Certified degree certificates with translations, transcript of records, language certificate, CV, motivation letter, passport copy",
+            "application_deadline": "July 15 (winter), January 15 (summer)",
+            "language_requirements": "German programs: minimum DSH-2 or TestDaF 4. English programs: IELTS 6.5 or TOEFL 90+",
+            "study_duration": "Bachelor: 6–8 semesters. Master: 4 semesters",
+            "accommodation_info": "Student dormitories available via Studierendenwerk Ulm from ~€250–400/month",
+            "application_fee_eur": 0,
+            "living_cost_eur": 850,
+            "min_gpa": 2.5,
+            "study_language": "German, English (selected programs)",
+            "semester_fee_eur": 182,
+            "notes": "BW non-EU tuition fee: €1,500/semester. Strong in medicine and engineering. Part of the excellence cluster on aging research.",
+            "application_method": "uni-assist or direct",
+            "application_portal_url": "https://www.uni-ulm.de/en/study/application-and-enrolment/",
+        },
+        "programs": BW_PROGRAMS,
+    },
+
+    {
+        "u": {
+            "name": "University of Konstanz",
+            "country": "Germany",
+            "city": "Konstanz",
+            "website": "https://www.uni-konstanz.de/en/",
+            "description": "University of Konstanz is a public research university in Baden-Württemberg, recognized as an Excellence University since 2019. It is known for its innovative research environment, excellent facilities, and beautiful lakeside campus. Strong in social sciences, humanities, natural sciences, and law.",
+            "ranking": 466,
+            "tuition_fee_eur": 3000,
+            "acceptance_rate": 0.55,
+            "is_public": True,
+            "english_programs_available": True,
+            "programs": "Social Sciences, Humanities, Natural Sciences, Law, Economics, Computer Science, Biology, Chemistry, Mathematics, Physics",
+            "admission_requirements": "Recognized degree, good academic record, language proficiency. Some master's programs require specific bachelor's field.",
+            "required_documents": "Certified degree and transcripts with translations, language certificate, CV, motivation letter, passport copy",
+            "application_deadline": "July 15 (winter), January 15 (summer)",
+            "language_requirements": "German programs: DSH-2 or TestDaF 4. English programs: IELTS 6.5 or TOEFL 88",
+            "study_duration": "Bachelor: 6 semesters. Master: 4 semesters",
+            "accommodation_info": "Student housing via Studierendenwerk Konstanz. Campus location on a hill above Lake Constance.",
+            "application_fee_eur": 0,
+            "living_cost_eur": 900,
+            "min_gpa": 2.5,
+            "study_language": "German, English (selected programs)",
+            "semester_fee_eur": 160,
+            "notes": "BW non-EU tuition fee: €1,500/semester. Excellence University since 2019. PhD students are exempt from BW tuition fees.",
+            "application_method": "Direct via ZEuS portal",
+            "application_portal_url": "https://www.uni-konstanz.de/en/study/applying-and-enrolling/",
+        },
+        "programs": BW_PROGRAMS,
+    },
+
+    {
+        "u": {
+            "name": "University of Hohenheim",
+            "country": "Germany",
+            "city": "Stuttgart",
+            "website": "https://www.uni-hohenheim.de/en/",
+            "description": "University of Hohenheim is a public research university in Baden-Württemberg, located in Stuttgart. Founded in 1818, it specializes in agricultural sciences, natural sciences, and economics. It is one of the top German universities for agriculture, food sciences, and sustainability research.",
+            "ranking": 715,
+            "tuition_fee_eur": 3000,
+            "acceptance_rate": 0.65,
+            "is_public": True,
+            "english_programs_available": True,
+            "programs": "Agricultural Sciences, Food Sciences, Economics, Natural Sciences, Biology, Environmental Sciences, Sustainability",
+            "admission_requirements": "Recognized degree in related field, language proficiency, some programs require motivation letter and relevant experience.",
+            "required_documents": "Certified degree and transcripts, language certificate, CV, motivation letter, passport copy",
+            "application_deadline": "July 15 (winter), January 15 (summer)",
+            "language_requirements": "German programs: DSH-2 or TestDaF 4. English programs: IELTS 6.0 or TOEFL 80",
+            "study_duration": "Bachelor: 6–7 semesters. Master: 4 semesters",
+            "accommodation_info": "Student dormitories on campus available via Studierendenwerk Stuttgart-Hohenheim from ~€280/month",
+            "application_fee_eur": 0,
+            "living_cost_eur": 900,
+            "min_gpa": 2.5,
+            "study_language": "German, English (selected master's programs)",
+            "semester_fee_eur": 174,
+            "notes": "BW non-EU tuition fee: €1,500/semester. Top German university for agriculture and food sciences. Castle campus in Stuttgart.",
+            "application_method": "uni-assist or direct",
+            "application_portal_url": "https://www.uni-hohenheim.de/en/study/application",
+        },
+        "programs": BW_PROGRAMS,
+    },
+
+    # ── Free-tuition universities (all other German states) ───────────────────
+
+    {
+        "u": {
+            "name": "TU Braunschweig",
+            "country": "Germany",
+            "city": "Braunschweig",
+            "website": "https://www.tu-braunschweig.de/en/",
+            "description": "Technische Universität Braunschweig (TU Braunschweig) is one of Germany's oldest technical universities, founded in 1745. Located in Lower Saxony, it is particularly known for engineering, aerospace and vehicle engineering, computer science, and natural sciences. No tuition fees for non-EU students.",
+            "ranking": 715,
+            "tuition_fee_eur": 0,
+            "acceptance_rate": 0.65,
+            "is_public": True,
+            "english_programs_available": True,
+            "programs": "Engineering, Aerospace Engineering, Vehicle Engineering, Computer Science, Mathematics, Physics, Chemistry, Architecture, Economics",
+            "admission_requirements": "Recognized degree, language proficiency, some programs have restricted admission (Numerus Clausus).",
+            "required_documents": "Certified degree and transcripts with translations, language certificate, CV, passport copy, motivation letter for some programs",
+            "application_deadline": "July 15 (winter), January 15 (summer)",
+            "language_requirements": "German programs: DSH-2 or TestDaF 4. English programs: IELTS 6.0 or TOEFL 80",
+            "study_duration": "Bachelor: 6 semesters. Master: 4 semesters",
+            "accommodation_info": "Student dormitories via Studentenwerk OstNiedersachsen from ~€250–380/month",
+            "application_fee_eur": 0,
+            "living_cost_eur": 800,
+            "min_gpa": 2.5,
+            "study_language": "German, English (selected programs)",
+            "semester_fee_eur": 285,
+            "notes": "Tuition-free for all including non-EU. Only semester fee ~€285. Strong in aerospace and automotive engineering. Close partnership with Volkswagen.",
+            "application_method": "uni-assist or direct",
+            "application_portal_url": "https://www.tu-braunschweig.de/en/international-students/application",
+        },
+        "programs": FREE_PROGRAMS,
+    },
+
+    {
+        "u": {
+            "name": "University of Potsdam",
+            "country": "Germany",
+            "city": "Potsdam",
+            "website": "https://www.uni-potsdam.de/en/",
+            "description": "University of Potsdam is a public research university in Brandenburg, founded in 1991. It is the largest university in Brandenburg and is known for law, economics, natural sciences, human sciences, and computer science. Located near Berlin with excellent connection to the capital's academic scene.",
+            "ranking": 801,
+            "tuition_fee_eur": 0,
+            "acceptance_rate": 0.70,
+            "is_public": True,
+            "english_programs_available": True,
+            "programs": "Law, Economics, Human Sciences, Natural Sciences, Computer Science, Mathematics, Languages, Cultural Studies",
+            "admission_requirements": "Recognized degree, language proficiency. Many programs open to international students.",
+            "required_documents": "Certified degree and transcripts with translations, language certificate, CV, passport copy",
+            "application_deadline": "June 15 (winter), December 15 (summer) — via uni-assist",
+            "language_requirements": "German programs: DSH-2 or TestDaF 4. English programs: IELTS 6.0 or TOEFL 80",
+            "study_duration": "Bachelor: 6 semesters. Master: 4 semesters",
+            "accommodation_info": "Student housing via Studierendenwerk Potsdam. Close to Berlin, many students live in Berlin.",
+            "application_fee_eur": 0,
+            "living_cost_eur": 900,
+            "min_gpa": 2.5,
+            "study_language": "German, English (selected programs)",
+            "semester_fee_eur": 310,
+            "notes": "Tuition-free for all including non-EU. Near Berlin — great cultural and career networking access.",
+            "application_method": "uni-assist",
+            "application_portal_url": "https://www.uni-potsdam.de/en/studium/studying/international-students",
+        },
+        "programs": FREE_PROGRAMS,
+    },
+
+    {
+        "u": {
+            "name": "Philipps-Universität Marburg",
+            "country": "Germany",
+            "city": "Marburg",
+            "website": "https://www.uni-marburg.de/en/",
+            "description": "Philipps-Universität Marburg, founded in 1527, is one of the oldest Protestant universities in the world. Located in Hesse, it is renowned for pharmacy, medicine, natural sciences, and humanities. A traditional yet internationally oriented university with no tuition fees for non-EU students.",
+            "ranking": 801,
+            "tuition_fee_eur": 0,
+            "acceptance_rate": 0.60,
+            "is_public": True,
+            "english_programs_available": True,
+            "programs": "Medicine, Pharmacy, Natural Sciences, Humanities, Law, Social Sciences, Mathematics, Physics, Chemistry, Biology",
+            "admission_requirements": "Recognized degree, language proficiency. Medicine and pharmacy have restricted admission.",
+            "required_documents": "Certified degree and transcripts with translations, language certificate, CV, passport copy, motivation letter for some programs",
+            "application_deadline": "July 15 (winter), January 15 (summer)",
+            "language_requirements": "German programs: DSH-2 or TestDaF 4. English programs: IELTS 6.0 or TOEFL 80",
+            "study_duration": "Bachelor: 6–8 semesters. Master: 4 semesters. Medicine: 12 semesters",
+            "accommodation_info": "Student dormitories via Studierendenwerk Marburg from ~€250–380/month",
+            "application_fee_eur": 0,
+            "living_cost_eur": 800,
+            "min_gpa": 2.5,
+            "study_language": "German, English (selected programs)",
+            "semester_fee_eur": 320,
+            "notes": "Tuition-free for all including non-EU. One of the oldest universities in Germany (1527). Excellent pharmacy and pharmaceutical chemistry.",
+            "application_method": "uni-assist or direct",
+            "application_portal_url": "https://www.uni-marburg.de/en/admissions",
+        },
+        "programs": FREE_PROGRAMS,
+    },
+
+    {
+        "u": {
+            "name": "Justus Liebig University Giessen",
+            "country": "Germany",
+            "city": "Giessen",
+            "website": "https://www.uni-giessen.de/en/",
+            "description": "Justus Liebig University Giessen (JLU) is a public research university in Hesse, founded in 1607. It is one of Germany's oldest and most research-intensive universities, particularly strong in medicine, veterinary medicine, agricultural sciences, and natural sciences.",
+            "ranking": 801,
+            "tuition_fee_eur": 0,
+            "acceptance_rate": 0.65,
+            "is_public": True,
+            "english_programs_available": True,
+            "programs": "Medicine, Veterinary Medicine, Agricultural Sciences, Natural Sciences, Humanities, Social Sciences, Law, Economics, Mathematics",
+            "admission_requirements": "Recognized degree, language proficiency. Medicine and veterinary medicine have restricted admission.",
+            "required_documents": "Certified degree and transcripts with translations, language certificate, CV, passport copy",
+            "application_deadline": "July 15 (winter), January 15 (summer)",
+            "language_requirements": "German programs: DSH-2 or TestDaF 4. English programs: IELTS 6.0 or TOEFL 80",
+            "study_duration": "Bachelor: 6–8 semesters. Master: 4 semesters",
+            "accommodation_info": "Student housing via Studierendenwerk Giessen from ~€250–380/month",
+            "application_fee_eur": 0,
+            "living_cost_eur": 800,
+            "min_gpa": 2.5,
+            "study_language": "German, English (selected programs)",
+            "semester_fee_eur": 320,
+            "notes": "Tuition-free for all including non-EU. Named after Justus von Liebig, the father of modern organic chemistry. Strong in life sciences.",
+            "application_method": "uni-assist or direct",
+            "application_portal_url": "https://www.uni-giessen.de/en/studium",
+        },
+        "programs": FREE_PROGRAMS,
+    },
+
+    {
+        "u": {
+            "name": "University of Kassel",
+            "country": "Germany",
+            "city": "Kassel",
+            "website": "https://www.uni-kassel.de/en/",
+            "description": "University of Kassel is a public university in Hesse, founded in 1971. It is known for engineering, natural sciences, organic agricultural sciences, and arts. One of Germany's progressive universities with a strong focus on sustainability and international development.",
+            "ranking": 1001,
+            "tuition_fee_eur": 0,
+            "acceptance_rate": 0.70,
+            "is_public": True,
+            "english_programs_available": True,
+            "programs": "Engineering, Natural Sciences, Organic Agricultural Sciences, Architecture, Arts, Social Sciences, Economics, Education",
+            "admission_requirements": "Recognized degree, language proficiency.",
+            "required_documents": "Certified degree and transcripts with translations, language certificate, CV, passport copy",
+            "application_deadline": "July 15 (winter), January 15 (summer)",
+            "language_requirements": "German programs: DSH-2 or TestDaF 4. English programs: IELTS 6.0 or TOEFL 80",
+            "study_duration": "Bachelor: 6 semesters. Master: 4 semesters",
+            "accommodation_info": "Student housing via Studentenwerk Kassel from ~€250–380/month",
+            "application_fee_eur": 0,
+            "living_cost_eur": 800,
+            "min_gpa": 2.5,
+            "study_language": "German, English (selected programs)",
+            "semester_fee_eur": 330,
+            "notes": "Tuition-free for all including non-EU. Strong in organic agriculture and sustainability. Hosts the renowned documenta art exhibition.",
+            "application_method": "uni-assist or direct",
+            "application_portal_url": "https://www.uni-kassel.de/en/studying/applying",
+        },
+        "programs": FREE_PROGRAMS,
+    },
+
+    {
+        "u": {
+            "name": "Bielefeld University",
+            "country": "Germany",
+            "city": "Bielefeld",
+            "website": "https://www.uni-bielefeld.de/en/",
+            "description": "Bielefeld University is a public research university in North Rhine-Westphalia, founded in 1969. Known for its interdisciplinary research approach and unified campus design, it excels in social sciences, natural sciences, mathematics, and technology. Tuition-free for all students including non-EU.",
+            "ranking": 1001,
+            "tuition_fee_eur": 0,
+            "acceptance_rate": 0.65,
+            "is_public": True,
+            "english_programs_available": True,
+            "programs": "Social Sciences, Natural Sciences, Mathematics, Technology, Humanities, Law, Economics, Biotechnology, Health Sciences",
+            "admission_requirements": "Recognized degree, language proficiency.",
+            "required_documents": "Certified degree and transcripts with translations, language certificate, CV, passport copy",
+            "application_deadline": "July 15 (winter), January 15 (summer)",
+            "language_requirements": "German programs: DSH-2 or TestDaF 4. English programs: IELTS 6.0 or TOEFL 80",
+            "study_duration": "Bachelor: 6 semesters. Master: 4 semesters",
+            "accommodation_info": "Student dormitories via Studierendenwerk Bielefeld from ~€250–380/month",
+            "application_fee_eur": 0,
+            "living_cost_eur": 800,
+            "min_gpa": 2.5,
+            "study_language": "German, English (selected programs)",
+            "semester_fee_eur": 310,
+            "notes": "Tuition-free for all including non-EU. Innovative interdisciplinary university structure. Strong in sociology and health sciences.",
+            "application_method": "uni-assist or direct",
+            "application_portal_url": "https://www.uni-bielefeld.de/en/studium/",
+        },
+        "programs": FREE_PROGRAMS,
+    },
+
+    {
+        "u": {
+            "name": "University of Paderborn",
+            "country": "Germany",
+            "city": "Paderborn",
+            "website": "https://www.uni-paderborn.de/en/",
+            "description": "University of Paderborn is a public university in North Rhine-Westphalia, founded in 1972. It is particularly strong in computer science, electrical engineering, mathematics, and economics. Home to a vibrant international community and no tuition fees for non-EU students.",
+            "ranking": 1001,
+            "tuition_fee_eur": 0,
+            "acceptance_rate": 0.70,
+            "is_public": True,
+            "english_programs_available": True,
+            "programs": "Computer Science, Electrical Engineering, Mathematics, Economics, Business, Mechanical Engineering, Physics, Chemistry, Education",
+            "admission_requirements": "Recognized degree, language proficiency. Computer Science and Engineering are highly competitive.",
+            "required_documents": "Certified degree and transcripts with translations, language certificate, CV, passport copy",
+            "application_deadline": "July 15 (winter), January 15 (summer)",
+            "language_requirements": "German programs: DSH-2 or TestDaF 4. English programs: IELTS 6.0 or TOEFL 80",
+            "study_duration": "Bachelor: 6 semesters. Master: 4 semesters",
+            "accommodation_info": "Student dormitories via Studierendenwerk Paderborn from ~€250–370/month",
+            "application_fee_eur": 0,
+            "living_cost_eur": 780,
+            "min_gpa": 2.5,
+            "study_language": "German, English (selected programs)",
+            "semester_fee_eur": 300,
+            "notes": "Tuition-free for all including non-EU. Strong in computer science and digital humanities. Heinz Nixdorf MuseumsForum (world's largest computer museum) is in Paderborn.",
+            "application_method": "uni-assist or direct",
+            "application_portal_url": "https://www.uni-paderborn.de/en/studium/studieninteressierte",
+        },
+        "programs": FREE_PROGRAMS,
+    },
+
+    {
+        "u": {
+            "name": "University of Siegen",
+            "country": "Germany",
+            "city": "Siegen",
+            "website": "https://www.uni-siegen.de/en/",
+            "description": "University of Siegen is a public university in North Rhine-Westphalia, founded in 1972. It offers a wide range of programs in engineering, natural sciences, humanities, and social sciences. Strong research focus on media studies and electrical engineering. Tuition-free for all students.",
+            "ranking": 1001,
+            "tuition_fee_eur": 0,
+            "acceptance_rate": 0.70,
+            "is_public": True,
+            "english_programs_available": True,
+            "programs": "Engineering, Electrical Engineering, Computer Science, Media Studies, Natural Sciences, Humanities, Social Sciences, Economics, Architecture",
+            "admission_requirements": "Recognized degree, language proficiency.",
+            "required_documents": "Certified degree and transcripts with translations, language certificate, CV, passport copy",
+            "application_deadline": "July 15 (winter), January 15 (summer)",
+            "language_requirements": "German programs: DSH-2 or TestDaF 4. English programs: IELTS 6.0 or TOEFL 80",
+            "study_duration": "Bachelor: 6 semesters. Master: 4 semesters",
+            "accommodation_info": "Student dormitories via Studierendenwerk Siegen-Wittgenstein from ~€240–360/month",
+            "application_fee_eur": 0,
+            "living_cost_eur": 780,
+            "min_gpa": 2.5,
+            "study_language": "German, English (selected programs)",
+            "semester_fee_eur": 290,
+            "notes": "Tuition-free for all including non-EU. Growing international profile. Strong in media and communication engineering.",
+            "application_method": "uni-assist or direct",
+            "application_portal_url": "https://www.uni-siegen.de/en/studying/",
+        },
+        "programs": FREE_PROGRAMS,
+    },
+
+    {
+        "u": {
+            "name": "Bergische Universität Wuppertal",
+            "country": "Germany",
+            "city": "Wuppertal",
+            "website": "https://www.uni-wuppertal.de/en/",
+            "description": "Bergische Universität Wuppertal is a public university in North Rhine-Westphalia, founded in 1972. Known for engineering, natural sciences, design, and economics. Strong research in electrical engineering, physics, and mathematics. Tuition-free for all including non-EU students.",
+            "ranking": 1001,
+            "tuition_fee_eur": 0,
+            "acceptance_rate": 0.70,
+            "is_public": True,
+            "english_programs_available": True,
+            "programs": "Electrical Engineering, Mechanical Engineering, Physics, Mathematics, Chemistry, Architecture, Design, Economics, Education, Safety Engineering",
+            "admission_requirements": "Recognized degree, language proficiency.",
+            "required_documents": "Certified degree and transcripts with translations, language certificate, CV, passport copy",
+            "application_deadline": "July 15 (winter), January 15 (summer)",
+            "language_requirements": "German programs: DSH-2 or TestDaF 4. English programs: IELTS 6.0 or TOEFL 80",
+            "study_duration": "Bachelor: 6 semesters. Master: 4 semesters",
+            "accommodation_info": "Student dormitories via AStA Wuppertal from ~€240–360/month",
+            "application_fee_eur": 0,
+            "living_cost_eur": 800,
+            "min_gpa": 2.5,
+            "study_language": "German, English (selected programs)",
+            "semester_fee_eur": 300,
+            "notes": "Tuition-free for all including non-EU. Notable for Safety Engineering — one of few universities offering this specialty in Germany.",
+            "application_method": "uni-assist or direct",
+            "application_portal_url": "https://www.uni-wuppertal.de/en/studying/",
+        },
+        "programs": FREE_PROGRAMS,
+    },
+
+    {
+        "u": {
+            "name": "University of Osnabrück",
+            "country": "Germany",
+            "city": "Osnabrück",
+            "website": "https://www.uni-osnabrueck.de/en/",
+            "description": "University of Osnabrück is a public university in Lower Saxony, founded in 1974. Strong in cognitive science, mathematics, law, natural sciences, and humanities. Notable for its unique Cognitive Science program which is one of the best in Germany.",
+            "ranking": 1001,
+            "tuition_fee_eur": 0,
+            "acceptance_rate": 0.65,
+            "is_public": True,
+            "english_programs_available": True,
+            "programs": "Cognitive Science, Mathematics, Computer Science, Natural Sciences, Law, Humanities, Social Sciences, Economics, Education",
+            "admission_requirements": "Recognized degree, language proficiency. Cognitive Science is highly competitive.",
+            "required_documents": "Certified degree and transcripts with translations, language certificate, CV, passport copy, motivation letter for competitive programs",
+            "application_deadline": "July 15 (winter), January 15 (summer)",
+            "language_requirements": "German programs: DSH-2 or TestDaF 4. English programs: IELTS 6.0 or TOEFL 80",
+            "study_duration": "Bachelor: 6 semesters. Master: 4 semesters",
+            "accommodation_info": "Student housing via Studentenwerk OsnabrückEmsland from ~€250–370/month",
+            "application_fee_eur": 0,
+            "living_cost_eur": 780,
+            "min_gpa": 2.5,
+            "study_language": "German, English (selected programs)",
+            "semester_fee_eur": 310,
+            "notes": "Tuition-free for all including non-EU. Unique strength in Cognitive Science. Peaceful city with high quality of life.",
+            "application_method": "uni-assist or direct",
+            "application_portal_url": "https://www.uni-osnabrueck.de/en/studying/",
+        },
+        "programs": FREE_PROGRAMS,
+    },
+
+    {
+        "u": {
+            "name": "Carl von Ossietzky University of Oldenburg",
+            "country": "Germany",
+            "city": "Oldenburg",
+            "website": "https://www.uni-oldenburg.de/en/",
+            "description": "Carl von Ossietzky University of Oldenburg is a public university in Lower Saxony, founded in 1974. Known for physics (particularly energy research), computer science, economics, and educational sciences. Excellent for offshore wind energy research and renewable energy studies.",
+            "ranking": 801,
+            "tuition_fee_eur": 0,
+            "acceptance_rate": 0.65,
+            "is_public": True,
+            "english_programs_available": True,
+            "programs": "Physics, Computer Science, Economics, Education, Natural Sciences, Humanities, Mathematics, Engineering",
+            "admission_requirements": "Recognized degree, language proficiency.",
+            "required_documents": "Certified degree and transcripts with translations, language certificate, CV, passport copy",
+            "application_deadline": "July 15 (winter), January 15 (summer)",
+            "language_requirements": "German programs: DSH-2 or TestDaF 4. English programs: IELTS 6.0 or TOEFL 80",
+            "study_duration": "Bachelor: 6 semesters. Master: 4 semesters",
+            "accommodation_info": "Student housing via Studentenwerk OsnabrückEmsland from ~€250–370/month",
+            "application_fee_eur": 0,
+            "living_cost_eur": 780,
+            "min_gpa": 2.5,
+            "study_language": "German, English (selected programs)",
+            "semester_fee_eur": 310,
+            "notes": "Tuition-free for all including non-EU. World-class renewable energy and offshore wind energy research. English-taught Master in Renewable Energy.",
+            "application_method": "uni-assist or direct",
+            "application_portal_url": "https://www.uni-oldenburg.de/en/studying/",
+        },
+        "programs": FREE_PROGRAMS,
+    },
+
+    {
+        "u": {
+            "name": "Leuphana University Lüneburg",
+            "country": "Germany",
+            "city": "Lüneburg",
+            "website": "https://www.leuphana.de/en/",
+            "description": "Leuphana University Lüneburg is a public university in Lower Saxony with a unique reformatory model. It offers an innovative undergraduate college program combining different disciplines. Particularly strong in sustainability, entrepreneurship, cultural studies, and digital humanities. Tuition-free for all students.",
+            "ranking": 1001,
+            "tuition_fee_eur": 0,
+            "acceptance_rate": 0.70,
+            "is_public": True,
+            "english_programs_available": True,
+            "programs": "Sustainability, Management, Cultural Studies, Digital Humanities, Psychology, Environmental Sciences, Entrepreneurship",
+            "admission_requirements": "Recognized degree, language proficiency. The Leuphana College model may require additional statements of interest.",
+            "required_documents": "Certified degree and transcripts with translations, language certificate, CV, motivation letter, passport copy",
+            "application_deadline": "July 15 (winter), January 15 (summer)",
+            "language_requirements": "German programs: DSH-2 or TestDaF 4. English programs: IELTS 6.5 or TOEFL 90",
+            "study_duration": "Bachelor: 6 semesters. Master: 4 semesters",
+            "accommodation_info": "Student dormitories in Lüneburg. Close to Hamburg (30 min by train).",
+            "application_fee_eur": 0,
+            "living_cost_eur": 780,
+            "min_gpa": 2.5,
+            "study_language": "German, English (selected programs)",
+            "semester_fee_eur": 310,
+            "notes": "Tuition-free for all including non-EU. Innovative interdisciplinary model. One of the most progressive German universities for sustainability and entrepreneurship.",
+            "application_method": "Direct via Leuphana portal",
+            "application_portal_url": "https://www.leuphana.de/en/studying/",
+        },
+        "programs": FREE_PROGRAMS,
+    },
+
+    {
+        "u": {
+            "name": "Chemnitz University of Technology",
+            "country": "Germany",
+            "city": "Chemnitz",
+            "website": "https://www.tu-chemnitz.de/en/",
+            "description": "Chemnitz University of Technology (TU Chemnitz) is a public technical university in Saxony, founded in 1836. It is particularly strong in engineering, natural sciences, computer science, and economics. Known for automotive and lightweight engineering research. Tuition-free for all including non-EU students.",
+            "ranking": 1001,
+            "tuition_fee_eur": 0,
+            "acceptance_rate": 0.75,
+            "is_public": True,
+            "english_programs_available": True,
+            "programs": "Engineering, Computer Science, Natural Sciences, Economics, Automotive Engineering, Lightweight Engineering, Mathematics, Physics",
+            "admission_requirements": "Recognized degree, language proficiency.",
+            "required_documents": "Certified degree and transcripts with translations, language certificate, CV, passport copy",
+            "application_deadline": "July 15 (winter), January 15 (summer)",
+            "language_requirements": "German programs: DSH-2 or TestDaF 4. English programs: IELTS 6.0 or TOEFL 80",
+            "study_duration": "Bachelor: 6–7 semesters. Master: 4 semesters",
+            "accommodation_info": "Student dormitories via Studentenwerk Chemnitz-Zwickau from ~€200–320/month (very affordable)",
+            "application_fee_eur": 0,
+            "living_cost_eur": 700,
+            "min_gpa": 2.5,
+            "study_language": "German, English (selected programs)",
+            "semester_fee_eur": 270,
+            "notes": "Tuition-free for all including non-EU. Very affordable cost of living (~€700/month). Strong in automotive and lightweight engineering.",
+            "application_method": "uni-assist or direct",
+            "application_portal_url": "https://www.tu-chemnitz.de/en/study/",
+        },
+        "programs": FREE_PROGRAMS,
+    },
+
+    {
+        "u": {
+            "name": "TU Ilmenau",
+            "country": "Germany",
+            "city": "Ilmenau",
+            "website": "https://www.tu-ilmenau.de/en/",
+            "description": "Technische Universität Ilmenau is a public technical university in Thuringia, Germany. Founded in 1894, it specializes in electrical engineering, information technology, mechanical engineering, and natural sciences. Known for its strong industry connections and high employment rate of graduates.",
+            "ranking": 1001,
+            "tuition_fee_eur": 0,
+            "acceptance_rate": 0.75,
+            "is_public": True,
+            "english_programs_available": True,
+            "programs": "Electrical Engineering, Information Technology, Mechanical Engineering, Computer Science, Mathematics, Physics, Economics",
+            "admission_requirements": "Recognized degree, language proficiency. Engineering programs may require portfolio or entrance exam.",
+            "required_documents": "Certified degree and transcripts with translations, language certificate, CV, passport copy",
+            "application_deadline": "July 15 (winter), January 15 (summer)",
+            "language_requirements": "German programs: DSH-2 or TestDaF 4. English programs: IELTS 6.0 or TOEFL 80",
+            "study_duration": "Bachelor: 6 semesters. Master: 4 semesters",
+            "accommodation_info": "Student dormitories via Studierendenwerk Thüringen from ~€180–300/month (very affordable)",
+            "application_fee_eur": 0,
+            "living_cost_eur": 680,
+            "min_gpa": 2.5,
+            "study_language": "German, English (selected programs)",
+            "semester_fee_eur": 260,
+            "notes": "Tuition-free for all including non-EU. Very low cost of living (~€680/month). Excellent employment rate after graduation. Strong engineering focus.",
+            "application_method": "uni-assist or direct",
+            "application_portal_url": "https://www.tu-ilmenau.de/en/studies/",
+        },
+        "programs": FREE_PROGRAMS,
+    },
+
+    {
+        "u": {
+            "name": "Martin Luther University Halle-Wittenberg",
+            "country": "Germany",
+            "city": "Halle (Saale)",
+            "website": "https://www.uni-halle.de/en/",
+            "description": "Martin Luther University Halle-Wittenberg (MLU) is a public research university in Saxony-Anhalt, Germany. Founded in 1502, it is one of the oldest and largest universities in Germany. It offers comprehensive programs in medicine, natural sciences, humanities, law, and economics.",
+            "ranking": 801,
+            "tuition_fee_eur": 0,
+            "acceptance_rate": 0.65,
+            "is_public": True,
+            "english_programs_available": True,
+            "programs": "Medicine, Natural Sciences, Humanities, Law, Economics, Social Sciences, Pharmacy, Agriculture, Education",
+            "admission_requirements": "Recognized degree, language proficiency. Medicine and pharmacy have very restricted admission.",
+            "required_documents": "Certified degree and transcripts with translations, language certificate, CV, passport copy",
+            "application_deadline": "July 15 (winter), January 15 (summer)",
+            "language_requirements": "German programs: DSH-2 or TestDaF 4. English programs: IELTS 6.0 or TOEFL 80",
+            "study_duration": "Bachelor: 6–8 semesters. Master: 4 semesters. Medicine: 12 semesters",
+            "accommodation_info": "Student dormitories via Studentenwerk Halle from ~€190–320/month",
+            "application_fee_eur": 0,
+            "living_cost_eur": 720,
+            "min_gpa": 2.5,
+            "study_language": "German, English (selected programs)",
+            "semester_fee_eur": 280,
+            "notes": "Tuition-free for all including non-EU. One of Germany's oldest universities (founded 1502). Very affordable city. Strong in medicine and pharmacy.",
+            "application_method": "uni-assist or direct",
+            "application_portal_url": "https://www.uni-halle.de/en/study/",
+        },
+        "programs": FREE_PROGRAMS,
+    },
+
+    {
+        "u": {
+            "name": "University of Passau",
+            "country": "Germany",
+            "city": "Passau",
+            "website": "https://www.uni-passau.de/en/",
+            "description": "University of Passau is a public university in Bavaria, founded in 1978. Located at the confluence of three rivers near the Austrian border, it is known for law, economics, computer science, and cultural studies. Confirmed no tuition fees for international students as of 2024.",
+            "ranking": 1001,
+            "tuition_fee_eur": 0,
+            "acceptance_rate": 0.65,
+            "is_public": True,
+            "english_programs_available": True,
+            "programs": "Law, Economics, Computer Science, Cultural Studies, Mathematics, Linguistics, Media and Communication",
+            "admission_requirements": "Recognized degree, language proficiency. Law programs highly competitive.",
+            "required_documents": "Certified degree and transcripts with translations, language certificate, CV, passport copy, motivation letter for some programs",
+            "application_deadline": "July 15 (winter), January 15 (summer)",
+            "language_requirements": "German programs: DSH-2 or TestDaF 4. English programs: IELTS 6.0 or TOEFL 80",
+            "study_duration": "Bachelor: 6 semesters. Master: 4 semesters",
+            "accommodation_info": "Student dormitories via Studentenwerk Niederbayern-Oberpfalz from ~€250–380/month",
+            "application_fee_eur": 0,
+            "living_cost_eur": 800,
+            "min_gpa": 2.5,
+            "study_language": "German, English (selected programs)",
+            "semester_fee_eur": 300,
+            "notes": "Tuition-free for all including non-EU (officially confirmed 2024). Beautiful baroque city near Austrian border. Strong in international law and IT law.",
+            "application_method": "uni-assist or direct",
+            "application_portal_url": "https://www.uni-passau.de/en/studies/",
+        },
+        "programs": FREE_PROGRAMS,
+    },
+
+    {
+        "u": {
+            "name": "University of Bamberg",
+            "country": "Germany",
+            "city": "Bamberg",
+            "website": "https://www.uni-bamberg.de/en/",
+            "description": "University of Bamberg (Otto-Friedrich-Universität Bamberg) is a public university in Bavaria, founded in 1647. It specializes in humanities, social sciences, business, and information systems. Located in UNESCO World Heritage city of Bamberg.",
+            "ranking": 1001,
+            "tuition_fee_eur": 0,
+            "acceptance_rate": 0.65,
+            "is_public": True,
+            "english_programs_available": True,
+            "programs": "Humanities, Social Sciences, Business, Information Systems, Computer Science, Education, Psychology, Sociology, Archaeology",
+            "admission_requirements": "Recognized degree, language proficiency.",
+            "required_documents": "Certified degree and transcripts with translations, language certificate, CV, passport copy",
+            "application_deadline": "July 15 (winter), January 15 (summer)",
+            "language_requirements": "German programs: DSH-2 or TestDaF 4. English programs: IELTS 6.0 or TOEFL 80",
+            "study_duration": "Bachelor: 6 semesters. Master: 4 semesters",
+            "accommodation_info": "Student housing in UNESCO World Heritage city of Bamberg. Very affordable ~€250–350/month",
+            "application_fee_eur": 0,
+            "living_cost_eur": 780,
+            "min_gpa": 2.5,
+            "study_language": "German, English (selected programs)",
+            "semester_fee_eur": 290,
+            "notes": "Tuition-free for all including non-EU. Located in UNESCO World Heritage city. Excellent student satisfaction rating. Strong in information systems.",
+            "application_method": "uni-assist or direct",
+            "application_portal_url": "https://www.uni-bamberg.de/en/studies/",
+        },
+        "programs": FREE_PROGRAMS,
+    },
+
+    {
+        "u": {
+            "name": "RPTU Kaiserslautern-Landau",
+            "country": "Germany",
+            "city": "Kaiserslautern",
+            "website": "https://rptu.de/en/",
+            "description": "RPTU Kaiserslautern-Landau (Rheinland-Pfälzische Technische Universität) is a public technical university in Rhineland-Palatinate, formed in 2023 from the merger of TU Kaiserslautern and University of Landau. Strong in computer science, mathematics, engineering, and natural sciences.",
+            "ranking": 1001,
+            "tuition_fee_eur": 0,
+            "acceptance_rate": 0.70,
+            "is_public": True,
+            "english_programs_available": True,
+            "programs": "Computer Science, Mathematics, Engineering, Mechanical Engineering, Electrical Engineering, Physics, Chemistry, Biology, Business",
+            "admission_requirements": "Recognized degree, language proficiency.",
+            "required_documents": "Certified degree and transcripts with translations, language certificate, CV, passport copy",
+            "application_deadline": "July 15 (winter), January 15 (summer)",
+            "language_requirements": "German programs: DSH-2 or TestDaF 4. English programs: IELTS 6.0 or TOEFL 80",
+            "study_duration": "Bachelor: 6 semesters. Master: 4 semesters",
+            "accommodation_info": "Student dormitories via Studierendenwerk Kaiserslautern from ~€230–360/month",
+            "application_fee_eur": 0,
+            "living_cost_eur": 750,
+            "min_gpa": 2.5,
+            "study_language": "German, English (selected programs)",
+            "semester_fee_eur": 280,
+            "notes": "Tuition-free for all including non-EU. Formed 2023 from merger of TU Kaiserslautern and University of Landau. Strong computer science ranking. Affordable city.",
+            "application_method": "uni-assist or direct",
+            "application_portal_url": "https://rptu.de/en/studies/",
+        },
+        "programs": FREE_PROGRAMS,
+    },
+
+    {
+        "u": {
+            "name": "University of Trier",
+            "country": "Germany",
+            "city": "Trier",
+            "website": "https://www.uni-trier.de/en/",
+            "description": "University of Trier is a public university in Rhineland-Palatinate, founded in 1970. Located in Germany's oldest city, it specializes in humanities, social sciences, law, economics, and classics. Strong in Latin studies, ancient history, and papyrology. Tuition-free for all students.",
+            "ranking": 1001,
+            "tuition_fee_eur": 0,
+            "acceptance_rate": 0.70,
+            "is_public": True,
+            "english_programs_available": True,
+            "programs": "Humanities, Law, Economics, Social Sciences, Classics, History, Geography, Psychology, Business Informatics, Egyptology",
+            "admission_requirements": "Recognized degree, language proficiency.",
+            "required_documents": "Certified degree and transcripts with translations, language certificate, CV, passport copy",
+            "application_deadline": "July 15 (winter), January 15 (summer)",
+            "language_requirements": "German programs: DSH-2 or TestDaF 4. English programs: IELTS 6.0 or TOEFL 80",
+            "study_duration": "Bachelor: 6 semesters. Master: 4 semesters",
+            "accommodation_info": "Student housing via Studierendenwerk Trier from ~€220–350/month",
+            "application_fee_eur": 0,
+            "living_cost_eur": 750,
+            "min_gpa": 2.5,
+            "study_language": "German, English (selected programs)",
+            "semester_fee_eur": 280,
+            "notes": "Tuition-free for all including non-EU. Located in Germany's oldest Roman city. Unique strengths in Egyptology, papyrology, and ancient history. Karl Marx was born in Trier.",
+            "application_method": "uni-assist or direct",
+            "application_portal_url": "https://www.uni-trier.de/en/studies/",
+        },
+        "programs": FREE_PROGRAMS,
+    },
+]
+
+# ── Run ───────────────────────────────────────────────────────────────────────
+
+def main():
+    existing = get_existing_names()
+    print(f"Existing German universities: {len(existing)}")
+
+    added = 0
+    skipped = 0
+
+    for entry in UNIVERSITIES:
+        u = entry["u"]
+        if u["name"] in existing:
+            print(f"  SKIP (exists): {u['name']}")
+            skipped += 1
+            continue
+
+        uni_id = insert_university(u)
+        insert_programs(uni_id, entry["programs"])
+        print(f"  ADDED [{uni_id}]: {u['name']} — {u['city']} | tuition: €{u['tuition_fee_eur']}/yr")
+        added += 1
+
+    db.commit()
+    print(f"\nDone. Added: {added}, Skipped: {skipped}")
+
+if __name__ == "__main__":
+    main()

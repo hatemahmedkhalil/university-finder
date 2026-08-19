@@ -10,19 +10,22 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
-from fastapi.responses import FileResponse
+from fastapi import APIRouter, Depends, HTTPException, Response, UploadFile, File
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session, selectinload
 
-from app.dependencies import get_db, get_current_user, require_admin
+from app.dependencies import get_db, get_current_user
 from app.models.ielts import IeltsQuestion, IeltsSection, IeltsTest
 from app.models.instructor import Instructor
 from app.models.user import User
+from app.services import storage
 
-IELTS_AUDIO_DIR = Path(__file__).resolve().parent.parent.parent / "uploads" / "ielts"
-IELTS_AUDIO_DIR.mkdir(parents=True, exist_ok=True)
+AUDIO_BUCKET = "ielts-audio"
 ALLOWED_AUDIO = {".mp3", ".wav", ".ogg", ".m4a", ".aac"}
+_AUDIO_CONTENT_TYPES = {
+    ".mp3": "audio/mpeg", ".wav": "audio/wav", ".ogg": "audio/ogg",
+    ".m4a": "audio/mp4", ".aac": "audio/aac",
+}
 
 router = APIRouter(prefix="/ielts", tags=["IELTS Simulator"])
 
@@ -335,14 +338,17 @@ async def upload_section_audio(
         raise HTTPException(status_code=400, detail="Audio file too large (max 50 MB)")
     # Remove old file if exists
     if sec.audio_url:
-        old = IELTS_AUDIO_DIR / Path(sec.audio_url).name
-        if old.exists():
-            old.unlink()
+        old_key = sec.audio_url.rsplit("/", 1)[-1]
+        try:
+            storage.delete(AUDIO_BUCKET, old_key)
+        except Exception:
+            pass
     filename = f"section_{section_id}{ext}"
-    dest = IELTS_AUDIO_DIR / filename
     content = await file.read()
-    dest.write_bytes(content)
-    sec.audio_url = f"/uploads/ielts/{filename}"
+    storage.upload(AUDIO_BUCKET, filename, content, _AUDIO_CONTENT_TYPES.get(ext, "application/octet-stream"))
+    # Always served through our own authenticated endpoint below — not storage.public_url() —
+    # so listening-section audio stays gated behind login in both local and cloud storage modes.
+    sec.audio_url = f"/ielts/audio/{filename}"
     db.commit()
     db.refresh(sec)
     out = SectionOut.model_validate(sec)
@@ -360,20 +366,24 @@ def delete_section_audio(
     if not sec:
         raise HTTPException(status_code=404, detail="Section not found")
     if sec.audio_url:
-        f = IELTS_AUDIO_DIR / Path(sec.audio_url).name
-        if f.exists():
-            f.unlink()
+        old_key = sec.audio_url.rsplit("/", 1)[-1]
+        try:
+            storage.delete(AUDIO_BUCKET, old_key)
+        except Exception:
+            pass
         sec.audio_url = None
         db.commit()
 
 
 @router.get("/audio/{filename}")
 def serve_audio(filename: str, _: User = Depends(get_current_user)):
-    safe = Path(filename).name
-    f = IELTS_AUDIO_DIR / safe
-    if not f.exists() or not f.is_file():
+    safe = Path(filename).name  # strip any path components — defense against traversal
+    ext = Path(safe).suffix.lower()
+    try:
+        data = storage.download(AUDIO_BUCKET, safe)
+    except Exception:
         raise HTTPException(status_code=404, detail="Audio not found")
-    return FileResponse(f)
+    return Response(content=data, media_type=_AUDIO_CONTENT_TYPES.get(ext, "application/octet-stream"))
 
 
 # ── Admin / English Instructor: question CRUD ─────────────────────────────────

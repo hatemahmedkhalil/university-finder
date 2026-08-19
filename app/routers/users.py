@@ -1,5 +1,4 @@
-from fastapi import APIRouter, Depends, Query
-from sqlalchemy import or_
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from app.dependencies import get_db, require_admin
@@ -48,4 +47,6 @@ def get_user(
     _=Depends(require_admin),
 ):
     user = db.get(User, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
     return user

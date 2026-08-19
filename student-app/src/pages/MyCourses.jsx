@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import api from "../api/axios";
 import toast from "react-hot-toast";
+import { Icon, ICONS } from "../components/Sidebar";
 
 const LANG_GRAD = {
   english: "from-rose-500 via-pink-500 to-fuchsia-600",
@@ -20,17 +21,17 @@ const LEVEL_COLOR = {
 };
 
 const SkeletonCard = () => (
-  <div className="bg-[oklch(0.17_0.02_285)] rounded-2xl border border-[oklch(1_0_0/0.07)] overflow-hidden animate-pulse">
+  <div className="bg-[var(--surface-2)] rounded-2xl border border-[rgba(255,255,255,0.07)] overflow-hidden animate-pulse">
     <div className="h-2 bg-gray-200" />
     <div className="p-5 space-y-3">
       <div className="flex gap-3">
         <div className="w-12 h-12 rounded-xl bg-gray-100" />
         <div className="flex-1 space-y-2">
-          <div className="h-4 bg-[oklch(0.20_0.024_285)] rounded w-2/3" />
-          <div className="h-3 bg-[oklch(0.20_0.024_285)] rounded w-1/3" />
+          <div className="h-4 bg-[var(--surface-hover)] rounded w-2/3" />
+          <div className="h-3 bg-[var(--surface-hover)] rounded w-1/3" />
         </div>
       </div>
-      <div className="h-10 bg-[oklch(0.20_0.024_285)] rounded-xl" />
+      <div className="h-10 bg-[var(--surface-hover)] rounded-xl" />
     </div>
   </div>
 );
@@ -57,14 +58,14 @@ const MyCourses = () => {
     <div className="min-h-screen">
 
       {/* Hero */}
-      <div className={`relative overflow-hidden bg-gradient-to-br ${grad} text-white`}>
+      <div className={`relative overflow-hidden bg-gradient-to-br ${grad} text-[var(--ink)]`}>
         <div className="absolute top-0 right-0 w-72 h-72 bg-white/10 rounded-full -translate-y-1/3 translate-x-1/4 blur-3xl" />
         <div className="relative max-w-5xl mx-auto px-6 py-10">
-          <span className="inline-block bg-white/15 text-white/90 text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-3 capitalize">
-            📚 {profile?.language} Courses
+          <span className="inline-block bg-white/15 text-[var(--ink)]/90 text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-3 capitalize">
+            {profile?.language} Courses
           </span>
           <h1 className="text-4xl font-extrabold tracking-tight mb-1">My Courses</h1>
-          <p className="text-white/70 text-lg">
+          <p className="text-[var(--ink)]/70 text-lg">
             {loading ? "…" : `${courses.length} course${courses.length !== 1 ? "s" : ""} you teach`}
           </p>
         </div>
@@ -76,10 +77,10 @@ const MyCourses = () => {
             {[0,1,2,3].map(i => <SkeletonCard key={i} />)}
           </div>
         ) : courses.length === 0 ? (
-          <div className="text-center py-24 bg-[oklch(0.17_0.02_285)] rounded-3xl border-2 border-[oklch(1_0_0/0.08)] ">
-            <div className="text-6xl mb-4">📚</div>
-            <h2 className="text-xl font-bold text-[oklch(0.75_0.02_285)] mb-2">No courses yet</h2>
-            <p className="text-[oklch(0.45_0.02_285)] text-sm max-w-xs mx-auto">
+          <div className="text-center py-24 bg-[var(--surface-2)] rounded-3xl border-2 border-[rgba(255,255,255,0.08)] ">
+            <div className="mb-4 flex justify-center"><Icon d={ICONS.learning} size={44} /></div>
+            <h2 className="text-xl font-bold text-[var(--ink-dim)] mb-2">No courses yet</h2>
+            <p className="text-[var(--ink-dim)] text-sm max-w-xs mx-auto">
               Ask an admin to publish courses in your language so they appear here.
             </p>
           </div>
@@ -87,7 +88,7 @@ const MyCourses = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {courses.map(course => (
               <div key={course.id}
-                className="bg-[oklch(0.17_0.02_285)] rounded-2xl border border-[oklch(1_0_0/0.07)] overflow-hidden flex flex-col hover:shadow-md transition card-lift">
+                className="bg-[var(--surface-2)] rounded-2xl border border-[rgba(255,255,255,0.07)] overflow-hidden flex flex-col hover:shadow-md transition card-lift">
 
                 {/* Color bar */}
                 <div className={`h-2 bg-gradient-to-r ${grad}`} />
@@ -95,17 +96,17 @@ const MyCourses = () => {
                 <div className="p-5 flex flex-col flex-1 gap-4">
                   {/* Title + level */}
                   <div className="flex items-start gap-3">
-                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${grad} flex items-center justify-center text-white text-xl  shrink-0`}>
-                      📖
+                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${grad} flex items-center justify-center text-white shrink-0`}>
+                      <Icon d={ICONS.book} size={20} />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-white text-base leading-tight">{course.title}</h3>
+                      <h3 className="font-bold text-[var(--ink)] text-base leading-tight">{course.title}</h3>
                       <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                         <span className={`text-[11px] font-bold px-2.5 py-1 rounded-lg border ${light}`}>
                           {profile?.language}
                         </span>
                         {course.level && (
-                          <span className={`text-[11px] font-bold px-2.5 py-1 rounded-lg ${LEVEL_COLOR[course.level] || "bg-gray-100 text-[oklch(0.65_0.02_285)]"}`}>
+                          <span className={`text-[11px] font-bold px-2.5 py-1 rounded-lg ${LEVEL_COLOR[course.level] || "bg-gray-100 text-[var(--ink-faint)]"}`}>
                             {course.level}
                           </span>
                         )}
@@ -117,9 +118,9 @@ const MyCourses = () => {
                   <div className="mt-auto flex gap-2">
                     <Link
                       to={`/course-chat/${course.id}`}
-                      className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-bold bg-gradient-to-r ${grad} text-white  hover:opacity-90 transition`}
+                      className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-bold bg-gradient-to-r ${grad} text-[var(--ink)]  hover:opacity-90 transition`}
                     >
-                      💬 Community Chat
+                      Community Chat
                     </Link>
                   </div>
                 </div>

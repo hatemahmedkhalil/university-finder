@@ -21,6 +21,7 @@ import dataProvider from "./dataProvider";
 import Dashboard from "./Dashboard";
 import InstructorDashboard from "./InstructorDashboard";
 import SupportPanel from "./resources/Support";
+import { lightTheme, darkTheme } from "./theme";
 
 import { UniversityList, UniversityEdit, UniversityCreate, UniversityShow } from "./resources/Universities";
 import { ScholarshipList, ScholarshipEdit, ScholarshipCreate, ScholarshipShow } from "./resources/Scholarships";
@@ -91,6 +92,9 @@ const App = () => (
     authProvider={authProvider}
     dataProvider={dataProvider}
     layout={AppLayout}
+    theme={lightTheme}
+    darkTheme={darkTheme}
+    defaultTheme="light"
   >
     {(permissions) => {
       if (permissions === "instructor") return [];

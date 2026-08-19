@@ -1,9 +1,10 @@
 from datetime import datetime
 from typing import Optional
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 
+from app.core.limiter import limiter
 from app.dependencies import get_db, get_current_user, require_admin
 from app.models.instructor_message import InstructorMessage
 from app.models.instructor import Instructor
@@ -54,7 +55,9 @@ class ReplyBody(BaseModel):
 # ── Student endpoints ─────────────────────────────────────────────────────────
 
 @router.post("/instructors/{instructor_id}", response_model=MessageOut)
+@limiter.limit("20/hour")
 def ask_question(
+    request: Request,
     instructor_id: int,
     body: AskQuestion,
     db: Session = Depends(get_db),
@@ -168,7 +171,7 @@ def get_instructor_stats(
         raise HTTPException(status_code=403, detail="Not an instructor")
 
     all_msgs = db.query(InstructorMessage).filter(InstructorMessage.instructor_id == instr.id).all()
-    total_students = len({m.student_id for m in all_msgs})
+    total_students = len({m.user_id for m in all_msgs})
     pending_replies = sum(1 for m in all_msgs if not m.reply)
     total_messages = len(all_msgs)
 

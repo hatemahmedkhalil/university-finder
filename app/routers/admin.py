@@ -10,7 +10,6 @@ from app.models.application import Application
 from app.models.favourite import Favourite
 from app.models.learning import Course
 from app.models.scholarship import Scholarship
-from app.models.student_profile import StudentProfile
 from app.models.university import University
 from app.models.user import User
 from app.models.notification import Notification

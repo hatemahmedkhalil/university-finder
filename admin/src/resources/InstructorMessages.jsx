@@ -13,8 +13,8 @@ const STATUS_CHIP = ({ record }) => {
   const answered = !!r.reply;
   return (
     <span style={{
-      background: answered ? "#dcfce7" : "#fef9c3",
-      color: answered ? "#166534" : "#854d0e",
+      background: answered ? "var(--mui-palette-success-light)" : "var(--mui-palette-warning-light)",
+      color: answered ? "var(--mui-palette-success-contrastText)" : "var(--mui-palette-warning-contrastText)",
       padding: "2px 10px", borderRadius: 12, fontWeight: 600, fontSize: 12,
     }}>
       {answered ? "Answered" : "Pending"}
@@ -59,7 +59,7 @@ const ReplyForm = () => {
         onChange={e => setText(e.target.value)}
         rows={4}
         style={{
-          width: "100%", border: "1px solid #e5e7eb", borderRadius: 8,
+          width: "100%", border: "1px solid var(--mui-palette-divider)", borderRadius: 8,
           padding: "10px 12px", fontSize: 14, resize: "vertical",
           fontFamily: "inherit",
         }}
@@ -69,7 +69,7 @@ const ReplyForm = () => {
         onClick={submit}
         disabled={saving || !text.trim()}
         style={{
-          marginTop: 8, background: "#2563eb", color: "#fff",
+          marginTop: 8, background: "var(--mui-palette-primary-main)", color: "var(--mui-palette-primary-contrastText)",
           border: "none", borderRadius: 8, padding: "8px 20px",
           fontWeight: 600, fontSize: 14, cursor: "pointer", opacity: saving ? 0.6 : 1,
         }}

@@ -1,6 +1,10 @@
-from pydantic import BaseModel, field_validator
+from datetime import date
 
+from pydantic import BaseModel, field_validator, model_validator
+
+from app.models.university import VERIFICATION_STATUSES
 from app.schemas.scholarship import ScholarshipOut
+from app.services.verification_audit import audit_verification_fields
 
 
 class ProgramFeeOut(BaseModel):
@@ -136,6 +140,12 @@ class DocumentItemOut(BaseModel):
     is_required: bool
     order_index: int
     degree_level: str = "all"
+    # ── Verification / traceability (Phase 2) ──
+    condition: dict | None = None
+    source_url: str | None = None
+    evidence_text: str | None = None
+    verification_status: str = "unverified"
+    verified_at: date | None = None
 
     model_config = {"from_attributes": True}
 
@@ -145,6 +155,29 @@ class DocumentItemCreate(BaseModel):
     is_required: bool = True
     order_index: int = 0
     degree_level: str = "all"
+    condition: dict | None = None
+    source_url: str | None = None
+    evidence_text: str | None = None
+    verification_status: str = "unverified"
+    verified_at: date | None = None
+
+    @field_validator("verification_status")
+    @classmethod
+    def _valid_status(cls, v: str) -> str:
+        if v not in VERIFICATION_STATUSES:
+            raise ValueError(f"verification_status must be one of {VERIFICATION_STATUSES}")
+        return v
+
+    @model_validator(mode="after")
+    def _no_claim_without_proof(self):
+        # NO CLAIM WITHOUT PROOF: it must be structurally impossible to save
+        # a 'verified'/'partially_verified' row that isn't backed by the
+        # evidence fields the status claims to have — not just a convention
+        # a human (or Claude) is trusted to follow.
+        problems = audit_verification_fields(self.verification_status, self.source_url, self.evidence_text, self.verified_at)
+        if problems:
+            raise ValueError("; ".join(problems))
+        return self
 
 
 class DocumentItemUpdate(BaseModel):
@@ -152,9 +185,82 @@ class DocumentItemUpdate(BaseModel):
     is_required: bool | None = None
     order_index: int | None = None
     degree_level: str | None = None
+    condition: dict | None = None
+    source_url: str | None = None
+    evidence_text: str | None = None
+    verification_status: str | None = None
+    verified_at: date | None = None
+
+    @field_validator("verification_status")
+    @classmethod
+    def _valid_status(cls, v: str | None) -> str | None:
+        if v is not None and v not in VERIFICATION_STATUSES:
+            raise ValueError(f"verification_status must be one of {VERIFICATION_STATUSES}")
+        return v
+
+
+class DeadlineOut(BaseModel):
+    id: int
+    label: str
+    deadline_text: str
+    cycle: str | None = None
+    order_index: int = 0
+    condition: dict | None = None
+    source_url: str | None = None
+    evidence_text: str | None = None
+    verification_status: str = "unverified"
+    verified_at: date | None = None
+
+    model_config = {"from_attributes": True}
+
+
+class DeadlineCreate(BaseModel):
+    label: str
+    deadline_text: str
+    cycle: str | None = None
+    order_index: int = 0
+    condition: dict | None = None
+    source_url: str | None = None
+    evidence_text: str | None = None
+    verification_status: str = "unverified"
+    verified_at: date | None = None
+
+    @field_validator("verification_status")
+    @classmethod
+    def _valid_status(cls, v: str) -> str:
+        if v not in VERIFICATION_STATUSES:
+            raise ValueError(f"verification_status must be one of {VERIFICATION_STATUSES}")
+        return v
+
+    @model_validator(mode="after")
+    def _no_claim_without_proof(self):
+        problems = audit_verification_fields(self.verification_status, self.source_url, self.evidence_text, self.verified_at)
+        if problems:
+            raise ValueError("; ".join(problems))
+        return self
+
+
+class DeadlineUpdate(BaseModel):
+    label: str | None = None
+    deadline_text: str | None = None
+    cycle: str | None = None
+    order_index: int | None = None
+    condition: dict | None = None
+    source_url: str | None = None
+    evidence_text: str | None = None
+    verification_status: str | None = None
+    verified_at: date | None = None
+
+    @field_validator("verification_status")
+    @classmethod
+    def _valid_status(cls, v: str | None) -> str | None:
+        if v is not None and v not in VERIFICATION_STATUSES:
+            raise ValueError(f"verification_status must be one of {VERIFICATION_STATUSES}")
+        return v
 
 
 class UniversityDetail(UniversityOut):
     scholarships: list[ScholarshipOut] = []
     program_fees: list[ProgramFeeOut] = []
     document_items: list[DocumentItemOut] = []
+    deadlines: list[DeadlineOut] = []

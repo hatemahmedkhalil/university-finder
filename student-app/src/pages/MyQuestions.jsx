@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import api from "../api/axios";
 import { useTranslation } from "react-i18next";
 import PageHero from "../components/PageHero";
+import { Icon, ICONS } from "../components/Sidebar";
 
 const Avatar = ({ name, photoUrl }) => {
   const [err, setErr] = useState(false);
@@ -11,7 +12,7 @@ const Avatar = ({ name, photoUrl }) => {
     return <img src={photoUrl} alt={name} onError={() => setErr(true)} className="w-9 h-9 rounded-xl object-cover" />;
   }
   return (
-    <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold">
+    <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-[var(--ink)] text-xs font-bold">
       {initials}
     </div>
   );
@@ -21,13 +22,13 @@ const MessageCard = ({ msg }) => {
   const { t } = useTranslation();
   const inst = msg.instructor;
   return (
-    <div className="bg-[oklch(0.17_0.02_285)] rounded-2xl border border-[oklch(1_0_0/0.07)] p-5 flex flex-col gap-4">
+    <div className="bg-[var(--surface-2)] rounded-2xl border border-[rgba(255,255,255,0.07)] p-5 flex flex-col gap-4">
       {/* Instructor info */}
       <div className="flex items-center gap-3">
         <Avatar name={inst.name} photoUrl={inst.photo_url} />
         <div>
-          <p className="font-semibold text-white text-sm">{inst.title ? `${inst.title} ` : ""}{inst.name}</p>
-          <p className="text-xs text-[oklch(0.45_0.02_285)]">{inst.organization ?? "Instructor"} · {inst.language}</p>
+          <p className="font-semibold text-[var(--ink)] text-sm">{inst.title ? `${inst.title} ` : ""}{inst.name}</p>
+          <p className="text-xs text-[var(--ink-dim)]">{inst.organization ?? "Instructor"} · {inst.language}</p>
         </div>
         {!msg.reply && (
           <span className="ml-auto text-xs bg-yellow-100 text-yellow-700 px-2.5 py-1 rounded-full font-semibold">
@@ -43,7 +44,7 @@ const MessageCard = ({ msg }) => {
 
       {/* Question bubble */}
       <div className="flex justify-end">
-        <div className="bg-blue-600 text-white text-sm rounded-2xl rounded-br-sm px-4 py-3 max-w-[85%]">
+        <div className="bg-blue-600 text-[var(--ink)] text-sm rounded-2xl rounded-br-sm px-4 py-3 max-w-[85%]">
           <p>{msg.question}</p>
           <p className="text-[10px] text-blue-200 mt-1 text-right">{new Date(msg.created_at).toLocaleString()}</p>
         </div>
@@ -53,13 +54,13 @@ const MessageCard = ({ msg }) => {
       {msg.reply ? (
         <div className="flex gap-2">
           <Avatar name={inst.name} photoUrl={inst.photo_url} />
-          <div className="bg-gray-100 text-white text-sm rounded-2xl rounded-bl-sm px-4 py-3 max-w-[85%]">
+          <div className="bg-gray-100 text-[var(--ink)] text-sm rounded-2xl rounded-bl-sm px-4 py-3 max-w-[85%]">
             <p>{msg.reply}</p>
-            <p className="text-[10px] text-[oklch(0.45_0.02_285)] mt-1">{new Date(msg.replied_at).toLocaleString()}</p>
+            <p className="text-[10px] text-[var(--ink-dim)] mt-1">{new Date(msg.replied_at).toLocaleString()}</p>
           </div>
         </div>
       ) : (
-        <p className="text-xs text-[oklch(0.45_0.02_285)] italic pl-2">{t("myQuestions.noReply")}</p>
+        <p className="text-xs text-[var(--ink-dim)] italic pl-2">{t("myQuestions.noReply")}</p>
       )}
     </div>
   );
@@ -95,7 +96,7 @@ export default function MyQuestions() {
         subtitle={t("myQuestions.allConversations")}
       >
         <div className="flex gap-3 flex-wrap mt-4">
-          <div className="bg-white/10 rounded-xl px-4 py-2 text-sm font-medium text-white">
+          <div className="bg-white/10 rounded-xl px-4 py-2 text-sm font-medium text-[var(--ink)]">
             Total <span className="font-bold ml-1">{messages.length}</span>
           </div>
           <div className="bg-green-500/20 rounded-xl px-4 py-2 text-sm font-medium text-green-200">
@@ -118,11 +119,10 @@ export default function MyQuestions() {
             <button
               key={t.key}
               onClick={() => setTab(t.key)}
-              className={`px-4 py-2 rounded-xl text-sm font-semibold transition border ${
-                tab === t.key
-                  ? "bg-indigo-600 text-white border-indigo-600"
-                  : "bg-white text-[oklch(0.65_0.02_285)] border-gray-200 hover:border-indigo-300 hover:text-indigo-600"
-              }`}
+              className="px-4 py-2 rounded-xl text-sm font-semibold transition border"
+              style={tab === t.key
+                ? { background: "var(--accent)", color: "var(--on-accent)", borderColor: "var(--accent)" }
+                : { background: "var(--surface)", color: "var(--ink-faint)", borderColor: "var(--border)" }}
             >
               {t.label}
             </button>
@@ -130,15 +130,15 @@ export default function MyQuestions() {
         </div>
 
         {loading ? (
-          <div className="text-center py-16 text-[oklch(0.45_0.02_285)]">{t("common.loading")}</div>
+          <div className="text-center py-16 text-[var(--ink-dim)]">{t("common.loading")}</div>
         ) : filtered.length === 0 ? (
           <div className="text-center py-16">
-            <div className="text-5xl mb-4">📭</div>
-            <p className="text-[oklch(0.55_0.02_285)] font-semibold text-lg">
+            <div className="mb-4 flex justify-center"><Icon d={ICONS.mail} size={40} /></div>
+            <p className="text-[var(--ink-faint)] font-semibold text-lg">
               {messages.length === 0 ? t("myQuestions.noQuestions") : t("common.noResults")}
             </p>
             {messages.length === 0 && (
-              <Link to="/instructors" className="mt-4 inline-block bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700">
+              <Link to="/instructors" className="mt-4 inline-block bg-blue-600 text-[var(--ink)] px-6 py-3 rounded-xl font-semibold hover:bg-blue-700">
                 {t("nav.instructors")}
               </Link>
             )}

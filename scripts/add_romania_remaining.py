@@ -1,0 +1,481 @@
+import sys
+import os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.stdout.reconfigure(encoding="utf-8")
+
+from app.database import SessionLocal
+import sqlalchemy as sa
+
+db = SessionLocal()
+
+
+def get_existing_names():
+    rows = db.execute(sa.text("SELECT name FROM universities")).fetchall()
+    return {r[0] for r in rows}
+
+
+def insert_university(data):
+    result = db.execute(
+        sa.text("""
+            INSERT INTO universities
+            (name, country, city, website, description, ranking, tuition_fee_eur,
+             is_public, english_programs_available, programs, application_method,
+             application_portal_url, semester_fee_eur, notes)
+            VALUES
+            (:name, :country, :city, :website, :description, :ranking, :tuition_fee_eur,
+             :is_public, :english_programs_available, :programs, :application_method,
+             :application_portal_url, :semester_fee_eur, :notes)
+            RETURNING id
+        """),
+        data
+    )
+    return result.fetchone()[0]
+
+
+def insert_programs(uni_id, programs):
+    for p in programs:
+        db.execute(
+            sa.text("""
+                INSERT INTO university_programs
+                (university_id, field_of_study, degree_level, tuition_fee_eur, notes)
+                VALUES (:university_id, :field_of_study, :degree_level, :tuition_fee_eur, :notes)
+            """),
+            {**p, "university_id": uni_id}
+        )
+
+
+existing = get_existing_names()
+
+UNIVERSITIES = [
+    {
+        "name": "Technical University of Cluj-Napoca",
+        "country": "Romania",
+        "city": "Cluj-Napoca",
+        "website": "https://www.utcluj.ro/en",
+        "description": "Leading public technical university in Transylvania offering engineering, computer science, architecture, and electronics. One of the largest technical universities in Romania.",
+        "ranking": 601,
+        "tuition_fee_eur": 2700,
+        "is_public": True,
+        "english_programs_available": True,
+        "programs": "Engineering, Computer Science, Architecture, Electronics, Automation, Mathematics",
+        "application_method": "own_portal",
+        "application_portal_url": "https://bri.utcluj.ro/en/bachelor_noneu.php",
+        "semester_fee_eur": 0,
+        "notes": "Source: bri.utcluj.ro/en/fees.php (2025/2026). Engineering/Sciences: €2,700/yr, Architecture: €3,300/yr, Econ/Humanities: €2,100/yr, Arts: €3,900/yr. App fee: €100 non-refundable.",
+        "programs_list": [
+            {"field_of_study": "Engineering & Computer Science", "degree_level": "bachelor", "tuition_fee_eur": 2700, "notes": "€2,700/yr — Source: bri.utcluj.ro"},
+            {"field_of_study": "Architecture", "degree_level": "bachelor", "tuition_fee_eur": 3300, "notes": "€3,300/yr — Source: bri.utcluj.ro"},
+            {"field_of_study": "Economics & Humanities", "degree_level": "bachelor", "tuition_fee_eur": 2100, "notes": "€2,100/yr — Source: bri.utcluj.ro"},
+            {"field_of_study": "Arts", "degree_level": "bachelor", "tuition_fee_eur": 3900, "notes": "€3,900/yr — Source: bri.utcluj.ro"},
+            {"field_of_study": "Engineering & Computer Science", "degree_level": "master", "tuition_fee_eur": 2700, "notes": "€2,700/yr — Source: bri.utcluj.ro"},
+            {"field_of_study": "Architecture", "degree_level": "master", "tuition_fee_eur": 3300, "notes": "€3,300/yr — Source: bri.utcluj.ro"},
+            {"field_of_study": "Engineering & Sciences", "degree_level": "phd", "tuition_fee_eur": 4200, "notes": "€4,200/yr — Source: bri.utcluj.ro"},
+            {"field_of_study": "Architecture", "degree_level": "phd", "tuition_fee_eur": 4800, "notes": "€4,800/yr — Source: bri.utcluj.ro"},
+        ],
+    },
+    {
+        "name": "George Emil Palade University of Medicine Pharmacy Science and Technology Targu Mures",
+        "country": "Romania",
+        "city": "Targu Mures",
+        "website": "https://umfst.ro/en",
+        "description": "Public medical and technical university in Targu Mures offering medicine, dentistry, pharmacy, engineering, and economics. The only university combining medical and technical faculties in Romania.",
+        "ranking": 601,
+        "tuition_fee_eur": 10000,
+        "is_public": True,
+        "english_programs_available": True,
+        "programs": "Medicine, Dentistry, Pharmacy, Nursing, Engineering, Economics",
+        "application_method": "own_portal",
+        "application_portal_url": "https://admission.umfst.ro",
+        "semester_fee_eur": 0,
+        "notes": "Source: admission.umfst.ro — Medicine/Dentistry: €10,000/yr, deposit €5,000 deducted from year 1 fee. App fee: €200.",
+        "programs_list": [
+            {"field_of_study": "Medicine", "degree_level": "bachelor", "tuition_fee_eur": 10000, "notes": "€10,000/yr — Source: admission.umfst.ro (2025/26)"},
+            {"field_of_study": "Dentistry", "degree_level": "bachelor", "tuition_fee_eur": 10000, "notes": "€10,000/yr — Source: admission.umfst.ro"},
+            {"field_of_study": "Pharmacy", "degree_level": "bachelor", "tuition_fee_eur": 8000, "notes": "~€8,000/yr"},
+            {"field_of_study": "Engineering", "degree_level": "bachelor", "tuition_fee_eur": 3000, "notes": "~€3,000/yr — engineering faculties"},
+            {"field_of_study": "Economics", "degree_level": "bachelor", "tuition_fee_eur": 2500, "notes": "~€2,500/yr — economics faculty"},
+            {"field_of_study": "Medicine", "degree_level": "master", "tuition_fee_eur": 10000, "notes": "€10,000/yr — postgrad medical"},
+            {"field_of_study": "All fields", "degree_level": "phd", "tuition_fee_eur": 4000, "notes": "~€4,000/yr — doctoral studies"},
+        ],
+    },
+    {
+        "name": "Valahia University of Targoviste",
+        "country": "Romania",
+        "city": "Targoviste",
+        "website": "https://international.valahia.ro",
+        "description": "Public university in Targoviste offering engineering, electronics, business, social sciences, humanities, and arts.",
+        "ranking": 701,
+        "tuition_fee_eur": 2800,
+        "is_public": True,
+        "english_programs_available": True,
+        "programs": "Engineering, Electronics, Business, Social Sciences, Humanities, Music",
+        "application_method": "own_portal",
+        "application_portal_url": "https://international.valahia.ro/admission-for-non-eu-students/",
+        "semester_fee_eur": 0,
+        "notes": "Source: international.valahia.ro (2025/26 official fee PDF). Technical/Sciences: €2,800/yr, Social/Econ: €2,300/yr, Music: €4,200/yr.",
+        "programs_list": [
+            {"field_of_study": "Engineering & Technical Sciences", "degree_level": "bachelor", "tuition_fee_eur": 2800, "notes": "€2,800/yr — Source: international.valahia.ro"},
+            {"field_of_study": "Economics & Social Sciences", "degree_level": "bachelor", "tuition_fee_eur": 2300, "notes": "€2,300/yr — Source: international.valahia.ro"},
+            {"field_of_study": "Humanities", "degree_level": "bachelor", "tuition_fee_eur": 2300, "notes": "€2,300/yr — Source: international.valahia.ro"},
+            {"field_of_study": "Music", "degree_level": "bachelor", "tuition_fee_eur": 4200, "notes": "€4,200/yr — Source: international.valahia.ro"},
+            {"field_of_study": "Engineering & Technical Sciences", "degree_level": "master", "tuition_fee_eur": 2800, "notes": "€2,800/yr — Source: international.valahia.ro"},
+            {"field_of_study": "Economics & Social Sciences", "degree_level": "master", "tuition_fee_eur": 2300, "notes": "€2,300/yr — Source: international.valahia.ro"},
+            {"field_of_study": "Technical Sciences", "degree_level": "phd", "tuition_fee_eur": 2900, "notes": "€2,900/yr — Source: international.valahia.ro"},
+            {"field_of_study": "Social-Human Sciences", "degree_level": "phd", "tuition_fee_eur": 2400, "notes": "€2,400/yr — Source: international.valahia.ro"},
+        ],
+    },
+    {
+        "name": "Ovidius University of Constanta",
+        "country": "Romania",
+        "city": "Constanta",
+        "website": "https://univ-ovidius.ro/en",
+        "description": "Public coastal university in Constanta offering medicine, dentistry, pharmacy, engineering, law, economics, arts, and sports. Located on the Black Sea.",
+        "ranking": 701,
+        "tuition_fee_eur": 3000,
+        "is_public": True,
+        "english_programs_available": True,
+        "programs": "Medicine, Dentistry, Pharmacy, Engineering, Law, Economics, Arts, Sports",
+        "application_method": "own_portal",
+        "application_portal_url": "https://admission.univ-ovidius.ro/v2/",
+        "semester_fee_eur": 0,
+        "notes": "Source: admission.univ-ovidius.ro (2025/26 PDF). Medicine/Dentistry higher fees ~€5,500–7,000/yr. Other programs €2,500–3,500/yr.",
+        "programs_list": [
+            {"field_of_study": "Medicine", "degree_level": "bachelor", "tuition_fee_eur": 6000, "notes": "~€6,000/yr — Source: admission.univ-ovidius.ro"},
+            {"field_of_study": "Dentistry", "degree_level": "bachelor", "tuition_fee_eur": 7000, "notes": "~€7,000/yr — Source: admission.univ-ovidius.ro"},
+            {"field_of_study": "Pharmacy", "degree_level": "bachelor", "tuition_fee_eur": 5500, "notes": "~€5,500/yr"},
+            {"field_of_study": "Engineering", "degree_level": "bachelor", "tuition_fee_eur": 3000, "notes": "~€3,000/yr non-EU"},
+            {"field_of_study": "Law & Economics", "degree_level": "bachelor", "tuition_fee_eur": 2500, "notes": "~€2,500/yr non-EU"},
+            {"field_of_study": "Arts & Humanities", "degree_level": "bachelor", "tuition_fee_eur": 2500, "notes": "~€2,500/yr non-EU"},
+            {"field_of_study": "Engineering", "degree_level": "master", "tuition_fee_eur": 3000, "notes": "~€3,000/yr non-EU"},
+            {"field_of_study": "All fields", "degree_level": "phd", "tuition_fee_eur": 4000, "notes": "~€4,000/yr — doctoral studies"},
+        ],
+    },
+    {
+        "name": "University of Oradea",
+        "country": "Romania",
+        "city": "Oradea",
+        "website": "https://www.uoradea.ro/en",
+        "description": "Public multi-faculty university in western Romania offering medicine, dentistry, engineering, economics, law, social sciences, arts, and natural sciences.",
+        "ranking": 701,
+        "tuition_fee_eur": 3000,
+        "is_public": True,
+        "english_programs_available": True,
+        "programs": "Medicine, Dentistry, Engineering, Economics, Law, Social Sciences, Arts",
+        "application_method": "own_portal",
+        "application_portal_url": "https://www.uoradea.ro/en/international-relations/foreign-students/non-eu-citizens/",
+        "semester_fee_eur": 0,
+        "notes": "Fees for non-EU: Engineering ~€3,000/yr, Medicine ~€8,000–10,000/yr, Econ/Social ~€2,500/yr. App fee: €150. Source: uoradea.ro",
+        "programs_list": [
+            {"field_of_study": "Medicine", "degree_level": "bachelor", "tuition_fee_eur": 9000, "notes": "~€9,000/yr — Source: uoradea.ro"},
+            {"field_of_study": "Dentistry", "degree_level": "bachelor", "tuition_fee_eur": 9500, "notes": "~€9,500/yr"},
+            {"field_of_study": "Engineering & Technical Sciences", "degree_level": "bachelor", "tuition_fee_eur": 3000, "notes": "~€3,000/yr non-EU"},
+            {"field_of_study": "Economics & Law", "degree_level": "bachelor", "tuition_fee_eur": 2500, "notes": "~€2,500/yr non-EU"},
+            {"field_of_study": "Social Sciences & Humanities", "degree_level": "bachelor", "tuition_fee_eur": 2500, "notes": "~€2,500/yr non-EU"},
+            {"field_of_study": "Arts", "degree_level": "bachelor", "tuition_fee_eur": 3500, "notes": "~€3,500/yr non-EU"},
+            {"field_of_study": "Engineering", "degree_level": "master", "tuition_fee_eur": 3000, "notes": "~€3,000/yr non-EU"},
+            {"field_of_study": "All fields", "degree_level": "phd", "tuition_fee_eur": 4000, "notes": "~€4,000/yr — doctoral studies"},
+        ],
+    },
+    {
+        "name": "University of Pitesti",
+        "country": "Romania",
+        "city": "Pitesti",
+        "website": "https://international.upit.ro",
+        "description": "Public university in southern Romania offering engineering, sciences, economics, humanities, social sciences, and theology.",
+        "ranking": 701,
+        "tuition_fee_eur": 2800,
+        "is_public": True,
+        "english_programs_available": True,
+        "programs": "Engineering, Sciences, Economics, Humanities, Social Sciences, Theology",
+        "application_method": "own_portal",
+        "application_portal_url": "https://international.upit.ro/admissions",
+        "semester_fee_eur": 0,
+        "notes": "Fees for non-EU: ~€2,500–4,000/yr by field. Source: international.upit.ro",
+        "programs_list": [
+            {"field_of_study": "Engineering & Technical Sciences", "degree_level": "bachelor", "tuition_fee_eur": 3500, "notes": "~€3,500/yr non-EU"},
+            {"field_of_study": "Sciences", "degree_level": "bachelor", "tuition_fee_eur": 3000, "notes": "~€3,000/yr non-EU"},
+            {"field_of_study": "Economics", "degree_level": "bachelor", "tuition_fee_eur": 2800, "notes": "~€2,800/yr non-EU"},
+            {"field_of_study": "Humanities & Social Sciences", "degree_level": "bachelor", "tuition_fee_eur": 2500, "notes": "~€2,500/yr non-EU"},
+            {"field_of_study": "Engineering", "degree_level": "master", "tuition_fee_eur": 3500, "notes": "~€3,500/yr non-EU"},
+            {"field_of_study": "All fields", "degree_level": "phd", "tuition_fee_eur": 3500, "notes": "~€3,500/yr — doctoral studies"},
+        ],
+    },
+    {
+        "name": "Petroleum-Gas University of Ploiesti",
+        "country": "Romania",
+        "city": "Ploiesti",
+        "website": "https://www.upg-ploiesti.ro/en",
+        "description": "Specialized public technical university focusing on petroleum engineering, gas engineering, chemistry, mechanical engineering, and economics. The only petroleum university in Romania.",
+        "ranking": 701,
+        "tuition_fee_eur": 2700,
+        "is_public": True,
+        "english_programs_available": True,
+        "programs": "Petroleum Engineering, Gas Engineering, Chemistry, Mechanical Engineering, Economics",
+        "application_method": "own_portal",
+        "application_portal_url": "https://www.upg-ploiesti.ro/en/admission",
+        "semester_fee_eur": 0,
+        "notes": "Fees for non-EU: ~€2,700/yr for engineering programs (2025/26). Source: upg-ploiesti.ro",
+        "programs_list": [
+            {"field_of_study": "Petroleum & Gas Engineering", "degree_level": "bachelor", "tuition_fee_eur": 2700, "notes": "~€2,700/yr non-EU"},
+            {"field_of_study": "Chemistry & Chemical Engineering", "degree_level": "bachelor", "tuition_fee_eur": 2700, "notes": "~€2,700/yr non-EU"},
+            {"field_of_study": "Mechanical Engineering", "degree_level": "bachelor", "tuition_fee_eur": 2700, "notes": "~€2,700/yr non-EU"},
+            {"field_of_study": "Economics & Management", "degree_level": "bachelor", "tuition_fee_eur": 2300, "notes": "~€2,300/yr non-EU"},
+            {"field_of_study": "Petroleum Engineering", "degree_level": "master", "tuition_fee_eur": 2700, "notes": "~€2,700/yr non-EU"},
+            {"field_of_study": "All fields", "degree_level": "phd", "tuition_fee_eur": 3000, "notes": "~€3,000/yr — doctoral studies"},
+        ],
+    },
+    {
+        "name": "Stefan cel Mare University of Suceava",
+        "country": "Romania",
+        "city": "Suceava",
+        "website": "https://www.usv.ro/en",
+        "description": "Public university in northeastern Romania offering engineering, computer science, economics, education, arts, social sciences, and law.",
+        "ranking": 701,
+        "tuition_fee_eur": 2800,
+        "is_public": True,
+        "english_programs_available": True,
+        "programs": "Engineering, Computer Science, Economics, Education, Arts, Social Sciences, Law",
+        "application_method": "own_portal",
+        "application_portal_url": "https://international.usv.ro",
+        "semester_fee_eur": 0,
+        "notes": "Fees for non-EU: ~€2,500–3,500/yr by field. Source: usv.ro",
+        "programs_list": [
+            {"field_of_study": "Engineering & Computer Science", "degree_level": "bachelor", "tuition_fee_eur": 3000, "notes": "~€3,000/yr non-EU"},
+            {"field_of_study": "Economics & Management", "degree_level": "bachelor", "tuition_fee_eur": 2500, "notes": "~€2,500/yr non-EU"},
+            {"field_of_study": "Education & Humanities", "degree_level": "bachelor", "tuition_fee_eur": 2500, "notes": "~€2,500/yr non-EU"},
+            {"field_of_study": "Arts", "degree_level": "bachelor", "tuition_fee_eur": 3500, "notes": "~€3,500/yr non-EU"},
+            {"field_of_study": "Engineering", "degree_level": "master", "tuition_fee_eur": 3000, "notes": "~€3,000/yr non-EU"},
+            {"field_of_study": "All fields", "degree_level": "phd", "tuition_fee_eur": 3500, "notes": "~€3,500/yr — doctoral studies"},
+        ],
+    },
+    {
+        "name": "1 Decembrie 1918 University of Alba Iulia",
+        "country": "Romania",
+        "city": "Alba Iulia",
+        "website": "https://www.uab.ro/en",
+        "description": "Public university in Transylvania offering law, economics, social sciences, history, humanities, and theology. Named after the date of Romanian unification.",
+        "ranking": 701,
+        "tuition_fee_eur": 2200,
+        "is_public": True,
+        "english_programs_available": True,
+        "programs": "Law, Economics, Social Sciences, History, Humanities, Theology",
+        "application_method": "own_portal",
+        "application_portal_url": "https://www.uab.ro/en/admissions",
+        "semester_fee_eur": 0,
+        "notes": "Fees for non-EU: ~€2,000–2,500/yr. Smaller regional university. Source: uab.ro",
+        "programs_list": [
+            {"field_of_study": "Law & Economics", "degree_level": "bachelor", "tuition_fee_eur": 2200, "notes": "~€2,200/yr non-EU"},
+            {"field_of_study": "Social Sciences & History", "degree_level": "bachelor", "tuition_fee_eur": 2200, "notes": "~€2,200/yr non-EU"},
+            {"field_of_study": "Theology & Humanities", "degree_level": "bachelor", "tuition_fee_eur": 2000, "notes": "~€2,000/yr non-EU"},
+            {"field_of_study": "Law & Economics", "degree_level": "master", "tuition_fee_eur": 2200, "notes": "~€2,200/yr non-EU"},
+            {"field_of_study": "All fields", "degree_level": "phd", "tuition_fee_eur": 3000, "notes": "~€3,000/yr — doctoral studies"},
+        ],
+    },
+    {
+        "name": "Aurel Vlaicu University of Arad",
+        "country": "Romania",
+        "city": "Arad",
+        "website": "https://www.uav.ro/en",
+        "description": "Public university in western Romania offering engineering, textile technology, economics, social sciences, humanities, and food engineering.",
+        "ranking": 701,
+        "tuition_fee_eur": 2500,
+        "is_public": True,
+        "english_programs_available": True,
+        "programs": "Engineering, Textile Technology, Economics, Social Sciences, Humanities, Food Engineering",
+        "application_method": "own_portal",
+        "application_portal_url": "https://www.uav.ro/en/admissions",
+        "semester_fee_eur": 0,
+        "notes": "Fees for non-EU: ~€2,300–3,000/yr. Source: uav.ro",
+        "programs_list": [
+            {"field_of_study": "Engineering & Technology", "degree_level": "bachelor", "tuition_fee_eur": 2800, "notes": "~€2,800/yr non-EU"},
+            {"field_of_study": "Economics & Social Sciences", "degree_level": "bachelor", "tuition_fee_eur": 2300, "notes": "~€2,300/yr non-EU"},
+            {"field_of_study": "Humanities & Education", "degree_level": "bachelor", "tuition_fee_eur": 2300, "notes": "~€2,300/yr non-EU"},
+            {"field_of_study": "Engineering", "degree_level": "master", "tuition_fee_eur": 2800, "notes": "~€2,800/yr non-EU"},
+            {"field_of_study": "All fields", "degree_level": "phd", "tuition_fee_eur": 3000, "notes": "~€3,000/yr — doctoral studies"},
+        ],
+    },
+    {
+        "name": "Vasile Alecsandri University of Bacau",
+        "country": "Romania",
+        "city": "Bacau",
+        "website": "https://www.ub.ro/en",
+        "description": "Public university in northeastern Romania offering engineering, natural sciences, economics, social sciences, humanities, and sports.",
+        "ranking": 701,
+        "tuition_fee_eur": 2500,
+        "is_public": True,
+        "english_programs_available": True,
+        "programs": "Engineering, Natural Sciences, Economics, Social Sciences, Humanities, Sports",
+        "application_method": "own_portal",
+        "application_portal_url": "https://international.ub.ro",
+        "semester_fee_eur": 0,
+        "notes": "Fees for non-EU: ~€2,300–3,000/yr. Source: ub.ro",
+        "programs_list": [
+            {"field_of_study": "Engineering & Sciences", "degree_level": "bachelor", "tuition_fee_eur": 2800, "notes": "~€2,800/yr non-EU"},
+            {"field_of_study": "Economics & Social Sciences", "degree_level": "bachelor", "tuition_fee_eur": 2300, "notes": "~€2,300/yr non-EU"},
+            {"field_of_study": "Humanities & Education", "degree_level": "bachelor", "tuition_fee_eur": 2300, "notes": "~€2,300/yr non-EU"},
+            {"field_of_study": "Engineering", "degree_level": "master", "tuition_fee_eur": 2800, "notes": "~€2,800/yr non-EU"},
+            {"field_of_study": "All fields", "degree_level": "phd", "tuition_fee_eur": 3000, "notes": "~€3,000/yr — doctoral studies"},
+        ],
+    },
+    {
+        "name": "University of Agricultural Sciences and Veterinary Medicine Cluj-Napoca",
+        "country": "Romania",
+        "city": "Cluj-Napoca",
+        "website": "https://www.usamvcluj.ro/en",
+        "description": "Public agricultural university in Cluj offering agriculture, veterinary medicine, horticulture, food technology, and environmental engineering.",
+        "ranking": 601,
+        "tuition_fee_eur": 3500,
+        "is_public": True,
+        "english_programs_available": True,
+        "programs": "Agriculture, Veterinary Medicine, Horticulture, Food Technology, Environmental Engineering",
+        "application_method": "own_portal",
+        "application_portal_url": "https://www.usamvcluj.ro/en/admissions",
+        "semester_fee_eur": 0,
+        "notes": "Fees for non-EU: Veterinary ~€8,000–10,000/yr, Agriculture/Food ~€3,500/yr. Source: usamvcluj.ro",
+        "programs_list": [
+            {"field_of_study": "Veterinary Medicine", "degree_level": "bachelor", "tuition_fee_eur": 9000, "notes": "~€9,000/yr non-EU"},
+            {"field_of_study": "Agriculture & Horticulture", "degree_level": "bachelor", "tuition_fee_eur": 3500, "notes": "~€3,500/yr non-EU"},
+            {"field_of_study": "Food Technology", "degree_level": "bachelor", "tuition_fee_eur": 3500, "notes": "~€3,500/yr non-EU"},
+            {"field_of_study": "Environmental Engineering", "degree_level": "bachelor", "tuition_fee_eur": 3500, "notes": "~€3,500/yr non-EU"},
+            {"field_of_study": "Veterinary Medicine", "degree_level": "master", "tuition_fee_eur": 9000, "notes": "~€9,000/yr non-EU"},
+            {"field_of_study": "Agriculture", "degree_level": "master", "tuition_fee_eur": 3500, "notes": "~€3,500/yr non-EU"},
+            {"field_of_study": "All fields", "degree_level": "phd", "tuition_fee_eur": 4000, "notes": "~€4,000/yr — doctoral studies"},
+        ],
+    },
+    {
+        "name": "Ion Mincu University of Architecture and Urbanism",
+        "country": "Romania",
+        "city": "Bucharest",
+        "website": "https://uauim.ro/en",
+        "description": "Specialized public university of architecture and urban planning in Bucharest. The leading architecture school in Romania.",
+        "ranking": 601,
+        "tuition_fee_eur": 4500,
+        "is_public": True,
+        "english_programs_available": True,
+        "programs": "Architecture, Urban Planning, Interior Design, Conservation and Restoration",
+        "application_method": "own_portal",
+        "application_portal_url": "https://uauim.ro/en/admissions",
+        "semester_fee_eur": 0,
+        "notes": "Fees for non-EU international students: ~€4,000–5,000/yr. Integrated 6-year program for Architecture. Source: uauim.ro",
+        "programs_list": [
+            {"field_of_study": "Architecture", "degree_level": "bachelor", "tuition_fee_eur": 4500, "notes": "~€4,500/yr non-EU — 6-year integrated program"},
+            {"field_of_study": "Urban Planning", "degree_level": "bachelor", "tuition_fee_eur": 4000, "notes": "~€4,000/yr non-EU"},
+            {"field_of_study": "Interior Design", "degree_level": "bachelor", "tuition_fee_eur": 4000, "notes": "~€4,000/yr non-EU"},
+            {"field_of_study": "Architecture", "degree_level": "master", "tuition_fee_eur": 4500, "notes": "~€4,500/yr non-EU"},
+            {"field_of_study": "Urban Planning", "degree_level": "master", "tuition_fee_eur": 4000, "notes": "~€4,000/yr non-EU"},
+            {"field_of_study": "Architecture & Planning", "degree_level": "phd", "tuition_fee_eur": 5000, "notes": "~€5,000/yr — doctoral studies"},
+        ],
+    },
+    {
+        "name": "University of Agronomic Sciences and Veterinary Medicine of Bucharest",
+        "country": "Romania",
+        "city": "Bucharest",
+        "website": "https://usamv.ro/en",
+        "description": "Public agricultural university in Bucharest offering agriculture, veterinary medicine, horticulture, food engineering, biotechnology, and land reclamation.",
+        "ranking": 601,
+        "tuition_fee_eur": 3500,
+        "is_public": True,
+        "english_programs_available": True,
+        "programs": "Agriculture, Veterinary Medicine, Horticulture, Food Engineering, Biotechnology",
+        "application_method": "own_portal",
+        "application_portal_url": "https://usamv.ro/en/admissions",
+        "semester_fee_eur": 0,
+        "notes": "Fees for non-EU: Veterinary ~€9,000–10,000/yr, Agriculture/Horticulture ~€3,500/yr. Source: usamv.ro",
+        "programs_list": [
+            {"field_of_study": "Veterinary Medicine", "degree_level": "bachelor", "tuition_fee_eur": 9500, "notes": "~€9,500/yr non-EU"},
+            {"field_of_study": "Agriculture & Horticulture", "degree_level": "bachelor", "tuition_fee_eur": 3500, "notes": "~€3,500/yr non-EU"},
+            {"field_of_study": "Food Engineering & Biotechnology", "degree_level": "bachelor", "tuition_fee_eur": 3500, "notes": "~€3,500/yr non-EU"},
+            {"field_of_study": "Veterinary Medicine", "degree_level": "master", "tuition_fee_eur": 9000, "notes": "~€9,000/yr non-EU"},
+            {"field_of_study": "Agriculture", "degree_level": "master", "tuition_fee_eur": 3500, "notes": "~€3,500/yr non-EU"},
+            {"field_of_study": "All fields", "degree_level": "phd", "tuition_fee_eur": 4000, "notes": "~€4,000/yr — doctoral studies"},
+        ],
+    },
+    {
+        "name": "National University of Political Studies and Public Administration",
+        "country": "Romania",
+        "city": "Bucharest",
+        "website": "https://www.snspa.ro/en",
+        "description": "Public university in Bucharest specialising in political science, public administration, communication, international relations, and European studies.",
+        "ranking": 601,
+        "tuition_fee_eur": 3000,
+        "is_public": True,
+        "english_programs_available": True,
+        "programs": "Political Science, Public Administration, Communication, International Relations, European Studies",
+        "application_method": "own_portal",
+        "application_portal_url": "https://www.snspa.ro/en/admissions",
+        "semester_fee_eur": 0,
+        "notes": "Fees for non-EU: ~€2,500–3,500/yr. Source: snspa.ro",
+        "programs_list": [
+            {"field_of_study": "Political Science & International Relations", "degree_level": "bachelor", "tuition_fee_eur": 3000, "notes": "~€3,000/yr non-EU"},
+            {"field_of_study": "Public Administration", "degree_level": "bachelor", "tuition_fee_eur": 2800, "notes": "~€2,800/yr non-EU"},
+            {"field_of_study": "Communication & Public Relations", "degree_level": "bachelor", "tuition_fee_eur": 2800, "notes": "~€2,800/yr non-EU"},
+            {"field_of_study": "Political Science", "degree_level": "master", "tuition_fee_eur": 3000, "notes": "~€3,000/yr non-EU"},
+            {"field_of_study": "Public Administration", "degree_level": "master", "tuition_fee_eur": 3000, "notes": "~€3,000/yr non-EU"},
+            {"field_of_study": "All fields", "degree_level": "phd", "tuition_fee_eur": 3500, "notes": "~€3,500/yr — doctoral studies"},
+        ],
+    },
+    {
+        "name": "Technical University of Civil Engineering Bucharest",
+        "country": "Romania",
+        "city": "Bucharest",
+        "website": "https://www.utcb.ro/en",
+        "description": "Specialized public technical university in Bucharest offering civil engineering, geodesy, environmental engineering, and building services. The leading civil engineering university in Romania.",
+        "ranking": 601,
+        "tuition_fee_eur": 3000,
+        "is_public": True,
+        "english_programs_available": True,
+        "programs": "Civil Engineering, Geodesy, Environmental Engineering, Building Services",
+        "application_method": "own_portal",
+        "application_portal_url": "https://www.utcb.ro/en/admissions",
+        "semester_fee_eur": 0,
+        "notes": "Fees for non-EU: ~€2,700–3,500/yr. Source: utcb.ro",
+        "programs_list": [
+            {"field_of_study": "Civil Engineering", "degree_level": "bachelor", "tuition_fee_eur": 3000, "notes": "~€3,000/yr non-EU"},
+            {"field_of_study": "Geodesy & Geomatics", "degree_level": "bachelor", "tuition_fee_eur": 2700, "notes": "~€2,700/yr non-EU"},
+            {"field_of_study": "Environmental Engineering", "degree_level": "bachelor", "tuition_fee_eur": 3000, "notes": "~€3,000/yr non-EU"},
+            {"field_of_study": "Building Services Engineering", "degree_level": "bachelor", "tuition_fee_eur": 3000, "notes": "~€3,000/yr non-EU"},
+            {"field_of_study": "Civil Engineering", "degree_level": "master", "tuition_fee_eur": 3000, "notes": "~€3,000/yr non-EU"},
+            {"field_of_study": "All fields", "degree_level": "phd", "tuition_fee_eur": 4000, "notes": "~€4,000/yr — doctoral studies"},
+        ],
+    },
+    {
+        "name": "Constantin Brancusi University of Targu Jiu",
+        "country": "Romania",
+        "city": "Targu Jiu",
+        "website": "https://www.utgjiu.ro/en",
+        "description": "Public university in southwestern Romania offering engineering, economics, law, social sciences, and environmental sciences. Named after sculptor Constantin Brâncuși.",
+        "ranking": 701,
+        "tuition_fee_eur": 2200,
+        "is_public": True,
+        "english_programs_available": False,
+        "programs": "Engineering, Economics, Law, Social Sciences, Environmental Sciences",
+        "application_method": "own_portal",
+        "application_portal_url": "https://www.utgjiu.ro/en/admissions",
+        "semester_fee_eur": 0,
+        "notes": "Fees for non-EU: ~€2,000–2,500/yr. Small regional university; limited English programs.",
+        "programs_list": [
+            {"field_of_study": "Engineering", "degree_level": "bachelor", "tuition_fee_eur": 2500, "notes": "~€2,500/yr non-EU"},
+            {"field_of_study": "Economics & Law", "degree_level": "bachelor", "tuition_fee_eur": 2200, "notes": "~€2,200/yr non-EU"},
+            {"field_of_study": "Social Sciences", "degree_level": "bachelor", "tuition_fee_eur": 2000, "notes": "~€2,000/yr non-EU"},
+            {"field_of_study": "Engineering", "degree_level": "master", "tuition_fee_eur": 2500, "notes": "~€2,500/yr non-EU"},
+            {"field_of_study": "All fields", "degree_level": "phd", "tuition_fee_eur": 3000, "notes": "~€3,000/yr — doctoral studies"},
+        ],
+    },
+]
+
+added = 0
+skipped = 0
+for uni in UNIVERSITIES:
+    if uni["name"] in existing:
+        print(f"Skipped (exists): {uni['name']}")
+        skipped += 1
+        continue
+    programs_list = uni.pop("programs_list", [])
+    uid = insert_university(uni)
+    insert_programs(uid, programs_list)
+    print(f"Added (ID {uid}): {uni['name']}")
+    added += 1
+
+db.commit()
+db.close()
+print(f"\nDone: {added} added, {skipped} skipped.")

@@ -1,5 +1,15 @@
 import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
+import {
+  Box, Paper, Typography, TextField, Button, Chip, Stack, Avatar,
+  IconButton, Skeleton, Switch, FormControlLabel, Tabs, Tab, Divider,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import CampaignIcon from "@mui/icons-material/Campaign";
+import SchoolIcon from "@mui/icons-material/School";
+import InboxIcon from "@mui/icons-material/Inbox";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 
 const api = (url, opts = {}) =>
   axios.get(url, {
@@ -13,17 +23,15 @@ const postApi = (url, data) =>
   });
 
 const StatusBadge = ({ answered }) => (
-  <span style={{
-    background: answered ? "#dcfce7" : "#fef9c3",
-    color: answered ? "#166534" : "#854d0e",
-    border: `1px solid ${answered ? "#bbf7d0" : "#fde68a"}`,
-    borderRadius: 20, padding: "2px 10px", fontSize: 12, fontWeight: 600,
-  }}>
-    {answered ? "✓ Answered" : "⏳ Pending"}
-  </span>
+  <Chip
+    size="small"
+    label={answered ? "Answered" : "Pending"}
+    color={answered ? "success" : "warning"}
+    variant="outlined"
+  />
 );
 
-const ReplyBox = ({ msg, profile, onUpdated }) => {
+const ReplyBox = ({ msg, onUpdated }) => {
   const [text, setText] = useState(msg.reply ?? "");
   const [editing, setEditing] = useState(!msg.reply);
   const [saving, setSaving] = useState(false);
@@ -44,136 +52,102 @@ const ReplyBox = ({ msg, profile, onUpdated }) => {
   };
 
   return (
-    <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid #f0f0f0" }}>
-      <div style={{ fontSize: 12, color: "#888", marginBottom: 8, fontWeight: 600 }}>
+    <Box sx={{ mt: 1.5, pt: 1.5, borderTop: 1, borderColor: "divider" }}>
+      <Typography variant="caption" fontWeight={700} color="text.secondary" sx={{ display: "block", mb: 1 }}>
         Your Reply {msg.reply && !editing && (
-          <span style={{ fontSize: 11, color: "#aaa", marginLeft: 4 }}>
+          <Box component="span" sx={{ color: "text.disabled", ml: 0.5 }}>
             · {new Date(msg.replied_at).toLocaleString()}
-          </span>
+          </Box>
         )}
-      </div>
+      </Typography>
 
       {!editing && msg.reply ? (
-        <div>
-          <div style={{
-            background: "#f0f4ff", borderRadius: 10, padding: "10px 14px",
-            fontSize: 14, color: "#1e3a8a", lineHeight: 1.6,
-          }}>
-            {msg.reply}
-          </div>
-          <button
-            onClick={() => setEditing(true)}
-            style={{ marginTop: 6, fontSize: 12, color: "#6366f1", background: "none", border: "none", cursor: "pointer", padding: 0 }}
-          >
-            Edit reply
-          </button>
-        </div>
+        <Box>
+          <Box sx={{ bgcolor: "primary.light", opacity: 0.9, borderRadius: 2.5, px: 2, py: 1.25 }}>
+            <Typography variant="body2" sx={{ color: "primary.contrastText", lineHeight: 1.6 }}>{msg.reply}</Typography>
+          </Box>
+          <Button size="small" onClick={() => setEditing(true)} sx={{ mt: 0.5, px: 0 }}>Edit reply</Button>
+        </Box>
       ) : (
-        <div>
-          <textarea
+        <Box>
+          <TextField
             value={text}
             onChange={e => setText(e.target.value)}
+            multiline
             rows={3}
+            fullWidth
+            size="small"
             placeholder="Write your reply here…"
-            style={{
-              width: "100%", border: "1px solid #d1d5db", borderRadius: 8,
-              padding: "10px 12px", fontSize: 14, resize: "vertical",
-              fontFamily: "inherit", boxSizing: "border-box",
-              outline: "none",
-            }}
           />
-          {error && <p style={{ color: "#ef4444", fontSize: 12, margin: "4px 0 0" }}>{error}</p>}
-          <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
-            <button
-              onClick={send}
-              disabled={saving || !text.trim()}
-              style={{
-                background: saving || !text.trim() ? "#a5b4fc" : "#4f46e5",
-                color: "#fff", border: "none", borderRadius: 8,
-                padding: "8px 18px", fontWeight: 600, fontSize: 13,
-                cursor: saving || !text.trim() ? "not-allowed" : "pointer",
-              }}
-            >
+          {error && <Typography variant="caption" color="error" sx={{ display: "block", mt: 0.5 }}>{error}</Typography>}
+          <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
+            <Button variant="contained" size="small" onClick={send} disabled={saving || !text.trim()}>
               {saving ? "Sending…" : "Send Reply"}
-            </button>
+            </Button>
             {msg.reply && (
-              <button
-                onClick={() => { setText(msg.reply); setEditing(false); }}
-                style={{ background: "none", border: "1px solid #e5e7eb", borderRadius: 8, padding: "8px 14px", fontSize: 13, cursor: "pointer", color: "#6b7280" }}
-              >
+              <Button variant="outlined" size="small" color="secondary" onClick={() => { setText(msg.reply); setEditing(false); }}>
                 Cancel
-              </button>
+              </Button>
             )}
-          </div>
-        </div>
+          </Stack>
+        </Box>
       )}
-    </div>
+    </Box>
   );
 };
 
-const MessageCard = ({ msg, profile, onUpdated }) => {
+const MessageCard = ({ msg, onUpdated }) => {
   const [expanded, setExpanded] = useState(!msg.reply);
 
   return (
-    <div style={{
-      background: "#fff", borderRadius: 12,
-      border: `1px solid ${msg.reply ? "#e5e7eb" : "#fbbf24"}`,
-      boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
-      marginBottom: 12, overflow: "hidden",
-    }}>
-      {/* Header */}
-      <div
+    <Paper
+      elevation={0}
+      sx={{
+        borderRadius: 3,
+        borderColor: msg.reply ? "divider" : "warning.main",
+        mb: 1.5, overflow: "hidden",
+      }}
+    >
+      <Box
         onClick={() => setExpanded(e => !e)}
-        style={{
-          display: "flex", alignItems: "center", gap: 12,
-          padding: "14px 18px", cursor: "pointer",
-          background: expanded ? "#fafafa" : "#fff",
+        sx={{
+          display: "flex", alignItems: "center", gap: 1.5, px: 2.25, py: 1.75, cursor: "pointer",
+          bgcolor: expanded ? "action.hover" : "transparent",
         }}
       >
-        <div style={{
-          width: 36, height: 36, borderRadius: "50%",
-          background: "#e0e7ff", color: "#4f46e5",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          fontWeight: 700, fontSize: 14, flexShrink: 0,
-        }}>
+        <Avatar sx={{ bgcolor: "primary.light", color: "primary.contrastText", fontWeight: 700, width: 36, height: 36, fontSize: 14 }}>
           {msg.user.email[0].toUpperCase()}
-        </div>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 13, fontWeight: 600, color: "#111" }}>{msg.user.email}</div>
-          <div style={{ fontSize: 12, color: "#888", marginTop: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+        </Avatar>
+        <Box sx={{ flex: 1, minWidth: 0 }}>
+          <Typography variant="body2" fontWeight={700}>{msg.user.email}</Typography>
+          <Typography variant="caption" color="text.disabled" noWrap sx={{ display: "block" }}>
             {msg.question.slice(0, 80)}{msg.question.length > 80 ? "…" : ""}
-          </div>
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+          </Typography>
+        </Box>
+        <Stack direction="row" alignItems="center" spacing={1.25} flexShrink={0}>
           <StatusBadge answered={!!msg.reply} />
-          <span style={{ fontSize: 11, color: "#aaa" }}>{new Date(msg.created_at).toLocaleDateString()}</span>
-          <span style={{ color: "#aaa", fontSize: 16 }}>{expanded ? "▲" : "▼"}</span>
-        </div>
-      </div>
+          <Typography variant="caption" color="text.disabled">{new Date(msg.created_at).toLocaleDateString()}</Typography>
+          {expanded ? <ExpandLessIcon fontSize="small" color="disabled" /> : <ExpandMoreIcon fontSize="small" color="disabled" />}
+        </Stack>
+      </Box>
 
-      {/* Body */}
       {expanded && (
-        <div style={{ padding: "0 18px 18px" }}>
-          {/* Student question bubble */}
-          <div style={{
-            background: "#f3f4f6", borderRadius: 10,
-            padding: "12px 16px", fontSize: 14, color: "#1f2937", lineHeight: 1.7,
-            marginBottom: 4,
-          }}>
-            {msg.question}
-          </div>
-          <div style={{ fontSize: 11, color: "#aaa", marginBottom: 8 }}>
+        <Box sx={{ px: 2.25, pb: 2.25 }}>
+          <Box sx={{ bgcolor: "action.hover", borderRadius: 2.5, px: 2, py: 1.5, mb: 0.5 }}>
+            <Typography variant="body2" sx={{ lineHeight: 1.7 }}>{msg.question}</Typography>
+          </Box>
+          <Typography variant="caption" color="text.disabled" sx={{ display: "block", mb: 1 }}>
             Asked on {new Date(msg.created_at).toLocaleString()}
-          </div>
-          <ReplyBox msg={msg} profile={profile} onUpdated={onUpdated} />
-        </div>
+          </Typography>
+          <ReplyBox msg={msg} onUpdated={onUpdated} />
+        </Box>
       )}
-    </div>
+    </Paper>
   );
 };
 
-/* ── Post composer ────────────────────────────────────────────────────────── */
-const PostComposer = ({ profile, onPosted }) => {
+/* ── Post composer ── */
+const PostComposer = ({ profile }) => {
   const [text, setText] = useState("");
   const [posting, setPosting] = useState(false);
   const [posts, setPosts] = useState([]);
@@ -194,8 +168,7 @@ const PostComposer = ({ profile, onPosted }) => {
       const res = await postApi("/instructor-posts", { content: text.trim() });
       setPosts(prev => [res.data, ...prev]);
       setText("");
-      onPosted && onPosted(res.data);
-    } catch {}
+    } catch { /* noop */ }
     setPosting(false);
   };
 
@@ -205,93 +178,71 @@ const PostComposer = ({ profile, onPosted }) => {
         headers: { Authorization: `Bearer ${localStorage.getItem("access_token")}` },
       });
       setPosts(prev => prev.filter(p => p.id !== id));
-    } catch {}
+    } catch { /* noop */ }
   };
 
   return (
-    <div style={{ marginBottom: 36 }}>
-      <h2 style={{ fontSize: 16, fontWeight: 700, color: "#111", marginBottom: 12 }}>
-        📢 Post a Comment to Students
-      </h2>
+    <Box sx={{ mb: 4.5 }}>
+      <Typography variant="subtitle1" fontWeight={800} sx={{ mb: 1.5, display: "flex", alignItems: "center", gap: 1 }}>
+        <CampaignIcon fontSize="small" color="primary" /> Post a Comment to Students
+      </Typography>
 
-      {/* Composer box */}
-      <div style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 12, padding: 16, marginBottom: 16 }}>
-        <textarea
+      <Paper elevation={0} sx={{ borderRadius: 3, p: 2 }}>
+        <TextField
           value={text}
           onChange={e => setText(e.target.value)}
+          multiline
           rows={3}
+          fullWidth
+          size="small"
           placeholder="Share a tip, resource, announcement, or encouragement with your students…"
-          style={{
-            width: "100%", border: "1px solid #e5e7eb", borderRadius: 8,
-            padding: "10px 12px", fontSize: 14, resize: "vertical",
-            fontFamily: "inherit", boxSizing: "border-box", outline: "none",
-            color: "#1f2937",
-          }}
         />
-        <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 10 }}>
-          <button
-            onClick={submit}
-            disabled={posting || !text.trim()}
-            style={{
-              background: posting || !text.trim() ? "#a5b4fc" : "#4f46e5",
-              color: "#fff", border: "none", borderRadius: 8,
-              padding: "9px 22px", fontWeight: 600, fontSize: 13,
-              cursor: posting || !text.trim() ? "not-allowed" : "pointer",
-            }}
-          >
+        <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1.25 }}>
+          <Button variant="contained" onClick={submit} disabled={posting || !text.trim()}>
             {posting ? "Posting…" : "Post Comment"}
-          </button>
-        </div>
-      </div>
+          </Button>
+        </Box>
+      </Paper>
 
-      {/* Past posts */}
       {loadingPosts ? null : posts.length === 0 ? (
-        <p style={{ color: "#aaa", fontSize: 13, textAlign: "center", padding: "16px 0" }}>
+        <Typography variant="body2" color="text.disabled" align="center" sx={{ py: 2 }}>
           No comments posted yet. Your first post will appear to students on the Instructors page.
-        </p>
+        </Typography>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        <Stack spacing={1.25} sx={{ mt: 2 }}>
           {posts.map(p => (
-            <div key={p.id} style={{
-              background: "#f8faff", border: "1px solid #e0e7ff",
-              borderRadius: 10, padding: "12px 16px",
-              display: "flex", alignItems: "flex-start", gap: 12,
-            }}>
-              <div style={{ flex: 1 }}>
-                <p style={{ margin: 0, fontSize: 14, color: "#1e3a8a", lineHeight: 1.6 }}>{p.content}</p>
-                <p style={{ margin: "4px 0 0", fontSize: 11, color: "#93c5fd" }}>
+            <Paper
+              key={p.id}
+              elevation={0}
+              sx={{ bgcolor: "primary.light", opacity: 0.92, borderRadius: 2.5, px: 2, py: 1.5, display: "flex", alignItems: "flex-start", gap: 1.5 }}
+            >
+              <Box sx={{ flex: 1 }}>
+                <Typography variant="body2" sx={{ color: "primary.contrastText", lineHeight: 1.6 }}>{p.content}</Typography>
+                <Typography variant="caption" sx={{ color: "primary.contrastText", opacity: 0.7 }}>
                   {new Date(p.created_at).toLocaleString()}
-                </p>
-              </div>
-              <button
-                onClick={() => deletePost(p.id)}
-                title="Delete post"
-                style={{
-                  background: "none", border: "none", cursor: "pointer",
-                  color: "#f87171", fontSize: 16, padding: "2px 6px", flexShrink: 0,
-                }}
-              >
-                ✕
-              </button>
-            </div>
+                </Typography>
+              </Box>
+              <IconButton size="small" onClick={() => deletePost(p.id)} title="Delete post" sx={{ color: "primary.contrastText" }}>
+                <CloseIcon fontSize="small" />
+              </IconButton>
+            </Paper>
           ))}
-        </div>
+        </Stack>
       )}
 
-      <hr style={{ border: "none", borderTop: "1px solid #f0f0f0", margin: "28px 0 0" }} />
-    </div>
+      <Divider sx={{ mt: 3.5 }} />
+    </Box>
   );
 };
 
-/* ── IELTS Management Panel (English instructors only) ───────────────────── */
-
+/* ── IELTS management panel (English instructors only) ── */
 const IeltsPanel = () => {
-  const [tests, setTests]         = useState([]);
-  const [loading, setLoading]     = useState(true);
-  const [creating, setCreating]   = useState(false);
-  const [form, setForm]           = useState({ title: "", description: "", duration_minutes: 170, is_published: false });
-  const [saving, setSaving]       = useState(false);
-  const [error, setError]         = useState("");
+  const [tests, setTests]       = useState([]);
+  const [loading, setLoading]   = useState(true);
+  const [creating, setCreating] = useState(false);
+  const [form, setForm]         = useState({ title: "", description: "", duration_minutes: 170, is_published: false });
+  const [saving, setSaving]     = useState(false);
+  const [error, setError]       = useState("");
 
   const token = localStorage.getItem("access_token");
   const headers = { Authorization: `Bearer ${token}` };
@@ -302,6 +253,7 @@ const IeltsPanel = () => {
       .then(r => setTests(r.data))
       .catch(() => setTests([]))
       .finally(() => setLoading(false));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => { load(); }, [load]);
@@ -322,129 +274,100 @@ const IeltsPanel = () => {
     try {
       await axios.patch(`/ielts/manage/${test.id}`, { ...test, is_published: !test.is_published }, { headers });
       load();
-    } catch {}
+    } catch { /* noop */ }
   };
 
   const deleteTest = async (id) => {
     if (!window.confirm("Delete this IELTS test and all its sections and questions?")) return;
-    try { await axios.delete(`/ielts/manage/${id}`, { headers }); load(); } catch {}
+    try { await axios.delete(`/ielts/manage/${id}`, { headers }); load(); } catch { /* noop */ }
   };
 
-  const s = { card: { background:"#fff", border:"1px solid #e5e7eb", borderRadius:12, padding:"18px 20px", marginBottom:10 } };
-
   return (
-    <div>
-      <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:20 }}>
-        <div>
-          <h2 style={{ margin:0, fontSize:18, fontWeight:700, color:"#111" }}>🎓 IELTS Simulator</h2>
-          <p style={{ margin:"4px 0 0", fontSize:13, color:"#6b7280" }}>Manage practice tests, sections, and questions</p>
-        </div>
-        <button
-          onClick={() => setCreating(c => !c)}
-          style={{ background:"#4f46e5", color:"#fff", border:"none", borderRadius:8, padding:"9px 18px", fontWeight:600, fontSize:13, cursor:"pointer" }}
-        >
-          {creating ? "✕ Cancel" : "+ New Test"}
-        </button>
-      </div>
+    <Box>
+      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 2.5 }}>
+        <Box>
+          <Typography variant="subtitle1" fontWeight={800} sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <SchoolIcon fontSize="small" color="primary" /> IELTS Simulator
+          </Typography>
+          <Typography variant="caption" color="text.secondary">Manage practice tests, sections, and questions</Typography>
+        </Box>
+        <Button variant="contained" onClick={() => setCreating(c => !c)}>
+          {creating ? "Cancel" : "+ New Test"}
+        </Button>
+      </Box>
 
-      {/* Create form */}
       {creating && (
-        <div style={{ ...s.card, border:"2px solid #6366f1", marginBottom:20 }}>
-          <p style={{ fontWeight:700, color:"#4f46e5", marginBottom:12 }}>New IELTS Test</p>
-          <input
+        <Paper elevation={0} sx={{ borderRadius: 3, p: 2.5, mb: 2.5, borderColor: "primary.main", borderWidth: 2 }}>
+          <Typography variant="subtitle2" fontWeight={700} color="primary.main" sx={{ mb: 1.5 }}>New IELTS Test</Typography>
+          <TextField
             value={form.title}
             onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
             placeholder="Test title (e.g. IELTS Practice Test 1)"
-            style={{ width:"100%", border:"1px solid #d1d5db", borderRadius:8, padding:"9px 12px", fontSize:14, marginBottom:10, boxSizing:"border-box" }}
+            fullWidth size="small" sx={{ mb: 1.5 }}
           />
-          <textarea
+          <TextField
             value={form.description}
             onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
             placeholder="Description (optional)"
-            rows={2}
-            style={{ width:"100%", border:"1px solid #d1d5db", borderRadius:8, padding:"9px 12px", fontSize:14, resize:"vertical", marginBottom:10, boxSizing:"border-box", fontFamily:"inherit" }}
+            multiline rows={2} fullWidth size="small" sx={{ mb: 1.5 }}
           />
-          <div style={{ display:"flex", alignItems:"center", gap:16, marginBottom:12 }}>
-            <label style={{ fontSize:13, color:"#374151" }}>
-              Duration (min):&nbsp;
-              <input
-                type="number" min={1} value={form.duration_minutes}
-                onChange={e => setForm(f => ({ ...f, duration_minutes: Number(e.target.value) }))}
-                style={{ width:80, border:"1px solid #d1d5db", borderRadius:6, padding:"6px 8px", fontSize:13 }}
-              />
-            </label>
-            <label style={{ fontSize:13, color:"#374151", display:"flex", alignItems:"center", gap:6, cursor:"pointer" }}>
-              <input type="checkbox" checked={form.is_published}
-                onChange={e => setForm(f => ({ ...f, is_published: e.target.checked }))} />
-              Publish immediately
-            </label>
-          </div>
-          {error && <p style={{ color:"#ef4444", fontSize:12, marginBottom:8 }}>{error}</p>}
-          <button
-            onClick={createTest} disabled={saving || !form.title.trim()}
-            style={{ background: saving ? "#a5b4fc" : "#4f46e5", color:"#fff", border:"none", borderRadius:8, padding:"9px 20px", fontWeight:600, fontSize:13, cursor:"pointer" }}
-          >
+          <Stack direction="row" alignItems="center" spacing={2.5} sx={{ mb: 1.5 }}>
+            <TextField
+              label="Duration (min)" type="number" size="small"
+              value={form.duration_minutes}
+              onChange={e => setForm(f => ({ ...f, duration_minutes: Number(e.target.value) }))}
+              sx={{ width: 140 }}
+            />
+            <FormControlLabel
+              control={<Switch checked={form.is_published} onChange={e => setForm(f => ({ ...f, is_published: e.target.checked }))} />}
+              label="Publish immediately"
+            />
+          </Stack>
+          {error && <Typography variant="caption" color="error" sx={{ display: "block", mb: 1 }}>{error}</Typography>}
+          <Button variant="contained" onClick={createTest} disabled={saving || !form.title.trim()}>
             {saving ? "Creating…" : "Create Test"}
-          </button>
-        </div>
+          </Button>
+        </Paper>
       )}
 
-      {/* Test list */}
       {loading ? (
-        <p style={{ color:"#aaa", textAlign:"center", padding:40 }}>Loading…</p>
+        <Stack spacing={1.5}>{[0, 1, 2].map(i => <Skeleton key={i} variant="rounded" height={90} />)}</Stack>
       ) : tests.length === 0 ? (
-        <div style={{ textAlign:"center", padding:60, color:"#aaa" }}>
-          <div style={{ fontSize:40, marginBottom:12 }}>📋</div>
-          <p style={{ fontSize:15 }}>No IELTS tests yet. Create your first one above.</p>
-        </div>
+        <Box sx={{ textAlign: "center", py: 7, color: "text.disabled" }}>
+          <InboxIcon sx={{ fontSize: 40, mb: 1.5, opacity: 0.5 }} />
+          <Typography variant="body2">No IELTS tests yet. Create your first one above.</Typography>
+        </Box>
       ) : tests.map(test => (
-        <div key={test.id} style={s.card}>
-          <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", gap:12 }}>
-            <div style={{ flex:1 }}>
-              <p style={{ margin:0, fontWeight:700, fontSize:15, color:"#111" }}>{test.title}</p>
-              {test.description && <p style={{ margin:"4px 0 0", fontSize:13, color:"#6b7280" }}>{test.description}</p>}
-              <div style={{ display:"flex", gap:10, marginTop:8 }}>
-                <span style={{ fontSize:12, background:"#eff6ff", color:"#1d4ed8", borderRadius:6, padding:"3px 10px", fontWeight:600 }}>
-                  ⏱ {test.duration_minutes} min
-                </span>
-                <span style={{ fontSize:12, background:"#f3f4f6", color:"#374151", borderRadius:6, padding:"3px 10px", fontWeight:600 }}>
-                  {test.section_count} sections · {test.total_questions} questions
-                </span>
-                <span style={{
-                  fontSize:12, borderRadius:6, padding:"3px 10px", fontWeight:600,
-                  background: test.is_published ? "#dcfce7" : "#fef9c3",
-                  color: test.is_published ? "#166534" : "#854d0e",
-                }}>
-                  {test.is_published ? "✓ Published" : "⏳ Draft"}
-                </span>
-              </div>
-            </div>
-            <div style={{ display:"flex", gap:8, flexShrink:0 }}>
-              <button
-                onClick={() => togglePublish(test)}
-                style={{ fontSize:12, border:"1px solid #d1d5db", borderRadius:7, padding:"6px 12px", cursor:"pointer", background:"#fff", color:"#374151", fontWeight:600 }}
-              >
+        <Paper key={test.id} elevation={0} sx={{ borderRadius: 3, p: 2.25, mb: 1.25 }}>
+          <Box sx={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 1.5 }}>
+            <Box sx={{ flex: 1 }}>
+              <Typography variant="body1" fontWeight={700}>{test.title}</Typography>
+              {test.description && <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>{test.description}</Typography>}
+              <Stack direction="row" spacing={1} sx={{ mt: 1 }} flexWrap="wrap" useFlexGap>
+                <Chip size="small" label={`⏱ ${test.duration_minutes} min`} color="primary" variant="outlined" />
+                <Chip size="small" label={`${test.section_count} sections · ${test.total_questions} questions`} variant="outlined" />
+                <Chip size="small" label={test.is_published ? "Published" : "Draft"} color={test.is_published ? "success" : "warning"} />
+              </Stack>
+            </Box>
+            <Stack direction="row" spacing={1} flexShrink={0}>
+              <Button size="small" variant="outlined" color="secondary" onClick={() => togglePublish(test)}>
                 {test.is_published ? "Unpublish" : "Publish"}
-              </button>
-              <button
-                onClick={() => deleteTest(test.id)}
-                style={{ fontSize:12, border:"1px solid #fca5a5", borderRadius:7, padding:"6px 12px", cursor:"pointer", background:"#fff", color:"#ef4444", fontWeight:600 }}
-              >
+              </Button>
+              <Button size="small" variant="outlined" color="error" onClick={() => deleteTest(test.id)}>
                 Delete
-              </button>
-            </div>
-          </div>
-          <p style={{ margin:"12px 0 0", fontSize:12, color:"#9ca3af" }}>
+              </Button>
+            </Stack>
+          </Box>
+          <Typography variant="caption" color="text.disabled" sx={{ display: "block", mt: 1.5 }}>
             To add sections and questions, use the Admin Panel → IELTS Sections / IELTS Questions
-          </p>
-        </div>
+          </Typography>
+        </Paper>
       ))}
-    </div>
+    </Box>
   );
 };
 
-/* ── Main Dashboard ──────────────────────────────────────────────────────────  */
-
+/* ── Main dashboard ── */
 export default function InstructorDashboard() {
   const profile = JSON.parse(localStorage.getItem("instructor_profile") || "{}");
   const [messages, setMessages] = useState([]);
@@ -467,94 +390,74 @@ export default function InstructorDashboard() {
   const answered = messages.filter(m => m.reply);
   const shown    = tab === "pending" ? pending : tab === "answered" ? answered : messages;
 
+  const statTiles = [
+    { label: "Total",    value: messages.length, color: "primary" },
+    { label: "Pending",  value: pending.length,  color: "warning" },
+    { label: "Answered", value: answered.length, color: "success" },
+  ];
+
   return (
-    <div style={{ padding: "32px 32px 48px", maxWidth: 900, margin: "0 auto" }}>
+    <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 960, mx: "auto" }}>
 
       {/* Header */}
-      <div style={{ display: "flex", alignItems: "center", gap: 18, marginBottom: 32 }}>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 2.25, mb: 4, flexWrap: "wrap" }}>
         {profile.photo_url ? (
-          <img src={profile.photo_url} alt={profile.name} style={{ width: 56, height: 56, borderRadius: 14, objectFit: "cover" }} />
+          <Avatar src={profile.photo_url} alt={profile.name} sx={{ width: 56, height: 56, borderRadius: 3 }} variant="rounded" />
         ) : (
-          <div style={{
-            width: 56, height: 56, borderRadius: 14,
-            background: "linear-gradient(135deg, #6366f1, #4f46e5)",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            color: "#fff", fontWeight: 700, fontSize: 20,
-          }}>
+          <Avatar
+            variant="rounded"
+            sx={{ width: 56, height: 56, borderRadius: 3, background: "linear-gradient(135deg, var(--mui-palette-primary-light), var(--mui-palette-primary-main))", fontWeight: 700, fontSize: 20 }}
+          >
             {(profile.name || "I")[0].toUpperCase()}
-          </div>
+          </Avatar>
         )}
-        <div>
-          <h1 style={{ margin: 0, fontSize: 22, fontWeight: 700, color: "#111" }}>
+        <Box>
+          <Typography variant="h6" fontWeight={800}>
             {profile.title ? `${profile.title} ` : ""}{profile.name}
-          </h1>
-          <p style={{ margin: "2px 0 0", color: "#6b7280", fontSize: 13 }}>
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
             {profile.language ? `${profile.language.charAt(0).toUpperCase() + profile.language.slice(1)} Instructor` : "Instructor"}
             {profile.organization ? ` · ${profile.organization}` : ""}
-          </p>
-        </div>
+          </Typography>
+        </Box>
 
-        {/* Stats */}
-        <div style={{ marginLeft: "auto", display: "flex", gap: 12 }}>
-          {[
-            { label: "Total",    value: messages.length, color: "#6366f1" },
-            { label: "Pending",  value: pending.length,  color: "#f59e0b" },
-            { label: "Answered", value: answered.length, color: "#10b981" },
-          ].map(s => (
-            <div key={s.label} style={{
-              background: s.color + "15", border: `1px solid ${s.color}30`,
-              borderRadius: 12, padding: "10px 18px", textAlign: "center",
-            }}>
-              <div style={{ fontSize: 22, fontWeight: 700, color: s.color }}>{s.value}</div>
-              <div style={{ fontSize: 11, color: "#888", marginTop: 1 }}>{s.label}</div>
-            </div>
+        <Stack direction="row" spacing={1.5} sx={{ ml: "auto" }}>
+          {statTiles.map(s => (
+            <Paper key={s.label} elevation={0} sx={{ borderRadius: 3, px: 2.25, py: 1.25, textAlign: "center", bgcolor: `${s.color}.light`, opacity: 0.9 }}>
+              <Typography variant="h6" fontWeight={800} sx={{ color: `${s.color}.contrastText` }}>{s.value}</Typography>
+              <Typography variant="caption" sx={{ color: `${s.color}.contrastText`, opacity: 0.8 }}>{s.label}</Typography>
+            </Paper>
           ))}
-        </div>
-      </div>
+        </Stack>
+      </Box>
 
-      {/* Post composer */}
       <PostComposer profile={profile} />
 
-      {/* Tabs */}
-      <div style={{ display: "flex", gap: 8, marginBottom: 20, flexWrap: "wrap" }}>
-        {[
-          { key: "pending",  label: `⏳ Pending (${pending.length})`   },
-          { key: "answered", label: `✓ Answered (${answered.length})`  },
-          { key: "all",      label: `All (${messages.length})`         },
-          ...(isEnglish ? [{ key: "ielts", label: "🎓 IELTS Simulator" }] : []),
-        ].map(t => (
-          <button
-            key={t.key}
-            onClick={() => setTab(t.key)}
-            style={{
-              padding: "8px 18px", borderRadius: 8, fontSize: 13, fontWeight: 600,
-              cursor: "pointer", transition: "all 0.15s",
-              background: tab === t.key ? "#4f46e5" : "#fff",
-              color: tab === t.key ? "#fff" : "#6b7280",
-              border: tab === t.key ? "1px solid #4f46e5" : "1px solid #e5e7eb",
-            }}
-          >
-            {t.label}
-          </button>
-        ))}
-      </div>
+      <Tabs
+        value={tab}
+        onChange={(_, v) => setTab(v)}
+        sx={{ mb: 2.5, minHeight: 40, "& .MuiTab-root": { minHeight: 40, textTransform: "none", fontWeight: 600 } }}
+      >
+        <Tab value="pending"  label={`Pending (${pending.length})`} />
+        <Tab value="answered" label={`Answered (${answered.length})`} />
+        <Tab value="all"      label={`All (${messages.length})`} />
+        {isEnglish && <Tab value="ielts" label="IELTS Simulator" />}
+      </Tabs>
 
-      {/* IELTS Panel */}
       {tab === "ielts" && <IeltsPanel />}
 
-      {/* Messages */}
       {tab !== "ielts" && (loading ? (
-        <div style={{ textAlign: "center", padding: 60, color: "#aaa" }}>Loading messages…</div>
+        <Stack spacing={1.5}>{[0, 1, 2].map(i => <Skeleton key={i} variant="rounded" height={70} />)}</Stack>
       ) : shown.length === 0 ? (
-        <div style={{ textAlign: "center", padding: 60, color: "#aaa" }}>
-          <div style={{ fontSize: 48, marginBottom: 12 }}>📭</div>
-          <p style={{ fontSize: 15, fontWeight: 500 }}>No messages here yet</p>
-        </div>
+        <Box sx={{ textAlign: "center", py: 8, color: "text.disabled" }}>
+          <InboxIcon sx={{ fontSize: 48, mb: 1.5, opacity: 0.5 }} />
+          <Typography variant="body1" fontWeight={600}>No messages here yet</Typography>
+        </Box>
       ) : (
         shown.map(msg => (
-          <MessageCard key={msg.id} msg={msg} profile={profile} onUpdated={handleUpdated} />
+          <MessageCard key={msg.id} msg={msg} onUpdated={handleUpdated} />
         ))
       ))}
-    </div>
+    </Box>
   );
 }

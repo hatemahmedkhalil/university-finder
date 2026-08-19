@@ -7,20 +7,22 @@ import api from "../api/axios";
 import { Icon, ICONS } from "./Sidebar";
 
 /* Design tokens */
-const BG     = "bg-[oklch(0.15_0.02_285)]";
-const BORDER = "border-[oklch(1_0_0/0.06)]";
-const TEXT   = "text-[oklch(0.6_0.02_285)]";
-const HOVER  = "hover:bg-[oklch(0.20_0.024_285)] hover:text-white";
-const CARD   = "bg-[oklch(0.18_0.022_285)]";
+const BG     = "bg-[var(--bg)]";
+const BORDER = "border-[var(--border)]";
+const TEXT   = "text-[var(--ink-faint)]";
+const HOVER  = "hover:bg-[var(--surface-hover)] hover:text-[var(--ink)]";
+const CARD   = "bg-[var(--surface-2)]";
 
 /* ── Page title config: i18n key + icon + Unsplash photo ── */
 const PAGE_META = {
   "/dashboard":         { key: "nav.dashboard",       icon: "🏠", photo: "https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=120&q=60" },
-  "/profile":           { key: "nav.myProfile",        icon: "👤", photo: "https://images.unsplash.com/photo-1529665253569-6d01c0eaf7b6?w=120&q=60" },
+  "/profile":           { key: "nav.myData",           icon: "👤", photo: "https://images.unsplash.com/photo-1529665253569-6d01c0eaf7b6?w=120&q=60" },
+  "/account":           { key: "nav.accountProfile",   icon: "👤", photo: "https://images.unsplash.com/photo-1529665253569-6d01c0eaf7b6?w=120&q=60" },
   "/recommendations":   { key: "nav.recommendations",  icon: "✨", photo: "https://images.unsplash.com/photo-1507537297725-24a1c029d3ca?w=120&q=60" },
   "/universities":      { key: "nav.universities",     icon: "🏛️", photo: "https://images.unsplash.com/photo-1562774053-701939374585?w=120&q=60" },
-  "/scholarships":      { key: "nav.scholarships",     icon: "🎓", photo: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=120&q=60" },
-  "/learning":          { key: "nav.learning",         icon: "📚", photo: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=120&q=60" },
+  "/scholarships":      { key: "nav.scholarships",     icon: "🎓", photo: "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=120&q=60" },
+  "/visa-guide":        { key: "nav.visaGuide",        icon: "🛂", photo: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=120&q=60" },
+  "/learning":          { key: "nav.learning",         icon: "📚", photo: "https://images.unsplash.com/photo-1565022536102-f7645c84354a?w=120&q=60" },
   "/instructors":       { key: "nav.instructors",      icon: "🧑‍🏫", photo: "https://images.unsplash.com/photo-1544717305-2782549b5136?w=120&q=60" },
   "/apply-hub":         { key: "nav.applyHub",         icon: "📋", photo: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=120&q=60" },
   "/pipeline":          { key: "nav.pipeline",         icon: "📊", photo: "https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=120&q=60" },
@@ -44,6 +46,66 @@ const usePageMeta = (pathname) => {
     if (pathname.startsWith(key + "/")) return val;
   }
   return { key: "nav.brand", icon: "🌐", photo: null };
+};
+
+/* ── AI Chat quick-access button ── */
+const AiChatButton = () => (
+  <Link to="/ai-chat"
+    className={`relative w-9 h-9 flex items-center justify-center rounded-xl ${TEXT} ${HOVER} transition-colors`}
+    title="AI Chat">
+    <Icon d={ICONS.sparkle} size={16} />
+  </Link>
+);
+
+/* ── Global search — jumps to Universities, ⌘K to focus ── */
+const GlobalSearch = () => {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const [value, setValue] = useState("");
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        inputRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  const submit = (e) => {
+    e.preventDefault();
+    navigate("/universities");
+    inputRef.current?.blur();
+  };
+
+  return (
+    <form onSubmit={submit} className="hidden md:flex flex-1 max-w-md mx-auto">
+      <div
+        className="w-full flex items-center gap-2 h-9 px-3 rounded-full transition-colors"
+        style={{ background: "var(--surface-2)", border: "1px solid var(--border)" }}
+      >
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+          style={{ color: "var(--ink-faint)" }} className="shrink-0">
+          <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" />
+        </svg>
+        <input
+          ref={inputRef}
+          value={value}
+          onChange={e => setValue(e.target.value)}
+          placeholder={t("nav.searchPlaceholder", "Search for universities, scholarships...")}
+          className="flex-1 bg-transparent outline-none text-sm min-w-0"
+          style={{ color: "var(--ink)" }}
+        />
+        <kbd className="hidden lg:flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-md shrink-0"
+          style={{ color: "var(--ink-faint)", background: "var(--surface)", border: "1px solid var(--border)" }}>
+          ⌘K
+        </kbd>
+      </div>
+    </form>
+  );
 };
 
 /* ── Notification Bell ── */
@@ -92,14 +154,14 @@ const NotificationBell = ({ isRTL, isDark }) => {
     setCount(0);
   };
 
-  const TYPE_ICON = { support_reply: "💬", application_update: "📋", scholarship_update: "🎓", system: "🔔" };
+  const TYPE_ICON = { support_reply: ICONS.aichat, application_update: ICONS.applications, scholarship_update: ICONS.graduationCap, system: ICONS.notifications };
 
-  const dropdownBg = isDark ? `${CARD} border ${BORDER}` : "bg-white border border-gray-100";
-  const itemHover  = isDark ? "hover:bg-[oklch(0.22_0.024_285)]" : "hover:bg-gray-50";
-  const titleColor = isDark ? "text-white" : "text-gray-800";
-  const subColor   = isDark ? "text-[oklch(0.55_0.02_285)]" : "text-gray-400";
-  const divider    = isDark ? `border-[oklch(1_0_0/0.06)]` : "border-gray-100";
-  const unreadBg   = isDark ? "bg-violet-500/10" : "bg-blue-50/50";
+  const dropdownBg = `${CARD} border ${BORDER}`;
+  const itemHover  = "hover:bg-[var(--surface-hover)]";
+  const titleColor = "text-[var(--ink)]";
+  const subColor   = "text-[var(--ink-faint)]";
+  const divider    = "border-[var(--border)]";
+  const unreadBg   = "bg-[var(--accent)]/10";
 
   return (
     <div className="relative" ref={ref}>
@@ -107,7 +169,7 @@ const NotificationBell = ({ isRTL, isDark }) => {
         className={`relative w-9 h-9 flex items-center justify-center rounded-xl ${TEXT} ${HOVER} transition-colors`}>
         <Icon d={["M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"]} size={19} />
         {count > 0 && (
-          <span className={`absolute -top-0.5 w-4 h-4 bg-violet-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center ${isRTL ? "-left-0.5" : "-right-0.5"}`}>
+          <span className={`absolute -top-0.5 w-4 h-4 bg-[var(--accent)] text-white text-[9px] font-bold rounded-full flex items-center justify-center ${isRTL ? "-left-0.5" : "-right-0.5"}`}>
             {count > 9 ? "9+" : count}
           </span>
         )}
@@ -118,7 +180,7 @@ const NotificationBell = ({ isRTL, isDark }) => {
           <div className={`flex items-center justify-between px-4 py-3 border-b ${divider}`}>
             <span className={`font-bold text-sm ${titleColor}`}>{t("nav.notifications")}</span>
             {count > 0 && (
-              <button onClick={markAll} className="text-xs text-violet-400 hover:underline">
+              <button onClick={markAll} className="text-xs text-[var(--accent-light)] hover:underline">
                 {t("notifications.markAllRead", "Mark all read")}
               </button>
             )}
@@ -128,24 +190,24 @@ const NotificationBell = ({ isRTL, isDark }) => {
               <div className={`text-center py-8 text-sm ${subColor}`}>{t("common.loading")}</div>
             ) : items.length === 0 ? (
               <div className="text-center py-8">
-                <div className="text-3xl mb-1">🔔</div>
+                <div className="flex justify-center mb-2 opacity-40"><Icon d={ICONS.notifications} size={28} /></div>
                 <p className={`text-sm ${subColor}`}>{t("notifications.empty", "No notifications yet")}</p>
               </div>
             ) : items.map(n => (
               <button key={n.id} onClick={() => markRead(n)}
                 className={`w-full text-start flex items-start gap-3 px-4 py-3 ${itemHover} transition border-b ${divider} last:border-0 ${!n.is_read ? unreadBg : ""}`}>
-                <span className="text-lg shrink-0 mt-0.5">{TYPE_ICON[n.type] ?? "🔔"}</span>
+                <span className="shrink-0 mt-0.5" style={{ color: "var(--ink-faint)" }}><Icon d={TYPE_ICON[n.type] ?? ICONS.notifications} size={17} /></span>
                 <div className="flex-1 min-w-0">
                   <p className={`text-sm leading-snug ${!n.is_read ? `font-semibold ${titleColor}` : subColor}`}>{n.title}</p>
                   <p className={`text-xs mt-0.5 truncate ${subColor}`}>{n.message}</p>
                   <p className={`text-[10px] mt-1 ${subColor} opacity-60`}>{new Date(n.created_at).toLocaleString()}</p>
                 </div>
-                {!n.is_read && <span className="w-2 h-2 rounded-full bg-violet-500 shrink-0 mt-1.5" />}
+                {!n.is_read && <span className="w-2 h-2 rounded-full bg-[var(--accent)] shrink-0 mt-1.5" />}
               </button>
             ))}
           </div>
           <div className={`border-t ${divider} px-4 py-2.5 text-center`}>
-            <Link to="/notifications" onClick={() => setOpen(false)} className="text-xs text-violet-400 font-semibold hover:underline">
+            <Link to="/notifications" onClick={() => setOpen(false)} className="text-xs text-[var(--accent-light)] font-semibold hover:underline">
               {t("common.viewAll")} {isRTL ? "←" : "→"}
             </Link>
           </div>
@@ -161,9 +223,9 @@ const LangSwitcher = ({ isDark }) => {
   const current = i18n.language;
   const isAr = current === "ar";
 
-  const pillBg  = isDark ? "bg-[oklch(0.20_0.024_285)]" : "bg-gray-100";
-  const active  = isDark ? "bg-[linear-gradient(135deg,oklch(0.55_0.22_296),oklch(0.50_0.20_264))] text-white shadow" : "bg-white text-indigo-600 shadow-sm";
-  const inactive = isDark ? "text-[oklch(0.55_0.02_285)]" : "text-gray-500";
+  const pillBg  = "bg-[var(--surface-hover)]";
+  const active  = "bg-[var(--accent)] text-[var(--on-accent)] shadow";
+  const inactive = "text-[var(--ink-faint)]";
 
   return (
     <div className={`flex items-center ${pillBg} rounded-xl p-0.5 gap-0.5`}>
@@ -210,10 +272,10 @@ const UserMenu = ({ isRTL, isDark }) => {
   const fullName  = profile?.full_name || user?.email?.split("@")[0] || "User";
   const photoUrl  = profile?.photo_url;
 
-  const dropdownBg = isDark ? `${CARD} border ${BORDER} shadow-2xl` : "bg-white border border-gray-100 shadow-xl";
-  const itemStyle  = isDark ? `text-[oklch(0.7_0.02_285)] hover:bg-[oklch(0.22_0.024_285)] hover:text-white` : "text-gray-700 hover:bg-gray-50";
-  const divider    = isDark ? `border-[oklch(1_0_0/0.06)]` : "border-gray-100";
-  const headText   = isDark ? "text-white" : "text-gray-800";
+  const dropdownBg = `${CARD} border ${BORDER} shadow-2xl`;
+  const itemStyle  = `text-[var(--ink-dim)] hover:bg-[var(--surface-hover)] hover:text-[var(--ink)]`;
+  const divider    = "border-[var(--border)]";
+  const headText   = "text-[var(--ink)]";
 
   return (
     <div className="relative" ref={ref}>
@@ -222,10 +284,10 @@ const UserMenu = ({ isRTL, isDark }) => {
         {photoUrl ? (
           <img src={photoUrl} alt={fullName}
                className="w-8 h-8 rounded-full object-cover"
-               style={{ border: "2px solid oklch(0.55 0.22 296 / 0.4)" }} />
+               style={{ border: "2px solid var(--accent)" }} />
         ) : (
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white text-sm font-bold"
-               style={{ border: "2px solid oklch(0.55 0.22 296 / 0.4)" }}>
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[var(--accent-light)] to-[var(--accent)] flex items-center justify-center text-white text-sm font-bold"
+               style={{ border: "2px solid var(--accent)" }}>
             {initial}
           </div>
         )}
@@ -238,12 +300,15 @@ const UserMenu = ({ isRTL, isDark }) => {
         <div className={`absolute ${isRTL ? "left-0" : "right-0"} top-full mt-2 w-56 ${dropdownBg} rounded-2xl z-50 overflow-hidden py-1`}>
           <div className={`px-4 py-3 border-b ${divider}`}>
             <p className={`text-xs font-semibold truncate ${headText}`}>{user?.email}</p>
-            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full mt-1 inline-block ${isPaid ? "bg-amber-500/20 text-amber-400" : isDark ? "bg-[oklch(0.25_0.02_285)] text-[oklch(0.5_0.02_285)]" : "bg-gray-100 text-gray-500"}`}>
-              {isPaid ? `👑 ${user.plan.charAt(0).toUpperCase() + user.plan.slice(1)}` : t("nav.freePlan", "Free Plan")}
+            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full mt-1 inline-block ${isPaid ? "bg-amber-500/20 text-amber-400" : "bg-[var(--border)] text-[var(--ink-faint)]"}`}>
+              {isPaid ? <><Icon d={ICONS.award} size={10} className="inline -mt-0.5 me-0.5" />{user.plan.charAt(0).toUpperCase() + user.plan.slice(1)}</> : t("nav.freePlan", "Free Plan")}
             </span>
           </div>
+          <Link to="/account" onClick={() => setOpen(false)} className={`flex items-center gap-3 px-4 py-2.5 text-sm ${itemStyle} transition`}>
+            <Icon d={ICONS.profile} size={16} /> {t("nav.accountProfile")}
+          </Link>
           <Link to="/profile" onClick={() => setOpen(false)} className={`flex items-center gap-3 px-4 py-2.5 text-sm ${itemStyle} transition`}>
-            <Icon d={ICONS.profile} size={16} /> {t("nav.myProfile")}
+            <Icon d={ICONS.profile} size={16} /> {t("nav.myData")}
           </Link>
           <Link to="/settings" onClick={() => setOpen(false)} className={`flex items-center gap-3 px-4 py-2.5 text-sm ${itemStyle} transition`}>
             <Icon d={ICONS.settings} size={16} /> {t("nav.settings")}
@@ -277,48 +342,52 @@ const Topbar = ({ sidebarWidth = 0, onMobileOpen }) => {
     ? (isRTL ? { right: sidebarWidth, left: 0 } : { left: sidebarWidth, right: 0 })
     : { left: 0, right: 0 };
 
-  const barBg     = isDark ? BG : "bg-white";
-  const barBorder = isDark ? BORDER : "border-gray-100";
-  const titleCol  = isDark ? "text-white" : "text-gray-800";
+  const barBg     = BG;
+  const barBorder = BORDER;
+  const titleCol  = "text-[var(--ink)]";
 
   return (
     <header
-      className={`fixed top-0 h-[60px] ${barBg} border-b ${barBorder} z-20 flex items-center px-4 transition-all duration-300 ease-in-out`}
-      style={headerStyle}
+      className="fixed top-0 h-[68px] z-20 flex items-center gap-3 px-4 lg:px-6 transition-all duration-300 ease-in-out backdrop-blur-xl"
+      style={{
+        ...headerStyle,
+        background: "color-mix(in oklab, var(--bg) 82%, transparent)",
+        borderBottom: "1px solid var(--border)",
+      }}
     >
       {user && (
         <button onClick={onMobileOpen}
-          className={`lg:hidden w-9 h-9 flex items-center justify-center rounded-xl ${TEXT} ${HOVER} transition-colors me-2`}>
+          className={`lg:hidden w-9 h-9 flex items-center justify-center rounded-xl shrink-0 ${TEXT} ${HOVER} transition-colors`}>
           <Icon d={ICONS.menu} size={20} />
         </button>
       )}
 
-      <div className="flex-1 flex items-center justify-center gap-2.5">
-        {isDark && pageMeta.photo && (
-          <img
-            src={pageMeta.photo}
-            alt=""
-            className="w-7 h-7 rounded-lg object-cover shrink-0"
-            style={{ border: "1px solid oklch(1 0 0 / 0.1)" }}
-          />
-        )}
-        <h1 className={`text-[15px] font-semibold tracking-tight ${titleCol}`}>{t(pageMeta.key)}</h1>
-      </div>
+      {user ? (
+        <>
+          <h1 className={`md:hidden text-[15px] font-semibold tracking-tight truncate ${titleCol}`}>{t(pageMeta.key)}</h1>
+          <GlobalSearch />
+        </>
+      ) : (
+        <div className="flex-1 flex items-center gap-2.5">
+          <h1 className={`text-[15px] font-semibold tracking-tight ${titleCol}`}>{t(pageMeta.key)}</h1>
+        </div>
+      )}
 
-      <div className="flex items-center gap-1.5">
+      <div className="flex items-center gap-1.5 shrink-0">
         {user ? (
           <>
             <LangSwitcher isDark={isDark} />
+            <AiChatButton />
             <NotificationBell isRTL={isRTL} isDark={isDark} />
             <UserMenu isRTL={isRTL} isDark={isDark} />
           </>
         ) : (
           <>
             <LangSwitcher isDark={false} />
-            <Link to="/login" className="text-sm text-gray-600 hover:text-indigo-600 font-medium px-3 py-1.5 rounded-lg hover:bg-indigo-50 transition">
+            <Link to="/login" className="text-sm text-gray-600 hover:text-sky-600 font-medium px-3 py-1.5 rounded-lg hover:bg-sky-50 transition">
               {t("auth.login.submit")}
             </Link>
-            <Link to="/register" className="text-sm bg-indigo-600 text-white font-semibold px-4 py-1.5 rounded-xl hover:bg-indigo-700 transition">
+            <Link to="/register" className="text-sm bg-sky-500 text-white font-semibold px-4 py-1.5 rounded-xl hover:bg-sky-600 transition">
               {t("nav.getStarted")}
             </Link>
           </>

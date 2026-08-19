@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session
 
+from app.core.limiter import limiter
 from app.dependencies import get_current_user, get_db
 from app.models.favourite import Favourite
 from app.models.university import University
@@ -23,7 +24,9 @@ def list_favourites(
 
 
 @router.post("/{university_id}", status_code=status.HTTP_201_CREATED)
+@limiter.limit("60/minute")
 def add_favourite(
+    request: Request,
     university_id: int,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),

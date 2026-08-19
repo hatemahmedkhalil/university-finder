@@ -19,6 +19,10 @@ class User(Base):
     )
 
     plan: Mapped[str] = mapped_column(String(20), nullable=False, default="free")
+    # When the current paid period ends. NULL = free plan / never expires.
+    # Set by the Paymob webhook on successful payment; cleared back to "free"
+    # by the daily plan-expiry job once this passes.
+    plan_expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
     is_verified: Mapped[bool] = mapped_column(Boolean, default=False)
     has_completed_onboarding: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)

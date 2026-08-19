@@ -2,34 +2,35 @@ import { useState, useEffect } from "react";
 import api from "../api/axios";
 import { useTranslation } from "react-i18next";
 import PageHero from "../components/PageHero";
+import { Icon, ICONS } from "../components/Sidebar";
 
 /* ── design tokens ── */
-const bg      = "bg-[oklch(0.13_0.018_285)]";
-const card    = "bg-[oklch(0.17_0.02_285)]";
-const border  = "border-[oklch(1_0_0/0.07)]";
-const textDim = "text-[oklch(0.72_0.02_285)]";
-const textFt  = "text-[oklch(0.52_0.02_285)]";
-const grad    = "linear-gradient(135deg,oklch(0.62_0.24_296),oklch(0.64_0.21_264))";
-const gradGold = "linear-gradient(135deg,oklch(0.75_0.18_55),oklch(0.65_0.20_40))";
+const bg      = "bg-[var(--bg)]";
+const card    = "bg-[var(--surface-2)]";
+const border  = "border-[var(--border)]";
+const textDim = "text-[var(--ink-dim)]";
+const textFt  = "text-[var(--ink-faint)]";
+const grad    = "linear-gradient(135deg,var(--accent),var(--accent))";
+const gradGold = "linear-gradient(135deg,var(--warn),var(--warn))";
 
 const TYPE_LABELS = {
-  government: "🏛️ Government",
-  merit:      "🌟 Merit",
-  need_based: "🤝 Need-Based",
-  full:       "🎯 Full Funding",
-  partial:    "📊 Partial",
+  government: "Government",
+  merit:      "Merit",
+  need_based: "Need-Based",
+  full:       "Full Funding",
+  partial:    "Partial",
 };
 
 const SkeletonCard = () => (
   <div className={`${card} rounded-2xl border ${border} overflow-hidden animate-pulse`}>
-    <div className="h-1.5 bg-[oklch(0.30_0.04_296)]" />
+    <div className="h-1.5 bg-[var(--surface-2)]" />
     <div className="p-5 space-y-3">
-      <div className="h-5 bg-[oklch(0.22_0.02_285)] rounded w-3/4" />
+      <div className="h-5 bg-[var(--surface-2)] rounded w-3/4" />
       <div className="flex gap-2">
-        <div className="h-5 w-16 bg-[oklch(0.22_0.02_285)] rounded-full" />
-        <div className="h-5 w-24 bg-[oklch(0.22_0.02_285)] rounded-full" />
+        <div className="h-5 w-16 bg-[var(--surface-2)] rounded-full" />
+        <div className="h-5 w-24 bg-[var(--surface-2)] rounded-full" />
       </div>
-      <div className="h-10 bg-[oklch(0.22_0.02_285)] rounded-xl" />
+      <div className="h-10 bg-[var(--surface-2)] rounded-xl" />
     </div>
   </div>
 );
@@ -40,9 +41,9 @@ const ScholarshipCard = ({ s, matchScore, matchReason, eligibilityMet }) => {
 
   return (
     <div className="flex flex-col rounded-2xl overflow-hidden transition-all duration-200"
-         style={{ background: "oklch(0.17 0.02 285)", border: `1px solid ${isMatch && eligibilityMet ? "oklch(0.55 0.22 296 / 0.35)" : "oklch(1 0 0 / 0.07)"}` }}
-         onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.borderColor = "oklch(0.62 0.24 296 / 0.35)"; }}
-         onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.borderColor = isMatch && eligibilityMet ? "oklch(0.55 0.22 296 / 0.35)" : "oklch(1 0 0 / 0.07)"; }}>
+         style={{ background: "var(--surface-2)", border: `1px solid ${isMatch && eligibilityMet ? "rgba(14,165,233,0.35)" : "var(--border)"}` }}
+         onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.borderColor = "rgba(152,87,255,0.35)"; }}
+         onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.borderColor = isMatch && eligibilityMet ? "rgba(14,165,233,0.35)" : "var(--border)"; }}>
 
       {/* top accent bar — gold if matched, purple otherwise */}
       <div className="h-1" style={{ background: isMatch && eligibilityMet ? gradGold : grad }} />
@@ -51,11 +52,11 @@ const ScholarshipCard = ({ s, matchScore, matchReason, eligibilityMet }) => {
         {/* Name + amount */}
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <div className="font-bold text-white text-[15px] leading-snug">{s.name}</div>
-            <div className="text-xs mt-0.5" style={{ color: "oklch(0.55 0.02 285)" }}>{s.provider}</div>
+            <div className="font-bold text-[var(--ink)] text-[15px] leading-snug">{s.name}</div>
+            <div className="text-xs mt-0.5" style={{ color: "var(--ink-faint)" }}>{s.provider}</div>
           </div>
           {s.amount_eur && (
-            <span className="shrink-0 text-sm font-extrabold px-3 py-1.5 rounded-xl text-white whitespace-nowrap"
+            <span className="shrink-0 text-sm font-extrabold px-3 py-1.5 rounded-xl text-[var(--ink)] whitespace-nowrap"
                   style={{ background: grad }}>
               €{s.amount_eur.toLocaleString()}{s.amount_eur >= 5000 ? " / yr" : " /mo"}
             </span>
@@ -66,36 +67,36 @@ const ScholarshipCard = ({ s, matchScore, matchReason, eligibilityMet }) => {
         {isMatch && (
           <div>
             <div className="flex items-center justify-between mb-1">
-              <span className="text-[11px] font-bold" style={{ color: eligibilityMet ? "oklch(0.75 0.18 158)" : "oklch(0.65 0.10 55)" }}>
-                {eligibilityMet ? "✅ You qualify" : "⚠️ Partial match"}
+              <span className="text-[11px] font-bold" style={{ color: eligibilityMet ? "var(--good)" : "var(--warn)" }}>
+                {eligibilityMet ? "You qualify" : "Partial match"}
               </span>
-              <span className="text-[11px] font-bold" style={{ color: "oklch(0.65 0.14 296)" }}>{matchScore}% match</span>
+              <span className="text-[11px] font-bold" style={{ color: "var(--accent-light)" }}>{matchScore}% match</span>
             </div>
-            <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "oklch(0.22 0.02 285)" }}>
+            <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "var(--surface-2)" }}>
               <div className="h-full rounded-full transition-all duration-700"
-                   style={{ width: `${matchScore}%`, background: eligibilityMet ? "oklch(0.65 0.18 158)" : gradGold }} />
+                   style={{ width: `${matchScore}%`, background: eligibilityMet ? "var(--good)" : gradGold }} />
             </div>
             {matchReason && (
-              <p className="text-xs mt-2 leading-relaxed" style={{ color: "oklch(0.60 0.02 285)" }}>{matchReason}</p>
+              <p className="text-xs mt-2 leading-relaxed" style={{ color: "var(--ink-faint)" }}>{matchReason}</p>
             )}
           </div>
         )}
 
         {/* Description */}
         {s.description && !isMatch && (
-          <p className="text-sm line-clamp-2" style={{ color: "oklch(0.65 0.02 285)" }}>{s.description}</p>
+          <p className="text-sm line-clamp-2" style={{ color: "var(--ink-faint)" }}>{s.description}</p>
         )}
 
         {/* Footer: type + deadline + link */}
         <div className="mt-auto flex items-center justify-between gap-2 flex-wrap pt-1">
           <span className="text-xs px-2 py-0.5 rounded-full font-medium"
-                style={{ background: "oklch(0.55 0.22 296 / 0.12)", color: "oklch(0.75 0.14 296)" }}>
+                style={{ background: "rgba(129,70,224,0.12)", color: "var(--accent-light)" }}>
             {TYPE_LABELS[s.scholarship_type] || s.scholarship_type}
           </span>
           <div className="flex items-center gap-3">
             {s.deadline && (
-              <span className="text-xs font-medium" style={{ color: deadlineSoon ? "oklch(0.75 0.18 25)" : "oklch(0.50 0.02 285)" }}>
-                {deadlineSoon ? "⚠️ " : ""}
+              <span className="text-xs font-medium" style={{ color: deadlineSoon ? "var(--danger)" : "var(--ink-faint)" }}>
+                {deadlineSoon ? "" : ""}
                 {new Date(s.deadline).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
               </span>
             )}
@@ -115,10 +116,10 @@ const ScholarshipCard = ({ s, matchScore, matchReason, eligibilityMet }) => {
 };
 
 const FILTER_ITEMS = [
-  { value: "",           label: "All",        icon: "✨" },
-  { value: "government", label: "Government", icon: "🏛️" },
-  { value: "merit",      label: "Merit",      icon: "🌟" },
-  { value: "need_based", label: "Need-Based", icon: "🤝" },
+  { value: "",           label: "All",        icon: null },
+  { value: "government", label: "Government", icon: null },
+  { value: "merit",      label: "Merit",      icon: null },
+  { value: "need_based", label: "Need-Based", icon: null },
 ];
 
 const Scholarships = () => {
@@ -172,26 +173,26 @@ const Scholarships = () => {
   const otherMatches = matches ? matches.filter(m => !m.eligibility_met && m.match_score >= 40) : [];
 
   return (
-    <div className={`min-h-screen ${bg} text-[oklch(0.96_0.006_285)]`}>
+    <div className={`min-h-screen ${bg} text-[var(--ink)]`}>
 
       <PageHero
-        photo="https://images.unsplash.com/photo-1607013251379-e6eecfffe234?w=1600&q=70"
-        title="Scholarships"
-        subtitle={loading ? "Loading..." : `${total} scholarships available`}
+        photo="https://images.unsplash.com/photo-1562774053-701939374585?w=1600&q=70"
+        title="Funding your future starts here"
+        subtitle={loading ? "Loading..." : `${total} scholarships waiting to be discovered`}
       />
 
       {/* ── Tabs ── */}
-      <div className="px-8 py-0" style={{ borderBottom: "1px solid oklch(1 0 0 / 0.07)" }}>
+      <div className="px-8 py-0" style={{ borderBottom: "1px solid var(--border)" }}>
         <div className="flex gap-1 pt-3">
           {[
             { key: "browse", label: "Browse All" },
-            { key: "match",  label: "✨ AI Match for Me", highlight: true },
+            { key: "match",  label: "AI Match for Me", highlight: true },
           ].map(({ key, label, highlight }) => (
             <button key={key} onClick={() => setTab(key)}
               className="px-5 py-2.5 text-sm font-semibold rounded-t-xl transition-all"
               style={{
                 background: tab === key ? (highlight ? gradGold : grad) : "transparent",
-                color: tab === key ? "#fff" : highlight ? "oklch(0.75 0.18 55)" : "oklch(0.60 0.02 285)",
+                color: tab === key ? "#fff" : highlight ? "var(--warn)" : "var(--ink-faint)",
                 borderBottom: tab === key ? "2px solid transparent" : "2px solid transparent",
               }}>
               {label}
@@ -211,9 +212,9 @@ const Scholarships = () => {
                 <button key={value} onClick={() => { setType(value); setPage(1); }}
                   className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200"
                   style={{
-                    background: type === value ? grad : "oklch(0.20 0.024 285)",
-                    color: type === value ? "#fff" : "oklch(0.72 0.02 285)",
-                    border: `1px solid ${type === value ? "transparent" : "oklch(1 0 0 / 0.08)"}`,
+                    background: type === value ? grad : "var(--surface-hover)",
+                    color: type === value ? "#fff" : "var(--ink-dim)",
+                    border: `1px solid ${type === value ? "transparent" : "var(--border)"}`,
                   }}>
                   <span>{icon}</span> {label}
                 </button>
@@ -226,10 +227,10 @@ const Scholarships = () => {
               </div>
             ) : scholarships.length === 0 ? (
               <div className="text-center py-32">
-                <div className="text-7xl mb-4">💸</div>
-                <p className="text-white font-bold text-xl mb-2">No scholarships found</p>
+                <div className="mb-4 flex justify-center"><Icon d={ICONS.scholarships} size={56} /></div>
+                <p className="text-[var(--ink)] font-bold text-xl mb-2">No scholarships found</p>
                 <button onClick={() => setType("")}
-                  className="text-white text-sm font-bold px-6 py-2.5 rounded-xl mt-4"
+                  className="text-[var(--ink)] text-sm font-bold px-6 py-2.5 rounded-xl mt-4"
                   style={{ background: grad }}>
                   Show All
                 </button>
@@ -245,9 +246,9 @@ const Scholarships = () => {
                       <button key={p} onClick={() => setPage(p)}
                         className="w-10 h-10 rounded-xl text-sm font-bold transition"
                         style={{
-                          background: p === page ? grad : "oklch(0.20 0.024 285)",
-                          color: p === page ? "#fff" : "oklch(0.72 0.02 285)",
-                          border: `1px solid ${p === page ? "transparent" : "oklch(1 0 0 / 0.08)"}`,
+                          background: p === page ? grad : "var(--surface-hover)",
+                          color: p === page ? "#fff" : "var(--ink-dim)",
+                          border: `1px solid ${p === page ? "transparent" : "var(--border)"}`,
                         }}>
                         {p}
                       </button>
@@ -264,26 +265,26 @@ const Scholarships = () => {
           <div>
             {!matches && !matching && (
               <div className="text-center py-20">
-                <div className="text-7xl mb-6">🎯</div>
-                <h2 className="text-2xl font-bold text-white mb-3">Find Scholarships You Qualify For</h2>
+                <div className="mb-6 flex justify-center"><Icon d={ICONS.target} size={56} /></div>
+                <h2 className="text-2xl font-bold text-[var(--ink)] mb-3">Find Scholarships You Qualify For</h2>
                 <p className={`${textDim} text-sm mb-8 max-w-md mx-auto`}>
                   Our AI analyzes your profile — nationality, GPA, degree level, target countries — and matches you with scholarships you're most likely to get.
                 </p>
                 <button onClick={runMatch}
-                  className="px-8 py-3.5 rounded-xl text-white font-bold text-base transition-opacity hover:opacity-90"
+                  className="px-8 py-3.5 rounded-xl text-[var(--ink)] font-bold text-base transition-opacity hover:opacity-90"
                   style={{ background: gradGold }}>
-                  ✨ Match Me with Scholarships
+                  Match Me with Scholarships
                 </button>
                 {matchError && (
-                  <p className="mt-4 text-sm" style={{ color: "oklch(0.70 0.18 25)" }}>{matchError}</p>
+                  <p className="mt-4 text-sm" style={{ color: "var(--danger)" }}>{matchError}</p>
                 )}
               </div>
             )}
 
             {matching && (
               <div className="text-center py-20">
-                <div className="text-5xl mb-6 animate-bounce">🔍</div>
-                <p className="text-white font-bold text-lg mb-2">Analyzing your profile...</p>
+                <div className="mb-6 flex justify-center"><Icon d={ICONS.search} size={40} /></div>
+                <p className="text-[var(--ink)] font-bold text-lg mb-2">Analyzing your profile...</p>
                 <p className={`${textFt} text-sm`}>Matching you against {total} scholarships</p>
               </div>
             )}
@@ -292,17 +293,17 @@ const Scholarships = () => {
               <div>
                 {/* Summary */}
                 {matchSummary && (
-                  <div className="rounded-2xl p-5 mb-8" style={{ background: "oklch(0.17 0.02 285)", border: "1px solid oklch(0.55 0.22 296 / 0.20)" }}>
-                    <p className="text-sm font-bold text-white mb-1">💡 Scholarship Advisor</p>
-                    <p className="text-sm leading-relaxed" style={{ color: "oklch(0.72 0.02 285)" }}>{matchSummary}</p>
+                  <div className="rounded-2xl p-5 mb-8" style={{ background: "var(--surface-2)", border: "1px solid rgba(129,70,224,0.20)" }}>
+                    <p className="text-sm font-bold text-[var(--ink)] mb-1">Scholarship Advisor</p>
+                    <p className="text-sm leading-relaxed" style={{ color: "var(--ink-dim)" }}>{matchSummary}</p>
                   </div>
                 )}
 
                 {/* Qualified */}
                 {qualifiedMatches.length > 0 && (
                   <div className="mb-8">
-                    <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                      ✅ You Qualify <span className="text-sm font-normal" style={{ color: "oklch(0.55 0.02 285)" }}>({qualifiedMatches.length} scholarships)</span>
+                    <h3 className="text-lg font-bold text-[var(--ink)] mb-4 flex items-center gap-2">
+                      You Qualify <span className="text-sm font-normal" style={{ color: "var(--ink-faint)" }}>({qualifiedMatches.length} scholarships)</span>
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                       {qualifiedMatches.map(m => (
@@ -320,8 +321,8 @@ const Scholarships = () => {
                 {/* Partial matches */}
                 {otherMatches.length > 0 && (
                   <div className="mb-8">
-                    <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                      ⚠️ Worth Exploring <span className="text-sm font-normal" style={{ color: "oklch(0.55 0.02 285)" }}>({otherMatches.length} scholarships)</span>
+                    <h3 className="text-lg font-bold text-[var(--ink)] mb-4 flex items-center gap-2">
+                      Worth Exploring <span className="text-sm font-normal" style={{ color: "var(--ink-faint)" }}>({otherMatches.length} scholarships)</span>
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                       {otherMatches.map(m => (
@@ -339,8 +340,8 @@ const Scholarships = () => {
                 <div className="text-center mt-6">
                   <button onClick={() => { setMatches(null); runMatch(); }}
                     className="text-sm px-5 py-2 rounded-xl font-medium transition-opacity hover:opacity-80"
-                    style={{ background: "oklch(0.20 0.024 285)", color: "oklch(0.65 0.02 285)" }}>
-                    🔄 Re-run match
+                    style={{ background: "var(--surface-hover)", color: "var(--ink-faint)" }}>
+                    Re-run match
                   </button>
                 </div>
               </div>

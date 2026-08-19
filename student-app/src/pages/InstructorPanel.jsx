@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import api from "../api/axios";
 import { useTranslation } from "react-i18next";
+import { Icon, ICONS } from "../components/Sidebar";
 
 const Avatar = ({ name, photoUrl }) => {
   const [err, setErr] = useState(false);
@@ -9,7 +10,7 @@ const Avatar = ({ name, photoUrl }) => {
     return <img src={photoUrl} alt={name} onError={() => setErr(true)} className="w-10 h-10 rounded-xl object-cover" />;
   }
   return (
-    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center text-white text-sm font-bold">
+    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center text-[var(--ink)] text-sm font-bold">
       {initials}
     </div>
   );
@@ -34,15 +35,15 @@ const Thread = ({ msg, profile, onReply }) => {
   };
 
   return (
-    <div className="bg-[oklch(0.17_0.02_285)] rounded-2xl border border-[oklch(1_0_0/0.07)] p-5 flex flex-col gap-4">
+    <div className="bg-[var(--surface-2)] rounded-2xl border border-[rgba(255,255,255,0.07)] p-5 flex flex-col gap-4">
       {/* Student question */}
       <div className="flex gap-3 items-start">
         <div className="w-9 h-9 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-bold shrink-0">
           {msg.user.email[0].toUpperCase()}
         </div>
         <div className="flex-1">
-          <p className="text-xs text-[oklch(0.45_0.02_285)] mb-1">{msg.user.email} · {new Date(msg.created_at).toLocaleString()}</p>
-          <div className="bg-[oklch(0.17_0.02_285)] rounded-xl px-4 py-3 text-sm text-white">{msg.question}</div>
+          <p className="text-xs text-[var(--ink-dim)] mb-1">{msg.user.email} · {new Date(msg.created_at).toLocaleString()}</p>
+          <div className="bg-[var(--surface-2)] rounded-xl px-4 py-3 text-sm text-[var(--ink)]">{msg.question}</div>
         </div>
         {!msg.reply && (
           <span className="text-xs bg-yellow-100 text-yellow-700 px-2.5 py-1 rounded-full font-semibold shrink-0">{t("instructors.panel.new")}</span>
@@ -56,7 +57,7 @@ const Thread = ({ msg, profile, onReply }) => {
           {!editing && msg.reply ? (
             <div>
               <div className="bg-indigo-50 rounded-xl px-4 py-3 text-sm text-indigo-900">{msg.reply}</div>
-              <p className="text-[10px] text-[oklch(0.45_0.02_285)] mt-1">{new Date(msg.replied_at).toLocaleString()}</p>
+              <p className="text-[10px] text-[var(--ink-dim)] mt-1">{new Date(msg.replied_at).toLocaleString()}</p>
               <button onClick={() => setEditing(true)} className="text-xs text-indigo-500 hover:text-indigo-700 mt-1">{t("instructors.panel.editReply")}</button>
             </div>
           ) : (
@@ -66,18 +67,18 @@ const Thread = ({ msg, profile, onReply }) => {
                 onChange={e => setReply(e.target.value)}
                 rows={3}
                 placeholder={t("instructors.panel.replyPlaceholder")}
-                className="w-full border border-[oklch(1_0_0/0.08)] rounded-xl px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                className="w-full border border-[rgba(255,255,255,0.08)] rounded-xl px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-indigo-400"
               />
               <div className="flex gap-2">
                 <button
                   onClick={send}
                   disabled={saving || !reply.trim()}
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 rounded-xl disabled:opacity-40 transition"
+                  className="bg-indigo-600 hover:bg-indigo-700 text-[var(--ink)] text-sm font-semibold px-4 py-2 rounded-xl disabled:opacity-40 transition"
                 >
                   {saving ? "…" : t("instructors.panel.sendReply")}
                 </button>
                 {msg.reply && (
-                  <button onClick={() => { setReply(msg.reply); setEditing(false); }} className="text-sm text-[oklch(0.45_0.02_285)] hover:text-[oklch(0.65_0.02_285)]">
+                  <button onClick={() => { setReply(msg.reply); setEditing(false); }} className="text-sm text-[var(--ink-dim)] hover:text-[var(--ink-faint)]">
                     {t("common.cancel")}
                   </button>
                 )}
@@ -137,10 +138,10 @@ export default function InstructorPanel() {
   if (error) {
     return (
       <div className="min-h-screen flex items-center justify-center px-4">
-        <div className="bg-[oklch(0.17_0.02_285)] rounded-2xl border border-red-200 shadow p-8 max-w-md text-center">
-          <div className="text-4xl mb-4">⚠️</div>
-          <h2 className="font-bold text-white mb-2">{t("instructors.panel.notInstructor")}</h2>
-          <p className="text-[oklch(0.55_0.02_285)] text-sm">{error}</p>
+        <div className="bg-[var(--surface-2)] rounded-2xl border border-red-200 shadow p-8 max-w-md text-center">
+          <div className="mb-4 flex justify-center"><Icon d={ICONS.alertTriangle} size={32} /></div>
+          <h2 className="font-bold text-[var(--ink)] mb-2">{t("instructors.panel.notInstructor")}</h2>
+          <p className="text-[var(--ink-faint)] text-sm">{error}</p>
         </div>
       </div>
     );
@@ -149,7 +150,7 @@ export default function InstructorPanel() {
   return (
     <div className="min-h-screen">
       {/* Hero */}
-      <div className="bg-gradient-to-br from-indigo-800 to-blue-700 text-white py-10 px-4">
+      <div className="bg-gradient-to-br from-indigo-800 to-blue-700 text-[var(--ink)] py-10 px-4">
         <div className="max-w-3xl mx-auto flex items-center gap-5">
           <Avatar name={profile.name} photoUrl={profile.photo_url} />
           <div>
@@ -183,8 +184,8 @@ export default function InstructorPanel() {
               onClick={() => setTab(t.key)}
               className={`px-4 py-2 rounded-xl text-sm font-semibold transition border ${
                 tab === t.key
-                  ? "bg-indigo-600 text-white border-indigo-600"
-                  : "bg-white text-[oklch(0.65_0.02_285)] border-gray-200 hover:border-indigo-300"
+                  ? "bg-indigo-600 text-[var(--ink)] border-indigo-600"
+                  : "bg-[var(--surface)] text-[var(--ink-faint)] border-[var(--border)] hover:border-[var(--accent)]"
               }`}
             >
               {t.label}
@@ -194,8 +195,8 @@ export default function InstructorPanel() {
 
         {filtered.length === 0 ? (
           <div className="text-center py-16">
-            <div className="text-5xl mb-4">📭</div>
-            <p className="text-[oklch(0.55_0.02_285)] font-semibold">{t("instructors.panel.noMessages")}</p>
+            <div className="mb-4 flex justify-center"><Icon d={ICONS.mail} size={40} /></div>
+            <p className="text-[var(--ink-faint)] font-semibold">{t("instructors.panel.noMessages")}</p>
           </div>
         ) : (
           <div className="space-y-4">

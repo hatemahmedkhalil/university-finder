@@ -57,3 +57,24 @@ def test_gpa_validation(client, student_headers):
     bad = {**PROFILE_PAYLOAD, "gpa": 5.0}
     r = client.post("/profiles", json=bad, headers=student_headers)
     assert r.status_code == 422
+
+
+def test_profile_includes_completeness_incomplete(client, student_headers):
+    # PROFILE_PAYLOAD has no full_name — the shared readiness-service
+    # calculation, not a duplicated frontend one, should reflect that.
+    r = client.post("/profiles", json=PROFILE_PAYLOAD, headers=student_headers)
+    assert r.status_code == 201
+    completeness = r.json()["completeness"]
+    assert completeness["complete"] is False
+    assert "Full Name" in completeness["missing_fields"]
+    assert completeness["total_count"] == 8
+
+
+def test_profile_completeness_true_when_all_fields_set(client, student_headers):
+    full = {**PROFILE_PAYLOAD, "full_name": "Ali Hassan", "language": "german"}
+    r = client.post("/profiles", json=full, headers=student_headers)
+    assert r.status_code == 201
+    assert r.json()["completeness"]["complete"] is True
+
+    r2 = client.get("/profiles/me", headers=student_headers)
+    assert r2.json()["completeness"]["complete"] is True

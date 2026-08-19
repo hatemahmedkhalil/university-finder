@@ -14,8 +14,24 @@ def test_register_duplicate_email(client):
     assert r.status_code == 409
 
 
-def test_login_success(client):
+def _verify(db, email):
+    from app.models.user import User
+
+    user = db.query(User).filter(User.email == email).first()
+    user.is_verified = True
+    db.commit()
+
+
+def test_login_unverified_email_rejected(client):
+    """Registering does not auto-verify a non-admin user; login must be blocked until they do."""
+    client.post("/auth/register", json={"email": "unverified@test.com", "password": "Pass1234!"})
+    r = client.post("/auth/login", json={"email": "unverified@test.com", "password": "Pass1234!"})
+    assert r.status_code == 403
+
+
+def test_login_success(client, db):
     client.post("/auth/register", json={"email": "login@test.com", "password": "Pass1234!"})
+    _verify(db, "login@test.com")
     r = client.post("/auth/login", json={"email": "login@test.com", "password": "Pass1234!"})
     assert r.status_code == 200
     data = r.json()
@@ -24,8 +40,9 @@ def test_login_success(client):
     assert data["token_type"] == "bearer"
 
 
-def test_login_wrong_password(client):
+def test_login_wrong_password(client, db):
     client.post("/auth/register", json={"email": "wrong@test.com", "password": "Pass1234!"})
+    _verify(db, "wrong@test.com")
     r = client.post("/auth/login", json={"email": "wrong@test.com", "password": "wrongpass"})
     assert r.status_code == 401
 
@@ -35,8 +52,9 @@ def test_login_unknown_email(client):
     assert r.status_code == 401
 
 
-def test_refresh_token(client):
+def test_refresh_token(client, db):
     client.post("/auth/register", json={"email": "refresh@test.com", "password": "Pass1234!"})
+    _verify(db, "refresh@test.com")
     login_r = client.post("/auth/login", json={"email": "refresh@test.com", "password": "Pass1234!"})
     refresh_token = login_r.json()["refresh_token"]
 
@@ -45,8 +63,9 @@ def test_refresh_token(client):
     assert "access_token" in r.json()
 
 
-def test_refresh_with_access_token_rejected(client):
+def test_refresh_with_access_token_rejected(client, db):
     client.post("/auth/register", json={"email": "rfail@test.com", "password": "Pass1234!"})
+    _verify(db, "rfail@test.com")
     login_r = client.post("/auth/login", json={"email": "rfail@test.com", "password": "Pass1234!"})
     access_token = login_r.json()["access_token"]
 

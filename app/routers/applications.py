@@ -1,22 +1,22 @@
-import shutil
 import uuid
 from pathlib import Path
 
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
-from fastapi.responses import FileResponse
+from fastapi import APIRouter, Depends, HTTPException, Request, UploadFile, File
+from fastapi.responses import Response
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from datetime import datetime, timezone
 from typing import Optional
 
+from app.core.limiter import limiter
 from app.dependencies import get_db, get_current_user, require_admin
 from app.models.application import Application
 from app.models.application_document import ApplicationDocument
 from app.models.university import University
 from app.models.user import User
+from app.services import storage
 
-DOCS_DIR = Path(__file__).resolve().parent.parent.parent / "uploads" / "documents"
-DOCS_DIR.mkdir(parents=True, exist_ok=True)
+BUCKET = "application-documents"
 
 MAX_FILE_SIZE = 20 * 1024 * 1024  # 20 MB
 ALLOWED_DOC_TYPES = {
@@ -31,7 +31,7 @@ ALLOWED_DOC_EXTENSIONS = {".pdf", ".doc", ".docx", ".jpg", ".jpeg", ".png", ".we
 
 router = APIRouter(prefix="/applications", tags=["Applications"])
 
-VALID_STATUSES = {"under_review", "waiting_college", "accepted", "rejected"}
+VALID_STATUSES = {"interested", "under_review", "waiting_college", "accepted", "rejected"}
 
 
 class UniversitySnap(BaseModel):
@@ -207,7 +207,9 @@ def list_applications(
 
 
 @router.post("", response_model=ApplicationOut)
+@limiter.limit("30/hour")
 def create_application(
+    request: Request,
     body: ApplicationCreate,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
@@ -354,7 +356,9 @@ def list_documents(
 
 
 @router.post("/{app_id}/documents", response_model=DocumentOut)
+@limiter.limit("20/hour")
 async def upload_document(
+    request: Request,
     app_id: int,
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
@@ -373,11 +377,8 @@ async def upload_document(
     if len(contents) > MAX_FILE_SIZE:
         raise HTTPException(status_code=400, detail="File too large (max 20 MB)")
 
-    stored_name = f"{uuid.uuid4().hex}{ext}"
-    dest = DOCS_DIR / stored_name
-
-    with dest.open("wb") as f:
-        f.write(contents)
+    stored_name = f"{app_id}/{uuid.uuid4().hex}{ext}"
+    storage.upload(BUCKET, stored_name, contents, file.content_type or "application/octet-stream")
 
     doc = ApplicationDocument(
         application_id=app_id,
@@ -407,9 +408,10 @@ def delete_document(
     if not doc:
         raise HTTPException(status_code=404, detail="Document not found")
 
-    file_path = DOCS_DIR / doc.filename
-    if file_path.exists():
-        file_path.unlink()
+    try:
+        storage.delete(BUCKET, doc.filename)
+    except Exception:
+        pass
 
     db.delete(doc)
     db.commit()
@@ -435,12 +437,13 @@ def download_document(
     if not doc:
         raise HTTPException(status_code=404, detail="Document not found")
 
-    file_path = (DOCS_DIR / doc.filename).resolve()
-    if not file_path.exists() or DOCS_DIR.resolve() not in file_path.parents:
-        raise HTTPException(status_code=404, detail="File not found on server")
+    try:
+        data = storage.download(BUCKET, doc.filename)
+    except Exception:
+        raise HTTPException(status_code=404, detail="File not found in storage")
 
-    return FileResponse(
-        path=file_path,
-        filename=doc.original_name,
+    return Response(
+        content=data,
         media_type=doc.file_type or "application/octet-stream",
+        headers={"Content-Disposition": f'attachment; filename="{doc.original_name}"'},
     )

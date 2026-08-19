@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 
-from app.dependencies import get_db, get_current_user, require_admin
+from app.dependencies import get_db, require_admin
 from app.models.subscription_plan import SubscriptionPlan
 from app.models.user import User
 
@@ -18,6 +18,7 @@ class PlanOut(BaseModel):
     price: Optional[float] = None
     description: Optional[str] = None
     features: list[str] = []
+    duration_days: Optional[int] = None
     is_active: bool
     is_featured: bool
     created_at: datetime
@@ -38,6 +39,7 @@ class PlanOut(BaseModel):
             price=plan.price,
             description=plan.description,
             features=features,
+            duration_days=plan.duration_days,
             is_active=plan.is_active,
             is_featured=plan.is_featured,
             created_at=plan.created_at,
@@ -50,6 +52,7 @@ class PlanCreate(BaseModel):
     price: Optional[float] = None
     description: Optional[str] = None
     features: list[str] = []
+    duration_days: Optional[int] = None
     is_active: bool = True
     is_featured: bool = False
 
@@ -59,6 +62,7 @@ class PlanUpdate(BaseModel):
     price: Optional[float] = None
     description: Optional[str] = None
     features: Optional[list[str]] = None
+    duration_days: Optional[int] = None
     is_active: Optional[bool] = None
     is_featured: Optional[bool] = None
 
@@ -97,6 +101,7 @@ def create_plan(
         price=body.price,
         description=body.description,
         features=json.dumps(body.features),
+        duration_days=body.duration_days,
         is_active=body.is_active,
         is_featured=body.is_featured,
     )

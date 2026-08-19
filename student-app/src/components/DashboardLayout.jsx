@@ -51,17 +51,17 @@ const DashboardLayout = ({ children }) => {
 
   if (isPublicPage) {
     return (
-      <>
+      <div className="app-shell min-h-screen" style={{ background: "var(--bg)" }}>
         <Topbar sidebarWidth={0} onMobileOpen={() => {}} />
-        <main className="pt-[60px]">
+        <main className="pt-[68px]">
           {children}
         </main>
-      </>
+      </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[oklch(0.13_0.018_285)] dark-layout">
+    <div className="app-shell min-h-screen" style={{ background: "var(--bg)" }}>
       <Sidebar
         collapsed={collapsed}
         onToggle={toggleCollapsed}
@@ -76,7 +76,7 @@ const DashboardLayout = ({ children }) => {
 
       {/* Main content — desktop shifts away from sidebar; mobile stays full width */}
       <main
-        className="pt-[60px] min-h-screen transition-all duration-300 ease-in-out"
+        className="pt-[68px] min-h-screen transition-all duration-300 ease-in-out"
         style={{ [isRTL ? "marginRight" : "marginLeft"]: `${sidebarWidth}px` }}
       >
         <div key={pageKey} className="page-enter">

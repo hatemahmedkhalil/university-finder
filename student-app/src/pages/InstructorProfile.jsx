@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import api from "../api/axios";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
+import { Icon, ICONS } from "../components/Sidebar";
 
 const LANG_CONFIG = {
   english: {
@@ -22,7 +23,7 @@ const LANG_CONFIG = {
   },
 };
 const DEFAULT_LANG = {
-  label: "Instructor", flag: "👤", flagUrl: null,
+  label: "Instructor", flag: null, flagUrl: null,
   grad: "from-sky-600 to-indigo-600",
   light: "bg-indigo-50", text: "text-indigo-700", border: "border-indigo-200",
 };
@@ -43,7 +44,7 @@ const Avatar = ({ name, photoUrl, size = "lg", grad }) => {
     );
   }
   return (
-    <div className={`${cls} rounded-3xl bg-gradient-to-br ${grad} flex items-center justify-center text-white font-bold shadow-2xl ring-4 ring-white/40`}>
+    <div className={`${cls} rounded-3xl bg-gradient-to-br ${grad} flex items-center justify-center text-[var(--ink)] font-bold shadow-2xl ring-4 ring-white/40`}>
       {initials}
     </div>
   );
@@ -81,40 +82,40 @@ const ChatSection = ({ inst, langCfg }) => {
   };
 
   return (
-    <div className="bg-[oklch(0.17_0.02_285)] rounded-3xl border-2 border-[oklch(1_0_0/0.08)]  overflow-hidden">
+    <div className="bg-[var(--surface-2)] rounded-3xl border-2 border-[rgba(255,255,255,0.08)]  overflow-hidden">
       <div className={`bg-gradient-to-r ${langCfg.grad} px-5 py-4 flex items-center gap-3`}>
-        <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center text-xl">💬</div>
-        <h3 className="font-bold text-white">{t("instructors.askQuestion", { name: inst.name.split(" ")[0] })}</h3>
+        <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center"><Icon d={ICONS.questions} size={16} /></div>
+        <h3 className="font-bold text-[var(--ink)]">{t("instructors.askQuestion", { name: inst.name.split(" ")[0] })}</h3>
       </div>
 
       {/* Messages */}
       <div className="px-5 py-4 space-y-4 min-h-[160px] max-h-80 overflow-y-auto bg-gray-50">
         {loading ? (
-          <p className="text-center text-[oklch(0.45_0.02_285)] text-sm py-6">Loading…</p>
+          <p className="text-center text-[var(--ink-dim)] text-sm py-6">Loading…</p>
         ) : messages.length === 0 ? (
           <div className="text-center py-8">
-            <div className="text-4xl mb-2">💬</div>
-            <p className="text-[oklch(0.45_0.02_285)] text-sm">{t("instructors.noMessagesYet")}</p>
+            <div className="mb-2 flex justify-center"><Icon d={ICONS.questions} size={26} /></div>
+            <p className="text-[var(--ink-dim)] text-sm">{t("instructors.noMessagesYet")}</p>
           </div>
         ) : (
           messages.map(msg => (
             <div key={msg.id} className="space-y-2">
               <div className="flex justify-end">
-                <div className={`bg-gradient-to-r ${langCfg.grad} text-white text-sm rounded-2xl rounded-br-sm px-4 py-2.5 max-w-[80%] `}>
+                <div className={`bg-gradient-to-r ${langCfg.grad} text-[var(--ink)] text-sm rounded-2xl rounded-br-sm px-4 py-2.5 max-w-[80%] `}>
                   <p>{msg.question}</p>
-                  <p className="text-[10px] text-white/60 mt-1 text-right">{new Date(msg.created_at).toLocaleString()}</p>
+                  <p className="text-[10px] text-[var(--ink)]/60 mt-1 text-right">{new Date(msg.created_at).toLocaleString()}</p>
                 </div>
               </div>
               {msg.reply ? (
                 <div className="flex justify-start gap-2">
                   <Avatar name={inst.name} photoUrl={inst.photo_url} size="sm" grad={langCfg.grad} />
-                  <div className="bg-white border border-[oklch(1_0_0/0.08)] text-white text-sm rounded-2xl rounded-bl-sm px-4 py-2.5 max-w-[80%] ">
+                  <div className="bg-[var(--surface-2)] border border-[var(--border)] text-[var(--ink)] text-sm rounded-2xl rounded-bl-sm px-4 py-2.5 max-w-[80%] ">
                     <p>{msg.reply}</p>
-                    <p className="text-[10px] text-[oklch(0.45_0.02_285)] mt-1">{new Date(msg.replied_at).toLocaleString()}</p>
+                    <p className="text-[10px] text-[var(--ink-dim)] mt-1">{new Date(msg.replied_at).toLocaleString()}</p>
                   </div>
                 </div>
               ) : (
-                <p className="text-xs text-[oklch(0.45_0.02_285)] italic pl-12">{t("instructors.waitingReply")}</p>
+                <p className="text-xs text-[var(--ink-dim)] italic pl-12">{t("instructors.waitingReply")}</p>
               )}
             </div>
           ))
@@ -123,19 +124,19 @@ const ChatSection = ({ inst, langCfg }) => {
       </div>
 
       {/* Input */}
-      <div className="px-4 py-3 border-t border-[oklch(1_0_0/0.07)] flex gap-2 bg-white">
+      <div className="px-4 py-3 border-t border-[var(--border)] flex gap-2 bg-[var(--surface)]">
         <textarea
           value={text}
           onChange={e => setText(e.target.value)}
           onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
           rows={2}
           placeholder={t("instructors.questionPlaceholder")}
-          className="flex-1 resize-none border border-[oklch(1_0_0/0.08)] rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400"
+          className="flex-1 resize-none border border-[rgba(255,255,255,0.08)] rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400"
         />
         <button
           onClick={send}
           disabled={sending || !text.trim()}
-          className={`bg-gradient-to-r ${langCfg.grad} text-white px-4 rounded-xl text-sm font-bold disabled:opacity-40 transition shrink-0 hover:opacity-90`}
+          className={`bg-gradient-to-r ${langCfg.grad} text-[var(--ink)] px-4 rounded-xl text-sm font-bold disabled:opacity-40 transition shrink-0 hover:opacity-90`}
         >
           {sending ? "…" : t("aichat.send")}
         </button>
@@ -168,7 +169,7 @@ const InstructorProfile = () => {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-sky-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-[oklch(0.45_0.02_285)] text-sm">{t("instructors.loadingProfile")}</p>
+          <p className="text-[var(--ink-dim)] text-sm">{t("instructors.loadingProfile")}</p>
         </div>
       </div>
     );
@@ -183,7 +184,7 @@ const InstructorProfile = () => {
     <div className="min-h-screen">
 
       {/* Hero banner */}
-      <div className={`relative overflow-hidden bg-gradient-to-br ${langCfg.grad} text-white`}>
+      <div className={`relative overflow-hidden bg-gradient-to-br ${langCfg.grad} text-[var(--ink)]`}>
         {/* Decorative blobs */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-0 w-48 h-48 bg-black/10 rounded-full blur-3xl" />
@@ -193,7 +194,7 @@ const InstructorProfile = () => {
           {/* Back button */}
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center gap-1.5 text-white/70 hover:text-white text-sm mb-8 transition font-medium"
+            className="flex items-center gap-1.5 text-[var(--ink)]/70 hover:text-[var(--ink)] text-sm mb-8 transition font-medium"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -204,21 +205,21 @@ const InstructorProfile = () => {
           <div className="flex items-end gap-6 flex-wrap">
             <Avatar name={inst.name} photoUrl={inst.photo_url} size="lg" grad={langCfg.grad} />
             <div className="flex-1 min-w-0 pb-2">
-              <p className="text-white/60 text-sm font-semibold mb-1">{inst.organization ?? t("instructors.languageInstructor")}</p>
+              <p className="text-[var(--ink)]/60 text-sm font-semibold mb-1">{inst.organization ?? t("instructors.languageInstructor")}</p>
               <h1 className="text-3xl font-extrabold leading-tight">
                 {inst.title ? `${inst.title} ` : ""}{inst.name}
               </h1>
               <div className="flex items-center gap-3 mt-3 flex-wrap">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-white/20 text-white border border-white/30">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-white/20 text-[var(--ink)] border border-white/30">
                   {langCfg.flagUrl && <img src={langCfg.flagUrl} alt={langCfg.label} className="w-4 h-auto rounded-sm" />}
                   {langCfg.label} {t("instructors.instructor")}
                 </span>
                 {inst.years_experience && (
-                  <span className="text-white/70 text-sm">⏱️ {inst.years_experience} {t("instructors.yearsExp")}</span>
+                  <span className="text-[var(--ink)]/70 text-sm">⏱️ {inst.years_experience} {t("instructors.yearsExp")}</span>
                 )}
                 {inst.email && (
-                  <a href={`mailto:${inst.email}`} className="text-white/70 hover:text-white text-sm transition">
-                    ✉️ {inst.email}
+                  <a href={`mailto:${inst.email}`} className="text-[var(--ink)]/70 hover:text-[var(--ink)] text-sm transition">
+                    {inst.email}
                   </a>
                 )}
               </div>
@@ -234,17 +235,17 @@ const InstructorProfile = () => {
         <div className="lg:col-span-1 space-y-5">
 
           {/* Quick info card */}
-          <div className="bg-[oklch(0.17_0.02_285)] rounded-3xl border-2 border-[oklch(1_0_0/0.08)]  overflow-hidden">
+          <div className="bg-[var(--surface-2)] rounded-3xl border-2 border-[rgba(255,255,255,0.08)]  overflow-hidden">
             <div className={`bg-gradient-to-r ${langCfg.grad} px-5 py-3 flex items-center gap-2`}>
-              <span className="text-white font-bold text-sm">ℹ️ {t("instructors.quickInfo")}</span>
+              <span className="text-[var(--ink)] font-bold text-sm">ℹ️ {t("instructors.quickInfo")}</span>
             </div>
             <div className="p-5 space-y-3">
               {inst.language && (
                 <div className="flex items-center gap-3">
-                  <div className={`w-8 h-8 rounded-xl bg-gradient-to-br ${langCfg.grad} flex items-center justify-center text-sm `}>🌍</div>
+                  <div className={`w-8 h-8 rounded-xl bg-gradient-to-br ${langCfg.grad} flex items-center justify-center text-white`}><Icon d={ICONS.globe} size={15} /></div>
                   <div>
-                    <p className="text-xs text-[oklch(0.45_0.02_285)]">{t("instructors.teaches")}</p>
-                    <p className="text-sm font-semibold text-white">{langCfg.label}</p>
+                    <p className="text-xs text-[var(--ink-dim)]">{t("instructors.teaches")}</p>
+                    <p className="text-sm font-semibold text-[var(--ink)]">{langCfg.label}</p>
                   </div>
                 </div>
               )}
@@ -252,25 +253,25 @@ const InstructorProfile = () => {
                 <div className="flex items-center gap-3">
                   <div className={`w-8 h-8 rounded-xl bg-gradient-to-br ${langCfg.grad} flex items-center justify-center text-sm `}>⏱️</div>
                   <div>
-                    <p className="text-xs text-[oklch(0.45_0.02_285)]">{t("instructors.experience")}</p>
-                    <p className="text-sm font-semibold text-white">{inst.years_experience} {t("instructors.years")}</p>
+                    <p className="text-xs text-[var(--ink-dim)]">{t("instructors.experience")}</p>
+                    <p className="text-sm font-semibold text-[var(--ink)]">{inst.years_experience} {t("instructors.years")}</p>
                   </div>
                 </div>
               )}
               {inst.organization && (
                 <div className="flex items-center gap-3">
-                  <div className={`w-8 h-8 rounded-xl bg-gradient-to-br ${langCfg.grad} flex items-center justify-center text-sm `}>🏛️</div>
+                  <div className={`w-8 h-8 rounded-xl bg-gradient-to-br ${langCfg.grad} flex items-center justify-center text-white`}><Icon d={ICONS.building} size={15} /></div>
                   <div>
-                    <p className="text-xs text-[oklch(0.45_0.02_285)]">{t("instructors.organization")}</p>
-                    <p className="text-sm font-semibold text-white">{inst.organization}</p>
+                    <p className="text-xs text-[var(--ink-dim)]">{t("instructors.organization")}</p>
+                    <p className="text-sm font-semibold text-[var(--ink)]">{inst.organization}</p>
                   </div>
                 </div>
               )}
               {inst.email && (
                 <div className="flex items-center gap-3">
-                  <div className={`w-8 h-8 rounded-xl bg-gradient-to-br ${langCfg.grad} flex items-center justify-center text-sm `}>✉️</div>
+                  <div className={`w-8 h-8 rounded-xl bg-gradient-to-br ${langCfg.grad} flex items-center justify-center text-white`}><Icon d={ICONS.mail} size={15} /></div>
                   <div>
-                    <p className="text-xs text-[oklch(0.45_0.02_285)]">{t("profile.emailLabel")}</p>
+                    <p className="text-xs text-[var(--ink-dim)]">{t("profile.emailLabel")}</p>
                     <a href={`mailto:${inst.email}`} className="text-sm font-semibold text-sky-600 hover:underline truncate block max-w-[160px]">{inst.email}</a>
                   </div>
                 </div>
@@ -280,9 +281,9 @@ const InstructorProfile = () => {
 
           {/* Specialties */}
           {specialties.length > 0 && (
-            <div className="bg-[oklch(0.17_0.02_285)] rounded-3xl border-2 border-[oklch(1_0_0/0.08)]  p-5">
-              <h3 className="font-bold text-[oklch(0.75_0.02_285)] text-sm mb-3 flex items-center gap-2">
-                <div className={`w-7 h-7 rounded-lg bg-gradient-to-br ${langCfg.grad} flex items-center justify-center text-xs `}>🎯</div>
+            <div className="bg-[var(--surface-2)] rounded-3xl border-2 border-[rgba(255,255,255,0.08)]  p-5">
+              <h3 className="font-bold text-[var(--ink-dim)] text-sm mb-3 flex items-center gap-2">
+                <div className={`w-7 h-7 rounded-lg bg-gradient-to-br ${langCfg.grad} flex items-center justify-center text-white`}><Icon d={ICONS.target} size={13} /></div>
                 {t("instructors.specialties")}
               </h3>
               <div className="flex flex-wrap gap-2">
@@ -297,15 +298,15 @@ const InstructorProfile = () => {
 
           {/* Posts */}
           {posts.length > 0 && (
-            <div className="bg-[oklch(0.17_0.02_285)] rounded-3xl border-2 border-[oklch(1_0_0/0.08)]  overflow-hidden">
+            <div className="bg-[var(--surface-2)] rounded-3xl border-2 border-[rgba(255,255,255,0.08)]  overflow-hidden">
               <div className={`bg-gradient-to-r ${langCfg.grad} px-5 py-3`}>
-                <span className="text-white font-bold text-sm">📢 Posts ({posts.length})</span>
+                <span className="text-[var(--ink)] font-bold text-sm inline-flex items-center gap-1.5"><Icon d={ICONS.megaphone} size={14} /> Posts ({posts.length})</span>
               </div>
               <div className="p-4 space-y-3 max-h-64 overflow-y-auto">
                 {posts.map(p => (
                   <div key={p.id} className={`${langCfg.light} rounded-2xl px-4 py-3 border ${langCfg.border}`}>
-                    <p className="text-sm text-white leading-relaxed">{p.content}</p>
-                    <p className="text-[10px] text-[oklch(0.45_0.02_285)] mt-1.5">{new Date(p.created_at).toLocaleDateString()}</p>
+                    <p className="text-sm text-[var(--ink)] leading-relaxed">{p.content}</p>
+                    <p className="text-[10px] text-[var(--ink-dim)] mt-1.5">{new Date(p.created_at).toLocaleDateString()}</p>
                   </div>
                 ))}
               </div>
@@ -318,12 +319,12 @@ const InstructorProfile = () => {
 
           {/* Bio */}
           {inst.bio && (
-            <div className="bg-[oklch(0.17_0.02_285)] rounded-3xl border-2 border-[oklch(1_0_0/0.08)]  overflow-hidden">
+            <div className="bg-[var(--surface-2)] rounded-3xl border-2 border-[rgba(255,255,255,0.08)]  overflow-hidden">
               <div className={`bg-gradient-to-r ${langCfg.grad} px-5 py-3 flex items-center gap-2`}>
-                <span className="text-white font-bold text-sm">👤 {t("instructors.about", { name: inst.name.split(" ")[0] })}</span>
+                <span className="text-[var(--ink)] font-bold text-sm inline-flex items-center gap-1.5"><Icon d={ICONS.profile} size={14} /> {t("instructors.about", { name: inst.name.split(" ")[0] })}</span>
               </div>
               <div className="p-6">
-                <p className="text-[oklch(0.65_0.02_285)] leading-relaxed whitespace-pre-wrap">{inst.bio}</p>
+                <p className="text-[var(--ink-faint)] leading-relaxed whitespace-pre-wrap">{inst.bio}</p>
               </div>
             </div>
           )}
@@ -331,7 +332,7 @@ const InstructorProfile = () => {
           {/* Chat */}
           <ChatSection inst={inst} langCfg={langCfg} />
 
-          <p className="text-center text-xs text-[oklch(0.45_0.02_285)]">
+          <p className="text-center text-xs text-[var(--ink-dim)]">
             <Link to="/my-questions" className={`${langCfg.text} hover:underline font-semibold`}>
               {t("instructors.viewAllQuestions")}
             </Link>

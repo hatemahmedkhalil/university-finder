@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional
 
-from app.dependencies import get_db, get_current_user, require_admin
+from app.dependencies import get_db, require_admin
 from app.models.learning import Course, Lesson, PlacementTest, PlacementTestQuestion
 from app.models.user import User
 
@@ -47,6 +47,12 @@ class PlacementTestIn(BaseModel):
     language: str
     description: Optional[str] = None
     is_published: bool = False
+
+class PlacementTestUpdate(BaseModel):
+    title: Optional[str] = None
+    language: Optional[str] = None
+    description: Optional[str] = None
+    is_published: Optional[bool] = None
 
 class LessonOut(BaseModel):
     id: int
@@ -92,6 +98,14 @@ class CourseIn(BaseModel):
     description: Optional[str] = None
     thumbnail_url: Optional[str] = None
     is_published: bool = False
+
+class CourseUpdate(BaseModel):
+    title: Optional[str] = None
+    language: Optional[str] = None
+    level: Optional[str] = None
+    description: Optional[str] = None
+    thumbnail_url: Optional[str] = None
+    is_published: Optional[bool] = None
 
 
 # ── Placement Tests (public read) ────────────────────────────────────────────
@@ -146,7 +160,7 @@ def create_placement_test(
 @router.patch("/placement-tests/{test_id}", response_model=PlacementTestOut)
 def update_placement_test(
     test_id: int,
-    body: PlacementTestIn,
+    body: PlacementTestUpdate,
     db: Session = Depends(get_db),
     _: User = Depends(require_admin),
 ):
@@ -264,7 +278,7 @@ def create_course(
 @router.patch("/courses/{course_id}", response_model=CourseOut)
 def update_course(
     course_id: int,
-    body: CourseIn,
+    body: CourseUpdate,
     db: Session = Depends(get_db),
     _: User = Depends(require_admin),
 ):

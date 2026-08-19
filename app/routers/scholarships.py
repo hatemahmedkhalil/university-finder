@@ -1,7 +1,7 @@
 import json
 import logging
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
-from groq import Groq
+from app.services.ai_client import chat_completion, ai_configured
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from typing import Optional
@@ -105,7 +105,7 @@ def match_scholarships(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    if not settings.GROQ_API_KEY:
+    if not ai_configured():
         raise HTTPException(status_code=503, detail="AI service not configured.")
 
     profile = db.query(StudentProfile).filter(StudentProfile.user_id == current_user.id).first()
@@ -159,14 +159,11 @@ Return ONLY valid JSON (no markdown):
 Include ALL scholarships but rank them by match_score. Put the best matches first."""
 
     try:
-        client = Groq(api_key=settings.GROQ_API_KEY)
-        response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+        raw = chat_completion(
             messages=[{"role": "user", "content": prompt}],
             max_tokens=2000,
             temperature=0.3,
         )
-        raw = response.choices[0].message.content.strip()
         if raw.startswith("```"):
             raw = raw.split("```")[1]
             if raw.startswith("json"):

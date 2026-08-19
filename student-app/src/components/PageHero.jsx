@@ -1,33 +1,41 @@
 /**
- * Dark photo hero banner — consistent across all pages.
+ * Premium photo hero banner — consistent across all pages.
+ * The photo is always darkened enough that white text stays legible in both
+ * themes, and the bottom fade always resolves to the current page background
+ * (var(--bg)) so there's no seam between the banner and the page below.
  * Usage: <PageHero photo={URL} title="..." subtitle="..." />
  */
-export default function PageHero({ photo, title, subtitle, height = 220, children }) {
+export default function PageHero({ photo, title, subtitle, height = 240, children }) {
   return (
-    <div style={{ position: "relative", height, overflow: "hidden", flexShrink: 0 }}>
+    <div className="relative shrink-0 overflow-hidden" style={{ height }}>
       <img
         src={photo}
         alt=""
-        style={{
-          position: "absolute", inset: 0,
-          width: "100%", height: "100%",
-          objectFit: "cover", objectPosition: "center 30%",
-          filter: "brightness(0.38)",
-        }}
+        className="absolute inset-0 w-full h-full object-cover"
+        style={{ objectPosition: "center 30%", filter: "brightness(0.42) saturate(1.05)" }}
+        loading="lazy"
       />
-      {/* gradient fade to page bg */}
-      <div style={{
-        position: "absolute", inset: 0,
-        background: "linear-gradient(180deg, oklch(0.13 0.018 285 / 0.2) 0%, oklch(0.13 0.018 285) 100%)",
-      }} />
-      {/* left-side content */}
-      <div style={{
-        position: "relative", height: "100%",
-        display: "flex", flexDirection: "column",
-        justifyContent: "flex-end", padding: "0 32px 28px",
-      }}>
-        {title && <h1 style={{ fontSize: 28, fontWeight: 800, color: "#fff", margin: 0 }}>{title}</h1>}
-        {subtitle && <p style={{ fontSize: 14, color: "oklch(0.78 0.01 285)", marginTop: 6, marginBottom: 0 }}>{subtitle}</p>}
+      {/* gradient fade to the current page background, in either theme */}
+      <div
+        className="absolute inset-0"
+        style={{ background: "linear-gradient(180deg, rgba(6,9,15,0.15) 0%, var(--bg) 96%)" }}
+      />
+      {/* subtle top scrim so the topbar/back controls stay legible */}
+      <div
+        className="absolute inset-x-0 top-0 h-16 pointer-events-none"
+        style={{ background: "linear-gradient(180deg, rgba(6,9,15,0.35), transparent)" }}
+      />
+      <div className="relative h-full flex flex-col justify-end px-6 sm:px-8 pb-7">
+        {title && (
+          <h1 className="text-[26px] sm:text-[30px] font-extrabold leading-tight" style={{ color: "#fff" }}>
+            {title}
+          </h1>
+        )}
+        {subtitle && (
+          <p className="text-sm mt-1.5 max-w-xl" style={{ color: "rgba(255,255,255,0.78)" }}>
+            {subtitle}
+          </p>
+        )}
         {children}
       </div>
     </div>

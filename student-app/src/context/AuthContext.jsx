@@ -99,11 +99,14 @@ export const AuthProvider = ({ children }) => {
   // Called from Profile.jsx after a successful save to update flow state
   const markProfileComplete = () => setProfileComplete(true);
 
+  // Merge partial fields into the current user object (e.g. after an email change)
+  const updateUser = (partial) => setUser(prev => ({ ...prev, ...partial }));
+
   return (
     <AuthContext.Provider value={{
       user, login, register, logout, loading,
       showOnboarding, completeOnboarding, restartOnboarding,
-      profileComplete, markProfileComplete,
+      profileComplete, markProfileComplete, updateUser,
     }}>
       {children}
     </AuthContext.Provider>
