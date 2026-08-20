@@ -150,7 +150,8 @@ const Universities = () => {
   const [universities, setUniversities] = useState([]);
   const [total, setTotal]               = useState(0);
   const [loading, setLoading]           = useState(true);
-  const [search, setSearch]             = useState("");
+  // Pre-fill from ?search= so the global search bar can hand off a query
+  const [search, setSearch]             = useState(() => new URLSearchParams(window.location.search).get("search") || "");
   const [country, setCountry]           = useState("");
   const [langFilter, setLangFilter]     = useState("");
   const [userLangs, setUserLangs]       = useState([]);

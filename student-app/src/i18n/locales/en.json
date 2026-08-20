@@ -36,6 +36,9 @@
   },
   "nav": {
     "brand": "UniPath",
+    "searchLoading": "Searching…",
+    "searchError": "Couldn't load results. Try again.",
+    "searchNoResults": "No universities found.",
     "support": "Support",
     "emailIntegration": "Email Sync",
     "calendar": "Calendar",

@@ -57,12 +57,20 @@ const AiChatButton = () => (
   </Link>
 );
 
-/* ── Global search — jumps to Universities, ⌘K to focus ── */
+/* ── Global search — real autocomplete against /universities, ⌘K to focus ── */
 const GlobalSearch = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [value, setValue] = useState("");
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const [results, setResults] = useState([]);
+  const [activeIdx, setActiveIdx] = useState(-1);
   const inputRef = useRef(null);
+  const boxRef = useRef(null);
+  const debounceRef = useRef(null);
+  const reqIdRef = useRef(0);
 
   useEffect(() => {
     const onKey = (e) => {
@@ -75,14 +83,66 @@ const GlobalSearch = () => {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  const submit = (e) => {
-    e.preventDefault();
-    navigate("/universities");
+  // Close dropdown on outside click
+  useEffect(() => {
+    const onClick = (e) => {
+      if (boxRef.current && !boxRef.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener("mousedown", onClick);
+    return () => document.removeEventListener("mousedown", onClick);
+  }, []);
+
+  // Debounced fetch — 300ms, cancels stale in-flight responses
+  useEffect(() => {
+    clearTimeout(debounceRef.current);
+    const query = value.trim();
+    if (!query) {
+      setResults([]); setLoading(false); setError(false); setActiveIdx(-1);
+      return;
+    }
+    debounceRef.current = setTimeout(() => {
+      const myReqId = ++reqIdRef.current;
+      setLoading(true); setError(false);
+      api.get("/universities", { params: { search: query, limit: 6 } })
+        .then(res => {
+          if (myReqId !== reqIdRef.current) return; // stale response, ignore
+          setResults(Array.isArray(res.data?.items) ? res.data.items : []);
+          setActiveIdx(-1);
+        })
+        .catch(() => { if (myReqId === reqIdRef.current) setError(true); })
+        .finally(() => { if (myReqId === reqIdRef.current) setLoading(false); });
+    }, 300);
+    return () => clearTimeout(debounceRef.current);
+  }, [value]);
+
+  const goToUniversity = (uni) => {
+    navigate(`/university/${uni.id}`);
+    setValue(""); setResults([]); setOpen(false);
     inputRef.current?.blur();
   };
 
+  const submit = (e) => {
+    e.preventDefault();
+    if (activeIdx >= 0 && results[activeIdx]) {
+      goToUniversity(results[activeIdx]);
+    } else {
+      navigate(value.trim() ? `/universities?search=${encodeURIComponent(value.trim())}` : "/universities");
+      setOpen(false);
+      inputRef.current?.blur();
+    }
+  };
+
+  const onKeyDown = (e) => {
+    if (!open || results.length === 0) return;
+    if (e.key === "ArrowDown") { e.preventDefault(); setActiveIdx(i => (i + 1) % results.length); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); setActiveIdx(i => (i - 1 + results.length) % results.length); }
+    else if (e.key === "Escape") { setOpen(false); }
+  };
+
+  const showDropdown = open && value.trim().length > 0;
+
   return (
-    <form onSubmit={submit} className="hidden md:flex flex-1 max-w-md mx-auto">
+    <form onSubmit={submit} className="hidden md:flex flex-1 max-w-md mx-auto relative" ref={boxRef}>
       <div
         className="w-full flex items-center gap-2 h-9 px-3 rounded-full transition-colors"
         style={{ background: "var(--surface-2)", border: "1px solid var(--border)" }}
@@ -94,16 +154,65 @@ const GlobalSearch = () => {
         <input
           ref={inputRef}
           value={value}
-          onChange={e => setValue(e.target.value)}
+          onChange={e => { setValue(e.target.value); setOpen(true); }}
+          onFocus={() => setOpen(true)}
+          onKeyDown={onKeyDown}
           placeholder={t("nav.searchPlaceholder", "Search for universities, scholarships...")}
           className="flex-1 bg-transparent outline-none text-sm min-w-0"
           style={{ color: "var(--ink)" }}
+          role="combobox"
+          aria-expanded={showDropdown}
+          aria-controls="global-search-listbox"
+          aria-autocomplete="list"
         />
         <kbd className="hidden lg:flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-md shrink-0"
           style={{ color: "var(--ink-faint)", background: "var(--surface)", border: "1px solid var(--border)" }}>
           ⌘K
         </kbd>
       </div>
+
+      {showDropdown && (
+        <div
+          id="global-search-listbox"
+          role="listbox"
+          className="absolute top-11 left-0 right-0 rounded-2xl overflow-hidden z-50 max-h-80 overflow-y-auto"
+          style={{ background: "var(--surface)", border: "1px solid var(--border)", boxShadow: "0 12px 32px rgba(0,0,0,0.16)" }}
+        >
+          {loading && (
+            <div className="px-4 py-3 text-sm flex items-center gap-2" style={{ color: "var(--ink-faint)" }}>
+              <span className="w-3.5 h-3.5 border-2 border-current border-t-transparent rounded-full animate-spin opacity-60" />
+              {t("nav.searchLoading", "Searching…")}
+            </div>
+          )}
+          {!loading && error && (
+            <div className="px-4 py-3 text-sm" style={{ color: "var(--danger)" }}>
+              {t("nav.searchError", "Couldn't load results. Try again.")}
+            </div>
+          )}
+          {!loading && !error && results.length === 0 && (
+            <div className="px-4 py-3 text-sm" style={{ color: "var(--ink-faint)" }}>
+              {t("nav.searchNoResults", "No universities found.")}
+            </div>
+          )}
+          {!loading && !error && results.map((uni, i) => (
+            <button
+              type="button"
+              key={uni.id}
+              role="option"
+              aria-selected={i === activeIdx}
+              onMouseEnter={() => setActiveIdx(i)}
+              onClick={() => goToUniversity(uni)}
+              className="w-full text-left px-4 py-2.5 text-sm flex items-center justify-between gap-3 transition-colors"
+              style={{ background: i === activeIdx ? "var(--surface-hover)" : "transparent", color: "var(--ink)" }}
+            >
+              <span className="truncate font-medium">{uni.name}</span>
+              <span className="text-xs shrink-0" style={{ color: "var(--ink-faint)" }}>
+                {uni.city ? `${uni.city}, ` : ""}{uni.country}
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
     </form>
   );
 };

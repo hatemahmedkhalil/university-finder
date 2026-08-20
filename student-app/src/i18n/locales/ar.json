@@ -36,6 +36,9 @@
   },
   "nav": {
     "brand": "UniPath",
+    "searchLoading": "جارٍ البحث…",
+    "searchError": "تعذّر تحميل النتائج. حاول مرة أخرى.",
+    "searchNoResults": "لم يتم العثور على جامعات.",
     "support": "الدعم",
     "emailIntegration": "مزامنة البريد",
     "calendar": "التقويم",

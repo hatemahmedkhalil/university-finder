@@ -50,6 +50,22 @@ def test_list_universities_search(client, admin_headers, sample_universities):
     assert any("Munich" in n for n in names)
 
 
+def test_list_universities_search_matches_country(client, admin_headers, sample_universities):
+    """Regression: the global search bar's autocomplete relies on `search`
+    also matching country (not just name/city), e.g. typing "Poland"."""
+    r = client.get("/universities?search=Poland", headers=admin_headers)
+    assert r.status_code == 200
+    names = [u["name"] for u in r.json()["items"]]
+    assert "Warsaw University" in names
+
+
+def test_list_universities_search_no_results(client, admin_headers, sample_universities):
+    r = client.get("/universities?search=Nonexistentxyz123", headers=admin_headers)
+    assert r.status_code == 200
+    assert r.json()["items"] == []
+    assert r.json()["total"] == 0
+
+
 def test_get_university(client, student_headers, sample_universities):
     uni_id = sample_universities[0].id
     r = client.get(f"/universities/{uni_id}", headers=student_headers)

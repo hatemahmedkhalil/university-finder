@@ -114,7 +114,7 @@ const Register = () => {
             { value: "+10K", label: t("auth.register.stat3", "Students") },
           ].map(({ value, label }) => (
             <div key={label} className="rounded-2xl p-4 text-center border"
-                 style={{ background: "var(--surface-2)", borderColor: "var(--border)" }}>
+                 style={{ background: "rgba(255,255,255,0.06)", borderColor: "rgba(255,255,255,0.12)" }}>
               <p className="text-2xl font-extrabold text-white">{value}</p>
               <p className="text-[rgba(226,232,240,0.65)] text-xs mt-1">{label}</p>
             </div>

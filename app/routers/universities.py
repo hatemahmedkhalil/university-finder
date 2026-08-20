@@ -33,7 +33,11 @@ def list_universities(
     if country:
         q = q.filter(University.country.ilike(f"%{country}%"))
     if search:
-        q = q.filter(or_(University.name.ilike(f"%{search}%"), University.city.ilike(f"%{search}%")))
+        q = q.filter(or_(
+            University.name.ilike(f"%{search}%"),
+            University.city.ilike(f"%{search}%"),
+            University.country.ilike(f"%{search}%"),
+        ))
     # language filter (english_only is kept for backward compat)
     lang = (language or "").lower().strip()
     if english_only or lang == "english":
