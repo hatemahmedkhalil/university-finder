@@ -22,7 +22,7 @@ from app.config import settings
 
 logger = logging.getLogger("university_finder")
 
-GROQ_MODEL = "llama-3.3-70b-versatile"
+GROQ_MODEL = "openai/gpt-oss-120b"
 GEMINI_MODEL = "gemini-flash-lite-latest"
 GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/"
 
