@@ -731,11 +731,11 @@ const Profile = () => {
       toast.success(t("profile.success"));
       if (isFirstTime) {
         // First-time completion is the end of onboarding — a brief celebration
-        // moment before landing on the dashboard, rather than an instant jump.
+        // moment before landing on the recommendations the button promised.
         setCelebrate(true);
-        setTimeout(() => navigate("/dashboard"), 1100);
+        setTimeout(() => navigate("/recommendations"), 1100);
       } else {
-        navigate("/dashboard");
+        navigate("/recommendations");
       }
     } catch (err) {
       toast.error(err.response?.data?.detail || t("profile.saveFailed"));

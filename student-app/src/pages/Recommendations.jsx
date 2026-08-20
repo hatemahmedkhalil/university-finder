@@ -798,14 +798,23 @@ const RuleBasedTab = () => {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(true);
   const [hasProfile, setHasProfile] = useState(true);
+  const [error, setError] = useState("");
   const [showAll, setShowAll] = useState(false);
 
-  useEffect(() => {
+  const load = () => {
+    setLoading(true);
+    setError("");
     api.post("/recommendations?top_n=10", {})
       .then(res => setResults(res.data.results))
-      .catch(err => { if (err.response?.status === 404) setHasProfile(false); })
+      .catch(err => {
+        if (err.response?.status === 404) setHasProfile(false);
+        else setError(err.response?.data?.detail || t("common.error"));
+      })
       .finally(() => setLoading(false));
-  }, []);
+  };
+
+  // eslint-disable-next-line react-hooks/set-state-in-effect, react-hooks/exhaustive-deps
+  useEffect(() => { load(); }, []);
 
   if (loading) return <div className="text-center py-16 text-[var(--ink-dim)]">{t("recommendations.findingBest")}</div>;
   if (!hasProfile) return (
@@ -814,6 +823,14 @@ const RuleBasedTab = () => {
       <h2 className="text-xl font-bold text-[var(--ink)] mb-3">{t("recommendations.setupFirst")}</h2>
       <p className="text-[var(--ink-faint)] mb-6">{t("recommendations.setupFirstSub")}</p>
       <Link to="/profile" className="bg-sky-600 text-[var(--ink)] px-6 py-3 rounded-xl font-semibold hover:bg-sky-700 transition">{t("recommendations.createProfile")}</Link>
+    </div>
+  );
+  if (error) return (
+    <div className="text-center py-20">
+      <div className="mb-4 flex justify-center"><Icon d={ICONS.applications} size={40} /></div>
+      <h2 className="text-xl font-bold text-[var(--ink)] mb-3">{t("common.error")}</h2>
+      <p className="text-[var(--ink-faint)] mb-6">{error}</p>
+      <button onClick={load} className="bg-sky-600 text-[var(--ink)] px-6 py-3 rounded-xl font-semibold hover:bg-sky-700 transition">{t("common.retry", "Retry")}</button>
     </div>
   );
 

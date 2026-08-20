@@ -207,6 +207,40 @@ def test_recommendations_without_profile(client, student_headers):
     assert r.status_code == 404
 
 
+def test_profile_save_then_recommendations_ready(client, student_headers, sample_universities):
+    """
+    Regression test for the "Save & Get Recommendations" workflow:
+    once POST /profiles returns 200, the profile must already be committed
+    so that a subsequent POST /recommendations (as fired by the
+    Recommendations page immediately after the frontend navigates there)
+    succeeds without any race condition or extra delay.
+    """
+    save_resp = client.post("/profiles", json=PROFILE_PAYLOAD, headers=student_headers)
+    assert save_resp.status_code == 201
+
+    # No sleep/retry — this must work immediately, proving the save is
+    # synchronously committed before the endpoint returns.
+    rec_resp = client.post("/recommendations?top_n=10", json={}, headers=student_headers)
+    assert rec_resp.status_code == 200
+    assert len(rec_resp.json()["results"]) >= 1
+
+
+def test_profile_save_failure_leaves_no_recommendable_profile(client, student_headers):
+    """
+    If profile creation fails validation, nothing should be persisted —
+    so the frontend must not navigate to Recommendations (it would just
+    hit the same 404 "create your profile" state).
+    """
+    bad_payload = dict(PROFILE_PAYLOAD)
+    bad_payload["gpa"] = 999  # invalid — out of range
+
+    save_resp = client.post("/profiles", json=bad_payload, headers=student_headers)
+    assert save_resp.status_code in (400, 422)
+
+    rec_resp = client.post("/recommendations", json={}, headers=student_headers)
+    assert rec_resp.status_code == 404
+
+
 def test_recommendations_with_override(client, student_headers, sample_universities):
     client.post("/profiles", json=PROFILE_PAYLOAD, headers=student_headers)
     # Override preferred country and budget
