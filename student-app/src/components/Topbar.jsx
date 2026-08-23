@@ -57,8 +57,13 @@ const AiChatButton = () => (
   </Link>
 );
 
-/* ── Global search — real autocomplete against /universities, ⌘K to focus ── */
-const GlobalSearch = () => {
+/* ── Global search — real autocomplete against /universities, ⌘K to focus ──
+   `mobileOpen`/`onMobileClose`: below the md breakpoint this component is
+   normally hidden entirely (no room in the topbar); the mobile topbar
+   instead renders it full-width as an overlay row when the user taps the
+   search icon, reusing 100% of the same debounced-fetch/keyboard/dropdown
+   logic rather than a second search implementation. ── */
+const GlobalSearch = ({ mobileOpen = false, onMobileClose } = {}) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [value, setValue] = useState("");
@@ -136,17 +141,33 @@ const GlobalSearch = () => {
     if (!open || results.length === 0) return;
     if (e.key === "ArrowDown") { e.preventDefault(); setActiveIdx(i => (i + 1) % results.length); }
     else if (e.key === "ArrowUp") { e.preventDefault(); setActiveIdx(i => (i - 1 + results.length) % results.length); }
-    else if (e.key === "Escape") { setOpen(false); }
+    else if (e.key === "Escape") { setOpen(false); onMobileClose?.(); }
   };
+
+  // Autofocus when opened as the mobile overlay, so tapping the search icon
+  // immediately brings up the keyboard instead of requiring a second tap.
+  useEffect(() => {
+    if (mobileOpen) inputRef.current?.focus();
+  }, [mobileOpen]);
 
   const showDropdown = open && value.trim().length > 0;
 
   return (
-    <form onSubmit={submit} className="hidden md:flex flex-1 max-w-md mx-auto relative" ref={boxRef}>
+    <form onSubmit={submit}
+      className={`${mobileOpen ? "flex" : "hidden md:flex"} flex-1 max-w-md mx-auto relative`}
+      ref={boxRef}>
       <div
         className="w-full flex items-center gap-2 h-9 px-3 rounded-full transition-colors"
         style={{ background: "var(--surface-2)", border: "1px solid var(--border)" }}
       >
+        {mobileOpen && (
+          <button type="button" onClick={onMobileClose} className="shrink-0 -ms-1" aria-label="Close search"
+            style={{ color: "var(--ink-faint)" }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <path d="M15 6l-6 6 6 6" />
+            </svg>
+          </button>
+        )}
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
           style={{ color: "var(--ink-faint)" }} className="shrink-0">
           <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" />
@@ -443,6 +464,13 @@ const Topbar = ({ sidebarWidth = 0, onMobileOpen }) => {
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === "ar";
   const pageMeta = usePageMeta(location.pathname);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+
+  // The search overlay replaces the whole topbar row below md — close it
+  // whenever the route changes (e.g. after picking a result) so it doesn't
+  // linger open on the next page.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => { setMobileSearchOpen(false); }, [location.pathname]);
 
   const isAuthPage = ["/", "/login", "/register", "/forgot-password", "/reset-password", "/verify-email"].includes(location.pathname);
   const isDark = !isAuthPage && !!user;
@@ -464,7 +492,7 @@ const Topbar = ({ sidebarWidth = 0, onMobileOpen }) => {
         borderBottom: "1px solid var(--border)",
       }}
     >
-      {user && (
+      {user && !mobileSearchOpen && (
         <button onClick={onMobileOpen}
           className={`lg:hidden w-9 h-9 flex items-center justify-center rounded-xl shrink-0 ${TEXT} ${HOVER} transition-colors`}>
           <Icon d={ICONS.menu} size={20} />
@@ -472,19 +500,30 @@ const Topbar = ({ sidebarWidth = 0, onMobileOpen }) => {
       )}
 
       {user ? (
-        <>
-          <h1 className={`md:hidden text-[15px] font-semibold tracking-tight truncate ${titleCol}`}>{t(pageMeta.key)}</h1>
-          <GlobalSearch />
-        </>
+        mobileSearchOpen ? (
+          <GlobalSearch mobileOpen onMobileClose={() => setMobileSearchOpen(false)} />
+        ) : (
+          <>
+            <h1 className={`md:hidden text-[15px] font-semibold tracking-tight truncate ${titleCol}`}>{t(pageMeta.key)}</h1>
+            <GlobalSearch />
+          </>
+        )
       ) : (
         <div className="flex-1 flex items-center gap-2.5">
           <h1 className={`text-[15px] font-semibold tracking-tight ${titleCol}`}>{t(pageMeta.key)}</h1>
         </div>
       )}
 
-      <div className="flex items-center gap-1.5 shrink-0">
+      <div className={`items-center gap-1.5 shrink-0 ${mobileSearchOpen ? "hidden" : "flex"}`}>
         {user ? (
           <>
+            <button onClick={() => setMobileSearchOpen(true)}
+              className={`md:hidden w-9 h-9 flex items-center justify-center rounded-xl shrink-0 ${TEXT} ${HOVER} transition-colors`}
+              aria-label={t("nav.searchPlaceholder", "Search")}>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" />
+              </svg>
+            </button>
             <LangSwitcher isDark={isDark} />
             <AiChatButton />
             <NotificationBell isRTL={isRTL} isDark={isDark} />
