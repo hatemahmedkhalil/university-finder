@@ -361,8 +361,12 @@ const Onboarding = () => {
     navigate("/dashboard");
   };
 
-  /* ── progress bar ── */
-  const STEPS = ["About You", "Your Goals", "Explore", "Your Matches"];
+  /* ── progress bar ──
+     Order is intentional: a pure "what can UniPath do for you" welcome
+     step comes FIRST (no data asked yet), then the actual profile
+     questions, so the two purposes ("what is this product" vs. "what do
+     you need to know about me") don't get blurred together. */
+  const STEPS = ["Welcome", "About You", "Your Goals", "Your Matches"];
   const pct = ((step + 1) / 4) * 100;
 
   /* ── feature showcase groups (mirrors the real sidebar IA) ── */
@@ -430,49 +434,11 @@ const Onboarding = () => {
         {/* ── body ── */}
         <div className="px-8 py-6 overflow-y-auto flex-1">
 
-          {/* ═══ STEP 0 — About You ═══ */}
+          {/* ═══ STEP 0 — Welcome (pure product intro, no data collected) ═══ */}
           {step === 0 && (
-            <div className="flex flex-col gap-4">
-              <p className="text-sm" style={{ color: "#9a9fb5" }}>
-                Tell us about yourself so we can find the best universities for you.
-              </p>
-              <NationalityDropdown value={form.nationality} onChange={v => set("nationality", v)} />
-              <Select label="Degree You're Applying For" value={form.degree_level} onChange={v => set("degree_level", v)} options={DEGREE_LEVELS} />
-              <div className="grid grid-cols-2 gap-3">
-                <Input label="Your GPA (out of 4.0)" type="number" value={form.gpa} onChange={v => set("gpa", v)} placeholder="e.g. 3.2" min="0" max="4" step="0.1" />
-                <Input label="Your Budget (€)" type="number" value={form.budget_eur} onChange={v => set("budget_eur", v)} placeholder="e.g. 800" min="0" />
-              </div>
-              <FieldOfStudyDropdown value={form.field_of_study} onChange={v => set("field_of_study", v)} />
-            </div>
-          )}
-
-          {/* ═══ STEP 1 — Your Goals ═══ */}
-          {step === 1 && (
             <div className="flex flex-col gap-5">
               <p className="text-sm" style={{ color: "#9a9fb5" }}>
-                Where do you want to go?
-              </p>
-
-              <div className="flex flex-col gap-2">
-                <label className="text-xs font-semibold text-white/60 uppercase tracking-wide">Target Countries <span style={{ color: "#4450d6" }}>(select all that apply)</span></label>
-                <div className="flex flex-wrap gap-2">
-                  {COUNTRIES.map(c => (
-                    <CountryChip key={c} country={c}
-                      selected={form.preferred_countries.includes(c)}
-                      onClick={toggleCountry} />
-                  ))}
-                </div>
-              </div>
-
-              <Select label="Your English Level" value={form.english_level} onChange={v => set("english_level", v)} options={ENGLISH_LEVELS} />
-            </div>
-          )}
-
-          {/* ═══ STEP 2 — Explore Features ═══ */}
-          {step === 2 && (
-            <div className="flex flex-col gap-5">
-              <p className="text-sm" style={{ color: "#9a9fb5" }}>
-                Here's everything UniPath does for you, end to end.
+                UniPath is your study-abroad companion, end to end — here's what you can do.
               </p>
               {FEATURE_GROUPS.map(group => (
                 <div key={group.title} className="flex flex-col gap-2">
@@ -496,6 +462,44 @@ const Onboarding = () => {
                   <p className="text-[11px]" style={{ color: "#9a9fb5" }}>It knows your profile, deadlines & applications — and can add things for you with one click.</p>
                 </div>
               </div>
+            </div>
+          )}
+
+          {/* ═══ STEP 1 — About You ═══ */}
+          {step === 1 && (
+            <div className="flex flex-col gap-4">
+              <p className="text-sm" style={{ color: "#9a9fb5" }}>
+                Now, tell us about yourself so we can find the best universities for you.
+              </p>
+              <NationalityDropdown value={form.nationality} onChange={v => set("nationality", v)} />
+              <Select label="Degree You're Applying For" value={form.degree_level} onChange={v => set("degree_level", v)} options={DEGREE_LEVELS} />
+              <div className="grid grid-cols-2 gap-3">
+                <Input label="Your GPA (out of 4.0)" type="number" value={form.gpa} onChange={v => set("gpa", v)} placeholder="e.g. 3.2" min="0" max="4" step="0.1" />
+                <Input label="Your Budget (€)" type="number" value={form.budget_eur} onChange={v => set("budget_eur", v)} placeholder="e.g. 800" min="0" />
+              </div>
+              <FieldOfStudyDropdown value={form.field_of_study} onChange={v => set("field_of_study", v)} />
+            </div>
+          )}
+
+          {/* ═══ STEP 2 — Your Goals ═══ */}
+          {step === 2 && (
+            <div className="flex flex-col gap-5">
+              <p className="text-sm" style={{ color: "#9a9fb5" }}>
+                Where do you want to go?
+              </p>
+
+              <div className="flex flex-col gap-2">
+                <label className="text-xs font-semibold text-white/60 uppercase tracking-wide">Target Countries <span style={{ color: "#4450d6" }}>(select all that apply)</span></label>
+                <div className="flex flex-wrap gap-2">
+                  {COUNTRIES.map(c => (
+                    <CountryChip key={c} country={c}
+                      selected={form.preferred_countries.includes(c)}
+                      onClick={toggleCountry} />
+                  ))}
+                </div>
+              </div>
+
+              <Select label="Your English Level" value={form.english_level} onChange={v => set("english_level", v)} options={ENGLISH_LEVELS} />
             </div>
           )}
 
@@ -537,15 +541,10 @@ const Onboarding = () => {
           {step === 0 && (
             <button
               onClick={() => setStep(1)}
-              disabled={!step1Valid}
               className="w-full py-3.5 rounded-2xl font-bold text-sm transition-all"
-              style={{
-                background: step1Valid ? "linear-gradient(135deg, #4450d6, #7d8bff)" : "#1c1f2e",
-                color: step1Valid ? "#fff" : "#6b7089",
-                cursor: step1Valid ? "pointer" : "not-allowed",
-              }}
+              style={{ background: "linear-gradient(135deg, #4450d6, #7d8bff)", color: "#fff", cursor: "pointer" }}
             >
-              Continue →
+              Get Started →
             </button>
           )}
 
@@ -558,12 +557,12 @@ const Onboarding = () => {
               </button>
               <button
                 onClick={() => setStep(2)}
-                disabled={!step2Valid}
+                disabled={!step1Valid}
                 className="flex-1 py-3.5 rounded-2xl font-bold text-sm transition-all"
                 style={{
-                  background: step2Valid ? "linear-gradient(135deg, #4450d6, #7d8bff)" : "#1c1f2e",
-                  color: step2Valid ? "#fff" : "#6b7089",
-                  cursor: step2Valid ? "pointer" : "not-allowed",
+                  background: step1Valid ? "linear-gradient(135deg, #4450d6, #7d8bff)" : "#1c1f2e",
+                  color: step1Valid ? "#fff" : "#6b7089",
+                  cursor: step1Valid ? "pointer" : "not-allowed",
                 }}
               >
                 Continue →
@@ -580,12 +579,12 @@ const Onboarding = () => {
               </button>
               <button
                 onClick={handleSubmit}
-                disabled={loading}
+                disabled={loading || !step2Valid}
                 className="flex-1 py-3.5 rounded-2xl font-bold text-sm transition-all flex items-center justify-center gap-2"
                 style={{
-                  background: !loading ? "linear-gradient(135deg, #4450d6, #7d8bff)" : "#1c1f2e",
-                  color: !loading ? "#fff" : "#6b7089",
-                  cursor: !loading ? "pointer" : "not-allowed",
+                  background: (!loading && step2Valid) ? "linear-gradient(135deg, #4450d6, #7d8bff)" : "#1c1f2e",
+                  color: (!loading && step2Valid) ? "#fff" : "#6b7089",
+                  cursor: (!loading && step2Valid) ? "pointer" : "not-allowed",
                 }}
               >
                 {loading ? (

@@ -14,6 +14,53 @@ def test_register_duplicate_email(client):
     assert r.status_code == 409
 
 
+# ---------------------------------------------------------------------------
+# Welcome Tour / onboarding persistence — the frontend's "new user sees the
+# tour, returning user doesn't" behavior relies entirely on this flag being
+# correctly persisted and returned.
+# ---------------------------------------------------------------------------
+
+def _register_headers(client, email):
+    r = client.post("/auth/register", json={"email": email, "password": "Pass1234!"})
+    token = r.json()["access_token"]
+    return {"Authorization": f"Bearer {token}"}
+
+
+def test_new_user_has_not_completed_onboarding(client):
+    headers = _register_headers(client, "onboard1@test.com")
+    r = client.get("/auth/me", headers=headers)
+    assert r.status_code == 200
+    assert r.json()["has_completed_onboarding"] is False
+
+
+def test_complete_onboarding_persists(client):
+    headers = _register_headers(client, "onboard2@test.com")
+    r = client.post("/auth/onboarding/complete", headers=headers)
+    assert r.status_code == 200
+    assert r.json()["has_completed_onboarding"] is True
+
+    # Persisted, not just in the response — a fresh /auth/me confirms it
+    # (this is what a returning user's session-restore checks).
+    r2 = client.get("/auth/me", headers=headers)
+    assert r2.json()["has_completed_onboarding"] is True
+
+
+def test_reset_onboarding_persists(client):
+    headers = _register_headers(client, "onboard3@test.com")
+    client.post("/auth/onboarding/complete", headers=headers)
+    r = client.post("/auth/onboarding/reset", headers=headers)
+    assert r.status_code == 200
+    assert r.json()["has_completed_onboarding"] is False
+
+    r2 = client.get("/auth/me", headers=headers)
+    assert r2.json()["has_completed_onboarding"] is False
+
+
+def test_onboarding_endpoints_require_auth(client):
+    assert client.post("/auth/onboarding/complete").status_code == 401
+    assert client.post("/auth/onboarding/reset").status_code == 401
+
+
 def _verify(db, email):
     from app.models.user import User
 

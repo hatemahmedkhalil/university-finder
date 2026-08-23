@@ -30,9 +30,15 @@ export const AuthProvider = ({ children }) => {
       try {
         const r = await api.get("/auth/me");
         setUser({ token, ...r.data });
-        if (!r.data.has_completed_onboarding && !sessionStorage.getItem("onboarding_shown")) {
+        // `has_completed_onboarding` (persisted server-side) is the single
+        // source of truth for whether the tour should show. We intentionally
+        // do NOT gate this on a one-shot sessionStorage flag here — doing so
+        // previously caused the tour to be silently skipped if this effect
+        // ran before the user had actually seen it (e.g. a reload while the
+        // language picker was still showing), permanently losing the tour
+        // for the rest of that tab session even though nothing was completed.
+        if (!r.data.has_completed_onboarding) {
           setShowOnboarding(true);
-          sessionStorage.setItem("onboarding_shown", "1");
         }
         await checkProfile(); // awaited so profileComplete is ready before loading=false
       } catch {
