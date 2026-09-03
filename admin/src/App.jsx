@@ -13,6 +13,7 @@ import QuestionAnswerIcon  from "@mui/icons-material/QuestionAnswer";
 import SupportAgentIcon    from "@mui/icons-material/SupportAgent";
 import NotificationsIcon   from "@mui/icons-material/Notifications";
 import SendIcon            from "@mui/icons-material/Send";
+import ForumIcon           from "@mui/icons-material/Forum";
 import SchoolRoundedIcon   from "@mui/icons-material/SchoolRounded";
 import ArticleIcon         from "@mui/icons-material/Article";
 import PaymentsIcon        from "@mui/icons-material/Payments";
@@ -22,6 +23,7 @@ import dataProvider from "./dataProvider";
 import Dashboard from "./Dashboard";
 import InstructorDashboard from "./InstructorDashboard";
 import SupportPanel from "./resources/Support";
+import CommunityPanel from "./resources/Community";
 import { lightTheme, darkTheme } from "./theme";
 
 import { UniversityList, UniversityEdit, UniversityCreate, UniversityShow } from "./resources/Universities";
@@ -70,6 +72,7 @@ const AppMenu = () => {
       {/* ── Community ── */}
       <Menu.Item to="/instructor-messages" primaryText="Q&A Messages"   leftIcon={<QuestionAnswerIcon />} />
       <Menu.Item to="/support-tickets"     primaryText="Support"         leftIcon={<SupportAgentIcon />} />
+      <Menu.Item to="/community"           primaryText="Community"       leftIcon={<ForumIcon />} />
 
       {/* ── Notifications ── */}
       <Menu.Item to="/admin/notifications" primaryText="Notifications"   leftIcon={<NotificationsIcon />} />
@@ -138,6 +141,7 @@ const App = () => (
 
         <CustomRoutes key="custom">
           <Route path="/support-tickets"    element={<SupportPanel />} />
+          <Route path="/community"          element={<CommunityPanel />} />
           <Route path="/send-notification"  element={<SendNotificationPanel />} />
         </CustomRoutes>,
       ];
