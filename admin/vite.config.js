@@ -22,6 +22,7 @@ export default defineConfig({
       "/announcements": "http://localhost:8000",
       "/applications": "http://localhost:8000",
       "/instructor-messages": "http://localhost:8000",
+      "/subscription-plans": "http://localhost:8000",
     }
   }
 })

@@ -15,6 +15,7 @@ import NotificationsIcon   from "@mui/icons-material/Notifications";
 import SendIcon            from "@mui/icons-material/Send";
 import SchoolRoundedIcon   from "@mui/icons-material/SchoolRounded";
 import ArticleIcon         from "@mui/icons-material/Article";
+import PaymentsIcon        from "@mui/icons-material/Payments";
 
 import authProvider from "./authProvider";
 import dataProvider from "./dataProvider";
@@ -36,6 +37,7 @@ import { PipelineList } from "./resources/Pipeline";
 import { PassageList, PassageCreate, PassageEdit, PassageShow, QuestionList, QuestionCreate, QuestionEdit, QuestionShow } from "./resources/Simulators";
 import { StudentList, StudentShow, StudentEdit } from "./resources/Students";
 import { NotificationList, SendNotificationPanel } from "./resources/Notifications";
+import { PlanList, PlanEdit, PlanCreate, PlanShow } from "./resources/SubscriptionPlans";
 
 import { Layout, Menu, CustomRoutes } from "react-admin";
 import { usePermissions } from "react-admin";
@@ -61,6 +63,9 @@ const AppMenu = () => {
       {/* ── Applications ── */}
       <Menu.Item to="/applications"        primaryText="Applications"   leftIcon={<AssignmentIcon />} />
       <Menu.Item to="/pipeline/admin/all"  primaryText="App. Pipeline"  leftIcon={<AssignmentIcon />} />
+
+      {/* ── Billing ── */}
+      <Menu.Item to="/subscription-plans"  primaryText="Subscription Plans" leftIcon={<PaymentsIcon />} />
 
       {/* ── Community ── */}
       <Menu.Item to="/instructor-messages" primaryText="Q&A Messages"   leftIcon={<QuestionAnswerIcon />} />
@@ -112,6 +117,9 @@ const App = () => (
         /* ── Applications ── */
         <Resource key="applications"   name="applications"        list={ApplicationList}  create={ApplicationCreate} edit={ApplicationEdit} show={ApplicationShow} icon={AssignmentIcon} options={{ label: "Applications" }} />,
         <Resource key="pipeline-admin" name="pipeline/admin/all"  list={PipelineList}     icon={AssignmentIcon} options={{ label: "App. Pipeline" }} />,
+
+        /* ── Billing ── */
+        <Resource key="subscription-plans" name="subscription-plans" list={PlanList} edit={PlanEdit} create={PlanCreate} show={PlanShow} icon={PaymentsIcon} options={{ label: "Subscription Plans" }} />,
 
         /* ── Community ── */
         <Resource key="instructor-messages" name="instructor-messages" list={InstructorMessageList} show={InstructorMessageShow} icon={QuestionAnswerIcon} options={{ label: "Q&A Messages" }} />,
